@@ -1,17 +1,22 @@
 package com.example.findbest.login.view
 
 import android.annotation.SuppressLint
+import android.content.Context
 import android.graphics.Color
 import android.os.Bundle
 import android.view.Gravity
+import android.view.inputmethod.InputMethodManager
+import android.widget.EditText
 import android.widget.LinearLayout
 import androidx.appcompat.app.AppCompatActivity
 import com.example.findbest.R
 import com.gyf.immersionbar.ImmersionBar
 import org.jetbrains.anko.*
-import org.jetbrains.anko.sdk27.coroutines.onClick
 
 class LoginActivity: AppCompatActivity() {
+
+    private lateinit var phoneNumber: EditText
+    private lateinit var vCode: EditText
 
     @SuppressLint("SetTextI18n", "RtlHardcoded")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -68,7 +73,7 @@ class LoginActivity: AppCompatActivity() {
                                 gravity = Gravity.CENTER_VERTICAL
                                 leftMargin = dip(8)
                             }
-                            editText {
+                            phoneNumber = editText {
                                 background = null
                                 hint = "请输入手机号码"
                                 hintTextColor = Color.parseColor("#FFD0D0D0")
@@ -93,7 +98,7 @@ class LoginActivity: AppCompatActivity() {
                         linearLayout {
                             orientation = LinearLayout.HORIZONTAL
                             backgroundResource = R.drawable.login_input_bottom
-                            editText {
+                            vCode = editText {
                                 background = null
                                 hint = "请输入密码"
                                 hintTextColor = Color.parseColor("#FFD0D0D0")
@@ -130,7 +135,19 @@ class LoginActivity: AppCompatActivity() {
                 }.lparams(matchParent, wrapContent){
                     setMargins(dip(40),dip(40),dip(40),0)
                 }
+                setOnClickListener {
+                    closeFocusjianpan()
+                }
             }
         }
+    }
+    private fun closeFocusjianpan() {
+        //关闭ｅｄｉｔ光标
+        phoneNumber.clearFocus()
+        vCode.clearFocus()
+        //关闭键盘事件
+        val phone = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        phone.hideSoftInputFromWindow(phoneNumber.windowToken, 0)
+        phone.hideSoftInputFromWindow(vCode.windowToken, 0)
     }
 }

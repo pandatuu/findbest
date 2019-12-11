@@ -1,8 +1,11 @@
 package com.example.findbest.login.view
 
+import android.content.Context
 import android.graphics.Color
 import android.os.Bundle
 import android.view.Gravity
+import android.view.inputmethod.InputMethodManager
+import android.widget.EditText
 import android.widget.LinearLayout
 import androidx.appcompat.app.AppCompatActivity
 import com.example.findbest.R
@@ -11,6 +14,11 @@ import org.jetbrains.anko.*
 import org.jetbrains.anko.sdk27.coroutines.onClick
 
 class ResetPassword: AppCompatActivity() {
+
+    private lateinit var phoneNumber: EditText
+    private lateinit var vCode: EditText
+    private lateinit var newPwd: EditText
+    private lateinit var againPwd: EditText
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -82,7 +90,7 @@ class ResetPassword: AppCompatActivity() {
                                 gravity = Gravity.CENTER_VERTICAL
                                 leftMargin = dip(8)
                             }
-                            editText {
+                            phoneNumber = editText {
                                 background = null
                                 hint = "请输入手机号码"
                                 hintTextColor = Color.parseColor("#FFD0D0D0")
@@ -114,18 +122,23 @@ class ResetPassword: AppCompatActivity() {
                         linearLayout {
                             orientation = LinearLayout.HORIZONTAL
                             backgroundResource = R.drawable.login_input_bottom
-                            editText {
+                            vCode = editText {
                                 background = null
                                 hint = "请输入验证码"
                                 hintTextColor = Color.parseColor("#FFD0D0D0")
                                 textSize = 15f
                                 singleLine = true
-                            }.lparams(matchParent, matchParent)
+                            }.lparams(dip(0), matchParent){
+                                weight = 1f
+                            }
                             button {
                                 backgroundResource = R.drawable.around_button_5
                                 text = "获取验证码"
                                 textSize = 12f
                                 textColor = Color.parseColor("#FFFFFFFF")
+                            }.lparams(dip(72),dip(22)){
+                                gravity = Gravity.CENTER_VERTICAL
+                                leftMargin = dip(5)
                             }
                         }.lparams(matchParent, matchParent){
                             leftMargin = dip(14)
@@ -143,7 +156,7 @@ class ResetPassword: AppCompatActivity() {
                         linearLayout {
                             orientation = LinearLayout.HORIZONTAL
                             backgroundResource = R.drawable.login_input_bottom
-                            editText {
+                            newPwd = editText {
                                 background = null
                                 hint = "请输入新密码"
                                 hintTextColor = Color.parseColor("#FFD0D0D0")
@@ -166,7 +179,7 @@ class ResetPassword: AppCompatActivity() {
                         linearLayout {
                             orientation = LinearLayout.HORIZONTAL
                             backgroundResource = R.drawable.login_input_bottom
-                            editText {
+                            againPwd = editText {
                                 background = null
                                 hint = "请再次输入新密码"
                                 hintTextColor = Color.parseColor("#FFD0D0D0")
@@ -190,7 +203,23 @@ class ResetPassword: AppCompatActivity() {
                 }.lparams(matchParent, wrapContent){
                     setMargins(dip(40),dip(40),dip(40),0)
                 }
+                setOnClickListener {
+                    closeFocusjianpan()
+                }
             }
         }
+    }
+    private fun closeFocusjianpan() {
+        //关闭ｅｄｉｔ光标
+        phoneNumber.clearFocus()
+        vCode.clearFocus()
+        newPwd.clearFocus()
+        againPwd.clearFocus()
+        //关闭键盘事件
+        val phone = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        phone.hideSoftInputFromWindow(phoneNumber.windowToken, 0)
+        phone.hideSoftInputFromWindow(vCode.windowToken, 0)
+        phone.hideSoftInputFromWindow(newPwd.windowToken, 0)
+        phone.hideSoftInputFromWindow(againPwd.windowToken, 0)
     }
 }
