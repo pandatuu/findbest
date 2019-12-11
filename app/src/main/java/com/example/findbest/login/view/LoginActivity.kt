@@ -10,6 +10,7 @@ import android.widget.EditText
 import android.widget.LinearLayout
 import androidx.appcompat.app.AppCompatActivity
 import com.example.findbest.R
+import com.example.findbest.register.view.RegisterActivity
 import com.gyf.immersionbar.ImmersionBar
 import org.jetbrains.anko.*
 
@@ -31,11 +32,16 @@ class LoginActivity: AppCompatActivity() {
             linearLayout {
                 orientation = LinearLayout.VERTICAL
                 relativeLayout {
+
                     textView {
                         padding = dip(10)
                         text = "注册"
                         textColor = Color.parseColor("#FF333333")
                         textSize = 17f
+                        setOnClickListener {
+                            startActivity<RegisterActivity>()
+                            overridePendingTransition(R.anim.right_in, R.anim.left_out)
+                        }
                     }.lparams(wrapContent, wrapContent){
                         alignParentRight()
                         alignParentBottom()
