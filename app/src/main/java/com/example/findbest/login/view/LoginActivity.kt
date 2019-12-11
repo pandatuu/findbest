@@ -27,6 +27,7 @@ class LoginActivity: AppCompatActivity() {
             .init()
 
         frameLayout {
+            backgroundColor = Color.WHITE
             linearLayout {
                 orientation = LinearLayout.VERTICAL
                 relativeLayout {
@@ -68,7 +69,7 @@ class LoginActivity: AppCompatActivity() {
                                 gravity = Gravity.CENTER_VERTICAL
                             }
                             imageView {
-                                imageResource = R.drawable.login_inverted_triangle
+                                imageResource = R.mipmap.inverted_triangle
                             }.lparams(dip(12),dip(7)){
                                 gravity = Gravity.CENTER_VERTICAL
                                 leftMargin = dip(8)

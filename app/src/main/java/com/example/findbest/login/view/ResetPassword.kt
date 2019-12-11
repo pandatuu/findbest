@@ -28,6 +28,7 @@ class ResetPassword: AppCompatActivity() {
             .init()
 
         frameLayout {
+            backgroundColor = Color.WHITE
             linearLayout {
                 orientation = LinearLayout.VERTICAL
                 linearLayout {
@@ -85,7 +86,7 @@ class ResetPassword: AppCompatActivity() {
                                 gravity = Gravity.CENTER_VERTICAL
                             }
                             imageView {
-                                imageResource = R.drawable.login_inverted_triangle
+                                imageResource = R.mipmap.inverted_triangle
                             }.lparams(dip(12),dip(7)){
                                 gravity = Gravity.CENTER_VERTICAL
                                 leftMargin = dip(8)
@@ -131,11 +132,15 @@ class ResetPassword: AppCompatActivity() {
                             }.lparams(dip(0), matchParent){
                                 weight = 1f
                             }
-                            button {
+                            relativeLayout {
                                 backgroundResource = R.drawable.around_button_5
-                                text = "获取验证码"
-                                textSize = 12f
-                                textColor = Color.parseColor("#FFFFFFFF")
+                                textView {
+                                    text = "获取验证码"
+                                    textSize = 12f
+                                    textColor = Color.parseColor("#FFFFFFFF")
+                                }.lparams(wrapContent, wrapContent){
+                                    centerInParent()
+                                }
                             }.lparams(dip(72),dip(22)){
                                 gravity = Gravity.CENTER_VERTICAL
                                 leftMargin = dip(5)
