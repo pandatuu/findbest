@@ -3,13 +3,17 @@ package com.example.findbest.register.view
 import android.graphics.Color
 import android.os.Bundle
 import android.view.Gravity
+import android.widget.EditText
 import android.widget.LinearLayout
 import androidx.appcompat.app.AppCompatActivity
 import com.example.findbest.R
 import com.gyf.immersionbar.ImmersionBar
 import org.jetbrains.anko.*
+import java.util.regex.Pattern
 
 class RegisterNickName: AppCompatActivity() {
+
+    private lateinit var nickName: EditText
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -17,22 +21,26 @@ class RegisterNickName: AppCompatActivity() {
         ImmersionBar.with(this)
             .statusBarDarkFont(true) //状态栏字体是深色，默认为亮色
             .init()
+        var identity = ""
+        if(intent.getStringExtra("identity")!=null)
+            identity = intent.getStringExtra("identity") as String
 
         frameLayout {
             backgroundColor = Color.WHITE
             linearLayout {
                 orientation = LinearLayout.VERTICAL
                 relativeLayout {
-                    imageView {
-                        imageResource = R.mipmap.nav_ico_return
+                    toolbar {
+                        isEnabled = true
+                        title = ""
+                        navigationIconResource = R.mipmap.nav_ico_return
                         setOnClickListener {
                             finish()
                             overridePendingTransition(R.anim.left_in, R.anim.right_out)
                         }
-                    }.lparams(dip(10),dip(18)){
-                        alignParentLeft()
+                    }.lparams(dip(45), dip(30)) {
                         alignParentBottom()
-                        bottomMargin = dip(10)
+                        alignParentLeft()
                     }
                 }.lparams(matchParent,dip(65)){
                     leftMargin = dip(15)
@@ -48,7 +56,12 @@ class RegisterNickName: AppCompatActivity() {
                         gravity = Gravity.CENTER_HORIZONTAL
                     }
                     textView {
-                        text = "设置团队名称"
+                        //设置昵称
+                        text = if(identity == "team"){
+                            "设置团队名称"
+                        }else{
+                            "设置个人昵称"
+                        }
                         textColor = Color.parseColor("#FF333333")
                         textSize = 19f
                     }.lparams(wrapContent, wrapContent){
@@ -84,6 +97,21 @@ class RegisterNickName: AppCompatActivity() {
                         text = "完成注册"
                         textSize = 15f
                         textColor = Color.parseColor("#FFFFFFFF")
+                        setOnClickListener {
+                            val nickname = nickName.text.toString()
+
+                            if(nickname.isNullOrBlank()){
+                                toast("请填写昵称")
+                                return@setOnClickListener
+                            }
+
+                            if(!nickeNameMatch(nickname)){
+                                toast("昵称格式不正确")
+                                return@setOnClickListener
+                            }
+
+
+                        }
                     }.lparams(matchParent,dip(47)){
                         topMargin = dip(35)
                     }
@@ -92,5 +120,11 @@ class RegisterNickName: AppCompatActivity() {
                 }
             }
         }
+    }
+
+    private fun nickeNameMatch(text: String): Boolean{
+        val patter = Pattern.compile("[`~!@#\$%^&*()+=|{}':;',\\\\[\\\\].<>/?~！@#￥%……&*（）——+|{}【】‘；：”“’。，、？]")
+        val match = patter.matcher(text)
+        return match.matches()
     }
 }

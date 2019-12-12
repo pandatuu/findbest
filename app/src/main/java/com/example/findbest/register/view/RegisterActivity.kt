@@ -1,27 +1,49 @@
 package com.example.findbest.register.view
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Color
 import android.os.Bundle
+import android.os.CountDownTimer
+import android.text.Editable
+import android.text.TextWatcher
 import android.view.Gravity
 import android.view.inputmethod.InputMethodManager
-import android.widget.CheckBox
-import android.widget.EditText
-import android.widget.LinearLayout
+import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
+import click
+import com.alibaba.fastjson.JSON
 import com.example.findbest.R
+import com.example.findbest.register.api.RegisterApi
+import com.example.findbest.utils.MimeType
+import com.example.findbest.utils.RetrofitUtils
 import com.gyf.immersionbar.ImmersionBar
+import io.reactivex.schedulers.Schedulers
+import kotlinx.coroutines.CoroutineStart
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.rx2.awaitSingle
+import okhttp3.RequestBody
 import org.jetbrains.anko.*
-import org.jetbrains.anko.sdk27.coroutines.onClick
+import org.jetbrains.anko.sdk27.coroutines.onCheckedChange
+import withTrigger
+import java.util.regex.Pattern
 
 class RegisterActivity: AppCompatActivity() {
 
+    private lateinit var country: TextView
     private lateinit var phoneNumber: EditText
     private lateinit var vCode: EditText
+    private lateinit var code: TextView
     private lateinit var newPwd: EditText
     private lateinit var againPwd: EditText
+    private lateinit var button: Button
     private lateinit var checkBox: CheckBox
 
+    private var runningDownTimer: Boolean = false
+
+    @SuppressLint("SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -34,22 +56,15 @@ class RegisterActivity: AppCompatActivity() {
             linearLayout {
                 orientation = LinearLayout.VERTICAL
                 relativeLayout {
-                    imageView {
-                        imageResource = R.mipmap.nav_ico_close
-                        setOnClickListener {
-                            finish()
-                            overridePendingTransition(R.anim.left_in, R.anim.right_out)
-                        }
-                    }.lparams(dip(16),dip(16)){
-                        alignParentLeft()
-                        alignParentBottom()
-                        bottomMargin = dip(10)
-                    }
                     textView {
                         padding = dip(10)
                         text = "登录"
                         textColor = Color.parseColor("#FF333333")
                         textSize = 17f
+                        setOnClickListener {
+                            finish()
+                            overridePendingTransition(R.anim.left_in, R.anim.right_out)
+                        }
                     }.lparams(wrapContent, wrapContent){
                         alignParentRight()
                         alignParentBottom()
@@ -77,8 +92,8 @@ class RegisterActivity: AppCompatActivity() {
                         linearLayout {
                             orientation = LinearLayout.HORIZONTAL
                             backgroundResource = R.drawable.login_input_bottom
-                            textView {
-                                text = "+81"
+                            country = textView {
+                                text = "+86"
                             }.lparams(wrapContent, wrapContent){
                                 gravity = Gravity.CENTER_VERTICAL
                             }
@@ -94,6 +109,25 @@ class RegisterActivity: AppCompatActivity() {
                                 hintTextColor = Color.parseColor("#FFD0D0D0")
                                 textSize = 15f
                                 singleLine = true
+                                addTextChangedListener(object: TextWatcher{
+                                    override fun afterTextChanged(s: Editable?) {}
+                                    override fun beforeTextChanged(s: CharSequence?,start: Int,count: Int,after: Int ) {}
+                                    override fun onTextChanged(s: CharSequence?,start: Int,before: Int,count: Int) {
+                                        if (s != null) {
+                                            if(s.isNotBlank()){
+                                                val vCode = vCode.text.toString()
+                                                val newPwd = newPwd.text.toString()
+                                                val againPwd = againPwd.text.toString()
+                                                if(vCode.isNotBlank() && newPwd.isNotBlank()
+                                                    && againPwd.isNotBlank() && checkBox.isChecked){
+                                                    button.backgroundResource = R.drawable.enable_around_button
+                                                }
+                                            }else{
+                                                button.backgroundResource = R.drawable.disable_around_button
+                                            }
+                                        }
+                                    }
+                                })
                             }.lparams(dip(0), matchParent){
                                 weight = 1f
                                 leftMargin = dip(10)
@@ -126,17 +160,55 @@ class RegisterActivity: AppCompatActivity() {
                                 hintTextColor = Color.parseColor("#FFD0D0D0")
                                 textSize = 15f
                                 singleLine = true
+                                addTextChangedListener(object: TextWatcher{
+                                    override fun afterTextChanged(s: Editable?) {}
+                                    override fun beforeTextChanged(s: CharSequence?,start: Int,count: Int,after: Int ) {}
+                                    override fun onTextChanged(s: CharSequence?,start: Int,before: Int,count: Int) {
+                                        if (s != null) {
+                                            if(s.isNotBlank()){
+                                                val phone = phoneNumber.text.toString()
+                                                val newPwd = newPwd.text.toString()
+                                                val againPwd = againPwd.text.toString()
+                                                if(phone.isNotBlank() && newPwd.isNotBlank()
+                                                    && againPwd.isNotBlank() && checkBox.isChecked){
+                                                    button.backgroundResource = R.drawable.enable_around_button
+                                                }
+                                            }else{
+                                                button.backgroundResource = R.drawable.disable_around_button
+                                            }
+                                        }
+                                    }
+                                })
                             }.lparams(dip(0), matchParent){
                                 weight = 1f
                             }
                             relativeLayout {
                                 backgroundResource = R.drawable.around_button_5
-                                textView {
+                                code = textView {
                                     text = "获取验证码"
                                     textSize = 12f
                                     textColor = Color.parseColor("#FFFFFFFF")
                                 }.lparams(wrapContent, wrapContent){
                                     centerInParent()
+                                }
+                                setOnClickListener {
+                                    val phoneNum = phoneNumber.text.toString()
+                                    if(phoneNum.isNullOrBlank()){
+                                        toast("请填写手机号")
+                                        return@setOnClickListener
+                                    }
+
+                                    if(phoneNum.length !in 10..11){
+                                        toast("请填写正确手机号")
+                                        return@setOnClickListener
+                                    }
+
+                                    GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
+                                        val sendBool = sendvCode()
+                                        if (sendBool){
+                                            onPcode()
+                                        }
+                                    }
                                 }
                             }.lparams(dip(72),dip(22)){
                                 gravity = Gravity.CENTER_VERTICAL
@@ -164,6 +236,25 @@ class RegisterActivity: AppCompatActivity() {
                                 hintTextColor = Color.parseColor("#FFD0D0D0")
                                 textSize = 15f
                                 singleLine = true
+                                addTextChangedListener(object: TextWatcher{
+                                    override fun afterTextChanged(s: Editable?) {}
+                                    override fun beforeTextChanged(s: CharSequence?,start: Int,count: Int,after: Int ) {}
+                                    override fun onTextChanged(s: CharSequence?,start: Int,before: Int,count: Int) {
+                                        if (s != null) {
+                                            if(s.isNotBlank()){
+                                                val phone = phoneNumber.text.toString()
+                                                val vCode = vCode.text.toString()
+                                                val againPwd = againPwd.text.toString()
+                                                if(phone.isNotBlank() && vCode.isNotBlank()
+                                                    && againPwd.isNotBlank() && checkBox.isChecked){
+                                                    button.backgroundResource = R.drawable.enable_around_button
+                                                }
+                                            }else{
+                                                button.backgroundResource = R.drawable.disable_around_button
+                                            }
+                                        }
+                                    }
+                                })
                             }.lparams(matchParent, matchParent)
                         }.lparams(matchParent, matchParent){
                             leftMargin = dip(14)
@@ -187,6 +278,25 @@ class RegisterActivity: AppCompatActivity() {
                                 hintTextColor = Color.parseColor("#FFD0D0D0")
                                 textSize = 15f
                                 singleLine = true
+                                addTextChangedListener(object: TextWatcher{
+                                    override fun afterTextChanged(s: Editable?) {}
+                                    override fun beforeTextChanged(s: CharSequence?,start: Int,count: Int,after: Int ) {}
+                                    override fun onTextChanged(s: CharSequence?,start: Int,before: Int,count: Int) {
+                                        if (s != null) {
+                                            if(s.isNotBlank()){
+                                                val phone = phoneNumber.text.toString()
+                                                val vCode = vCode.text.toString()
+                                                val newPwd = newPwd.text.toString()
+                                                if(phone.isNotBlank() && vCode.isNotBlank()
+                                                    && newPwd.isNotBlank() && checkBox.isChecked){
+                                                    button.backgroundResource = R.drawable.enable_around_button
+                                                }
+                                            }else{
+                                                button.backgroundResource = R.drawable.disable_around_button
+                                            }
+                                        }
+                                    }
+                                })
                             }.lparams(matchParent, matchParent)
                         }.lparams(matchParent, matchParent){
                             leftMargin = dip(14)
@@ -194,11 +304,55 @@ class RegisterActivity: AppCompatActivity() {
                     }.lparams(matchParent, dip(40)){
                         topMargin = dip(35)
                     }
-                    button {
+                    button = button {
                         backgroundResource = R.drawable.disable_around_button
                         text = "注册"
                         textSize = 15f
                         textColor = Color.parseColor("#FFFFFFFF")
+                        setOnClickListener {
+                            if(phoneNumber.text.toString().isNullOrBlank()){
+                                toast("请填写手机号")
+                                return@setOnClickListener
+                            }
+
+                            if(phoneNumber.text.toString().length in 9..12){
+                                toast("请填写正确手机号")
+                                return@setOnClickListener
+                            }
+
+                            if(vCode.text.toString().isNullOrBlank()){
+                                toast("请填写验证码")
+                                return@setOnClickListener
+                            }
+
+                            if(newPwd.text.toString().isNullOrBlank()){
+                                toast("请填写密码")
+                                return@setOnClickListener
+                            }
+
+                            if(!pwdMatch(newPwd.text.toString())){
+                                toast("密码格式不正确")
+                                return@setOnClickListener
+                            }
+
+                            if(againPwd.text.toString().isNullOrBlank()){
+                                toast("请再次填写密码")
+                                return@setOnClickListener
+                            }
+
+                            if(newPwd.text.toString() != againPwd.text.toString()){
+                                toast("二次输入密码不一致")
+                                return@setOnClickListener
+                            }
+
+                            if(!checkBox.isChecked){
+                                toast("请勾选协议")
+                                return@setOnClickListener
+                            }
+
+                            startActivity<RegisterCountry>()
+                            overridePendingTransition(R.anim.right_in, R.anim.left_out)
+                        }
                     }.lparams(matchParent,dip(47)){
                         topMargin = dip(24)
                     }
@@ -206,6 +360,20 @@ class RegisterActivity: AppCompatActivity() {
                         orientation = LinearLayout.HORIZONTAL
                         checkBox = checkBox {
                             setButtonDrawable(R.drawable.checkbox)
+                            onCheckedChange { _, isChecked ->
+                                if(isChecked){
+                                    val phone = phoneNumber.text.toString()
+                                    val vCode = vCode.text.toString()
+                                    val newPwd = newPwd.text.toString()
+                                    val againPwd = againPwd.text.toString()
+                                    if(phone.isNotBlank() && vCode.isNotBlank()
+                                        && newPwd.isNotBlank() && againPwd.isNotBlank()){
+                                        button.backgroundResource = R.drawable.enable_around_button
+                                    }
+                                }else{
+                                    button.backgroundResource = R.drawable.disable_around_button
+                                }
+                            }
                         }
                         setOnClickListener {
                             checkBox.isChecked = !checkBox.isChecked
@@ -251,6 +419,80 @@ class RegisterActivity: AppCompatActivity() {
             }
         }
     }
+
+    private suspend fun sendvCode(): Boolean{
+        try {
+            val countryCode = country.text.toString().substring(1)
+            val params = mapOf(
+                "country" to countryCode,
+                "phone" to phoneNumber.text.toString(),
+                "type" to "REG"
+            )
+            val userJson = JSON.toJSONString(params)
+            val body = RequestBody.create(MimeType.APPLICATION_JSON, userJson)
+
+            val retrofitUils =
+                RetrofitUtils(this@RegisterActivity, resources.getString(R.string.testRegisterUrl))
+            val it = retrofitUils.create(RegisterApi::class.java)
+                .sendvCode(body)
+                .subscribeOn(Schedulers.io())
+                .awaitSingle()
+            if (it.code() in 200..299) {
+//                DialogUtils.hideLoading(thisDialog)
+                val toast =
+                    Toast.makeText(applicationContext, "已发送验证码", Toast.LENGTH_SHORT)
+                toast.setGravity(Gravity.CENTER, 0, 0)
+                toast.show()
+
+                return true
+            }
+            return false
+        }catch (throwable: Throwable){
+            return false
+        }
+    }
+
+    //发送验证码按钮
+    fun onPcode() {
+        //如果60秒倒计时没有结束
+        if (runningDownTimer) {
+            return
+        }
+        downTimer.start()  // 倒计时开始
+    }
+
+    /**
+     * 倒计时
+     */
+    private val downTimer = object : CountDownTimer((60 * 1000).toLong(), 1000) {
+        @SuppressLint("SetTextI18n")
+        override fun onTick(l: Long) {
+            runningDownTimer = true
+            code.text = (l / 1000).toString() + "s"
+
+            code. withTrigger().click  {
+                toast("冷却中...")
+
+            }
+        }
+
+        override fun onFinish() {
+            runningDownTimer = false
+            code.text = "获取"
+
+
+            code.withTrigger().click  {
+                onPcode()
+            }
+        }
+    }
+
+    private fun pwdMatch(text: String): Boolean{
+        val patter = Pattern.compile("^(?![0-9]+\$)(?![a-z]+\$)(?![A-Z]+\$)(?![,\\.#%'\\+\\*\\-:;^_`]+\$)[,\\.#%'\\+\\*\\-:;^_`0-9A-Za-z]{8,16}\$")
+        val match = patter.matcher(text)
+        return match.matches()
+    }
+
     private fun closeFocusjianpan() {
         //关闭ｅｄｉｔ光标
         phoneNumber.clearFocus()

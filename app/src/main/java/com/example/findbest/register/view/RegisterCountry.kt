@@ -34,16 +34,17 @@ class RegisterCountry: AppCompatActivity() {
             linearLayout {
                 orientation = LinearLayout.VERTICAL
                 relativeLayout {
-                    imageView {
-                        imageResource = R.mipmap.nav_ico_return
+                    toolbar {
+                        isEnabled = true
+                        title = ""
+                        navigationIconResource = R.mipmap.nav_ico_return
                         setOnClickListener {
                             finish()
                             overridePendingTransition(R.anim.left_in, R.anim.right_out)
                         }
-                    }.lparams(dip(10),dip(18)){
-                        alignParentLeft()
+                    }.lparams(dip(45), dip(30)) {
                         alignParentBottom()
-                        bottomMargin = dip(10)
+                        alignParentLeft()
                     }
                 }.lparams(matchParent,dip(65)){
                     leftMargin = dip(15)
@@ -186,9 +187,21 @@ class RegisterCountry: AppCompatActivity() {
                         textColor = Color.parseColor("#FFFFFFFF")
                         setOnClickListener {
                             when(true){
-                                isChina -> toast("china")
-                                isJapan -> toast("japan")
-                                isKorea -> toast("korea")
+                                isChina -> {
+                                    toast("china")
+                                    startActivity<RegisterIdentity>()
+                                    overridePendingTransition(R.anim.right_in, R.anim.left_out)
+                                }
+                                isJapan -> {
+                                    toast("japan")
+                                    startActivity<RegisterIdentity>()
+                                    overridePendingTransition(R.anim.right_in, R.anim.left_out)
+                                }
+                                isKorea -> {
+                                    toast("korea")
+                                    startActivity<RegisterIdentity>()
+                                    overridePendingTransition(R.anim.right_in, R.anim.left_out)
+                                }
                                 else -> toast("未选择")
                             }
                         }

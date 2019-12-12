@@ -3,14 +3,17 @@ package com.example.findbest.register.view
 import android.graphics.Color
 import android.os.Bundle
 import android.view.Gravity
+import android.widget.EditText
 import android.widget.LinearLayout
 import androidx.appcompat.app.AppCompatActivity
 import com.example.findbest.R
 import com.gyf.immersionbar.ImmersionBar
 import org.jetbrains.anko.*
+import java.util.regex.Pattern
 
 class RegisterEmail: AppCompatActivity() {
 
+    private lateinit var email: EditText
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -24,16 +27,17 @@ class RegisterEmail: AppCompatActivity() {
             linearLayout {
                 orientation = LinearLayout.VERTICAL
                 relativeLayout {
-                    imageView {
-                        imageResource = R.mipmap.nav_ico_return
+                    toolbar {
+                        isEnabled = true
+                        title = ""
+                        navigationIconResource = R.mipmap.nav_ico_return
                         setOnClickListener {
                             finish()
                             overridePendingTransition(R.anim.left_in, R.anim.right_out)
                         }
-                    }.lparams(dip(10),dip(18)){
-                        alignParentLeft()
+                    }.lparams(dip(45), dip(30)) {
                         alignParentBottom()
-                        bottomMargin = dip(10)
+                        alignParentLeft()
                     }
                 }.lparams(matchParent,dip(65)){
                     leftMargin = dip(15)
@@ -66,7 +70,7 @@ class RegisterEmail: AppCompatActivity() {
                             linearLayout {
                                 orientation = LinearLayout.HORIZONTAL
                                 backgroundResource = R.drawable.login_input_bottom
-                                editText {
+                                email = editText {
                                     background = null
                                     hint = "请输入电子邮箱，以便及时联系您"
                                     hintTextColor = Color.parseColor("#FFD0D0D0")
@@ -85,6 +89,30 @@ class RegisterEmail: AppCompatActivity() {
                         text = "下一步"
                         textSize = 15f
                         textColor = Color.parseColor("#FFFFFFFF")
+                        setOnClickListener {
+
+                            val emailText = email.text.toString()
+
+                            if(emailText.isNullOrBlank()){
+                                toast("请填写邮箱地址")
+                                return@setOnClickListener
+                            }
+
+                            if(!emailMatch(emailText)){
+                                toast("邮箱格式不正确")
+                                return@setOnClickListener
+                            }
+
+                            if(intent.getStringExtra("identity")!=null){
+                                val identity = intent.getStringExtra("identity") as String
+                                startActivity<RegisterNickName>(
+                                    "identity" to identity
+                                )
+                                overridePendingTransition(R.anim.right_in, R.anim.left_out)
+                            }else{
+                                toast("页面出错")
+                            }
+                        }
                     }.lparams(matchParent,dip(47)){
                         topMargin = dip(35)
                     }
@@ -94,4 +122,11 @@ class RegisterEmail: AppCompatActivity() {
             }
         }
     }
+
+    private fun emailMatch(text: String): Boolean{
+        val patter = Pattern.compile("[A-Za-z0-9\\u4e00-\\u9fa5]+@[a-zA-Z0-9\\u4e00-\\u9fa5_-]+(\\.[a-zA-Z\\u4e00-\\u9fa5_-]{2,})+\$")
+        val match = patter.matcher(text)
+        return match.matches()
+    }
+
 }

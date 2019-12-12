@@ -3,6 +3,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="com.example.findbest">
 
+    <uses-permission android:name="android.permission.INTERNET"/>
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -10,8 +12,9 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme.NoActionBar"
+        android:networkSecurityConfig="@xml/network_security_config"
         tools:ignore="GoogleAppIndexingWarning">
-        <activity android:name=".register.view.RegisterNickName">
+        <activity android:name=".register.view.RegisterActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -20,10 +23,10 @@
         </activity>
 
         <!--登录页-->
-        <activity android:name=".login.view.LoginActivity"
-            android:windowSoftInputMode="adjustPan"
-            android:theme="@style/AppTheme.NoActionBar">
-        </activity>
+<!--        <activity android:name=".login.view.LoginActivity"-->
+<!--            android:windowSoftInputMode="adjustPan"-->
+<!--            android:theme="@style/AppTheme.NoActionBar">-->
+<!--        </activity>-->
 
         <!--忘记密码-->
         <activity android:name=".login.view.ResetPassword"
@@ -32,10 +35,10 @@
         </activity>
 
         <!--注册页-->
-        <activity android:name=".register.view.RegisterActivity"
-            android:windowSoftInputMode="adjustPan"
-            android:theme="@style/AppTheme.NoActionBar">
-        </activity>
+<!--        <activity android:name=".register.view.RegisterActivity"-->
+<!--            android:windowSoftInputMode="adjustPan"-->
+<!--            android:theme="@style/AppTheme.NoActionBar">-->
+<!--        </activity>-->
 
         <!--注册-选择国家页-->
         <activity android:name=".register.view.RegisterCountry"
@@ -56,10 +59,10 @@
         </activity>
 
         <!--注册-选择昵称页-->
-<!--        <activity android:name=".register.view.RegisterNickName"-->
-<!--            android:windowSoftInputMode="adjustPan"-->
-<!--            android:theme="@style/AppTheme.NoActionBar">-->
-<!--        </activity>-->
+        <activity android:name=".register.view.RegisterNickName"
+            android:windowSoftInputMode="adjustPan"
+            android:theme="@style/AppTheme.NoActionBar">
+        </activity>
 
     </application>
 
