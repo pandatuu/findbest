@@ -189,13 +189,14 @@ class RegisterCountry: AppCompatActivity() {
                                 isChina -> toast("china")
                                 isJapan -> toast("japan")
                                 isKorea -> toast("korea")
+                                else -> toast("未选择")
                             }
                         }
                     }.lparams(matchParent,dip(47)){
                         topMargin = dip(35)
                     }
                 }.lparams(matchParent, wrapContent){
-                    setMargins(dip(40),dip(40),dip(40),0)
+                    setMargins(dip(40),dip(17),dip(40),0)
                 }
             }
         }
