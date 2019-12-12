@@ -9,8 +9,7 @@ import com.example.findbest.R
 import com.gyf.immersionbar.ImmersionBar
 import org.jetbrains.anko.*
 
-class RegisterEmail: AppCompatActivity() {
-
+class RegisterNickName: AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -42,14 +41,14 @@ class RegisterEmail: AppCompatActivity() {
                 linearLayout {
                     orientation = LinearLayout.VERTICAL
                     textView {
-                        text = "4/5"
+                        text = "5/5"
                         textColor = Color.parseColor("#FF333333")
                         textSize = 19f
                     }.lparams(wrapContent, wrapContent){
                         gravity = Gravity.CENTER_HORIZONTAL
                     }
                     textView {
-                        text = "输入联系方式"
+                        text = "设置团队名称"
                         textColor = Color.parseColor("#FF333333")
                         textSize = 19f
                     }.lparams(wrapContent, wrapContent){
@@ -59,7 +58,7 @@ class RegisterEmail: AppCompatActivity() {
                         linearLayout {
                             orientation = LinearLayout.HORIZONTAL
                             imageView {
-                                imageResource = R.mipmap.email
+                                imageResource = R.mipmap.team_activity
                             }.lparams(dip(16), dip(20)){
                                 gravity = Gravity.CENTER_VERTICAL
                             }
@@ -68,7 +67,7 @@ class RegisterEmail: AppCompatActivity() {
                                 backgroundResource = R.drawable.login_input_bottom
                                 editText {
                                     background = null
-                                    hint = "请输入电子邮箱，以便及时联系您"
+                                    hint = "请输入团队名称"
                                     hintTextColor = Color.parseColor("#FFD0D0D0")
                                     textSize = 15f
                                     singleLine = true
@@ -82,7 +81,7 @@ class RegisterEmail: AppCompatActivity() {
                     }.lparams(matchParent, wrapContent)
                     button {
                         backgroundResource = R.drawable.enable_around_button
-                        text = "下一步"
+                        text = "完成注册"
                         textSize = 15f
                         textColor = Color.parseColor("#FFFFFFFF")
                     }.lparams(matchParent,dip(47)){

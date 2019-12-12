@@ -11,7 +11,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme.NoActionBar"
         tools:ignore="GoogleAppIndexingWarning">
-        <activity android:name=".login.view.LoginActivity">
+        <activity android:name=".register.view.RegisterNickName">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -19,17 +19,48 @@
             </intent-filter>
         </activity>
 
-        // 忘记密码
+        <!--登录页-->
+        <activity android:name=".login.view.LoginActivity"
+            android:windowSoftInputMode="adjustPan"
+            android:theme="@style/AppTheme.NoActionBar">
+        </activity>
+
+        <!--忘记密码-->
         <activity android:name=".login.view.ResetPassword"
             android:windowSoftInputMode="adjustPan"
             android:theme="@style/AppTheme.NoActionBar">
         </activity>
 
-        // 注册页
+        <!--注册页-->
         <activity android:name=".register.view.RegisterActivity"
             android:windowSoftInputMode="adjustPan"
             android:theme="@style/AppTheme.NoActionBar">
         </activity>
+
+        <!--注册-选择国家页-->
+        <activity android:name=".register.view.RegisterCountry"
+            android:windowSoftInputMode="adjustPan"
+            android:theme="@style/AppTheme.NoActionBar">
+        </activity>
+
+        <!--注册-选择角色页-->
+        <activity android:name=".register.view.RegisterIdentity"
+            android:windowSoftInputMode="adjustPan"
+            android:theme="@style/AppTheme.NoActionBar">
+        </activity>
+
+        <!--注册-选择邮箱页-->
+        <activity android:name=".register.view.RegisterEmail"
+            android:windowSoftInputMode="adjustPan"
+            android:theme="@style/AppTheme.NoActionBar">
+        </activity>
+
+        <!--注册-选择昵称页-->
+<!--        <activity android:name=".register.view.RegisterNickName"-->
+<!--            android:windowSoftInputMode="adjustPan"-->
+<!--            android:theme="@style/AppTheme.NoActionBar">-->
+<!--        </activity>-->
+
     </application>
 
 </manifest>
