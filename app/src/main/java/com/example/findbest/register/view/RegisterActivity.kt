@@ -5,6 +5,7 @@ import android.graphics.Color
 import android.os.Bundle
 import android.view.Gravity
 import android.view.inputmethod.InputMethodManager
+import android.widget.CheckBox
 import android.widget.EditText
 import android.widget.LinearLayout
 import androidx.appcompat.app.AppCompatActivity
@@ -19,6 +20,7 @@ class RegisterActivity: AppCompatActivity() {
     private lateinit var vCode: EditText
     private lateinit var newPwd: EditText
     private lateinit var againPwd: EditText
+    private lateinit var checkBox: CheckBox
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -202,8 +204,11 @@ class RegisterActivity: AppCompatActivity() {
                     }
                     linearLayout {
                         orientation = LinearLayout.HORIZONTAL
-                        checkBox {
+                        checkBox = checkBox {
                             setButtonDrawable(R.drawable.checkbox)
+                        }
+                        setOnClickListener {
+                            checkBox.isChecked = !checkBox.isChecked
                         }
                         textView {
                             text = "我同意"
