@@ -1,6 +1,7 @@
 package app.findbest.vip.login.view
 
 import android.annotation.SuppressLint
+import android.app.FragmentTransaction
 import android.content.Context
 import android.content.SharedPreferences
 import android.graphics.Color
@@ -14,8 +15,11 @@ import android.widget.EditText
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.Fragment
 import androidx.preference.PreferenceManager
 import app.findbest.vip.R
+import app.findbest.vip.commonfrgmant.BackgroundFragment
+import app.findbest.vip.commonfrgmant.ChooseCountry
 import app.findbest.vip.login.api.LoginApi
 import app.findbest.vip.register.api.RegisterApi
 import app.findbest.vip.register.view.RegisterActivity
@@ -34,22 +38,43 @@ import okhttp3.RequestBody
 import org.jetbrains.anko.*
 import retrofit2.HttpException
 
-class LoginActivity: BaseActivity() {
+class LoginActivity: BaseActivity(), BackgroundFragment.ClickBack, ChooseCountry.DialogSelect {
+    override fun clickAll() {
+        closeAlertDialog()
+    }
+
+    @SuppressLint("SetTextI18n")
+    override fun getSelectedItem(index: Int) {
+        when(index){
+            0 -> {
+                country.text = "+81"
+            }
+            1 -> {
+                country.text = "+86"
+            }
+            2 -> {
+                country.text = "+82"
+            }
+        }
+        closeAlertDialog()
+    }
 
     private lateinit var phoneNumber: EditText
     private lateinit var country: TextView
     private lateinit var pwd: EditText
     private lateinit var button: Button
 
+    private var backgroundFragment: BackgroundFragment? = null
+    private var chooseCountry: ChooseCountry? = null
+
+    private val mainId = 1
+
     @SuppressLint("SetTextI18n", "RtlHardcoded")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        ImmersionBar.with(this)
-            .statusBarDarkFont(true) //状态栏字体是深色，默认为亮色
-            .init()
-
         frameLayout {
+            id = mainId
             backgroundColor = Color.WHITE
             linearLayout {
                 orientation = LinearLayout.VERTICAL
@@ -91,17 +116,26 @@ class LoginActivity: BaseActivity() {
                         linearLayout {
                             orientation = LinearLayout.HORIZONTAL
                             backgroundResource = R.drawable.login_input_bottom
-                            country = textView {
-                                text = "+86"
-                            }.lparams(wrapContent, wrapContent){
+                            linearLayout {
+                                orientation = LinearLayout.HORIZONTAL
                                 gravity = Gravity.CENTER_VERTICAL
-                            }
-                            imageView {
-                                imageResource = R.mipmap.inverted_triangle
-                            }.lparams(dip(12),dip(7)){
-                                gravity = Gravity.CENTER_VERTICAL
-                                leftMargin = dip(8)
-                            }
+                                country = textView {
+                                    text = "+86"
+                                    textSize = 15f
+                                    textColor = Color.parseColor("#FF333333")
+                                }.lparams(dip(26), wrapContent)
+                                imageView {
+                                    imageResource = R.mipmap.inverted_triangle
+                                }.lparams(dip(12),dip(7)){
+                                    gravity = Gravity.CENTER_VERTICAL
+                                    leftMargin = dip(8)
+                                    rightMargin = dip(5)
+                                }
+                                setOnClickListener {
+                                    closeFocusjianpan()
+                                    openDialog()
+                                }
+                            }.lparams(wrapContent, matchParent)
                             phoneNumber = editText {
                                 background = null
                                 hint = "请输入手机号码"
@@ -125,7 +159,7 @@ class LoginActivity: BaseActivity() {
                                     }
                                 })
                             }.lparams(matchParent, matchParent){
-                                leftMargin = dip(10)
+                                leftMargin = dip(5)
                             }
                         }.lparams(matchParent, matchParent){
                             leftMargin = dip(14)
@@ -266,6 +300,44 @@ class LoginActivity: BaseActivity() {
                 println(throwable.message())
             }
         }
+    }
+
+
+    private fun openDialog() {
+        val mTransaction = supportFragmentManager.beginTransaction()
+
+        if (backgroundFragment == null) {
+            backgroundFragment = BackgroundFragment.newInstance()
+
+            mTransaction.add(mainId, backgroundFragment!!)
+        }
+
+        mTransaction.setCustomAnimations(R.anim.bottom_in_a, R.anim.bottom_in_a)
+
+        chooseCountry = ChooseCountry.newInstance()
+        mTransaction.add(mainId, chooseCountry!!)
+
+        mTransaction.commit()
+    }
+
+    private fun closeAlertDialog() {
+
+        val mTransaction = supportFragmentManager.beginTransaction()
+        if (chooseCountry != null) {
+            mTransaction.setCustomAnimations(R.anim.bottom_out_a, R.anim.bottom_out_a)
+
+            mTransaction.remove(chooseCountry!!)
+            chooseCountry = null
+        }
+
+        if (backgroundFragment != null) {
+            mTransaction.setCustomAnimations(
+                R.anim.fade_in_out_a, R.anim.fade_in_out_a
+            )
+            mTransaction.remove(backgroundFragment!!)
+            backgroundFragment = null
+        }
+        mTransaction.commit()
     }
 
     private fun closeFocusjianpan() {

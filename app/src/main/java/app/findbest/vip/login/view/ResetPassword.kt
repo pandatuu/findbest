@@ -14,6 +14,8 @@ import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.preference.PreferenceManager
 import app.findbest.vip.R
+import app.findbest.vip.commonfrgmant.BackgroundFragment
+import app.findbest.vip.commonfrgmant.ChooseCountry
 import app.findbest.vip.login.api.LoginApi
 import app.findbest.vip.register.api.RegisterApi
 import app.findbest.vip.register.view.RegisterCountry
@@ -37,7 +39,26 @@ import withTrigger
 import java.io.Serializable
 import java.util.regex.Pattern
 
-class ResetPassword: BaseActivity() {
+class ResetPassword: BaseActivity(), BackgroundFragment.ClickBack, ChooseCountry.DialogSelect {
+    override fun clickAll() {
+        closeAlertDialog()
+    }
+
+    @SuppressLint("SetTextI18n")
+    override fun getSelectedItem(index: Int) {
+        when(index){
+            0 -> {
+                countryCode.text = "+81"
+            }
+            1 -> {
+                countryCode.text = "+86"
+            }
+            2 -> {
+                countryCode.text = "+82"
+            }
+        }
+        closeAlertDialog()
+    }
 
     private lateinit var countryCode: TextView
     private lateinit var phoneNumber: EditText
@@ -47,16 +68,17 @@ class ResetPassword: BaseActivity() {
     private lateinit var againPwd: EditText
     private lateinit var button: Button
 
+    private var backgroundFragment: BackgroundFragment? = null
+    private var chooseCountry: ChooseCountry? = null
+
+    private val mainId = 1
     private var runningDownTimer: Boolean = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        ImmersionBar.with(this)
-            .statusBarDarkFont(true) //状态栏字体是深色，默认为亮色
-            .init()
-
         frameLayout {
+            id = mainId
             backgroundColor = Color.WHITE
             linearLayout {
                 orientation = LinearLayout.VERTICAL
@@ -109,17 +131,26 @@ class ResetPassword: BaseActivity() {
                         linearLayout {
                             orientation = LinearLayout.HORIZONTAL
                             backgroundResource = R.drawable.login_input_bottom
-                            countryCode = textView {
-                                text = "+86"
-                            }.lparams(wrapContent, wrapContent){
+                            linearLayout {
+                                orientation = LinearLayout.HORIZONTAL
                                 gravity = Gravity.CENTER_VERTICAL
-                            }
-                            imageView {
-                                imageResource = R.mipmap.inverted_triangle
-                            }.lparams(dip(12),dip(7)){
-                                gravity = Gravity.CENTER_VERTICAL
-                                leftMargin = dip(8)
-                            }
+                                countryCode = textView {
+                                    text = "+86"
+                                    textSize = 15f
+                                    textColor = Color.parseColor("#FF333333")
+                                }.lparams(dip(26), wrapContent)
+                                imageView {
+                                    imageResource = R.mipmap.inverted_triangle
+                                }.lparams(dip(12),dip(7)){
+                                    gravity = Gravity.CENTER_VERTICAL
+                                    leftMargin = dip(8)
+                                    rightMargin = dip(5)
+                                }
+                                setOnClickListener {
+                                    closeFocusjianpan()
+                                    openDialog()
+                                }
+                            }.lparams(wrapContent, matchParent)
                             phoneNumber = editText {
                                 background = null
                                 hint = "请输入手机号码"
@@ -380,7 +411,6 @@ class ResetPassword: BaseActivity() {
         }
     }
 
-
     private suspend fun sendvCode(): Boolean{
         try {
             val country = countryCode.text.toString().substring(1)
@@ -445,6 +475,44 @@ class ResetPassword: BaseActivity() {
             }
         }
     }
+
+    private fun openDialog() {
+        val mTransaction = supportFragmentManager.beginTransaction()
+
+        if (backgroundFragment == null) {
+            backgroundFragment = BackgroundFragment.newInstance()
+
+            mTransaction.add(mainId, backgroundFragment!!)
+        }
+
+        mTransaction.setCustomAnimations(R.anim.bottom_in_a, R.anim.bottom_in_a)
+
+        chooseCountry = ChooseCountry.newInstance()
+        mTransaction.add(mainId, chooseCountry!!)
+
+        mTransaction.commit()
+    }
+
+    private fun closeAlertDialog() {
+
+        val mTransaction = supportFragmentManager.beginTransaction()
+        if (chooseCountry != null) {
+            mTransaction.setCustomAnimations(R.anim.bottom_out_a, R.anim.bottom_out_a)
+
+            mTransaction.remove(chooseCountry!!)
+            chooseCountry = null
+        }
+
+        if (backgroundFragment != null) {
+            mTransaction.setCustomAnimations(
+                R.anim.fade_in_out_a, R.anim.fade_in_out_a
+            )
+            mTransaction.remove(backgroundFragment!!)
+            backgroundFragment = null
+        }
+        mTransaction.commit()
+    }
+
 
     private fun pwdMatch(text: String): Boolean{
         val patter = Pattern.compile("^(?![0-9]+\$)(?![a-z]+\$)(?![A-Z]+\$)(?![,\\.#%'\\+\\*\\-:;^_`]+\$)[,\\.#%'\\+\\*\\-:;^_`0-9A-Za-z]{8,16}\$")

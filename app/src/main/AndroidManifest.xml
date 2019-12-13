@@ -15,7 +15,7 @@
         android:theme="@style/AppTheme.NoActionBar"
         android:networkSecurityConfig="@xml/network_security_config"
         tools:ignore="GoogleAppIndexingWarning">
-        <activity android:name=".register.view.RegisterNickName">
+        <activity android:name=".login.view.LoginActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -36,10 +36,10 @@
         </activity>
 
         <!--注册页-->
-<!--        <activity android:name=".register.view.RegisterActivity"-->
-<!--            android:windowSoftInputMode="adjustPan"-->
-<!--            android:theme="@style/AppTheme.NoActionBar">-->
-<!--        </activity>-->
+        <activity android:name=".register.view.RegisterActivity"
+            android:windowSoftInputMode="adjustPan"
+            android:theme="@style/AppTheme.NoActionBar">
+        </activity>
 
         <!--注册-选择国家页-->
         <activity android:name=".register.view.RegisterCountry"
@@ -60,10 +60,10 @@
         </activity>
 
         <!--注册-选择昵称页-->
-<!--        <activity android:name=".register.view.RegisterNickName"-->
-<!--            android:windowSoftInputMode="adjustPan"-->
-<!--            android:theme="@style/AppTheme.NoActionBar">-->
-<!--        </activity>-->
+        <activity android:name=".register.view.RegisterNickName"
+            android:windowSoftInputMode="adjustPan"
+            android:theme="@style/AppTheme.NoActionBar">
+        </activity>
 
     </application>
 

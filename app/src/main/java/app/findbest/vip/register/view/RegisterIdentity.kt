@@ -35,11 +35,6 @@ class RegisterIdentity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        ImmersionBar.with(this)
-            .statusBarDarkFont(true) //状态栏字体是深色，默认为亮色
-            .init()
-
-
         frameLayout {
             backgroundColor = Color.WHITE
             linearLayout {

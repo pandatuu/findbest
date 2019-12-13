@@ -18,15 +18,12 @@ import kotlinx.coroutines.rx2.awaitSingle
 import org.jetbrains.anko.backgroundColor
 import org.jetbrains.anko.frameLayout
 import org.jetbrains.anko.startActivity
+import org.jetbrains.anko.toast
 
 class GuideView: AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        ImmersionBar.with(this)
-            .statusBarDarkFont(true) //状态栏字体是深色，默认为亮色
-            .init()
 
         frameLayout {
             backgroundColor = Color.WHITE
@@ -62,6 +59,7 @@ class GuideView: AppCompatActivity() {
             }
             if(it.code() == 401){
                 println("token过期，需要登录")
+                toast("token过期，需要重新登录")
                 startActivity<LoginActivity>()
             }
         } catch (throwable: Throwable) {

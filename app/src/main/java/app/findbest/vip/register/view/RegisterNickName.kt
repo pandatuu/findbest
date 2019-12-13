@@ -47,9 +47,6 @@ class RegisterNickName : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        ImmersionBar.with(this)
-            .statusBarDarkFont(true) //状态栏字体是深色，默认为亮色
-            .init()
         if (intent.getStringExtra("identity") != null)
             identity = intent.getIntExtra("identity", 1)
         if (intent.getSerializableExtra("user") != null) {
