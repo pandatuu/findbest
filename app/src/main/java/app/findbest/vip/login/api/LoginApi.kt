@@ -6,6 +6,7 @@ import okhttp3.RequestBody
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.Headers
+import retrofit2.http.PATCH
 import retrofit2.http.POST
 
 interface LoginApi {
@@ -20,4 +21,9 @@ interface LoginApi {
     @Headers("Content-Type: application/json")
     @POST("/api/v1/users/valid-token")
     fun isToken(): Observable<Response<JsonObject>>
+
+    //重置密码
+    @Headers("Content-Type: application/json")
+    @PATCH("/api/v1/users/reset-password")
+    fun resetPwd(@Body array: RequestBody): Observable<Response<JsonObject>>
 }
