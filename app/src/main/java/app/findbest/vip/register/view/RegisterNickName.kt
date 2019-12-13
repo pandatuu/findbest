@@ -13,6 +13,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.preference.PreferenceManager
 import com.alibaba.fastjson.JSON
 import app.findbest.vip.R
+import app.findbest.vip.login.api.LoginApi
 import app.findbest.vip.register.api.RegisterApi
 import app.findbest.vip.register.model.RegisterModel
 import app.findbest.vip.utils.MimeType
@@ -207,7 +208,7 @@ class RegisterNickName : AppCompatActivity() {
 
             val retrofitUils =
                 RetrofitUtils(this@RegisterNickName, resources.getString(R.string.testRegisterUrl))
-            val it = retrofitUils.create(RegisterApi::class.java)
+            val it = retrofitUils.create(LoginApi::class.java)
                 .loginApass(body)
                 .subscribeOn(Schedulers.io())
                 .awaitSingle()

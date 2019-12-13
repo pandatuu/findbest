@@ -2,22 +2,43 @@ package app.findbest.vip.login.view
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.content.SharedPreferences
 import android.graphics.Color
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.view.Gravity
 import android.view.inputmethod.InputMethodManager
+import android.widget.Button
 import android.widget.EditText
 import android.widget.LinearLayout
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.preference.PreferenceManager
 import app.findbest.vip.R
+import app.findbest.vip.login.api.LoginApi
+import app.findbest.vip.register.api.RegisterApi
 import app.findbest.vip.register.view.RegisterActivity
+import app.findbest.vip.utils.MimeType
+import app.findbest.vip.utils.RetrofitUtils
+import com.alibaba.fastjson.JSON
 import com.gyf.immersionbar.ImmersionBar
+import io.reactivex.schedulers.Schedulers
+import kotlinx.coroutines.CoroutineStart
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.rx2.awaitSingle
+import okhttp3.RequestBody
 import org.jetbrains.anko.*
+import retrofit2.HttpException
 
 class LoginActivity: AppCompatActivity() {
 
     private lateinit var phoneNumber: EditText
-    private lateinit var vCode: EditText
+    private lateinit var country: TextView
+    private lateinit var pwd: EditText
+    private lateinit var button: Button
 
     @SuppressLint("SetTextI18n", "RtlHardcoded")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -69,8 +90,8 @@ class LoginActivity: AppCompatActivity() {
                         linearLayout {
                             orientation = LinearLayout.HORIZONTAL
                             backgroundResource = R.drawable.login_input_bottom
-                            textView {
-                                text = "+81"
+                            country = textView {
+                                text = "+86"
                             }.lparams(wrapContent, wrapContent){
                                 gravity = Gravity.CENTER_VERTICAL
                             }
@@ -86,6 +107,22 @@ class LoginActivity: AppCompatActivity() {
                                 hintTextColor = Color.parseColor("#FFD0D0D0")
                                 textSize = 15f
                                 singleLine = true
+                                addTextChangedListener(object: TextWatcher {
+                                    override fun afterTextChanged(s: Editable?) {}
+                                    override fun beforeTextChanged(s: CharSequence?,start: Int,count: Int,after: Int ) {}
+                                    override fun onTextChanged(s: CharSequence?,start: Int,before: Int,count: Int) {
+                                        if (s != null) {
+                                            if(s.isNotBlank()){
+                                                val pwd = pwd.text.toString()
+                                                if(pwd.isNotBlank()){
+                                                    button.backgroundResource = R.drawable.enable_around_button
+                                                }
+                                            }else{
+                                                button.backgroundResource = R.drawable.disable_around_button
+                                            }
+                                        }
+                                    }
+                                })
                             }.lparams(matchParent, matchParent){
                                 leftMargin = dip(10)
                             }
@@ -105,12 +142,28 @@ class LoginActivity: AppCompatActivity() {
                         linearLayout {
                             orientation = LinearLayout.HORIZONTAL
                             backgroundResource = R.drawable.login_input_bottom
-                            vCode = editText {
+                            pwd = editText {
                                 background = null
                                 hint = "请输入密码"
                                 hintTextColor = Color.parseColor("#FFD0D0D0")
                                 textSize = 15f
                                 singleLine = true
+                                addTextChangedListener(object: TextWatcher {
+                                    override fun afterTextChanged(s: Editable?) {}
+                                    override fun beforeTextChanged(s: CharSequence?,start: Int,count: Int,after: Int ) {}
+                                    override fun onTextChanged(s: CharSequence?,start: Int,before: Int,count: Int) {
+                                        if (s != null) {
+                                            if(s.isNotBlank()){
+                                                val phone = phoneNumber.text.toString()
+                                                if(phone.isNotBlank()){
+                                                    button.backgroundResource = R.drawable.enable_around_button
+                                                }
+                                            }else{
+                                                button.backgroundResource = R.drawable.disable_around_button
+                                            }
+                                        }
+                                    }
+                                })
                             }.lparams(matchParent, matchParent)
                         }.lparams(matchParent, matchParent){
                             leftMargin = dip(14)
@@ -131,11 +184,33 @@ class LoginActivity: AppCompatActivity() {
                         gravity = Gravity.RIGHT
                         topMargin = dip(5)
                     }
-                    button {
+                    button = button {
                         backgroundResource = R.drawable.disable_around_button
                         text = "登录"
                         textSize = 15f
                         textColor = Color.parseColor("#FFFFFFFF")
+                        setOnClickListener {
+                            closeFocusjianpan()
+
+                            val phoneNum = phoneNumber.text.toString()
+                            val pwd = pwd.text.toString()
+                            if(phoneNum.isNullOrBlank()){
+                                toast("请输入手机号")
+                                return@setOnClickListener
+                            }
+                            if(phoneNum.length !in 10..11){
+                                toast("手机号格式不对")
+                                return@setOnClickListener
+                            }
+                            if(pwd.isNullOrBlank()){
+                                toast("请输入验证码")
+                                return@setOnClickListener
+                            }
+
+                            GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
+                                login()
+                            }
+                        }
                     }.lparams(matchParent,dip(47)){
                         topMargin = dip(14)
                     }
@@ -148,13 +223,57 @@ class LoginActivity: AppCompatActivity() {
             }
         }
     }
+
+    private suspend fun login(){
+        try {
+            val countryCode = country.text.toString().substring(1)
+            val deviceType = "android"
+            val platform = "mobile"
+
+            val mPerferences: SharedPreferences = PreferenceManager.getDefaultSharedPreferences(this@LoginActivity)
+            val deviceToken = mPerferences.getString("deviceToken","") as String
+
+            val params = mapOf(
+                "country" to countryCode,
+                "phone" to phoneNumber.text.toString(),
+                "password" to pwd.text.toString(),
+                "platform" to platform,
+                "deviceType" to deviceType,
+                "deviceToken" to deviceToken
+            )
+            val userJson = JSON.toJSONString(params)
+            val body = RequestBody.create(MimeType.APPLICATION_JSON, userJson)
+
+            val retrofitUils =
+                RetrofitUtils(this@LoginActivity, resources.getString(R.string.testRegisterUrl))
+            val it = retrofitUils.create(LoginApi::class.java)
+                .loginApass(body)
+                .subscribeOn(Schedulers.io())
+                .awaitSingle()
+            if (it.code() in 200..299) {
+                //登录成功
+                val token = it.body()!!["accessToken"].asString
+                val mEditor = mPerferences.edit()
+                mEditor.putString("token", token)
+                mEditor.commit()
+            }
+            if(it.code() == 500){
+                toast("密码错误")
+            }
+        } catch (throwable: Throwable) {
+            if(throwable is HttpException){
+                println(throwable.message())
+            }
+        }
+    }
+
     private fun closeFocusjianpan() {
         //关闭ｅｄｉｔ光标
         phoneNumber.clearFocus()
-        vCode.clearFocus()
+        pwd.clearFocus()
         //关闭键盘事件
         val phone = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
         phone.hideSoftInputFromWindow(phoneNumber.windowToken, 0)
-        phone.hideSoftInputFromWindow(vCode.windowToken, 0)
+        phone.hideSoftInputFromWindow(pwd.windowToken, 0)
     }
 }

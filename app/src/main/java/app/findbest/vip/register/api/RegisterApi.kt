@@ -15,11 +15,6 @@ interface RegisterApi {
     @POST("/api/v1/users/register")
     fun registerUser(@Body array: RequestBody): Observable<Response<String>>
 
-    //登录Apass账号
-    @Headers("Content-Type: application/json")
-    @POST("/api/v1/users/login")
-    fun loginApass(@Body array: RequestBody): Observable<Response<JsonObject>>
-
     //完善findbest信息
     @Headers("Content-Type: application/json")
     @POST("/api/v1/user/information")

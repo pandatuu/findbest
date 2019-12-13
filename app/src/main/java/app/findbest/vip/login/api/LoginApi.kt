@@ -10,8 +10,14 @@ import retrofit2.http.POST
 
 interface LoginApi {
 
+
+    //登录Apass账号
+    @Headers("Content-Type: application/json")
+    @POST("/api/v1/users/login")
+    fun loginApass(@Body array: RequestBody): Observable<Response<JsonObject>>
+
     //校验token
     @Headers("Content-Type: application/json")
-    @POST("/api/v1/user/valid-token")
+    @POST("/api/v1/users/valid-token")
     fun isToken(): Observable<Response<JsonObject>>
 }
