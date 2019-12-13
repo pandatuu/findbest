@@ -11,11 +11,12 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.children
 import app.findbest.vip.R
 import app.findbest.vip.register.model.RegisterModel
+import app.findbest.vip.utils.BaseActivity
 import com.gyf.immersionbar.ImmersionBar
 import org.jetbrains.anko.*
 import java.io.Serializable
 
-class RegisterCountry: AppCompatActivity() {
+class RegisterCountry: BaseActivity() {
 
     private lateinit var china: RelativeLayout
     private lateinit var japan: RelativeLayout

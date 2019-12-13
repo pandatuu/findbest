@@ -16,6 +16,7 @@ import app.findbest.vip.R
 import app.findbest.vip.login.api.LoginApi
 import app.findbest.vip.register.api.RegisterApi
 import app.findbest.vip.register.model.RegisterModel
+import app.findbest.vip.utils.BaseActivity
 import app.findbest.vip.utils.MimeType
 import app.findbest.vip.utils.RetrofitUtils
 import com.gyf.immersionbar.ImmersionBar
@@ -36,7 +37,7 @@ import java.util.regex.Pattern
  * 2.登录用户Apass账号
  * 3.完善用户的findbest信息
  */
-class RegisterNickName : AppCompatActivity() {
+class RegisterNickName : BaseActivity() {
 
     private lateinit var nickName: EditText
     private lateinit var user: RegisterModel

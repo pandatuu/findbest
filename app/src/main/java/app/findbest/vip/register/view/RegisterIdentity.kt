@@ -10,11 +10,12 @@ import android.widget.RelativeLayout
 import androidx.appcompat.app.AppCompatActivity
 import app.findbest.vip.R
 import app.findbest.vip.register.model.RegisterModel
+import app.findbest.vip.utils.BaseActivity
 import com.gyf.immersionbar.ImmersionBar
 import org.jetbrains.anko.*
 import java.io.Serializable
 
-class RegisterIdentity : AppCompatActivity() {
+class RegisterIdentity : BaseActivity() {
 
 
     //项目方

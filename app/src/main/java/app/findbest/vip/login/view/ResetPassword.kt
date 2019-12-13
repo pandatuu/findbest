@@ -17,6 +17,7 @@ import app.findbest.vip.R
 import app.findbest.vip.login.api.LoginApi
 import app.findbest.vip.register.api.RegisterApi
 import app.findbest.vip.register.view.RegisterCountry
+import app.findbest.vip.utils.BaseActivity
 import app.findbest.vip.utils.MimeType
 import app.findbest.vip.utils.RetrofitUtils
 import click
@@ -36,7 +37,7 @@ import withTrigger
 import java.io.Serializable
 import java.util.regex.Pattern
 
-class ResetPassword: AppCompatActivity() {
+class ResetPassword: BaseActivity() {
 
     private lateinit var countryCode: TextView
     private lateinit var phoneNumber: EditText

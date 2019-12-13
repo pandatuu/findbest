@@ -10,12 +10,13 @@ import android.widget.LinearLayout
 import androidx.appcompat.app.AppCompatActivity
 import app.findbest.vip.R
 import app.findbest.vip.register.model.RegisterModel
+import app.findbest.vip.utils.BaseActivity
 import com.gyf.immersionbar.ImmersionBar
 import org.jetbrains.anko.*
 import java.io.Serializable
 import java.util.regex.Pattern
 
-class RegisterEmail: AppCompatActivity() {
+class RegisterEmail: BaseActivity() {
 
     private lateinit var email: EditText
 

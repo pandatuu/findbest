@@ -19,6 +19,7 @@ import app.findbest.vip.R
 import app.findbest.vip.login.api.LoginApi
 import app.findbest.vip.register.api.RegisterApi
 import app.findbest.vip.register.view.RegisterActivity
+import app.findbest.vip.utils.BaseActivity
 import app.findbest.vip.utils.MimeType
 import app.findbest.vip.utils.RetrofitUtils
 import com.alibaba.fastjson.JSON
@@ -33,7 +34,7 @@ import okhttp3.RequestBody
 import org.jetbrains.anko.*
 import retrofit2.HttpException
 
-class LoginActivity: AppCompatActivity() {
+class LoginActivity: BaseActivity() {
 
     private lateinit var phoneNumber: EditText
     private lateinit var country: TextView
