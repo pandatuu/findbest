@@ -483,7 +483,7 @@ class ResetPassword: BaseActivity(), BackgroundFragment.ClickBack, ChooseCountry
         val mTransaction = supportFragmentManager.beginTransaction()
 
         if (backgroundFragment == null) {
-            backgroundFragment = BackgroundFragment.newInstance()
+            backgroundFragment = BackgroundFragment.newInstance(this@ResetPassword)
 
             mTransaction.add(mainId, backgroundFragment!!)
         }

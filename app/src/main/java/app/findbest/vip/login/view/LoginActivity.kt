@@ -373,7 +373,7 @@ class LoginActivity : BaseActivity(), BackgroundFragment.ClickBack, ChooseCountr
         val mTransaction = supportFragmentManager.beginTransaction()
 
         if (backgroundFragment == null) {
-            backgroundFragment = BackgroundFragment.newInstance()
+            backgroundFragment = BackgroundFragment.newInstance(this@LoginActivity)
 
             mTransaction.add(mainId, backgroundFragment!!)
         }

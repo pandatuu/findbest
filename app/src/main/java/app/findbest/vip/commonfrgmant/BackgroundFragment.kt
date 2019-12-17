@@ -9,6 +9,7 @@ import androidx.fragment.app.Fragment
 import app.findbest.vip.R
 import click
 import org.jetbrains.anko.backgroundColorResource
+import org.jetbrains.anko.support.v4.UI
 import org.jetbrains.anko.verticalLayout
 import withTrigger
 
@@ -18,29 +19,22 @@ class BackgroundFragment: Fragment() {
         fun clickAll()
     }
 
-    private var mContext: Context? = null
     private lateinit var clickback: ClickBack
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        mContext = activity
-    }
-
     companion object {
-        fun newInstance(): BackgroundFragment {
-            return BackgroundFragment()
+        fun newInstance(clickback: ClickBack): BackgroundFragment {
+            val fragment = BackgroundFragment()
+            fragment.clickback = clickback
+            return fragment
         }
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        clickback = activity as ClickBack
-        val fragmentView=createView()
-        mContext = activity
-        return fragmentView
+        return createView()
     }
 
     private fun createView():View{
-        return with(mContext!!) {
+        return UI {
             verticalLayout {
                 isClickable = true
                 backgroundColorResource = R.color.black66000000
@@ -48,7 +42,7 @@ class BackgroundFragment: Fragment() {
                     clickback.clickAll()
                 }
             }
-        }
+        }.view
     }
 
     fun getStatusBarHeight(context: Context): Int {

@@ -547,7 +547,7 @@ class RegisterActivity: BaseActivity(), BackgroundFragment.ClickBack, ChooseCoun
         val mTransaction = supportFragmentManager.beginTransaction()
 
         if (backgroundFragment == null) {
-            backgroundFragment = BackgroundFragment.newInstance()
+            backgroundFragment = BackgroundFragment.newInstance(this@RegisterActivity)
 
             mTransaction.add(mainId, backgroundFragment!!)
         }

@@ -6,7 +6,16 @@ import androidx.appcompat.widget.Toolbar
 import androidx.recyclerview.widget.RecyclerView
 import org.jetbrains.anko.AnkoViewDslMarker
 import org.jetbrains.anko.custom.ankoView
+import org.jetbrains.anko.internals.AnkoInternals
 
 inline fun ViewManager.recyclerView(init: (@AnkoViewDslMarker RecyclerView).() -> Unit): RecyclerView {
     return ankoView({ ctx: Context -> RecyclerView(ctx) }, theme = 0) { init() }
+}
+
+inline fun ViewManager.flowLayout(
+    ctx: Context = AnkoInternals.getContext(this),
+    theme: Int = 0,
+    init: FlowLayout.() -> Unit
+): FlowLayout {
+    return ankoView({ FlowLayout(ctx) }, theme, init)
 }

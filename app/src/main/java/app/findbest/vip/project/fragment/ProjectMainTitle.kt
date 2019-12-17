@@ -14,13 +14,19 @@ import org.jetbrains.anko.support.v4.UI
 
 class ProjectMainTitle: Fragment() {
 
-    companion object{
-        fun newInstance(): ProjectMainTitle{
-            val fragment = ProjectMainTitle()
+    interface ChildrenClick{
+        fun clickFragment()
+    }
 
+    companion object{
+        fun newInstance(child:ChildrenClick): ProjectMainTitle{
+            val fragment = ProjectMainTitle()
+            fragment.child = child
             return fragment
         }
     }
+
+    private lateinit var child:ChildrenClick
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -62,7 +68,7 @@ class ProjectMainTitle: Fragment() {
                             gravity = Gravity.CENTER_VERTICAL
                         }
                     }.lparams(dip(0), dip(30)){
-                        weight = 5f
+                        weight = 1f
                         gravity = Gravity.CENTER_VERTICAL
                     }
                     linearLayout {
@@ -73,13 +79,14 @@ class ProjectMainTitle: Fragment() {
                             textColor= Color.parseColor("#FF333333")
                         }
                         imageView {
-                            padding = dip(5)
                             imageResource = R.mipmap.tab_icon_screening_nor
-                        }.lparams{
+                        }.lparams {
                             leftMargin = dip(5)
                         }
-                    }.lparams(dip(0), matchParent){
-                        weight = 1f
+                        setOnClickListener {
+                            child.clickFragment()
+                        }
+                    }.lparams(wrapContent, matchParent){
                         leftMargin = dip(20)
                     }
                 }.lparams(matchParent,dip(40)){
