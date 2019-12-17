@@ -71,4 +71,8 @@ dependencies {
     implementation 'com.umeng.umsdk:utdid:1.1.5.3'
     //PushSDK
     implementation 'com.umeng.umsdk:push:6.0.1'
+
+    //JWT token解析
+    implementation 'com.auth0:java-jwt:3.8.3'
+//    implementation 'com.auth0.android:jwtdecode:1.4.0'
 }
