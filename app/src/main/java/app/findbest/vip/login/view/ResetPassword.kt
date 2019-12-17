@@ -8,6 +8,7 @@ import android.os.Bundle
 import android.os.CountDownTimer
 import android.text.Editable
 import android.text.TextWatcher
+import android.text.method.PasswordTransformationMethod
 import android.view.Gravity
 import android.view.inputmethod.InputMethodManager
 import android.widget.*
@@ -282,6 +283,7 @@ class ResetPassword: BaseActivity(), BackgroundFragment.ClickBack, ChooseCountry
                                 hintTextColor = Color.parseColor("#FFD0D0D0")
                                 textSize = 15f
                                 singleLine = true
+                                transformationMethod = PasswordTransformationMethod()
                                 addTextChangedListener(object: TextWatcher {
                                     override fun afterTextChanged(s: Editable?) {}
                                     override fun beforeTextChanged(s: CharSequence?,start: Int,count: Int,after: Int ) {}
@@ -323,6 +325,7 @@ class ResetPassword: BaseActivity(), BackgroundFragment.ClickBack, ChooseCountry
                                 hintTextColor = Color.parseColor("#FFD0D0D0")
                                 textSize = 15f
                                 singleLine = true
+                                transformationMethod = PasswordTransformationMethod()
                                 addTextChangedListener(object: TextWatcher {
                                     override fun afterTextChanged(s: Editable?) {}
                                     override fun beforeTextChanged(s: CharSequence?,start: Int,count: Int,after: Int ) {}

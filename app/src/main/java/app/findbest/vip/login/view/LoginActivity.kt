@@ -7,6 +7,7 @@ import android.graphics.Color
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.text.method.PasswordTransformationMethod
 import android.util.Base64
 import android.view.Gravity
 import android.view.inputmethod.InputMethodManager
@@ -180,6 +181,7 @@ class LoginActivity : BaseActivity(), BackgroundFragment.ClickBack, ChooseCountr
                                 hintTextColor = Color.parseColor("#FFD0D0D0")
                                 textSize = 15f
                                 singleLine = true
+                                transformationMethod = PasswordTransformationMethod()
                                 addTextChangedListener(object : TextWatcher {
                                     override fun afterTextChanged(s: Editable?) {}
                                     override fun beforeTextChanged(
