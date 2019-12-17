@@ -71,4 +71,8 @@ dependencies {
     implementation 'com.umeng.umsdk:utdid:1.1.5.3'
     //PushSDK
     implementation 'com.umeng.umsdk:push:6.0.1'
+
+
+    //actionBar沉底
+    implementation 'com.jaeger.statusbarutil:library:1.5.1'
 }
