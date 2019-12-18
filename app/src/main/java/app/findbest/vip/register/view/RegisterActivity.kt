@@ -395,7 +395,8 @@ class RegisterActivity: BaseActivity(), BackgroundFragment.ClickBack, ChooseCoun
                                 country.text.toString(),
                                 code,
                                 nPwd,
-                                ""
+                                "",
+                                false
                             )
 
                             startActivity<RegisterCountry>("user" to user as Serializable)

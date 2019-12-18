@@ -77,5 +77,8 @@ dependencies {
 
     //JWT token解析
     implementation 'com.auth0:java-jwt:3.8.3'
-//    implementation 'com.auth0.android:jwtdecode:1.4.0'
+
+    //下拉刷新
+    implementation  'com.scwang.smart:refresh-layout-kernel:2.0.0-alpha-1'
+    implementation  'com.scwang.smart:refresh-header-material:2.0.0-alpha-1'
 }

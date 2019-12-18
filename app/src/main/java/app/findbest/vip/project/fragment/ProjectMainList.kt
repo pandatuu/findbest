@@ -8,11 +8,22 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import app.findbest.vip.R
 import app.findbest.vip.project.adapter.ProjectMainListAdapter
+import app.findbest.vip.project.api.ProjectApi
 import app.findbest.vip.project.model.ProjectListModel
 import app.findbest.vip.project.view.ProjectInformation
+import app.findbest.vip.utils.MimeType
+import app.findbest.vip.utils.RetrofitUtils
 import app.findbest.vip.utils.recyclerView
+import app.findbest.vip.utils.smartRefreshLayout
+import com.alibaba.fastjson.JSON
+import com.scwang.smart.refresh.header.MaterialHeader
+import com.scwang.smart.refresh.layout.SmartRefreshLayout
+import io.reactivex.schedulers.Schedulers
+import kotlinx.coroutines.rx2.awaitSingle
+import okhttp3.RequestBody
 import org.jetbrains.anko.*
 import org.jetbrains.anko.support.v4.UI
 import org.jetbrains.anko.support.v4.startActivity
@@ -28,6 +39,8 @@ class ProjectMainList : Fragment(),ProjectMainListAdapter.ListAdapter  {
     }
 
     lateinit var mContext: Context
+    lateinit var smart: SmartRefreshLayout
+    lateinit var recycle: RecyclerView
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -43,103 +56,59 @@ class ProjectMainList : Fragment(),ProjectMainListAdapter.ListAdapter  {
         activity?.overridePendingTransition(R.anim.right_in, R.anim.left_out)
     }
 
+    override fun onResume() {
+        super.onResume()
+
+        smart.autoRefresh()
+    }
+
     private fun createV(): View {
+        val list = ProjectMainListAdapter(mContext, this@ProjectMainList)
         return UI {
             linearLayout {
                 backgroundColor = Color.parseColor("#FFF6F6F6")
-                recyclerView {
-                    layoutManager = LinearLayoutManager(mContext)
-                    val a = mutableListOf<ProjectListModel>()
-                    a.add(
-                        ProjectListModel(
-                            "乙女向帅哥立绘制作（乙女向きイケ…",
-                            true,
-                            "1920*1080",
-                            "PSD",
-                            "2019-11-22",
-                            "china",
-                            arrayListOf("写实风", "中国风", "狂野风"),
-                            800.00F
-                        )
-                    )
-                    a.add(
-                        ProjectListModel(
-                            "乙女向帅哥立绘制作（乙女向きイケ…",
-                            false,
-                            "1920*1080",
-                            "PSD",
-                            "2019-11-21",
-                            "japan",
-                            arrayListOf("写实风"),
-                            800.00F
-                        )
-                    )
-                    a.add(
-                        ProjectListModel(
-                            "乙女向帅哥立绘制作（乙女向きイケ…",
-                            true,
-                            "1920*1080",
-                            "PSD",
-                            "2019-11-23",
-                            "korea",
-                            arrayListOf("中国风"),
-                            800.00F
-                        )
-                    )
-                    a.add(
-                        ProjectListModel(
-                            "乙女向帅哥立绘制作（乙女向きイケ…",
-                            true,
-                            "1920*1080",
-                            "PSD",
-                            "2019-11-23",
-                            "korea",
-                            arrayListOf("中国风"),
-                            800.00F
-                        )
-                    )
-                    a.add(
-                        ProjectListModel(
-                            "乙女向帅哥立绘制作（乙女向きイケ…",
-                            true,
-                            "1920*1080",
-                            "PSD",
-                            "2019-11-23",
-                            "korea",
-                            arrayListOf("中国风"),
-                            800.00F
-                        )
-                    )
-                    a.add(
-                        ProjectListModel(
-                            "乙女向帅哥立绘制作（乙女向きイケ…",
-                            true,
-                            "1920*1080",
-                            "PSD",
-                            "2019-11-23",
-                            "korea",
-                            arrayListOf("中国风"),
-                            800.00F
-                        )
-                    )
-                    a.add(
-                        ProjectListModel(
-                            "乙女向帅哥立绘制作（乙女向きイケ…",
-                            true,
-                            "1920*1080",
-                            "PSD",
-                            "2019-11-23",
-                            "korea",
-                            arrayListOf("中国风"),
-                            800.00F
-                        )
-                    )
-                    val list = ProjectMainListAdapter(mContext,this@ProjectMainList , a)
-                    adapter = list
+                smart = smartRefreshLayout {
+                    setEnableAutoLoadMore(false)
+                    setRefreshHeader(MaterialHeader(activity))
+                    setOnRefreshListener {
+                        toast("刷新....")
+                        it.finishRefresh(3000)
+
+//                        list.setItems(a)
+                    }
+                    recycle = recyclerView {
+                        layoutManager = LinearLayoutManager(mContext)
+
+                        adapter = list
+                    }
                 }.lparams(matchParent, matchParent) {
                     setMargins(dip(10), 0, dip(10), 0)
                 }
             }
         }.view
+    }
+
+    private suspend fun getProjectList(){
+        try {
+            val params = mapOf(
+                "size" to 5
+            )
+            val userJson = JSON.toJSONString(params)
+            val body = RequestBody.create(MimeType.APPLICATION_JSON, userJson)
+
+            val retrofitUils =
+                RetrofitUtils(mContext, resources.getString(R.string.testRegisterUrl))
+            val it = retrofitUils.create(ProjectApi::class.java)
+                .getProjectList(body)
+                .subscribeOn(Schedulers.io())
+                .awaitSingle()
+            if (it.code() in 200..299) {
+                //完善信息成功
+
+
+            }
+        } catch (throwable: Throwable) {
+
+        }
     }
 }

@@ -20,7 +20,11 @@ import app.findbest.vip.R
 import app.findbest.vip.commonfrgmant.BackgroundFragment
 import app.findbest.vip.commonfrgmant.ChooseCountry
 import app.findbest.vip.login.api.LoginApi
+import app.findbest.vip.project.view.TextActivity
+import app.findbest.vip.register.model.RegisterModel
 import app.findbest.vip.register.view.RegisterActivity
+import app.findbest.vip.register.view.RegisterCountry
+import app.findbest.vip.register.view.RegisterEmail
 import app.findbest.vip.utils.BaseActivity
 import app.findbest.vip.utils.CheckToken
 import app.findbest.vip.utils.MimeType
@@ -37,6 +41,7 @@ import kotlinx.coroutines.rx2.awaitSingle
 import okhttp3.RequestBody
 import org.jetbrains.anko.*
 import retrofit2.HttpException
+import java.io.Serializable
 import java.security.KeyFactory
 import java.security.interfaces.RSAPublicKey
 import java.security.spec.X509EncodedKeySpec
@@ -328,11 +333,13 @@ class LoginActivity : BaseActivity(), BackgroundFragment.ClickBack, ChooseCountr
         when (account) {
             AccountStatus.COMPLETED.arg -> {
                 //已完善信息
-
+                startActivity<TextActivity>()
+                overridePendingTransition(R.anim.right_in, R.anim.left_out)
             }
             AccountStatus.UNCOMPLETED.arg -> {
                 //未完善信息
-
+                startActivity<RegisterCountry>("onlyCompleted" to true)
+                overridePendingTransition(R.anim.right_in, R.anim.left_out)
             }
             AccountStatus.PENDING.arg -> {
                 //审核中

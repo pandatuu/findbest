@@ -4,10 +4,7 @@ import com.google.gson.JsonObject
 import io.reactivex.Observable
 import okhttp3.RequestBody
 import retrofit2.Response
-import retrofit2.http.Body
-import retrofit2.http.Headers
-import retrofit2.http.PATCH
-import retrofit2.http.POST
+import retrofit2.http.*
 
 interface LoginApi {
 
@@ -19,7 +16,7 @@ interface LoginApi {
 
     //校验token
     @Headers("Content-Type: application/json")
-    @POST("/api/v1/users/valid-token")
+    @GET("/api/v1/users/valid-token")
     fun isToken(): Observable<Response<JsonObject>>
 
     //重置密码

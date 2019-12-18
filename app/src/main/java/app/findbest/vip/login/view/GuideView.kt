@@ -4,10 +4,12 @@ import android.content.SharedPreferences
 import android.graphics.Color
 import android.os.Bundle
 import android.util.Base64
+import android.view.Gravity
 import androidx.appcompat.app.AppCompatActivity
 import androidx.preference.PreferenceManager
 import app.findbest.vip.R
 import app.findbest.vip.login.api.LoginApi
+import app.findbest.vip.project.view.TextActivity
 import app.findbest.vip.utils.CheckToken
 import app.findbest.vip.utils.RetrofitUtils
 import com.auth0.jwt.JWT
@@ -19,10 +21,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.rx2.awaitSingle
-import org.jetbrains.anko.backgroundColor
-import org.jetbrains.anko.frameLayout
-import org.jetbrains.anko.startActivity
-import org.jetbrains.anko.toast
+import org.jetbrains.anko.*
 import java.security.KeyFactory
 import java.security.interfaces.RSAPublicKey
 import java.security.spec.X509EncodedKeySpec
@@ -34,6 +33,12 @@ class GuideView: AppCompatActivity() {
 
         frameLayout {
             backgroundColor = Color.WHITE
+            textView {
+                text= "这是启动页"
+                textSize = 18f
+            }.lparams{
+                gravity = Gravity.CENTER
+            }
         }
     }
 
@@ -64,50 +69,22 @@ class GuideView: AppCompatActivity() {
             if (it.code() in 200..299) {
                 println("token未过期")
 
-                val mPerferences: SharedPreferences =
-                    PreferenceManager.getDefaultSharedPreferences(this@GuideView)
-                val token = mPerferences.getString("token", "")
-                if (token != null) {
-                    isAccount(token)
-                }
+//                val mPerferences: SharedPreferences =
+//                    PreferenceManager.getDefaultSharedPreferences(this@GuideView)
+//                val token = mPerferences.getString("token", "")
+
+                startActivity<TextActivity>()
+                overridePendingTransition(R.anim.right_in, R.anim.left_out)
             }
             if(it.code() == 401){
                 println("token过期，需要登录")
                 toast("token过期，需要重新登录")
                 startActivity<LoginActivity>()
+                overridePendingTransition(R.anim.right_in, R.anim.left_out)
             }
         } catch (throwable: Throwable) {
             println(throwable)
         }
     }
 
-    private fun isAccount(token: String){
-        val account = CheckToken(this@GuideView).jwtParse(token)
-        if(account == ""){
-            //token验证失败
-            return
-        }
-        //token验证成功获取到的status
-        when (account) {
-            AccountStatus.COMPLETED.arg -> {
-                //已完善信息
-            }
-            AccountStatus.UNCOMPLETED.arg -> {
-                //未完善信息
-
-            }
-            AccountStatus.PENDING.arg -> {
-                //审核中
-
-            }
-            AccountStatus.PASSED.arg -> {
-                //审核通过
-
-            }
-            else -> {
-                //审核失败
-
-            }
-        }
-    }
 }

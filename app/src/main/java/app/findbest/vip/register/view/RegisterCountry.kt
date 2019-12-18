@@ -16,7 +16,7 @@ import com.gyf.immersionbar.ImmersionBar
 import org.jetbrains.anko.*
 import java.io.Serializable
 
-class RegisterCountry: BaseActivity() {
+class RegisterCountry : BaseActivity() {
 
     private lateinit var china: RelativeLayout
     private lateinit var japan: RelativeLayout
@@ -24,6 +24,7 @@ class RegisterCountry: BaseActivity() {
     private var isChina = true
     private var isJapan = false
     private var isKorea = false
+    private var onlyCompleted = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -45,7 +46,7 @@ class RegisterCountry: BaseActivity() {
                         alignParentBottom()
                         alignParentLeft()
                     }
-                }.lparams(matchParent,dip(65)){
+                }.lparams(matchParent, dip(65)) {
                     leftMargin = dip(15)
                     rightMargin = dip(15)
                 }
@@ -55,34 +56,34 @@ class RegisterCountry: BaseActivity() {
                         text = "2/5"
                         textColor = Color.parseColor("#FF333333")
                         textSize = 19f
-                    }.lparams(wrapContent, wrapContent){
+                    }.lparams(wrapContent, wrapContent) {
                         gravity = Gravity.CENTER_HORIZONTAL
                     }
                     textView {
                         text = "选择国家和地区"
                         textColor = Color.parseColor("#FF333333")
                         textSize = 19f
-                    }.lparams(wrapContent, wrapContent){
+                    }.lparams(wrapContent, wrapContent) {
                         gravity = Gravity.CENTER_HORIZONTAL
                     }
                     linearLayout {
                         orientation = LinearLayout.VERTICAL
-                        val country = arrayListOf("中国","日本","韩国")
+                        val country = arrayListOf("中国", "日本", "韩国")
                         china = relativeLayout {
                             backgroundResource = R.drawable.rigister_country_input
                             textView {
                                 text = "中国"
                                 textSize = 15f
                                 textColor = Color.parseColor("#FF333333")
-                            }.lparams{
+                            }.lparams {
                                 centerInParent()
                             }
                             imageView {
                                 imageResource = R.mipmap.login_ico_triangle
-                                if(!isChina)
+                                if (!isChina)
                                     visibility = RelativeLayout.GONE
-                            }.lparams(dip(27),dip(27)){
-                                setMargins(0,0,dip(1),dip(1))
+                            }.lparams(dip(27), dip(27)) {
+                                setMargins(0, 0, dip(1), dip(1))
                                 alignParentBottom()
                                 alignParentRight()
                             }
@@ -91,17 +92,17 @@ class RegisterCountry: BaseActivity() {
                                 val cimage = china.getChildAt(1) as ImageView
                                 val jimage = japan.getChildAt(1) as ImageView
                                 val kimage = korea.getChildAt(1) as ImageView
-                                if(isChina){
+                                if (isChina) {
                                     cimage.visibility = RelativeLayout.VISIBLE
                                     jimage.visibility = RelativeLayout.GONE
                                     kimage.visibility = RelativeLayout.GONE
                                     isKorea = false
                                     isJapan = false
-                                }else{
+                                } else {
                                     cimage.visibility = RelativeLayout.GONE
                                 }
                             }
-                        }.lparams(matchParent,dip(40)){
+                        }.lparams(matchParent, dip(40)) {
                             topMargin = dip(15)
                         }
                         japan = relativeLayout {
@@ -110,15 +111,15 @@ class RegisterCountry: BaseActivity() {
                                 text = "日本"
                                 textSize = 15f
                                 textColor = Color.parseColor("#FF333333")
-                            }.lparams{
+                            }.lparams {
                                 centerInParent()
                             }
                             imageView {
                                 imageResource = R.mipmap.login_ico_triangle
-                                if(!isJapan)
+                                if (!isJapan)
                                     visibility = RelativeLayout.GONE
-                            }.lparams(dip(27),dip(27)){
-                                setMargins(0,0,dip(1),dip(1))
+                            }.lparams(dip(27), dip(27)) {
+                                setMargins(0, 0, dip(1), dip(1))
                                 alignParentBottom()
                                 alignParentRight()
                             }
@@ -127,17 +128,17 @@ class RegisterCountry: BaseActivity() {
                                 val cimage = china.getChildAt(1) as ImageView
                                 val jimage = japan.getChildAt(1) as ImageView
                                 val kimage = korea.getChildAt(1) as ImageView
-                                if(isJapan){
+                                if (isJapan) {
                                     jimage.visibility = RelativeLayout.VISIBLE
                                     cimage.visibility = RelativeLayout.GONE
                                     kimage.visibility = RelativeLayout.GONE
                                     isChina = false
                                     isKorea = false
-                                }else{
+                                } else {
                                     jimage.visibility = RelativeLayout.GONE
                                 }
                             }
-                        }.lparams(matchParent,dip(40)){
+                        }.lparams(matchParent, dip(40)) {
                             topMargin = dip(15)
                         }
                         korea = relativeLayout {
@@ -146,15 +147,15 @@ class RegisterCountry: BaseActivity() {
                                 text = "韩国"
                                 textSize = 15f
                                 textColor = Color.parseColor("#FF333333")
-                            }.lparams{
+                            }.lparams {
                                 centerInParent()
                             }
                             imageView {
                                 imageResource = R.mipmap.login_ico_triangle
-                                if(!isKorea)
+                                if (!isKorea)
                                     visibility = RelativeLayout.GONE
-                            }.lparams(dip(27),dip(27)){
-                                setMargins(0,0,dip(1),dip(1))
+                            }.lparams(dip(27), dip(27)) {
+                                setMargins(0, 0, dip(1), dip(1))
                                 alignParentBottom()
                                 alignParentRight()
                             }
@@ -163,21 +164,21 @@ class RegisterCountry: BaseActivity() {
                                 val cimage = china.getChildAt(1) as ImageView
                                 val jimage = japan.getChildAt(1) as ImageView
                                 val kimage = korea.getChildAt(1) as ImageView
-                                if(isKorea){
+                                if (isKorea) {
                                     kimage.visibility = RelativeLayout.VISIBLE
                                     cimage.visibility = RelativeLayout.GONE
                                     jimage.visibility = RelativeLayout.GONE
                                     isChina = false
                                     isJapan = false
-                                }else{
+                                } else {
                                     kimage.visibility = RelativeLayout.GONE
                                 }
                             }
-                        }.lparams(matchParent,dip(40)){
+                        }.lparams(matchParent, dip(40)) {
                             topMargin = dip(15)
                         }
-                    }.lparams(matchParent, wrapContent){
-                        setMargins(dip(18),dip(74),dip(18),0)
+                    }.lparams(matchParent, wrapContent) {
+                        setMargins(dip(18), dip(74), dip(18), 0)
                     }
                     button {
                         backgroundResource = R.drawable.enable_around_button
@@ -185,13 +186,25 @@ class RegisterCountry: BaseActivity() {
                         textSize = 15f
                         textColor = Color.parseColor("#FFFFFFFF")
                         setOnClickListener {
-                            when(true){
+                            onlyCompleted = intent.getBooleanExtra("onlyCompleted", false)
+                            when (true) {
                                 isChina -> {
                                     toast("china")
                                     var user: RegisterModel? = null
-                                    if(intent.getSerializableExtra("user") != null){
-                                        user = intent.getSerializableExtra("user") as RegisterModel
-                                        user.country = "86"
+                                    if(onlyCompleted){
+                                        user = RegisterModel(
+                                            "",
+                                            "86",
+                                            "",
+                                            "",
+                                            "",
+                                            true
+                                        )
+                                    }else{
+                                        if (intent.getSerializableExtra("user") != null) {
+                                            user = intent.getSerializableExtra("user") as RegisterModel
+                                            user.country = "86"
+                                        }
                                     }
                                     startActivity<RegisterIdentity>("user" to user as Serializable)
                                     overridePendingTransition(R.anim.right_in, R.anim.left_out)
@@ -199,9 +212,20 @@ class RegisterCountry: BaseActivity() {
                                 isJapan -> {
                                     toast("japan")
                                     var user: RegisterModel? = null
-                                    if(intent.getSerializableExtra("user") != null){
-                                        user = intent.getSerializableExtra("user") as RegisterModel
-                                        user.country = "81"
+                                    if(onlyCompleted){
+                                        user = RegisterModel(
+                                            "",
+                                            "81",
+                                            "",
+                                            "",
+                                            "",
+                                            true
+                                        )
+                                    }else{
+                                        if (intent.getSerializableExtra("user") != null) {
+                                            user = intent.getSerializableExtra("user") as RegisterModel
+                                            user.country = "81"
+                                        }
                                     }
                                     startActivity<RegisterIdentity>("user" to user as Serializable)
                                     overridePendingTransition(R.anim.right_in, R.anim.left_out)
@@ -209,9 +233,20 @@ class RegisterCountry: BaseActivity() {
                                 isKorea -> {
                                     toast("korea")
                                     var user: RegisterModel? = null
-                                    if(intent.getSerializableExtra("user") != null){
-                                        user = intent.getSerializableExtra("user") as RegisterModel
-                                        user.country = "82"
+                                    if(onlyCompleted){
+                                        user = RegisterModel(
+                                            "",
+                                            "82",
+                                            "",
+                                            "",
+                                            "",
+                                            true
+                                        )
+                                    }else{
+                                        if (intent.getSerializableExtra("user") != null) {
+                                            user = intent.getSerializableExtra("user") as RegisterModel
+                                            user.country = "82"
+                                        }
                                     }
                                     startActivity<RegisterIdentity>("user" to user as Serializable)
                                     overridePendingTransition(R.anim.right_in, R.anim.left_out)
@@ -219,11 +254,11 @@ class RegisterCountry: BaseActivity() {
                                 else -> toast("未选择")
                             }
                         }
-                    }.lparams(matchParent,dip(47)){
+                    }.lparams(matchParent, dip(47)) {
                         topMargin = dip(35)
                     }
-                }.lparams(matchParent, wrapContent){
-                    setMargins(dip(40),dip(17),dip(40),0)
+                }.lparams(matchParent, wrapContent) {
+                    setMargins(dip(40), dip(17), dip(40), 0)
                 }
             }
         }

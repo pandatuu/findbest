@@ -202,4 +202,10 @@ class ProjectMainListAdapter(
 
     private inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
 
+    fun setItems(items: MutableList<ProjectListModel>) {
+        mDataSet.clear()
+        mDataSet.addAll(items)
+
+        notifyDataSetChanged()
+    }
 }
