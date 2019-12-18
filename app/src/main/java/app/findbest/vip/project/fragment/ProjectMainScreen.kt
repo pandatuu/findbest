@@ -7,7 +7,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import androidx.fragment.app.Fragment
-import app.findbest.vip.R
 import click
 import org.jetbrains.anko.*
 import org.jetbrains.anko.support.v4.UI
@@ -17,6 +16,7 @@ class ProjectMainScreen : Fragment() {
 
     interface ProjectScreen {
         fun backgroundClick()
+        fun confirmClick(array: ArrayList<String>)
     }
 
     companion object {
@@ -38,6 +38,9 @@ class ProjectMainScreen : Fragment() {
     }
 
     private fun createV(): View {
+        val typeList = mutableListOf("角色设计","立绘","生物","美宣","场景设计","概念艺术","卡牌")
+        val styleList = mutableListOf("赛璐璐风","萌系","厚涂","美式漫画风","Q版","像素风","萝莉")
+        val screen = ProjectScreenAll.newInstance(typeList,styleList)
         return UI {
             linearLayout {
                 orientation = LinearLayout.HORIZONTAL
@@ -54,9 +57,6 @@ class ProjectMainScreen : Fragment() {
                     val screenId = 3
                     frameLayout {
                         id = screenId
-                        val typeList = mutableListOf("角色设计","立绘","生物","美宣","场景设计","概念艺术","卡牌")
-                        val styleList = mutableListOf("赛璐璐风","萌系","厚涂","美式漫画风","Q版","像素风","萝莉")
-                        val screen = ProjectScreenAll.newInstance(typeList,styleList)
                         childFragmentManager.beginTransaction().add(screenId, screen).commit()
                     }.lparams(matchParent, dip(0)) {
                         weight = 1f
@@ -75,6 +75,10 @@ class ProjectMainScreen : Fragment() {
                             textSize = 14f
                             textColor = Color.parseColor("#FFFFFFFF")
                             backgroundColor = Color.parseColor("#FF1D1D1D")
+                            setOnClickListener {
+                                val array= screen.getListItem()
+                                projectScreen.confirmClick(array)
+                            }
                         }.lparams(dip(0), matchParent) {
                             weight = 1f
                         }

@@ -5,6 +5,9 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.LinearLayout
+import android.widget.TextView
+import androidx.core.view.children
 import androidx.fragment.app.Fragment
 import app.findbest.vip.R
 import app.findbest.vip.utils.FlowLayout
@@ -27,7 +30,8 @@ class ProjectScreenAll: Fragment() {
     private var styleFlow: FlowLayout? = null
     private lateinit var mTypeList: MutableList<String>
     private lateinit var mStyleList: MutableList<String>
-    private var isTypeFlow = false
+    private var typeSomeView: LinearLayout? = null
+    private var styleSomeView: LinearLayout? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -45,6 +49,7 @@ class ProjectScreenAll: Fragment() {
             val view = UI {
                 linearLayout {
                     linearLayout {
+                        id = index+1
                         backgroundColor = Color.parseColor("#FFF8F8F8")
                         textView {
                             text = mTypeList[index]
@@ -52,6 +57,19 @@ class ProjectScreenAll: Fragment() {
                             textColor = Color.parseColor("#FF555555")
                         }.lparams{
                             setMargins(dip(10),dip(7),dip(10),dip(7))
+                        }
+                        setOnClickListener {
+                            if(typeSomeView!=null){
+                                if(typeSomeView!!.id != it.id) {
+                                    typeSomeView!!.backgroundColor = Color.parseColor("#FFF8F8F8")
+                                    typeSomeView = it as LinearLayout
+                                    typeSomeView!!.backgroundColor = Color.parseColor("#FFFF7C00")
+                                }
+                            }else{
+                                typeSomeView = it as LinearLayout
+                                typeSomeView!!.backgroundColor = Color.parseColor("#FFF8F8F8")
+                            }
+                            backgroundColor = Color.parseColor("#FFFF7C00")
                         }
                     }.lparams(wrapContent,dip(30)){
                         leftMargin = dip(10)
@@ -63,9 +81,9 @@ class ProjectScreenAll: Fragment() {
                 0 -> {
                     val firstView = UI {
                         linearLayout {
-                            linearLayout {
-                                if(isTypeFlow)
-                                    backgroundColor = Color.parseColor("#FFF8F8F8")
+                            val linea = linearLayout {
+                                id = index
+                                backgroundColor = Color.parseColor("#FFFF7C00")
                                 textView {
                                     text = "全部"
                                     textSize = 12f
@@ -74,12 +92,23 @@ class ProjectScreenAll: Fragment() {
                                     setMargins(dip(10),dip(7),dip(10),dip(7))
                                 }
                                 setOnClickListener {
+                                    if(typeSomeView!=null){
+                                        if(typeSomeView!!.id != it.id) {
+                                            typeSomeView!!.backgroundColor = Color.parseColor("#FFF8F8F8")
+                                            typeSomeView = it as LinearLayout
+                                            typeSomeView!!.backgroundColor = Color.parseColor("#FFFF7C00")
+                                        }
+                                    }else{
+                                        typeSomeView = it as LinearLayout
+                                        typeSomeView!!.backgroundColor = Color.parseColor("#FFF8F8F8")
+                                    }
                                     backgroundColor = Color.parseColor("#FFFF7C00")
                                 }
                             }.lparams(wrapContent,dip(30)){
                                 leftMargin = dip(10)
                                 topMargin = dip(10)
                             }
+                            typeSomeView = linea
                         }
                     }.view
                     typeFlow?.addView(firstView)
@@ -90,6 +119,7 @@ class ProjectScreenAll: Fragment() {
                     val lastView = UI {
                         linearLayout {
                             linearLayout {
+                                id = index+2
                                 backgroundColor = Color.parseColor("#FFF8F8F8")
                                 textView {
                                     text = "更多"
@@ -102,6 +132,18 @@ class ProjectScreenAll: Fragment() {
                                     imageResource = R.mipmap.ico_pack_up_arrow_nor
                                 }.lparams(dip(8),dip(4)){
                                     setMargins(dip(5),dip(14),dip(10),dip(12))
+                                }
+                                setOnClickListener {
+                                    if(typeSomeView!=null){
+                                        if(typeSomeView!!.id != it.id) {
+                                            typeSomeView!!.backgroundColor = Color.parseColor("#FFF8F8F8")
+                                            typeSomeView = it as LinearLayout
+                                            typeSomeView!!.backgroundColor = Color.parseColor("#FFFF7C00")
+                                        }
+                                    }else{
+                                        typeSomeView = it as LinearLayout
+                                        typeSomeView!!.backgroundColor = Color.parseColor("#FFF8F8F8")
+                                    }
                                 }
                             }.lparams(wrapContent,dip(30)){
                                 leftMargin = dip(10)
@@ -121,6 +163,7 @@ class ProjectScreenAll: Fragment() {
             val view = UI {
                 linearLayout {
                     linearLayout {
+                        id = index+1
                         backgroundColor = Color.parseColor("#FFF8F8F8")
                         textView {
                             text = mStyleList[index]
@@ -128,6 +171,18 @@ class ProjectScreenAll: Fragment() {
                             textColor = Color.parseColor("#FF555555")
                         }.lparams{
                             setMargins(dip(10),dip(7),dip(10),dip(7))
+                        }
+                        setOnClickListener {
+                            if(styleSomeView!=null){
+                                if(styleSomeView!!.id != it.id) {
+                                    styleSomeView!!.backgroundColor = Color.parseColor("#FFF8F8F8")
+                                    styleSomeView = it as LinearLayout
+                                    styleSomeView!!.backgroundColor = Color.parseColor("#FFFF7C00")
+                                }
+                            }else{
+                                styleSomeView = it as LinearLayout
+                                styleSomeView!!.backgroundColor = Color.parseColor("#FFF8F8F8")
+                            }
                         }
                     }.lparams(wrapContent,dip(30)){
                         leftMargin = dip(10)
@@ -139,8 +194,9 @@ class ProjectScreenAll: Fragment() {
                 0 -> {
                     val firstView = UI {
                         linearLayout {
-                            linearLayout {
-                                backgroundColor = Color.parseColor("#FFF8F8F8")
+                            val linea = linearLayout {
+                                id = index
+                                backgroundColor = Color.parseColor("#FFFF7C00")
                                 textView {
                                     text = "全部"
                                     textSize = 12f
@@ -148,10 +204,23 @@ class ProjectScreenAll: Fragment() {
                                 }.lparams{
                                     setMargins(dip(10),dip(7),dip(10),dip(7))
                                 }
+                                setOnClickListener {
+                                    if(styleSomeView!=null){
+                                        if(styleSomeView!!.id != it.id) {
+                                            styleSomeView!!.backgroundColor = Color.parseColor("#FFF8F8F8")
+                                            styleSomeView = it as LinearLayout
+                                            styleSomeView!!.backgroundColor = Color.parseColor("#FFFF7C00")
+                                        }
+                                    }else{
+                                        styleSomeView = it as LinearLayout
+                                        styleSomeView!!.backgroundColor = Color.parseColor("#FFF8F8F8")
+                                    }
+                                }
                             }.lparams(wrapContent,dip(30)){
                                 leftMargin = dip(10)
                                 topMargin = dip(10)
                             }
+                            styleSomeView = linea
                         }
                     }.view
                     styleFlow?.addView(firstView)
@@ -162,6 +231,7 @@ class ProjectScreenAll: Fragment() {
                     val lastView = UI {
                         linearLayout {
                             linearLayout {
+                                id = index+2
                                 backgroundColor = Color.parseColor("#FFF8F8F8")
                                 textView {
                                     text = "更多"
@@ -174,6 +244,18 @@ class ProjectScreenAll: Fragment() {
                                     imageResource = R.mipmap.ico_pack_up_arrow_nor
                                 }.lparams(dip(8),dip(4)){
                                     setMargins(dip(5),dip(14),dip(10),dip(12))
+                                }
+                                setOnClickListener {
+                                    if(styleSomeView!=null){
+                                        if(styleSomeView!!.id != it.id) {
+                                            styleSomeView!!.backgroundColor = Color.parseColor("#FFF8F8F8")
+                                            styleSomeView = it as LinearLayout
+                                            styleSomeView!!.backgroundColor = Color.parseColor("#FFFF7C00")
+                                        }
+                                    }else{
+                                        styleSomeView = it as LinearLayout
+                                        styleSomeView!!.backgroundColor = Color.parseColor("#FFF8F8F8")
+                                    }
                                 }
                             }.lparams(wrapContent,dip(30)){
                                 leftMargin = dip(10)
@@ -241,5 +323,18 @@ class ProjectScreenAll: Fragment() {
                 }
             }
         }.view
+    }
+
+    fun getListItem(): ArrayList<String> {
+        val array = arrayListOf<String>()
+        if(typeSomeView!=null){
+            val type = typeSomeView?.getChildAt(0) as TextView
+            array.add(type.text.toString())
+        }
+        if(styleSomeView!=null){
+            val type = styleSomeView?.getChildAt(0) as TextView
+            array.add(type.text.toString())
+        }
+        return array
     }
 }

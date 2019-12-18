@@ -9,7 +9,6 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import app.findbest.vip.R
 import app.findbest.vip.commonfrgmant.BackgroundFragment
-import app.findbest.vip.commonfrgmant.ChooseCountry
 import org.jetbrains.anko.*
 import org.jetbrains.anko.support.v4.UI
 import org.jetbrains.anko.support.v4.toast
@@ -50,6 +49,12 @@ class ProjectFragment : Fragment(), ProjectMainTitle.ChildrenClick,BackgroundFra
     override fun clickAll() {
         closeAlertDialog()
     }
+    //点击dialog确认按钮
+    override fun confirmClick(array: ArrayList<String>) {
+        toast("${array[0]}---${array[1]}")
+        closeAlertDialog()
+    }
+
 
     private fun createV(): View {
         return UI {
