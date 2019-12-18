@@ -3,21 +3,21 @@ package app.findbest.vip.project.fragment
 import android.content.Context
 import android.graphics.Color
 import android.os.Bundle
-import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.LinearLayout
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import app.findbest.vip.R
 import app.findbest.vip.project.adapter.ProjectMainListAdapter
 import app.findbest.vip.project.model.ProjectListModel
+import app.findbest.vip.project.view.ProjectInformation
 import app.findbest.vip.utils.recyclerView
 import org.jetbrains.anko.*
 import org.jetbrains.anko.support.v4.UI
+import org.jetbrains.anko.support.v4.startActivity
 
-class ProjectMainList : Fragment() {
+class ProjectMainList : Fragment(),ProjectMainListAdapter.ListAdapter  {
 
     companion object {
         fun newInstance(context: Context): ProjectMainList {
@@ -35,6 +35,12 @@ class ProjectMainList : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         return createV()
+    }
+
+    //选择recycle里的单个card
+    override fun oneClick() {
+        startActivity<ProjectInformation>()
+        activity?.overridePendingTransition(R.anim.right_in, R.anim.left_out)
     }
 
     private fun createV(): View {
@@ -128,7 +134,7 @@ class ProjectMainList : Fragment() {
                             800.00F
                         )
                     )
-                    val list = ProjectMainListAdapter(mContext, a)
+                    val list = ProjectMainListAdapter(mContext,this@ProjectMainList , a)
                     adapter = list
                 }.lparams(matchParent, matchParent) {
                     setMargins(dip(10), 0, dip(10), 0)

@@ -12,14 +12,20 @@ import android.widget.RelativeLayout
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import app.findbest.vip.R
+import app.findbest.vip.project.fragment.ProjectMainList
 import app.findbest.vip.project.model.ProjectListModel
 import org.jetbrains.anko.*
 
 
 class ProjectMainListAdapter(
     context: Context,
+    listAdapter: ListAdapter,
     private val mDataSet: MutableList<ProjectListModel> = mutableListOf()
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+
+    interface ListAdapter{
+        fun oneClick()
+    }
 
     private var mContext: Context = context
     private lateinit var title: TextView
@@ -30,11 +36,13 @@ class ProjectMainListAdapter(
     private lateinit var country: ImageView
     private lateinit var style: LinearLayout
     private lateinit var price: TextView
+    private lateinit var rela: RelativeLayout
+    private val listAdapter: ListAdapter = listAdapter
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         val view = with(parent.context) {
             frameLayout {
-                relativeLayout {
+                rela = relativeLayout {
                     linearLayout {
                         backgroundResource = R.drawable.raduis_card
                         orientation = LinearLayout.VERTICAL
@@ -183,6 +191,9 @@ class ProjectMainListAdapter(
             style.addView(view)
         }
         price.text = mDataSet[position].price.toString()
+        rela.setOnClickListener {
+            listAdapter.oneClick()
+        }
     }
 
     override fun getItemCount(): Int {
