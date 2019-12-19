@@ -313,6 +313,9 @@ class LoginActivity : BaseActivity(), BackgroundFragment.ClickBack, ChooseCountr
 
                 isAccount(token)
             }
+            if (it.code() == 400) {
+                toast("错误的凭证")
+            }
             if (it.code() == 500) {
                 toast("密码错误")
             }

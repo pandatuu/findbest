@@ -75,6 +75,7 @@ dependencies {
     //PushSDK
     implementation 'com.umeng.umsdk:push:6.0.1'
 
+
     //下拉回弹
     implementation 'com.biao:pulltorefresh:1.0.0-beta3'
     //actionBar沉底
@@ -90,7 +91,7 @@ dependencies {
     implementation  'com.scwang.smart:refresh-layout-kernel:2.0.0-alpha-1'
     implementation  'com.scwang.smart:refresh-header-material:2.0.0-alpha-1'
     implementation  'com.scwang.smart:refresh-footer-ball:2.0.0-alpha-1'        //球脉冲加载
-    
+
     //actionBar沉底
     implementation 'com.jaeger.statusbarutil:library:1.5.1'
 
