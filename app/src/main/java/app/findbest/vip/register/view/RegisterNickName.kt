@@ -48,12 +48,11 @@ class RegisterNickName : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        if (intent.getStringExtra("identity") != null)
-            identity = intent.getIntExtra("identity", 1)
+        identity = intent.getIntExtra("identity", 1)
         if (intent.getSerializableExtra("user") != null) {
             user = intent.getSerializableExtra("user") as RegisterModel
         }
-        if (intent.getSerializableExtra("role") != null) {
+        if (intent.getStringExtra("role") != null) {
             role = intent.getStringExtra("role") as String
         }
 
@@ -145,7 +144,7 @@ class RegisterNickName : BaseActivity() {
                                 toast("昵称格式不正确")
                                 return@setOnClickListener
                             }
-                            GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
+                            GlobalScope.launch() {
                                 if(user.onlyCompleted){
                                     setInformation()
                                 }else{
