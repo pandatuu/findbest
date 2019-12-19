@@ -75,6 +75,7 @@ dependencies {
     //PushSDK
     implementation 'com.umeng.umsdk:push:6.0.1'
 
+<<<<<<< HEAD
     //JWT token解析
     implementation 'com.auth0:java-jwt:3.8.3'
 
@@ -82,4 +83,9 @@ dependencies {
     implementation  'com.scwang.smart:refresh-layout-kernel:2.0.0-alpha-1'
     implementation  'com.scwang.smart:refresh-header-material:2.0.0-alpha-1'
     implementation  'com.scwang.smart:refresh-footer-ball:2.0.0-alpha-1'        //球脉冲加载
+=======
+
+    //actionBar沉底
+    implementation 'com.jaeger.statusbarutil:library:1.5.1'
+>>>>>>> 0062b4f6453a025108447f81427de4299b155b0f
 }
