@@ -38,9 +38,9 @@ class Instance : AppCompatActivity() {
 
             var bottomPartId = 11
             frameLayout {
-                id = bottomPartId
-                bottomButton = BottomButton.newInstance();
-                supportFragmentManager.beginTransaction().replace(id, bottomButton).commit()
+//                id = bottomPartId
+//                bottomButton = BottomButton.newInstance();
+//                supportFragmentManager.beginTransaction().replace(id, bottomButton).commit()
             }.lparams {
                 height = dip(50)
                 width = matchParent
@@ -64,6 +64,9 @@ class Instance : AppCompatActivity() {
             .setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR)
 
     }
+
+
+
 
 
 }

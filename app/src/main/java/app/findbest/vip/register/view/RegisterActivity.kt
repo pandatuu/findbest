@@ -7,6 +7,7 @@ import android.os.Bundle
 import android.os.CountDownTimer
 import android.text.Editable
 import android.text.TextWatcher
+import android.text.method.PasswordTransformationMethod
 import android.view.Gravity
 import android.view.inputmethod.InputMethodManager
 import android.widget.*
@@ -268,6 +269,7 @@ class RegisterActivity: BaseActivity(), BackgroundFragment.ClickBack, ChooseCoun
                                 hintTextColor = Color.parseColor("#FFD0D0D0")
                                 textSize = 15f
                                 singleLine = true
+                                transformationMethod = PasswordTransformationMethod()
                                 addTextChangedListener(object: TextWatcher{
                                     override fun afterTextChanged(s: Editable?) {}
                                     override fun beforeTextChanged(s: CharSequence?,start: Int,count: Int,after: Int ) {}
@@ -310,6 +312,7 @@ class RegisterActivity: BaseActivity(), BackgroundFragment.ClickBack, ChooseCoun
                                 hintTextColor = Color.parseColor("#FFD0D0D0")
                                 textSize = 15f
                                 singleLine = true
+                                transformationMethod = PasswordTransformationMethod()
                                 addTextChangedListener(object: TextWatcher{
                                     override fun afterTextChanged(s: Editable?) {}
                                     override fun beforeTextChanged(s: CharSequence?,start: Int,count: Int,after: Int ) {}
@@ -392,7 +395,8 @@ class RegisterActivity: BaseActivity(), BackgroundFragment.ClickBack, ChooseCoun
                                 country.text.toString(),
                                 code,
                                 nPwd,
-                                ""
+                                "",
+                                false
                             )
 
                             startActivity<RegisterCountry>("user" to user as Serializable)
@@ -544,7 +548,7 @@ class RegisterActivity: BaseActivity(), BackgroundFragment.ClickBack, ChooseCoun
         val mTransaction = supportFragmentManager.beginTransaction()
 
         if (backgroundFragment == null) {
-            backgroundFragment = BackgroundFragment.newInstance()
+            backgroundFragment = BackgroundFragment.newInstance(this@RegisterActivity)
 
             mTransaction.add(mainId, backgroundFragment!!)
         }

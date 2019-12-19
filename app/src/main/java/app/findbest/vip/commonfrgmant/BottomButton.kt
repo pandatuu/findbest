@@ -9,6 +9,8 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import app.findbest.vip.R
+import app.findbest.vip.commonactivity.MainActivity
+import app.findbest.vip.instance.fragment.InstanceDisplay
 import click
 import org.jetbrains.anko.*
 import org.jetbrains.anko.support.v4.UI
@@ -18,14 +20,22 @@ class BottomButton : Fragment() {
 
 
     private var mContext: Context? = null
+    lateinit var main: MainActivity
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        if (parentFragment != null) {
+            mContext = parentFragment?.context
+        } else {
+            mContext = activity
+        }
     }
 
     companion object {
-        fun newInstance(): BottomButton {
-            return BottomButton()
+        fun newInstance(main: MainActivity): BottomButton {
+            var f = BottomButton()
+            f.main=main
+            return f
         }
     }
 
@@ -35,11 +45,7 @@ class BottomButton : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         val fragmentView = createView()
-        if (parentFragment != null) {
-            mContext = parentFragment?.context
-        } else {
-            mContext = activity
-        }
+
         return fragmentView
     }
 
@@ -52,6 +58,10 @@ class BottomButton : Fragment() {
                     linearLayout() {
                         gravity = Gravity.CENTER
                         verticalLayout {
+
+                            this.withTrigger().click {
+                                main.jumpPage(1)
+                            }
 
                             imageView {
 
@@ -82,6 +92,12 @@ class BottomButton : Fragment() {
 
                         gravity = Gravity.CENTER
                         verticalLayout {
+
+
+                            this.withTrigger().click {
+                                main.jumpPage(2)
+                            }
+
 
                             imageView {
                                 setImageResource(R.mipmap.tab_ico_case_nor)

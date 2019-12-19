@@ -28,6 +28,7 @@ import android.widget.*
 import androidx.core.content.ContextCompat.getSystemService
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import app.findbest.vip.commonactivity.MainActivity
 import app.findbest.vip.instance.adapter.InstanceListAdapter
 import app.findbest.vip.instance.api.InstanceApi
 import app.findbest.vip.instance.model.Instance
@@ -53,6 +54,7 @@ class InstanceDisplay : FragmentParent() {
     lateinit var header: View
     lateinit var footer: View
     lateinit var glide: RequestManager
+
 
     var adapter: InstanceListAdapter? = null
 
@@ -82,6 +84,7 @@ class InstanceDisplay : FragmentParent() {
         fun newInstance( glide: RequestManager): InstanceDisplay {
             var f = InstanceDisplay()
             f.glide=glide
+
             return f
         }
     }

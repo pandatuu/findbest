@@ -3,11 +3,17 @@ package app.findbest.vip.login.view
 import android.content.SharedPreferences
 import android.graphics.Color
 import android.os.Bundle
+import android.util.Base64
+import android.view.Gravity
 import androidx.appcompat.app.AppCompatActivity
 import androidx.preference.PreferenceManager
 import app.findbest.vip.R
+import app.findbest.vip.commonactivity.MainActivity
 import app.findbest.vip.login.api.LoginApi
+import app.findbest.vip.utils.CheckToken
 import app.findbest.vip.utils.RetrofitUtils
+import com.auth0.jwt.JWT
+import com.auth0.jwt.algorithms.Algorithm
 import com.gyf.immersionbar.ImmersionBar
 import io.reactivex.schedulers.Schedulers
 import kotlinx.coroutines.CoroutineStart
@@ -15,10 +21,10 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.rx2.awaitSingle
-import org.jetbrains.anko.backgroundColor
-import org.jetbrains.anko.frameLayout
-import org.jetbrains.anko.startActivity
-import org.jetbrains.anko.toast
+import org.jetbrains.anko.*
+import java.security.KeyFactory
+import java.security.interfaces.RSAPublicKey
+import java.security.spec.X509EncodedKeySpec
 
 class GuideView: AppCompatActivity() {
 
@@ -27,6 +33,12 @@ class GuideView: AppCompatActivity() {
 
         frameLayout {
             backgroundColor = Color.WHITE
+            textView {
+                text= "这是启动页"
+                textSize = 18f
+            }.lparams{
+                gravity = Gravity.CENTER
+            }
         }
     }
 
@@ -56,14 +68,23 @@ class GuideView: AppCompatActivity() {
                 .awaitSingle()
             if (it.code() in 200..299) {
                 println("token未过期")
+
+//                val mPerferences: SharedPreferences =
+//                    PreferenceManager.getDefaultSharedPreferences(this@GuideView)
+//                val token = mPerferences.getString("token", "")
+
+                startActivity<MainActivity>()
+                overridePendingTransition(R.anim.right_in, R.anim.left_out)
             }
-            if(it.code() == 401){
+            if(it.code() == 400){
                 println("token过期，需要登录")
                 toast("token过期，需要重新登录")
                 startActivity<LoginActivity>()
+                overridePendingTransition(R.anim.right_in, R.anim.left_out)
             }
         } catch (throwable: Throwable) {
             println(throwable)
         }
     }
+
 }

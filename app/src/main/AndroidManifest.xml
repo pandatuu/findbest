@@ -16,16 +16,17 @@
         android:networkSecurityConfig="@xml/network_security_config"
         tools:ignore="GoogleAppIndexingWarning">
 
+
         <activity android:name=".login.view.GuideView"
             android:theme="@style/AppTheme.NoActionBar"
             >
+
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
 
 
         <!--首页-->
@@ -38,43 +39,56 @@
 
 
         <!--登录页-->
+
         <activity android:name=".login.view.LoginActivity"
             android:windowSoftInputMode="adjustPan"
             android:theme="@style/AppTheme.NoActionBar">
         </activity>
 
-        <!--忘记密码-->
+        <!-- 忘记密码 -->
         <activity android:name=".login.view.ResetPassword"
             android:windowSoftInputMode="adjustPan"
             android:theme="@style/AppTheme.NoActionBar">
         </activity>
 
-        <!--注册页-->
+        <!-- 注册页 -->
         <activity android:name=".register.view.RegisterActivity"
             android:windowSoftInputMode="adjustPan"
             android:theme="@style/AppTheme.NoActionBar">
         </activity>
 
-        <!--注册-选择国家页-->
+        <!-- 注册-选择国家页 -->
         <activity android:name=".register.view.RegisterCountry"
             android:windowSoftInputMode="adjustPan"
             android:theme="@style/AppTheme.NoActionBar">
         </activity>
 
-        <!--注册-选择角色页-->
+        <!-- 注册-选择角色页 -->
         <activity android:name=".register.view.RegisterIdentity"
             android:windowSoftInputMode="adjustPan"
             android:theme="@style/AppTheme.NoActionBar">
         </activity>
 
-        <!--注册-选择邮箱页-->
+        <!-- 注册-选择邮箱页 -->
         <activity android:name=".register.view.RegisterEmail"
             android:windowSoftInputMode="adjustPan"
             android:theme="@style/AppTheme.NoActionBar">
         </activity>
 
-        <!--注册-选择昵称页-->
+        <!-- 注册-选择昵称页 -->
         <activity android:name=".register.view.RegisterNickName"
+            android:windowSoftInputMode="adjustPan"
+            android:theme="@style/AppTheme.NoActionBar">
+        </activity>
+
+        <!-- 测试用首页 -->
+        <activity android:name=".project.view.TextActivity"
+            android:windowSoftInputMode="adjustPan"
+            android:theme="@style/AppTheme.NoActionBar">
+        </activity>
+
+        <!-- 项目-项目需求和画师应聘页 -->
+        <activity android:name=".project.view.ProjectInformation"
             android:windowSoftInputMode="adjustPan"
             android:theme="@style/AppTheme.NoActionBar">
         </activity>

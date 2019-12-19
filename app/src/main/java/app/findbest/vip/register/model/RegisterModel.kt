@@ -8,5 +8,6 @@ data class RegisterModel(
     var country: String,
     var vCode: String,
     var pwd: String,
-    var email: String
+    var email: String,
+    var onlyCompleted: Boolean
 ): Serializable
