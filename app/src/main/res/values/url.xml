@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="testRegisterUrl">http://192.168.2.200:3300/</string>
+    <string name="developmentUrl">http://192.168.2.200:3300/</string>
+<!--    <string name="testRegisterUrl">http://192.168.2.200:4000/</string>-->
 </resources>

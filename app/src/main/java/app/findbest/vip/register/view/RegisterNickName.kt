@@ -14,6 +14,7 @@ import androidx.preference.PreferenceManager
 import com.alibaba.fastjson.JSON
 import app.findbest.vip.R
 import app.findbest.vip.login.api.LoginApi
+import app.findbest.vip.project.view.TextActivity
 import app.findbest.vip.register.api.RegisterApi
 import app.findbest.vip.register.model.RegisterModel
 import app.findbest.vip.utils.BaseActivity
@@ -145,7 +146,11 @@ class RegisterNickName : BaseActivity() {
                                 return@setOnClickListener
                             }
                             GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
-                                register()
+                                if(user.onlyCompleted){
+                                    setInformation()
+                                }else{
+                                    register()
+                                }
                             }
                         }
                     }.lparams(matchParent, dip(47)) {
@@ -173,7 +178,7 @@ class RegisterNickName : BaseActivity() {
             val body = RequestBody.create(MimeType.APPLICATION_JSON, userJson)
 
             val retrofitUils =
-                RetrofitUtils(this@RegisterNickName, resources.getString(R.string.testRegisterUrl))
+                RetrofitUtils(this@RegisterNickName, resources.getString(R.string.developmentUrl))
             val it = retrofitUils.create(RegisterApi::class.java)
                 .registerUser(body)
                 .subscribeOn(Schedulers.io())
@@ -205,7 +210,7 @@ class RegisterNickName : BaseActivity() {
             val body = RequestBody.create(MimeType.APPLICATION_JSON, userJson)
 
             val retrofitUils =
-                RetrofitUtils(this@RegisterNickName, resources.getString(R.string.testRegisterUrl))
+                RetrofitUtils(this@RegisterNickName, resources.getString(R.string.developmentUrl))
             val it = retrofitUils.create(LoginApi::class.java)
                 .loginApass(body)
                 .subscribeOn(Schedulers.io())
@@ -233,7 +238,7 @@ class RegisterNickName : BaseActivity() {
                 "userType" to identity,
                 "country" to user.country,
                 "name" to nickName.text.toString(),
-                "noOpen" to true,
+                "noOpen" to 1,
                 "boss" to nickName.text.toString(),
                 "email" to user.email
             )
@@ -241,15 +246,15 @@ class RegisterNickName : BaseActivity() {
             val body = RequestBody.create(MimeType.APPLICATION_JSON, userJson)
 
             val retrofitUils =
-                RetrofitUtils(this@RegisterNickName, resources.getString(R.string.testRegisterUrl))
+                RetrofitUtils(this@RegisterNickName, resources.getString(R.string.developmentUrl))
             val it = retrofitUils.create(RegisterApi::class.java)
                 .information(body)
                 .subscribeOn(Schedulers.io())
                 .awaitSingle()
             if (it.code() in 200..299) {
                 //完善信息成功
-
-
+                startActivity<TextActivity>()
+                overridePendingTransition(R.anim.right_in, R.anim.left_out)
             }
         } catch (throwable: Throwable) {
 
