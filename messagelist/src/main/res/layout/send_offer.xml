@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              style="@style/aurora_msgitem_receive_style">
+
+
+    <cn.jiguang.imui.view.RoundTextView
+        android:id="@+id/aurora_tv_msgitem_date"
+        style="@style/aurora_msgitem_date_style" />
+
+
+
+
+    <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:orientation="horizontal">
+
+
+
+
+
+    <cn.jiguang.imui.view.RoundImageView
+        android:id="@+id/aurora_iv_msgitem_avatar"
+        style="@style/aurora_msgitem_receiver_avatar_style"
+        android:contentDescription="@string/aurora_avatar_desc" />
+
+    <LinearLayout
+        android:layout_width="250dp"
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal"
+        android:background="@drawable/mask_blue_white"
+
+        android:orientation="vertical">
+
+
+
+        <TextView
+            android:id="@+id/sendOffer_container"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:layout_margin="15dp"
+            android:text=""
+
+            android:textColor="#333"
+            android:textSize="14sp" />
+
+
+
+
+        <TextView
+            android:id="@+id/communication_content"
+            android:layout_width="match_parent"
+            android:layout_height="45dp"
+            android:letterSpacing="0.05"
+            android:text="詳細を見る"
+            android:textColor="#fff"
+            android:background="@drawable/mask_blue"
+
+            android:gravity="center"
+            android:textSize="15sp" />
+
+
+
+    </LinearLayout>
+
+    </LinearLayout>
+
+
+</LinearLayout>

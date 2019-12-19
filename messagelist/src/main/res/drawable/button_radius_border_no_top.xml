@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<shape xmlns:android="http://schemas.android.com/apk/res/android" >
+    //这里是Linearlayout布局的背景颜色
+    <solid android:color="#ff02b8f7" />
+
+    //角的话，里边有参数可以单独设置
+    <corners android:topLeftRadius="0dp"
+             android:topRightRadius="0dp"
+             android:bottomRightRadius="5dp"
+             android:bottomLeftRadius="5dp"/>
+
+</shape>

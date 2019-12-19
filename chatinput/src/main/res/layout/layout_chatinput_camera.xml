@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+             xmlns:tools="http://schemas.android.com/tools"
+             android:layout_width="match_parent"
+             android:layout_height="match_parent"
+             android:minHeight="280dp">
+
+    <TextureView
+            android:id="@+id/aurora_txtv_camera_texture"
+            android:layout_width="match_parent"
+            android:background="@null"
+            android:layout_height="match_parent"/>
+
+    <ImageButton
+            android:id="@+id/aurora_ib_camera_close"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_gravity="top|start"
+            android:layout_marginLeft="16dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="30dp"
+            android:background="@drawable/aurora_preview_close_camera"
+
+            tools:visibility="visible"/>
+
+    <ImageButton
+            android:id="@+id/aurora_ib_camera_full_screen"
+            android:layout_width="40dp"
+            android:layout_height="30dp"
+            android:layout_gravity="top|end"
+            android:layout_marginRight="16dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginTop="20dp"
+            android:visibility="gone"
+            android:background="@drawable/aurora_preview_full_screen"/>
+
+    <ImageButton
+            android:id="@+id/aurora_ib_camera_record_video"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|start"
+            android:layout_marginBottom="20dp"
+            android:layout_marginLeft="16dp"
+            android:layout_marginStart="16dp"
+            android:visibility="gone"
+
+            android:background="@drawable/aurora_preview_record_video"/>
+
+
+    <ImageView
+            android:id="@+id/aurora_ib_retake"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_gravity="bottom|end"
+            android:layout_marginBottom="12dp"
+            android:layout_marginLeft="20dp"
+
+            android:src="@drawable/retake_a_photo"
+            android:visibility="gone"
+
+            android:background="#00ffffff"/>
+
+
+    <ImageView
+            android:id="@+id/aurora_ib_send_pic"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_gravity="bottom|left"
+            android:layout_marginBottom="12dp"
+            android:layout_marginRight="20dp"
+            android:src="@drawable/send_photo"
+            android:visibility="gone"
+            android:background="#00ffffff"/>
+
+
+    <ImageButton
+            android:id="@+id/aurora_ib_camera_capture"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_gravity="bottom|center"
+            android:layout_marginBottom="12dp"
+            android:background="@drawable/take_a_photo"/>
+
+    <ImageButton
+            android:id="@+id/aurora_ib_camera_switch"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="top|end"
+            android:layout_marginTop="30dp"
+            android:layout_marginRight="16dp"
+            android:layout_marginEnd="16dp"
+            android:background="@drawable/aurora_preview_switch_camera"/>
+</FrameLayout>

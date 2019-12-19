@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    style="@style/aurora_msgitem_send_style">
+
+    <cn.jiguang.imui.view.RoundTextView
+        android:id="@+id/aurora_tv_msgitem_date"
+        style="@style/aurora_msgitem_date_style" />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="30dp">
+
+        <TextView
+            android:id="@+id/aurora_tv_msgitem_sender_display_name"
+            style="@style/aurora_msgitem_sender_display_name_style"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toStartOf="@+id/aurora_iv_msgitem_avatar"
+            android:layout_toLeftOf="@+id/aurora_iv_msgitem_avatar"
+            android:gravity="end"
+            android:visibility="gone"
+            android:textAlignment="textEnd" />
+
+
+        <LinearLayout
+            android:id="@+id/aurora_tv_msgitem_message_parent"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/aurora_tv_msgitem_sender_display_name"
+            android:layout_toLeftOf="@+id/aurora_iv_msgitem_avatar"
+            android:gravity="right"
+            android:orientation="vertical">
+
+
+            <LinearLayout
+                android:id="@+id/aurora_tv_msgitem_message_top"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+
+                <ImageButton
+                    android:id="@+id/aurora_ib_msgitem_resend"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:layout_centerVertical="true"
+                    android:layout_marginRight="5dp"
+                    android:background="@drawable/aurora_send_msg_error"
+                    android:clickable="true"
+                    android:scaleType="fitCenter"
+                    android:visibility="gone" />
+
+                <ProgressBar
+                    android:id="@+id/aurora_pb_msgitem_sending"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:layout_centerVertical="true"
+                    android:layout_marginRight="3dp"
+                    android:visibility="visible"/>
+
+
+                <LinearLayout
+                    android:id="@+id/aurora_fl_msgitem_voice_container"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/aurora_tv_msgitem_sender_display_name"
+                    android:background="@drawable/radius_button_theme"
+                    android:orientation="horizontal"
+                    android:layout_toLeftOf="@id/aurora_iv_msgitem_avatar"
+                    android:gravity="center_vertical|right">
+
+                    <TextView
+                        android:id="@+id/aurora_tv_msgitem_message"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                         />
+                    <!--android:background="@drawable/aurora_sendtxt_bubble"-->
+
+
+                    <!--输入信息展示-->
+                    <TextView
+                        android:id="@+id/aurora_tv_voice_length"
+                        style="@style/aurora_msgitem_msg_txt_style"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:lineSpacingExtra="5dp"
+                        android:textColor="@color/white"
+                        android:paddingLeft="10dp"
+                        android:paddingTop="6dp"
+                        android:paddingBottom="6dp"
+                        android:layout_marginRight="10dp"
+                        android:textSize="14sp"
+                        android:gravity="left"
+                        />
+
+                    <ImageView
+                        android:id="@+id/aurora_iv_msgitem_voice_anim"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginRight="10dp"
+                        android:background="@drawable/aurora_sendvoice_send_3" />
+
+
+
+                </LinearLayout>
+
+            </LinearLayout>
+            <!--送达、已读-->
+            <TextView
+                style="@style/aurora_msgitem_date_style"
+                android:layout_alignParentBottom="true"
+                android:layout_alignParentRight="true"
+                android:layout_gravity="right"
+                android:textSize="11sp"
+                android:visibility="gone"
+                android:textColor="#999999"
+                android:text="送达"
+                />
+        </LinearLayout>
+
+
+
+
+        <cn.jiguang.imui.view.RoundImageView
+            android:id="@+id/aurora_iv_msgitem_avatar"
+            style="@style/aurora_msgitem_sender_avatar_style"
+            android:contentDescription="@string/aurora_avatar_desc" />
+
+
+    </RelativeLayout>
+
+</LinearLayout>

@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white">
+
+    <include layout="@layout/view_spitview_horizontal" />
+
+    <cn.jiguang.imui.chatinput.emoji.widget.EmoticonsFuncView
+        android:id="@+id/view_epv"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@+id/view_eiv"
+        android:orientation="vertical" />
+
+    <cn.jiguang.imui.chatinput.emoji.widget.EmoticonsIndicatorView
+        android:id="@+id/view_eiv"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/view_spit"
+        android:gravity="center"
+
+        android:orientation="horizontal"
+        android:paddingBottom="@dimen/indicator_margin" />
+
+    <include
+        android:id="@+id/view_spit"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_above="@+id/view_etv"
+        layout="@layout/view_spitview_horizontal"
+
+        />
+
+    <cn.jiguang.imui.chatinput.emoji.widget.EmoticonsToolBarView
+        android:id="@+id/view_etv"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/bar_height"
+        android:layout_alignParentBottom="true"
+        android:orientation="vertical" >
+
+
+          <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+              android:background="#fff"
+
+              android:orientation="horizontal">
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="match_parent"
+                android:orientation="horizontal"
+                >
+
+
+                <!--android:text="お気に入りに追加"-->
+
+                <TextView
+                    android:id="@+id/soucang"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:textSize="13sp"
+                    android:textColor="#FFB706"
+
+                    android:gravity="center_vertical"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="10dp"
+                    >
+                </TextView>
+
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/sendEmojiMessage"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:textSize="13sp"
+                android:textColor="#FFB706"
+                android:text="送信"
+                android:gravity="center_vertical"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                >
+            </TextView>
+
+        </LinearLayout>
+
+
+
+
+
+    </cn.jiguang.imui.chatinput.emoji.widget.EmoticonsToolBarView>
+</RelativeLayout>

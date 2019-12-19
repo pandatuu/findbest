@@ -1,2 +1,3 @@
 include ':app'
+include ':messagelist', ':chatinput'
 rootProject.name='findbest'

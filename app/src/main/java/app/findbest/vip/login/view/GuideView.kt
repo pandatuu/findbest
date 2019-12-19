@@ -49,7 +49,7 @@ class GuideView: AppCompatActivity() {
     private suspend fun isToken(){
         try {
             val retrofitUils =
-                RetrofitUtils(this@GuideView, resources.getString(R.string.testRegisterUrl))
+                RetrofitUtils(this@GuideView, resources.getString(R.string.developmentUrl))
             val it = retrofitUils.create(LoginApi::class.java)
                 .isToken()
                 .subscribeOn(Schedulers.io())

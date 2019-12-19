@@ -423,7 +423,7 @@ class ResetPassword: BaseActivity(), BackgroundFragment.ClickBack, ChooseCountry
             val body = RequestBody.create(MimeType.APPLICATION_JSON, userJson)
 
             val retrofitUils =
-                RetrofitUtils(this@ResetPassword, resources.getString(R.string.testRegisterUrl))
+                RetrofitUtils(this@ResetPassword, resources.getString(R.string.developmentUrl))
             val it = retrofitUils.create(RegisterApi::class.java)
                 .sendvCode(body)
                 .subscribeOn(Schedulers.io())
@@ -455,7 +455,7 @@ class ResetPassword: BaseActivity(), BackgroundFragment.ClickBack, ChooseCountry
             val body = RequestBody.create(MimeType.APPLICATION_JSON, userJson)
 
             val retrofitUils =
-                RetrofitUtils(this@ResetPassword, resources.getString(R.string.testRegisterUrl))
+                RetrofitUtils(this@ResetPassword, resources.getString(R.string.developmentUrl))
             val it = retrofitUils.create(LoginApi::class.java)
                 .resetPwd(body)
                 .subscribeOn(Schedulers.io())

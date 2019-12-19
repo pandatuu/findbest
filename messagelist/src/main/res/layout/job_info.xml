@@ -1,0 +1,322 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              style="@style/aurora_msgitem_send_style">
+
+
+    <LinearLayout
+            android:id="@+id/jobInfoContainer"
+            android:orientation="vertical"
+            android:layout_height="wrap_content"
+            android:minHeight="220dp"
+            android:background="@drawable/border_e2"
+            android:layout_marginLeft="15dp"
+            android:layout_marginRight="15dp"
+            android:layout_width="match_parent"
+    >
+
+
+        <LinearLayout
+                android:orientation="horizontal"
+                android:layout_height="42dp"
+                android:layout_width="match_parent"
+        >
+
+            <LinearLayout
+                    android:orientation="horizontal"
+                    android:layout_height="match_parent"
+                    android:layout_width="130dp"
+                    android:layout_marginLeft="10dp"
+                    android:background="@drawable/button_radius_border_no_top"
+                    android:gravity="center_vertical"
+                    android:layout_marginTop="2dp"
+            >
+
+                <TextView
+                        android:id="@+id/salaryType"
+                        android:layout_height="19dp"
+                        android:layout_width="19dp"
+                        android:textSize="10sp"
+                        android:textColor="#ffffff"
+                        android:gravity="center"
+                        android:background="@drawable/circle_border_white"
+                        android:layout_marginLeft="8dp"
+                />
+
+                <TextView
+                        android:id="@+id/showSalaryMinToMax"
+                        android:layout_height="19dp"
+                        android:layout_width="wrap_content"
+                        android:textSize="12sp"
+                        android:textColor="#ffffff"
+                        android:gravity="center"
+                        android:layout_marginLeft="8dp"
+                />
+
+
+            </LinearLayout>
+
+
+            <RelativeLayout
+                    android:layout_height="match_parent"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_marginRight="17dp"
+                    android:layout_marginLeft="15dp"
+            >
+
+                <LinearLayout
+                        android:layout_height="match_parent"
+                        android:layout_width="wrap_content"
+                        android:layout_alignParentLeft="true"
+                        android:layout_alignParentBottom="true"
+                        android:layout_marginBottom="8dp"
+                        android:orientation="horizontal"
+                        android:gravity="bottom"
+                >
+
+
+                    <ImageView
+                            android:id="@+id/haveCanteen"
+
+                            android:layout_height="wrap_content"
+                            android:layout_width="wrap_content"
+                            android:src="@drawable/icon_canbu_home"
+                            android:visibility="gone"
+
+                    />
+
+                    <ImageView
+                            android:id="@+id/haveClub"
+
+                            android:layout_height="wrap_content"
+                            android:layout_width="wrap_content"
+                            android:layout_marginLeft="17dp"
+                            android:src="@drawable/icon_coffee_home"
+                            android:visibility="gone"
+
+                    />
+
+                    <ImageView
+                            android:id="@+id/haveSocialInsurance"
+
+                            android:layout_height="wrap_content"
+                            android:layout_width="wrap_content"
+                            android:layout_marginLeft="17dp"
+                            android:src="@drawable/icon_fl_home"
+                            android:visibility="gone"
+
+                    />
+
+                    <ImageView
+                            android:id="@+id/haveTraffic"
+
+                            android:layout_height="wrap_content"
+                            android:layout_width="wrap_content"
+                            android:layout_marginLeft="17dp"
+                            android:src="@drawable/icon_cb_home"
+                            android:visibility="gone"
+
+                    />
+
+
+                </LinearLayout>
+
+                <ImageView
+
+                        android:id="@+id/isNew"
+
+                        android:layout_height="wrap_content"
+                        android:layout_width="wrap_content"
+                        android:layout_alignParentRight="true"
+                        android:layout_alignParentBottom="true"
+                        android:layout_marginBottom="8dp"
+                        android:src="@drawable/icon_new_home"
+                        android:visibility="gone"
+                />
+
+            </RelativeLayout>
+
+        </LinearLayout>
+
+
+        <TextView
+                android:id="@+id/companyName"
+
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                android:textSize="13sp"
+                android:textColor="#999999"
+                android:gravity="center_vertical"
+                android:layout_marginLeft="20dp"
+                android:layout_marginTop="15dp"
+                android:textStyle="bold"
+        />
+
+
+        <TextView
+                android:id="@+id/positionName"
+
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                android:textSize="16sp"
+                android:textColor="#202020"
+                android:gravity="center_vertical"
+                android:layout_marginLeft="20dp"
+                android:layout_marginTop="4dp"
+                android:textStyle="bold"
+
+        />
+
+
+        <LinearLayout
+                android:layout_height="18dp"
+                android:layout_width="wrap_content"
+                android:layout_marginTop="8dp"
+                android:layout_marginLeft="20dp"
+                android:orientation="horizontal"
+
+        >
+
+
+            <TextView
+
+                    android:id="@+id/address"
+
+                    android:layout_height="match_parent"
+                    android:layout_width="wrap_content"
+                    android:paddingLeft="7dp"
+                    android:paddingRight="7dp"
+                    android:gravity="center_vertical"
+                    android:textSize="11sp"
+                    android:textColor="#0097D6"
+                    android:background="@drawable/theme_bule_border"
+            />
+
+
+            <TextView
+                    android:id="@+id/workingExperience"
+
+                    android:layout_height="match_parent"
+                    android:layout_width="wrap_content"
+                    android:paddingLeft="7dp"
+                    android:paddingRight="7dp"
+                    android:layout_marginLeft="5dp"
+                    android:gravity="center_vertical"
+
+                    android:textSize="11sp"
+                    android:textColor="#0097D6"
+                    android:background="@drawable/theme_bule_border"
+            />
+
+
+            <TextView
+
+                    android:id="@+id/educationalBackground"
+
+                    android:layout_height="match_parent"
+                    android:layout_width="wrap_content"
+                    android:paddingLeft="7dp"
+                    android:paddingRight="7dp"
+                    android:layout_marginLeft="5dp"
+                    android:gravity="center_vertical"
+                    android:textSize="11sp"
+                    android:textColor="#0097D6"
+                    android:background="@drawable/theme_bule_border"
+            />
+
+        </LinearLayout>
+
+
+        <RelativeLayout
+                android:layout_height="30dp"
+                android:layout_width="match_parent"
+                android:layout_marginRight="17dp"
+                android:layout_marginLeft="20dp"
+                android:layout_marginTop="15dp"
+        >
+
+
+            <LinearLayout
+                    android:layout_height="match_parent"
+                    android:layout_width="match_parent"
+                    android:layout_alignParentLeft="true"
+                    android:orientation="horizontal"
+                    android:background="#00000000"
+                    android:gravity="center_vertical"
+            >
+
+
+                <cn.jiguang.imui.view.RoundImageView
+                        android:id="@+id/userlogo"
+                        android:src="@drawable/default_avatar"
+                        android:layout_height="28dp"
+                        android:layout_width="28dp"
+
+
+
+                />
+
+
+                <TextView
+
+
+                        android:id="@+id/userPositionNameAndUserName"
+
+                        android:layout_height="wrap_content"
+                        android:layout_width="wrap_content"
+                        android:layout_marginLeft="10dp"
+                        android:textSize="11sp"
+                        android:textStyle="bold"
+                        android:gravity="center_vertical"
+                        android:textColor="#5c5c5c"
+                />
+
+
+                <ImageView
+                        android:layout_height="wrap_content"
+                        android:layout_width="wrap_content"
+                        android:layout_marginLeft="10dp"
+                        android:visibility="gone"
+                        android:src="@drawable/icon_gold_home"
+                />
+
+
+            </LinearLayout>
+
+        </RelativeLayout>
+
+
+        <LinearLayout
+                android:layout_height="35dp"
+                android:layout_width="match_parent"
+                android:layout_marginTop="10dp"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp"
+                android:background="@drawable/top_border_d8"
+        >
+
+            <TextView
+                    android:id="@+id/datetTime"
+                    android:layout_height="wrap_content"
+                    android:layout_width="wrap_content"
+                    android:text=""
+            />
+
+
+
+            <TextView
+                    android:layout_height="wrap_content"
+                    android:layout_width="wrap_content"
+                    android:layout_marginLeft="3dp"
+                    android:text="あなたからのチャット"
+            />
+
+
+        </LinearLayout>
+
+
+    </LinearLayout>
+
+</LinearLayout>
