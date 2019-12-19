@@ -1,5 +1,6 @@
 package app.findbest.vip.project.adapter
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Color
 import android.text.TextUtils
@@ -15,6 +16,8 @@ import app.findbest.vip.R
 import app.findbest.vip.project.fragment.ProjectMainList
 import app.findbest.vip.project.model.ProjectListModel
 import org.jetbrains.anko.*
+import java.text.SimpleDateFormat
+import java.util.*
 
 
 class ProjectMainListAdapter(
@@ -35,7 +38,8 @@ class ProjectMainListAdapter(
     private lateinit var date: TextView
     private lateinit var country: ImageView
     private lateinit var style: LinearLayout
-    private lateinit var price: TextView
+    private lateinit var minPrice: TextView
+    private lateinit var maxPrice: TextView
     private lateinit var rela: RelativeLayout
     private val listAdapter: ListAdapter = listAdapter
 
@@ -127,8 +131,27 @@ class ProjectMainListAdapter(
                                     textSize = 11f
                                     textColor = Color.parseColor("#FFFF7C00")
                                 }
-                                price = textView {
-                                    text = "800.00"
+                                minPrice = textView {
+                                    textSize = 18f
+                                    textColor = Color.parseColor("#FFFF7C00")
+                                }.lparams {
+                                    leftMargin = dip(5)
+                                }
+                                textView {
+                                    text = "-"
+                                    textSize = 18f
+                                    textColor = Color.parseColor("#FFFF7C00")
+                                }.lparams {
+                                    leftMargin = dip(5)
+                                }
+                                textView {
+                                    text = "¥"
+                                    textSize = 11f
+                                    textColor = Color.parseColor("#FFFF7C00")
+                                }.lparams {
+                                    leftMargin = dip(5)
+                                }
+                                maxPrice = textView {
                                     textSize = 18f
                                     textColor = Color.parseColor("#FFFF7C00")
                                 }.lparams {
@@ -162,35 +185,40 @@ class ProjectMainListAdapter(
 
         title.text = mDataSet[position].title
         if(!mDataSet[position].isDefend) defend.visibility = RelativeLayout.GONE
-        pixel.text = mDataSet[position].pixel
+        pixel.text = mDataSet[position].size
         format.text = mDataSet[position].format
-        date.text = mDataSet[position].date
+        date.text = longToString(mDataSet[position].commitAt)
         when(mDataSet[position].country){
             "china" -> country.imageResource = R.mipmap.image_china
             "japan" -> country.imageResource = R.mipmap.image_japan
             "korea" -> country.imageResource = R.mipmap.image_korea
         }
         title.text = mDataSet[position].title
-        mDataSet[position].styleList.forEach {
-            val view = with(mContext){
-                relativeLayout {
+        //风格标签最多三个
+        for(index in 0 until mDataSet[position].styleList.size()){
+            if(index < 3){
+                val styleString = mDataSet[position].styleList[index].asString
+                val view = with(mContext){
                     relativeLayout {
-                        backgroundColor = Color.parseColor("#FFF7F7F7")
-                        textView {
-                            text = it
-                            textSize = 11f
-                            textColor = Color.parseColor("#FF555555")
-                        }.lparams {
-                            centerInParent()
+                        relativeLayout {
+                            backgroundColor = Color.parseColor("#FFF7F7F7")
+                            textView {
+                                text = styleString
+                                textSize = 11f
+                                textColor = Color.parseColor("#FF555555")
+                            }.lparams {
+                                centerInParent()
+                            }
+                        }.lparams(dip(55), dip(20)){
+                            leftMargin = dip(10)
                         }
-                    }.lparams(dip(55), dip(20)){
-                        leftMargin = dip(10)
                     }
                 }
+                style.addView(view)
             }
-            style.addView(view)
         }
-        price.text = mDataSet[position].price.toString()
+        minPrice.text = mDataSet[position].minPrice.toString()
+        maxPrice.text = mDataSet[position].maxPrice.toString()
         rela.setOnClickListener {
             listAdapter.oneClick()
         }
@@ -205,7 +233,12 @@ class ProjectMainListAdapter(
     fun setItems(items: MutableList<ProjectListModel>) {
         mDataSet.clear()
         mDataSet.addAll(items)
-
         notifyDataSetChanged()
+    }
+
+    // 类型转换
+    @SuppressLint("SimpleDateFormat")
+    private fun longToString(long: Long): String {
+        return SimpleDateFormat("yyyy/MM/dd").format(Date(long))
     }
 }

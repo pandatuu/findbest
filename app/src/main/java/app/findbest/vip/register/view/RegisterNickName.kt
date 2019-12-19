@@ -178,7 +178,7 @@ class RegisterNickName : BaseActivity() {
             val body = RequestBody.create(MimeType.APPLICATION_JSON, userJson)
 
             val retrofitUils =
-                RetrofitUtils(this@RegisterNickName, resources.getString(R.string.testRegisterUrl))
+                RetrofitUtils(this@RegisterNickName, resources.getString(R.string.developmentUrl))
             val it = retrofitUils.create(RegisterApi::class.java)
                 .registerUser(body)
                 .subscribeOn(Schedulers.io())
@@ -210,7 +210,7 @@ class RegisterNickName : BaseActivity() {
             val body = RequestBody.create(MimeType.APPLICATION_JSON, userJson)
 
             val retrofitUils =
-                RetrofitUtils(this@RegisterNickName, resources.getString(R.string.testRegisterUrl))
+                RetrofitUtils(this@RegisterNickName, resources.getString(R.string.developmentUrl))
             val it = retrofitUils.create(LoginApi::class.java)
                 .loginApass(body)
                 .subscribeOn(Schedulers.io())
@@ -246,7 +246,7 @@ class RegisterNickName : BaseActivity() {
             val body = RequestBody.create(MimeType.APPLICATION_JSON, userJson)
 
             val retrofitUils =
-                RetrofitUtils(this@RegisterNickName, resources.getString(R.string.testRegisterUrl))
+                RetrofitUtils(this@RegisterNickName, resources.getString(R.string.developmentUrl))
             val it = retrofitUils.create(RegisterApi::class.java)
                 .information(body)
                 .subscribeOn(Schedulers.io())

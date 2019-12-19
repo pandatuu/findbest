@@ -481,7 +481,7 @@ class RegisterActivity: BaseActivity(), BackgroundFragment.ClickBack, ChooseCoun
             val body = RequestBody.create(MimeType.APPLICATION_JSON, userJson)
 
             val retrofitUils =
-                RetrofitUtils(this@RegisterActivity, resources.getString(R.string.testRegisterUrl))
+                RetrofitUtils(this@RegisterActivity, resources.getString(R.string.developmentUrl))
             val it = retrofitUils.create(RegisterApi::class.java)
                 .sendvCode(body)
                 .subscribeOn(Schedulers.io())

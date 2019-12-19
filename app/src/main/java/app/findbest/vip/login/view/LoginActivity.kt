@@ -299,7 +299,7 @@ class LoginActivity : BaseActivity(), BackgroundFragment.ClickBack, ChooseCountr
             val body = RequestBody.create(MimeType.APPLICATION_JSON, userJson)
 
             val retrofitUils =
-                RetrofitUtils(this@LoginActivity, resources.getString(R.string.testRegisterUrl))
+                RetrofitUtils(this@LoginActivity, resources.getString(R.string.developmentUrl))
             val it = retrofitUils.create(LoginApi::class.java)
                 .loginApass(body)
                 .subscribeOn(Schedulers.io())

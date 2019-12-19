@@ -61,7 +61,7 @@ class GuideView: AppCompatActivity() {
     private suspend fun isToken(){
         try {
             val retrofitUils =
-                RetrofitUtils(this@GuideView, resources.getString(R.string.testRegisterUrl))
+                RetrofitUtils(this@GuideView, resources.getString(R.string.developmentUrl))
             val it = retrofitUils.create(LoginApi::class.java)
                 .isToken()
                 .subscribeOn(Schedulers.io())
@@ -76,7 +76,7 @@ class GuideView: AppCompatActivity() {
                 startActivity<TextActivity>()
                 overridePendingTransition(R.anim.right_in, R.anim.left_out)
             }
-            if(it.code() == 401){
+            if(it.code() == 400){
                 println("token过期，需要登录")
                 toast("token过期，需要重新登录")
                 startActivity<LoginActivity>()

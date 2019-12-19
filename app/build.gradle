@@ -81,4 +81,5 @@ dependencies {
     //下拉刷新
     implementation  'com.scwang.smart:refresh-layout-kernel:2.0.0-alpha-1'
     implementation  'com.scwang.smart:refresh-header-material:2.0.0-alpha-1'
+    implementation  'com.scwang.smart:refresh-footer-ball:2.0.0-alpha-1'        //球脉冲加载
 }
