@@ -30,9 +30,10 @@ import kotlinx.coroutines.rx2.awaitSingle
 import org.jetbrains.anko.*
 import org.jetbrains.anko.support.v4.UI
 import org.jetbrains.anko.support.v4.startActivity
+import org.jetbrains.anko.support.v4.toast
 import retrofit2.HttpException
 
-class ProjectMainList : Fragment(),ProjectMainListAdapter.ListAdapter  {
+class ProjectMainList : Fragment(), ProjectMainListAdapter.ListAdapter {
 
     companion object {
         fun newInstance(context: Context): ProjectMainList {
@@ -46,6 +47,9 @@ class ProjectMainList : Fragment(),ProjectMainListAdapter.ListAdapter  {
     lateinit var smart: SmartRefreshLayout
     lateinit var recycle: RecyclerView
     lateinit var projectMain: ProjectMainListAdapter
+    var nowPage = 0
+    var mCategory = 0
+    var mStyle = 0
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -67,8 +71,14 @@ class ProjectMainList : Fragment(),ProjectMainListAdapter.ListAdapter  {
         smart.autoRefresh()
     }
 
+    fun setCategoryList(category: Int, style: Int) {
+        mCategory = category
+        mStyle = style
+        smart.autoRefresh()
+    }
+
     private fun createV(): View {
-        projectMain =  ProjectMainListAdapter(mContext, this@ProjectMainList)
+        projectMain = ProjectMainListAdapter(mContext, this@ProjectMainList)
         return UI {
             linearLayout {
                 backgroundColor = Color.parseColor("#FFF6F6F6")
@@ -79,11 +89,18 @@ class ProjectMainList : Fragment(),ProjectMainListAdapter.ListAdapter  {
                         toast("刷新....")
                         GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
                             getProjectList()
-                            it.finishRefresh(3000)
+                            it.finishRefresh(1000)
                         }
 //                        list.setItems(a)
                     }
                     setRefreshFooter(BallPulseFooter(mContext).setSpinnerStyle(SpinnerStyle.Scale))
+                    setOnLoadMoreListener {
+                        toast("刷新....")
+                        GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
+                            getProjectList(nowPage + 1)
+                            it.finishLoadMore(1000)
+                        }
+                    }
                     recycle = recyclerView {
                         layoutManager = LinearLayoutManager(mContext)
 
@@ -96,14 +113,21 @@ class ProjectMainList : Fragment(),ProjectMainListAdapter.ListAdapter  {
         }.view
     }
 
-    private suspend fun getProjectList(){
+    private suspend fun getProjectList() {
         try {
             val retrofitUils =
                 RetrofitUtils(mContext, resources.getString(R.string.developmentUrl))
-            val it = retrofitUils.create(ProjectApi::class.java)
-                .getProjectList(1,5)
-                .subscribeOn(Schedulers.io())
-                .awaitSingle()
+            val it = if (mStyle != 0 && mCategory != 0) {
+                retrofitUils.create(ProjectApi::class.java)
+                    .getProjectListByCategory(1, 5, mCategory, mStyle)
+                    .subscribeOn(Schedulers.io())
+                    .awaitSingle()
+            } else {
+                retrofitUils.create(ProjectApi::class.java)
+                    .getProjectList(1, 5)
+                    .subscribeOn(Schedulers.io())
+                    .awaitSingle()
+            }
 
             if (it.code() in 200..299) {
                 //完善信息成功
@@ -111,7 +135,7 @@ class ProjectMainList : Fragment(),ProjectMainListAdapter.ListAdapter  {
                 println(list)
                 val projectList = arrayListOf<ProjectListModel>()
                 list.forEach {
-//                    val it = Gson().fromJson<ProjectListModel>(it, ProjectListModel::class.java)
+                    //                    val it = Gson().fromJson<ProjectListModel>(it, ProjectListModel::class.java)
                     val model = it.asJsonObject
                     val projectListModel = ProjectListModel(
                         model["id"].asString,
@@ -127,12 +151,66 @@ class ProjectMainList : Fragment(),ProjectMainListAdapter.ListAdapter  {
                     )
                     projectList.add(projectListModel)
                 }
-                projectMain.setItems(projectList)
+                nowPage = 1
+                projectMain.resetItems(projectList)
             }
         } catch (throwable: Throwable) {
-            if(throwable is HttpException){
+            if (throwable is HttpException) {
                 println(throwable.code())
             }
         }
     }
+
+
+    private suspend fun getProjectList(page: Int) {
+        try {
+            val retrofitUils =
+                RetrofitUtils(mContext, resources.getString(R.string.developmentUrl))
+            val it = if (mStyle != 0 && mCategory != 0) {
+                retrofitUils.create(ProjectApi::class.java)
+                    .getProjectListByCategory(page, 5, mCategory, mStyle)
+                    .subscribeOn(Schedulers.io())
+                    .awaitSingle()
+            } else {
+                retrofitUils.create(ProjectApi::class.java)
+                    .getProjectList(page, 5)
+                    .subscribeOn(Schedulers.io())
+                    .awaitSingle()
+            }
+            if (it.code() in 200..299) {
+                //完善信息成功
+                val list = it.body()!!.data
+                if (list.size() == 0) {
+                    toast("没有数据啦...")
+                    return
+                }
+                println(list)
+                val projectList = arrayListOf<ProjectListModel>()
+                list.forEach {
+                    //                    val it = Gson().fromJson<ProjectListModel>(it, ProjectListModel::class.java)
+                    val model = it.asJsonObject
+                    val projectListModel = ProjectListModel(
+                        model["id"].asString,
+                        model["name"].asString,
+                        model["guaranteeType"].asInt == 6,
+                        model["size"].asString,
+                        model["format"].asString,
+                        model["commitAt"].asLong,
+                        model["consumer"].asJsonObject["country"].asString,
+                        model["styles"].asJsonArray,
+                        model["minBonus"].asFloat,
+                        model["maxBonus"].asFloat
+                    )
+                    projectList.add(projectListModel)
+                }
+                nowPage = page
+                projectMain.addItems(projectList)
+            }
+        } catch (throwable: Throwable) {
+            if (throwable is HttpException) {
+                println(throwable.code())
+            }
+        }
+    }
+
 }

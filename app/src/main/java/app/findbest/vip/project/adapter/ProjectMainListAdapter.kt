@@ -38,7 +38,7 @@ class ProjectMainListAdapter(
     private lateinit var date: TextView
     private lateinit var country: ImageView
     private lateinit var style: LinearLayout
-    private lateinit var minPrice: TextView
+    private lateinit var countryPrice: TextView
     private lateinit var maxPrice: TextView
     private lateinit var rela: RelativeLayout
     private val listAdapter: ListAdapter = listAdapter
@@ -126,23 +126,9 @@ class ProjectMainListAdapter(
                                 bottomMargin = dip(18)
                             }
                             linearLayout {
-                                textView {
-                                    text = "¥"
-                                    textSize = 11f
+                                countryPrice = textView {
+                                    textSize = 15f
                                     textColor = Color.parseColor("#FFFF7C00")
-                                }
-                                minPrice = textView {
-                                    textSize = 18f
-                                    textColor = Color.parseColor("#FFFF7C00")
-                                }.lparams {
-                                    leftMargin = dip(5)
-                                }
-                                textView {
-                                    text = "-"
-                                    textSize = 18f
-                                    textColor = Color.parseColor("#FFFF7C00")
-                                }.lparams {
-                                    leftMargin = dip(5)
                                 }
                                 textView {
                                     text = "¥"
@@ -181,6 +167,7 @@ class ProjectMainListAdapter(
         return ViewHolder(view)
     }
 
+    @SuppressLint("SetTextI18n")
     override fun onBindViewHolder(h: RecyclerView.ViewHolder, position: Int) {
 
         title.text = mDataSet[position].title
@@ -189,9 +176,18 @@ class ProjectMainListAdapter(
         format.text = mDataSet[position].format
         date.text = longToString(mDataSet[position].commitAt)
         when(mDataSet[position].country){
-            "china" -> country.imageResource = R.mipmap.image_china
-            "japan" -> country.imageResource = R.mipmap.image_japan
-            "korea" -> country.imageResource = R.mipmap.image_korea
+            "china" -> {
+                country.imageResource = R.mipmap.image_china
+                countryPrice.text = "CNY"
+            }
+            "japan" -> {
+                country.imageResource = R.mipmap.image_japan
+                countryPrice.text = "JPY"
+            }
+            "korea" -> {
+                country.imageResource = R.mipmap.image_korea
+                countryPrice.text = "KRW"
+            }
         }
         title.text = mDataSet[position].title
         //风格标签最多三个
@@ -217,11 +213,13 @@ class ProjectMainListAdapter(
                 style.addView(view)
             }
         }
-        minPrice.text = mDataSet[position].minPrice.toString()
         maxPrice.text = mDataSet[position].maxPrice.toString()
         rela.setOnClickListener {
             listAdapter.oneClick()
         }
+        //防止RecycleView数据刷新错乱
+        h.setIsRecyclable(false)
+
     }
 
     override fun getItemCount(): Int {
@@ -230,8 +228,13 @@ class ProjectMainListAdapter(
 
     private inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
 
-    fun setItems(items: MutableList<ProjectListModel>) {
+
+    fun resetItems(items: MutableList<ProjectListModel>) {
         mDataSet.clear()
+        mDataSet.addAll(items)
+        notifyDataSetChanged()
+    }
+    fun addItems(items: MutableList<ProjectListModel>) {
         mDataSet.addAll(items)
         notifyDataSetChanged()
     }
