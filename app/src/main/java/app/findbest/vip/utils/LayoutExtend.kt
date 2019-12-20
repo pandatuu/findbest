@@ -3,6 +3,7 @@ package app.findbest.vip.utils
 import android.content.Context
 import android.view.ViewManager
 import androidx.recyclerview.widget.RecyclerView
+import cn.jiguang.imui.view.RoundImageView
 import cn.jiguang.imui.view.ShapeImageView
 import com.biao.pulltorefresh.PtrLayout
 import com.google.android.material.tabs.TabLayout
@@ -29,6 +30,12 @@ inline fun ViewManager.shapeImageView(
     return ankoView({ ShapeImageView(ctx) },theme,init)
 }
 
+inline fun ViewManager.roundImageView(
+    ctx: Context = AnkoInternals.getContext(this),
+    theme: Int = 0,
+    init: RoundImageView.() -> Unit): RoundImageView {
+    return ankoView({RoundImageView(ctx)},theme,init)
+}
 
 
 inline fun ViewManager.recyclerView(init: (@AnkoViewDslMarker RecyclerView).() -> Unit): RecyclerView {

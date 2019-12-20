@@ -7,6 +7,7 @@ import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import androidx.fragment.app.Fragment
 import app.findbest.vip.R
 import app.findbest.vip.commonactivity.MainActivity
@@ -21,6 +22,15 @@ class BottomButton : Fragment() {
 
     private var mContext: Context? = null
     lateinit var main: MainActivity
+
+
+
+    lateinit var imageView1:ImageView
+    lateinit var imageView2:ImageView
+    lateinit var imageView3:ImageView
+    lateinit var imageView4:ImageView
+    lateinit var imageView5:ImageView
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -61,11 +71,19 @@ class BottomButton : Fragment() {
 
                             this.withTrigger().click {
                                 main.jumpPage(1)
+
+                                imageView1.setImageResource(R.mipmap.tab_ico_project_yes)
+                                imageView2.setImageResource(R.mipmap.tab_ico_case_nor)
+                                imageView3.setImageResource(R.mipmap.tab_ico_painter_nor)
+                                imageView4.setImageResource(R.mipmap.tab_ico_message_nor)
+                                imageView5.setImageResource(R.mipmap.tab_ico_my_nor)
+
+
                             }
 
-                            imageView {
+                            imageView1=  imageView {
 
-                                setImageResource(R.mipmap.tab_ico_project_nor)
+                                setImageResource(R.mipmap.tab_ico_project_yes)
                             }
 
                             textView {
@@ -96,10 +114,16 @@ class BottomButton : Fragment() {
 
                             this.withTrigger().click {
                                 main.jumpPage(2)
+
+                                imageView1.setImageResource(R.mipmap.tab_ico_project_nor)
+                                imageView2.setImageResource(R.mipmap.tab_ico_case_yes)
+                                imageView3.setImageResource(R.mipmap.tab_ico_painter_nor)
+                                imageView4.setImageResource(R.mipmap.tab_ico_message_nor)
+                                imageView5.setImageResource(R.mipmap.tab_ico_my_nor)
                             }
 
 
-                            imageView {
+                            imageView2=   imageView {
                                 setImageResource(R.mipmap.tab_ico_case_nor)
                             }
 
@@ -130,7 +154,19 @@ class BottomButton : Fragment() {
                         gravity = Gravity.CENTER
                         verticalLayout {
 
-                            imageView {
+
+                            this.withTrigger().click {
+                                main.jumpPage(3)
+
+                                imageView1.setImageResource(R.mipmap.tab_ico_project_nor)
+                                imageView2.setImageResource(R.mipmap.tab_ico_case_nor)
+                                imageView3.setImageResource(R.mipmap.tab_ico_painter_yes)
+                                imageView4.setImageResource(R.mipmap.tab_ico_message_nor)
+                                imageView5.setImageResource(R.mipmap.tab_ico_my_nor)
+                            }
+
+
+                            imageView3=    imageView {
                                 setImageResource(R.mipmap.tab_ico_painter_nor)
                             }
 
@@ -162,7 +198,17 @@ class BottomButton : Fragment() {
                         gravity = Gravity.CENTER
                         verticalLayout {
 
-                            imageView {
+                            this.withTrigger().click {
+                                main.jumpPage(4)
+
+                                imageView1.setImageResource(R.mipmap.tab_ico_project_nor)
+                                imageView2.setImageResource(R.mipmap.tab_ico_case_nor)
+                                imageView3.setImageResource(R.mipmap.tab_ico_painter_nor)
+                                imageView4.setImageResource(R.mipmap.tab_ico_message_yes)
+                                imageView5.setImageResource(R.mipmap.tab_ico_my_nor)
+                            }
+
+                            imageView4=     imageView {
                                 setImageResource(R.mipmap.tab_ico_message_nor)
                             }
 
@@ -194,7 +240,17 @@ class BottomButton : Fragment() {
                         gravity = Gravity.CENTER
                         verticalLayout {
 
-                            imageView {
+                            this.withTrigger().click {
+                                main.jumpPage(4)
+
+                                imageView1.setImageResource(R.mipmap.tab_ico_project_nor)
+                                imageView2.setImageResource(R.mipmap.tab_ico_case_nor)
+                                imageView3.setImageResource(R.mipmap.tab_ico_painter_nor)
+                                imageView4.setImageResource(R.mipmap.tab_ico_message_nor)
+                                imageView5.setImageResource(R.mipmap.tab_ico_my_yes)
+                            }
+
+                            imageView5=     imageView {
                                 setImageResource(R.mipmap.tab_ico_my_nor)
                             }
 

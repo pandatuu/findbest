@@ -41,8 +41,11 @@ dependencies {
     // anko
     implementation "org.jetbrains.anko:anko:0.10.8"
 
-    //Glide
+   //Glide
     implementation 'com.github.bumptech.glide:glide:4.10.0'
+    annotationProcessor 'com.github.bumptech.glide:compiler:4.10.0'
+    //解决网络图片加载,图片闪烁
+    //implementation 'com.pingerx:imagego-glide:1.0.2'
 
     //沉浸式实现
     implementation 'com.gyf.immersionbar:immersionbar:3.0.0'
@@ -80,8 +83,7 @@ dependencies {
     implementation 'com.biao:pulltorefresh:1.0.0-beta3'
     //actionBar沉底
     implementation 'com.jaeger.statusbarutil:library:1.5.1'
-    //解决网络图片加载,图片闪烁
-    implementation 'com.pingerx:imagego-glide:1.0.2'
+
     implementation project(':messagelist')
 
     //JWT token解析
