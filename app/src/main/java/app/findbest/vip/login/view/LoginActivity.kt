@@ -8,7 +8,6 @@ import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.text.method.PasswordTransformationMethod
-import android.util.Base64
 import android.view.Gravity
 import android.view.inputmethod.InputMethodManager
 import android.widget.Button
@@ -21,17 +20,13 @@ import app.findbest.vip.commonactivity.MainActivity
 import app.findbest.vip.commonfrgmant.BackgroundFragment
 import app.findbest.vip.commonfrgmant.ChooseCountry
 import app.findbest.vip.login.api.LoginApi
-import app.findbest.vip.register.model.RegisterModel
 import app.findbest.vip.register.view.RegisterActivity
 import app.findbest.vip.register.view.RegisterCountry
-import app.findbest.vip.register.view.RegisterEmail
 import app.findbest.vip.utils.BaseActivity
 import app.findbest.vip.utils.CheckToken
 import app.findbest.vip.utils.MimeType
 import app.findbest.vip.utils.RetrofitUtils
 import com.alibaba.fastjson.JSON
-import com.auth0.jwt.JWT
-import com.auth0.jwt.algorithms.Algorithm
 import io.reactivex.schedulers.Schedulers
 import kotlinx.coroutines.CoroutineStart
 import kotlinx.coroutines.Dispatchers
@@ -41,10 +36,6 @@ import kotlinx.coroutines.rx2.awaitSingle
 import okhttp3.RequestBody
 import org.jetbrains.anko.*
 import retrofit2.HttpException
-import java.io.Serializable
-import java.security.KeyFactory
-import java.security.interfaces.RSAPublicKey
-import java.security.spec.X509EncodedKeySpec
 
 class LoginActivity : BaseActivity(), BackgroundFragment.ClickBack, ChooseCountry.DialogSelect {
 
@@ -317,7 +308,7 @@ class LoginActivity : BaseActivity(), BackgroundFragment.ClickBack, ChooseCountr
                 toast("错误的凭证")
             }
             if (it.code() == 500) {
-                toast("密码错误")
+                toast("")
             }
         } catch (throwable: Throwable) {
             if (throwable is HttpException) {
