@@ -89,11 +89,8 @@ dependencies {
     implementation project(':messagelist')
 
     //JWT token解析
-    implementation('com.auth0:java-jwt:3.8.3') {
-        exclude group: 'commons-codec', module: 'commons-codec'
-    }
-//    implementation 'commons-codec:commons-codec:1.12'
 
+    implementation 'com.auth0.android:jwtdecode:1.4.0'
 
     //下拉刷新
     implementation  'com.scwang.smart:refresh-layout-kernel:2.0.0-alpha-1'
