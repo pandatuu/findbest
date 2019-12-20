@@ -22,4 +22,14 @@ interface InstanceApi {
 
 
 
+    //获取邀请画师的项目列表
+    @Headers("Content-Type: application/json")
+    @GET("/api/v1/projects/published")
+    fun getInviteProjectList(
+        @Query("page") page :Int,
+        @Query("size") size :Int,
+        @Query("userId") userId :String
+
+    ):  Observable<Response<String>>
+
 }

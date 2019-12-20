@@ -23,10 +23,11 @@ import android.widget.*
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import app.findbest.vip.instance.activity.InstanceActivity
-import app.findbest.vip.instance.activity.InvitationActivity
 import app.findbest.vip.instance.adapter.InstanceListAdapter
+import app.findbest.vip.instance.adapter.MyProjectListAdapter
 import app.findbest.vip.instance.api.InstanceApi
 import app.findbest.vip.instance.model.Instance
+import app.findbest.vip.instance.model.ProjectItem
 import app.findbest.vip.utils.*
 import click
 import cn.jiguang.imui.view.ShapeImageView
@@ -48,14 +49,25 @@ import withTrigger
 import java.lang.Runnable
 
 
-class InstanceDetail : FragmentParent() {
+class InvitationList : FragmentParent() {
     var toolbar1: Toolbar? = null
     private var mContext: Context? = null
-    lateinit var activityInstance: Context
 
+    var pageNum = 1
+    var pageSize = 20
 
     var screenWidth = 0
     var picWidth = 0
+    lateinit var smart: SmartRefreshLayout
+
+
+    var adapter: MyProjectListAdapter? = null
+
+    lateinit var recycler: RecyclerView
+
+
+    private lateinit var instanceApi: InstanceApi
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -65,13 +77,13 @@ class InstanceDetail : FragmentParent() {
             mContext = activity
         }
 
-
+        instanceApi = RetrofitUtils(context!!, this.getString(R.string.developmentUrl))
+            .create(InstanceApi::class.java)
     }
 
     companion object {
-        fun newInstance(context: Context): InstanceDetail {
-            var f = InstanceDetail()
-            f.activityInstance = context
+        fun newInstance(): InvitationList {
+            var f = InvitationList()
 
 
             return f
@@ -84,6 +96,8 @@ class InstanceDetail : FragmentParent() {
         savedInstanceState: Bundle?
     ): View? {
         var fragmentView = createView()
+        smart.autoRefresh()
+
         return fragmentView
     }
 
@@ -97,8 +111,6 @@ class InstanceDetail : FragmentParent() {
             picWidth = 180
         }
 
-
-        lateinit var image: ImageView
 
         var view = UI {
             verticalLayout {
@@ -125,30 +137,33 @@ class InstanceDetail : FragmentParent() {
                             this.withTrigger().click {
 
                                 activity!!.finish()
-                                activity!!.overridePendingTransition(R.anim.left_in, R.anim.right_out)
+                                activity!!.overridePendingTransition(
+                                    R.anim.left_in,
+                                    R.anim.right_out
+                                )
 
                             }
                         }.lparams() {
                             width = matchParent
                             height = dip(65)
                             alignParentBottom()
-                            height = dip(65 - getStatusBarHeight(this@InstanceDetail.context!!))
+                            height = dip(65 - getStatusBarHeight(this@InvitationList.context!!))
                         }
 
 
 
                         textView {
-                            text = ""
+                            text = "选择项目"
                             backgroundColor = Color.TRANSPARENT
                             gravity = Gravity.CENTER
                             textColor = Color.parseColor("#FF222222")
-                            textSize = 16f
+                            textSize = 17f
                             setTypeface(Typeface.defaultFromStyle(Typeface.BOLD))
 
                         }.lparams() {
                             width = matchParent
                             height = wrapContent
-                            height = dip(65 - getStatusBarHeight(this@InstanceDetail.context!!))
+                            height = dip(65 - getStatusBarHeight(this@InvitationList.context!!))
                             alignParentBottom()
                         }
 
@@ -164,43 +179,6 @@ class InstanceDetail : FragmentParent() {
                 //////////////////////////////////////////////////////////////////
                 /////////////////////////////////////////////////////////////////
 
-                linearLayout {
-
-                    gravity = Gravity.CENTER_VERTICAL
-                    roundImageView {
-
-                        Glide.with(this@InstanceDetail)
-                            .load(activity!!.intent.getStringExtra("logo"))
-                            .skipMemoryCache(false)
-                            .dontAnimate()
-                            .centerCrop()
-                            .placeholder(R.mipmap.no_pic_show)
-                            .into(this)
-
-
-                    }.lparams() {
-                        width = dip(45)
-                        height = dip(45)
-                    }
-
-
-                    textView {
-
-                        text = activity!!.intent.getStringExtra("name")
-                        textSize = 17f
-                        textColor = Color.parseColor("#FF444444")
-
-                    }.lparams() {
-
-                        leftMargin = dip(8)
-                    }
-
-                }.lparams() {
-                    width = matchParent
-                    height = dip(80)
-                    leftMargin = dip(15)
-                    rightMargin = dip(15)
-                }
 
                 textView() {
                     backgroundColor = Color.parseColor("#FFE3E3E3")
@@ -215,22 +193,37 @@ class InstanceDetail : FragmentParent() {
 
 
                 linearLayout {
-                    gravity=Gravity.CENTER
+
+                    backgroundColor = Color.parseColor("#FFF6F6F6")
+
+                    gravity = Gravity.CENTER
 
 
-                    image= imageView {
-                        //setImageResource(R.drawable.pic2)
-                      //  setTheWidth(screenWidth)
 
-                    }.lparams() {
-                        width = matchParent
-                        height=matchParent
-                        margin = dip(5)
-                        rightMargin=dip(10)
-                        leftMargin=dip(10)
+
+                    smart = smartRefreshLayout {
+                        setEnableAutoLoadMore(false)
+                        setRefreshHeader(MaterialHeader(activity))
+                        setOnRefreshListener {
+                            GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
+                                Refresh()
+                                it.finishRefresh(300)
+                            }
+                        }
+                        setOnLoadMoreListener {
+                            LoadMore()
+                            it.finishLoadMore(300)
+                        }
+                        setRefreshFooter(BallPulseFooter(mContext).setSpinnerStyle(SpinnerStyle.Scale))
+
+                        recycler = recyclerView {
+                            layoutManager = LinearLayoutManager(mContext)
+                            overScrollMode = View.OVER_SCROLL_NEVER
+
+                        }
+
+                    }.lparams(matchParent, matchParent) {
                     }
-
-
 
 
                 }.lparams() {
@@ -243,26 +236,15 @@ class InstanceDetail : FragmentParent() {
 
                 textView {
 
-                    gravity=Gravity.CENTER
-                    text="邀请画师"
-                    textSize=16f
-                    textColor=Color.WHITE
-                    backgroundResource=R.drawable.enable_rectangle_button
+                    gravity = Gravity.CENTER
+                    text = "发送邀请"
+                    textSize = 16f
+                    textColor = Color.WHITE
+                    backgroundResource = R.drawable.enable_rectangle_button
 
 
 
                     this.withTrigger().click {
-
-
-
-                        lateinit var intent: Intent
-                        //跳转详情
-                        intent = Intent(activityInstance, InvitationActivity::class.java)
-                        //画师/团队的id
-                        intent.putExtra("id", activity!!.intent.getStringExtra("id"))
-
-                        startActivity(intent)
-                        activity!!.overridePendingTransition(R.anim.right_in, R.anim.left_out)
 
 
                     }
@@ -277,16 +259,95 @@ class InstanceDetail : FragmentParent() {
             }
         }.view
 
-        Glide.with(image.context)
-            .load(activity!!.intent.getStringExtra("url"))
-            .centerCrop()
-            .placeholder(R.mipmap.no_pic_show)
-            .into(image)
-
-
 
 
         return view
+
+    }
+
+
+    fun Refresh(){
+        pageNum=1
+        adapter?.clear()
+        requestTheList()
+
+    }
+
+    fun LoadMore(){
+        pageNum=pageNum+1
+        requestTheList()
+    }
+
+
+    fun requestTheList() {
+
+        GlobalScope.launch {
+            var response = instanceApi.getInviteProjectList(
+                pageNum,
+                pageSize,
+                activity!!.intent.getStringExtra("id")
+            )
+                .subscribeOn(Schedulers.io()) //被观察者 开子线程请求网络
+                .awaitSingle()
+
+            if (response.code() == 200) {
+                println("得到的数据")
+                println(response.body())
+
+                var jsonObject = JSONObject(response.body().toString())
+                var array = jsonObject.getJSONArray("data")
+                if (array.length() == 0 && pageNum > 1) {
+                    pageNum = pageNum - 1
+                }
+                var dataList = mutableListOf<ProjectItem>()
+
+                for (i in 0 until array.length()) {
+                    var ob = array.getJSONObject(i)
+                    dataList.add(
+                        ProjectItem(
+                            ob.getString("format"),
+                            ob.getString("size"),
+                            ob.getString("name"),
+                            ob.getString("id"),
+                            ""
+                        )
+                    )
+                }
+
+                withContext(Dispatchers.Main) {
+                    appendRecyclerData(dataList,screenWidth, picWidth)
+                }
+
+            } else {
+                println("xxxxxxxxxxxxxxxxxxxxxxxxxx")
+
+                println(response.code())
+            }
+        }
+
+    }
+
+    fun appendRecyclerData(
+        list:MutableList<ProjectItem>,
+        screenWidth: Int,
+        picWidth: Int
+    ) {
+        if (adapter == null) {
+            //适配器
+            adapter = MyProjectListAdapter(recycler, screenWidth, picWidth, list, { item ->
+
+
+
+
+            })
+            //设置适配器
+            recycler.setAdapter(adapter)
+        } else {
+
+            adapter!!.addDataList(list)
+
+        }
+
 
     }
 

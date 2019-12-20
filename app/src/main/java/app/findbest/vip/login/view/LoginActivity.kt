@@ -319,6 +319,7 @@ class LoginActivity : BaseActivity(), BackgroundFragment.ClickBack, ChooseCountr
             if (it.code() == 500) {
                 toast("密码错误")
             }
+
         } catch (throwable: Throwable) {
             if (throwable is HttpException) {
                 println(throwable.message())

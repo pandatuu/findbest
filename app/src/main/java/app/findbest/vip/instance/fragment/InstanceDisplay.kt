@@ -101,14 +101,16 @@ class InstanceDisplay : FragmentParent() {
         savedInstanceState: Bundle?
     ): View? {
         var fragmentView = createView()
+        println("ssssssssssssssssssssss")
+
+        smart.autoRefresh()
         return fragmentView
     }
 
 
-    override fun onResume() {
-        super.onResume()
-        smart.autoRefresh()
-    }
+//    override fun onResume() {
+//        super.onResume()
+//    }
 
 
 
@@ -162,7 +164,7 @@ class InstanceDisplay : FragmentParent() {
                             backgroundColor = Color.TRANSPARENT
                             gravity = Gravity.CENTER
                             textColor = Color.parseColor("#FF222222")
-                            textSize = 16f
+                            textSize = 17f
                             setTypeface(Typeface.defaultFromStyle(Typeface.BOLD))
 
                         }.lparams() {
@@ -307,6 +309,7 @@ class InstanceDisplay : FragmentParent() {
                             }
                             setRefreshFooter(BallPulseFooter(mContext).setSpinnerStyle(SpinnerStyle.Scale))
                             recycler = recyclerView {
+                                overScrollMode = View.OVER_SCROLL_NEVER
                                 layoutManager = LinearLayoutManager(mContext)
                             }
                         }.lparams(matchParent, matchParent) {
@@ -424,7 +427,7 @@ class InstanceDisplay : FragmentParent() {
             recycler.setAdapter(adapter)
         } else {
 
-             adapter!!.addRecruitInfoList(sonList,pageNum,pageSize)
+             adapter!!.addInstanceList(sonList,pageNum,pageSize)
 
         }
 

@@ -35,15 +35,10 @@ class InstanceListAdapter
 
    lateinit var theHolder: ViewHolder
 
-    //清空数据
-    fun clearRecruitInfoList() {
-        instanceList.clear()
-        notifyDataSetChanged()
-    }
 
 
     //添加数据
-    fun addRecruitInfoList(list: MutableList<Instance>,pageNum:Int,pageSize:Int) {
+    fun addInstanceList(list: MutableList<Instance>,pageNum:Int,pageSize:Int) {
 //        recruitInfo.addAll(list)
 //        notifyDataSetChanged()
 

@@ -33,6 +33,11 @@ class CheckToken(val mContext: Context) {
                 .build()
 
             val jwt = verifier.verify(token)
+
+
+
+           // JWTDecoder()
+
             //公钥校验成功
             println("----JWT subject---: ${jwt.subject}")
             if(!jwt.subject.isNullOrBlank()){
@@ -42,8 +47,11 @@ class CheckToken(val mContext: Context) {
             }
             return ""
         } catch (t: Throwable) {
-            //公钥校验失败
-            println("-----JWT error---: $t")
+            //公钥校验失败\
+
+
+            println("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx")
+            t.printStackTrace()
             Toast.makeText(mContext,"token校验错误，请重新登录", Toast.LENGTH_SHORT).show()
             return ""
         }
