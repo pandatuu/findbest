@@ -22,41 +22,42 @@ class MainActivity : BaseActivity() {
     lateinit var bottomButton: BottomButton
     private var exitTime: Long = 0
     lateinit var mainFrameLayout: FrameLayout
+    var mainId = 1
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
 
+        frameLayout {
+            id = mainId
+            verticalLayout {
+                var topPartId = 10
+                mainFrameLayout=frameLayout {
+                    id = topPartId
 
-        verticalLayout {
-            var topPartId = 10
-            mainFrameLayout=frameLayout {
-                id = topPartId
+
+                    val projectList = ProjectFragment.newInstance(this@MainActivity)
+                    supportFragmentManager.beginTransaction().add(id, projectList).commit()
+
+                }.lparams {
+                    height = dip(0)
+                    weight = 1f
+                    width = matchParent
+                }
+
+                var bottomPartId = 11
+                frameLayout {
+                    id = bottomPartId
+                    bottomButton = BottomButton.newInstance(this@MainActivity);
+                    supportFragmentManager.beginTransaction().replace(id, bottomButton).commit()
+                }.lparams {
+                    height = dip(50)
+                    width = matchParent
+                }
 
 
-                val projectList = ProjectFragment.newInstance(this@MainActivity)
-                supportFragmentManager.beginTransaction().add(id, projectList).commit()
-
-            }.lparams {
-                height = dip(0)
-                weight = 1f
-                width = matchParent
             }
-
-            var bottomPartId = 11
-            frameLayout {
-                id = bottomPartId
-                bottomButton = BottomButton.newInstance(this@MainActivity);
-                supportFragmentManager.beginTransaction().replace(id, bottomButton).commit()
-            }.lparams {
-                height = dip(50)
-                width = matchParent
-            }
-
-
         }
-
-
     }
 
     override fun onStart() {
