@@ -15,6 +15,7 @@ import app.findbest.vip.instance.model.Instance
 import app.findbest.vip.utils.shapeImageView
 import click
 import cn.jiguang.imui.view.ShapeImageView
+import com.bumptech.glide.Glide
 import com.bumptech.glide.RequestManager
 import org.jetbrains.anko.*
 import org.jetbrains.anko.support.v4.UI
@@ -27,7 +28,6 @@ class InstanceListAdapter
     private val context: RecyclerView,
     private val screenWidth: Int,
     private val picWidth: Int,
-    private val glide: RequestManager,
     private val instanceList: MutableList<MutableList<Instance>>,
     private val listener: (Instance) -> Unit
 ) : RecyclerView.Adapter<InstanceListAdapter.ViewHolder>() {
@@ -43,15 +43,24 @@ class InstanceListAdapter
 
 
     //添加数据
-    fun addRecruitInfoList(list: List<Instance>) {
+    fun addRecruitInfoList(list: MutableList<Instance>,pageNum:Int,pageSize:Int) {
 //        recruitInfo.addAll(list)
 //        notifyDataSetChanged()
 
-//        var startIndex = instanceList.size
-//        var count = list.count()
-//        instanceList.addAll(list)
-        //      notifyItemRangeChanged(startIndex, count)
+        var endIndex=pageNum*pageSize
+        if(list.size<pageNum*pageSize){
+            endIndex=list.size
+        }
 
+        for(i in (pageNum-1)*pageSize until  endIndex){
+            if(i%2==0){
+                theHolder.verticalLeft.addView(getView(instanceList.get(0).get(i)))
+
+            }else{
+                theHolder.verticalRight.addView(getView(instanceList.get(0).get(i)))
+            }
+        }
+        notifyDataSetChanged()
     }
 
 
@@ -64,6 +73,7 @@ class InstanceListAdapter
 
         lateinit var verticalRight: LinearLayout
         lateinit var verticalLeft: LinearLayout
+
 
         var view = with(parent.context) {
 
@@ -92,14 +102,6 @@ class InstanceListAdapter
 
                     verticalRight = verticalLayout() {
 
-                        //                            shapeImageView {
-//                                setImageResource(R.drawable.pic4)
-//                                setTheWidth(picWidth)
-//
-//                            }.lparams() {
-//                                width = matchParent
-//                                topMargin = dip(2)
-//                            }
 
 
                     }.lparams() {
@@ -191,7 +193,7 @@ class InstanceListAdapter
         var view= with(context) {
             linearLayout {
 
-                setOnClickListener {
+                this.withTrigger().click {
                     listener(mode)
                     
                 }
@@ -207,15 +209,16 @@ class InstanceListAdapter
             }
         }
 
-
-        glide.asBitmap()
+        Glide.with(context)
             .load(mode.url)
+            .centerCrop()
             .placeholder(R.mipmap.no_pic_show)
-            .into(image);
+            .into(image)
+
+
 
 
         context.removeView(view)
-
 
         return view
     }

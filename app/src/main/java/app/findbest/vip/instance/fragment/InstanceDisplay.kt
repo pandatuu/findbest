@@ -1,11 +1,11 @@
 package app.findbest.vip.instance.fragment
 
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.fragment.app.Fragment
 
 import org.jetbrains.anko.linearLayout
 import org.jetbrains.anko.support.v4.UI
@@ -16,44 +16,42 @@ import android.graphics.Typeface
 import android.view.inputmethod.InputMethodManager
 import app.findbest.vip.R
 import app.findbest.vip.commonfrgmant.FragmentParent
-import app.findbest.vip.utils.shapeImageView
-import android.opengl.ETC1.getWidth
-import android.content.Context.WINDOW_SERVICE
-import androidx.core.content.ContextCompat.getSystemService
-import android.content.Context.WINDOW_SERVICE
-import android.content.Intent
+
 import android.os.Handler
 import android.os.Looper
 import android.widget.*
-import androidx.core.content.ContextCompat.getSystemService
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import app.findbest.vip.commonactivity.MainActivity
+import app.findbest.vip.instance.activity.InstanceActivity
 import app.findbest.vip.instance.adapter.InstanceListAdapter
 import app.findbest.vip.instance.api.InstanceApi
 import app.findbest.vip.instance.model.Instance
 import app.findbest.vip.utils.RetrofitUtils
+import app.findbest.vip.utils.recyclerView
+import app.findbest.vip.utils.smartRefreshLayout
 import com.biao.pulltorefresh.OnRefreshListener
 import com.biao.pulltorefresh.PtrHandler
 import com.biao.pulltorefresh.PtrLayout
-import com.bumptech.glide.Glide
-import com.bumptech.glide.RequestManager
+import com.scwang.smart.refresh.footer.BallPulseFooter
+import com.scwang.smart.refresh.header.MaterialHeader
+import com.scwang.smart.refresh.layout.SmartRefreshLayout
+import com.scwang.smart.refresh.layout.constant.SpinnerStyle
+
 import io.reactivex.schedulers.Schedulers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 import kotlinx.coroutines.rx2.awaitSingle
 import org.jetbrains.anko.support.v4.toast
-import retrofit2.http.Query
+import org.json.JSONObject
+import java.lang.Runnable
 
 
 class InstanceDisplay : FragmentParent() {
     var toolbar1: Toolbar? = null
     private var mContext: Context? = null
+    lateinit var activityInstance: Context
 
-    lateinit var ptrLayout: PtrLayout
-    lateinit var header: View
-    lateinit var footer: View
-    lateinit var glide: RequestManager
+
+    lateinit var smart: SmartRefreshLayout
 
 
     var adapter: InstanceListAdapter? = null
@@ -63,10 +61,17 @@ class InstanceDisplay : FragmentParent() {
     private lateinit var search: EditText
 
 
-    var pageNum=1
-    var pageSize=10
+    var pageNum = 1
+    var pageSize = 20
+
+    var list = mutableListOf<MutableList<Instance>>()
+    var sonList = mutableListOf<Instance>()
+
 
     private lateinit var instanceApi: InstanceApi
+
+    var screenWidth=0
+    var picWidth=0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -81,9 +86,10 @@ class InstanceDisplay : FragmentParent() {
     }
 
     companion object {
-        fun newInstance( glide: RequestManager): InstanceDisplay {
+        fun newInstance(context: Context): InstanceDisplay {
             var f = InstanceDisplay()
-            f.glide=glide
+            f.activityInstance = context
+
 
             return f
         }
@@ -98,15 +104,23 @@ class InstanceDisplay : FragmentParent() {
         return fragmentView
     }
 
+
+    override fun onResume() {
+        super.onResume()
+        smart.autoRefresh()
+    }
+
+
+
     private fun createView(): View {
 
-        var screenWidth=px2dp(getDisplay(mContext!!)!!.width.toFloat())
-        var picWidth = (screenWidth - 10) / 2
+        screenWidth = px2dp(getDisplay(mContext!!)!!.width.toFloat())
+        picWidth = (screenWidth - 18) / 2
         if (picWidth < 180) {
         } else {
             picWidth = 180
         }
-
+        list.add(sonList)
 
         var view = UI {
             verticalLayout {
@@ -268,134 +282,6 @@ class InstanceDisplay : FragmentParent() {
                 //////////////////////////////////////////////////////////////////////
 
 
-                var pullToRefreshContainer =
-                    LayoutInflater.from(context).inflate(R.layout.springback_recycler_view, null);
-                ptrLayout = pullToRefreshContainer as PtrLayout
-
-
-
-                recycler =
-                    pullToRefreshContainer.findViewById(R.id.SBRecyclerView) as RecyclerView
-
-                recycler.overScrollMode = View.OVER_SCROLL_NEVER
-                recycler.setLayoutManager(LinearLayoutManager(pullToRefreshContainer.getContext()))
-
-                //顶部刷新显示
-                header =
-                    LayoutInflater.from(context).inflate(R.layout.fresh_header, null)
-                //底部刷新显示
-                footer =
-                    LayoutInflater.from(context).inflate(R.layout.fresh_footer, null)
-
-                //顶部刷新，展示的文字
-                var freshText = header.findViewById<TextView>(R.id.freshText)
-                //底部刷新展示的文字
-                var footerFreshText = footer.findViewById<TextView>(R.id.footerFreshText)
-
-                ptrLayout.setHeaderView(header)
-                ptrLayout.setFooterView(footer)
-
-
-
-                ptrLayout.setHeaderPtrHandler(object : PtrHandler {
-                    /** when refresh pulling  */
-                    override fun onPercent(percent: Float) {
-
-                        if (percent == 0.0f) {
-                            freshText.setText("スライドでロード")//下拉刷新
-                        }
-
-                        if (percent == 1.0f) {
-                            freshText.setText("リリースでロード")//释放更新
-                        }
-
-                    }
-
-                    /** when refresh end  */
-                    override fun onRefreshEnd() {
-
-
-                    }
-
-                    /** when refresh begin  */
-                    override fun onRefreshBegin() {
-                        freshText.setText("ローディング...")//加载中
-
-                    }
-
-                })
-
-
-                ptrLayout.setFootererPtrHandler(object : PtrHandler {
-                    /** when refresh pulling  */
-                    override fun onPercent(percent: Float) {
-
-
-                        if (percent == 0.0f) {
-                            footerFreshText.setText("スライドでロード")//上拉刷新
-                        }
-
-                        if (percent == 1.0f) {
-                            footerFreshText.setText("リリースでロード")//释放更新
-                        }
-
-                    }
-
-                    /** when refresh end  */
-                    override fun onRefreshEnd() {
-
-
-                    }
-
-                    /** when refresh begin  */
-                    override fun onRefreshBegin() {
-                        footerFreshText.setText("ローディング...")//加载中
-
-                    }
-
-                })
-
-
-                ptrLayout.setMode(PtrLayout.MODE_ALL_MOVE)
-                ptrLayout.setDuration(10)
-
-
-
-                ptrLayout.setOnPullDownRefreshListener(object : OnRefreshListener {
-                    override fun onRefresh() {
-
-                        var sMainHandler = Handler(Looper.getMainLooper())
-                        sMainHandler.post(Runnable {
-                            Thread.sleep(1000)
-                            header.postDelayed(Runnable {
-                                ptrLayout.onRefreshComplete()
-                            }, 2000)
-
-                            footer.postDelayed(Runnable {
-                                ptrLayout.onRefreshComplete()
-                            }, 2000)
-                        })
-                }})
-
-
-                ptrLayout.setOnPullUpRefreshListener(object : OnRefreshListener {
-                    override fun onRefresh() {
-                       var sMainHandler = Handler(Looper.getMainLooper())
-                        sMainHandler.post(Runnable {
-                            Thread.sleep(1000)
-                            header.postDelayed(Runnable {
-                                ptrLayout.onRefreshComplete()
-                            }, 2000)
-
-                            footer.postDelayed(Runnable {
-                                ptrLayout.onRefreshComplete()
-                            }, 2000)
-                        })
-                    }
-
-                })
-
-
 
                 linearLayout {
 
@@ -405,7 +291,26 @@ class InstanceDisplay : FragmentParent() {
 
                     linearLayout {
 
-                        addView(ptrLayout)
+                        backgroundColor = Color.parseColor("#FFF6F6F6")
+                        smart = smartRefreshLayout {
+                            setEnableAutoLoadMore(false)
+                            setRefreshHeader(MaterialHeader(activity))
+                            setOnRefreshListener {
+                                GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
+                                    Refresh()
+                                    it.finishRefresh(300)
+                                }
+                            }
+                            setOnLoadMoreListener {
+                                LoadMore()
+                                it.finishLoadMore(300)
+                            }
+                            setRefreshFooter(BallPulseFooter(mContext).setSpinnerStyle(SpinnerStyle.Scale))
+                            recycler = recyclerView {
+                                layoutManager = LinearLayoutManager(mContext)
+                            }
+                        }.lparams(matchParent, matchParent) {
+                        }
 
                     }.lparams {
                         width = matchParent
@@ -424,21 +329,37 @@ class InstanceDisplay : FragmentParent() {
             }
         }.view
 
-        //appendRecyclerData(screenWidth,picWidth)
 
-        requestPicData(null,null,null)
+
 
         return view
 
     }
 
 
-    fun requestPicData( category :Int?,
-                        styles :Int?,
-                        content :String?){
+    fun Refresh(){
+        pageNum=1
+        sonList.clear()
+        requestPicData(screenWidth, picWidth, null, null, null)
+
+    }
+
+    fun LoadMore(){
+        pageNum=pageNum+1
+        requestPicData(screenWidth, picWidth, null, null, null)
+    }
+
+
+    fun requestPicData(
+        screenWidth: Int,
+        picWidth: Int,
+        category: Int?,
+        styles: Int?,
+        content: String?
+    ) {
 
         GlobalScope.launch {
-          var response= instanceApi.instanceList(
+            var response = instanceApi.instanceList(
                 category,
                 styles,
                 pageNum,
@@ -447,46 +368,63 @@ class InstanceDisplay : FragmentParent() {
             )
                 .subscribeOn(Schedulers.io()) //被观察者 开子线程请求网络
                 .awaitSingle()
-            println("ssssssssssssssssssssssssssssssssssssssss")
-            println(response)
 
+            if (response.code() == 200) {
+                println("得到的数据")
+                println(response.body())
+
+                var jsonObject = JSONObject(response.body().toString())
+                var array = jsonObject.getJSONArray("data")
+                if(array.length()==0 &&  pageNum>1){
+                    pageNum=pageNum-1
+                }
+
+                for (i in 0 until array.length()) {
+                    var ob = array.getJSONObject(i)
+                    sonList.add(Instance(
+                        ob.getString("url"),
+                        ob.getString("logo"),
+                        ob.getString("name"),
+                        ob.getString("id")
+                        ))
+                }
+
+                withContext(Dispatchers.Main) {
+                    appendRecyclerData(screenWidth, picWidth)
+                }
+
+            } else {
+
+            }
         }
-
     }
 
     fun appendRecyclerData(
         screenWidth: Int,
         picWidth: Int
     ) {
-
-
-        var list = mutableListOf<MutableList<Instance>>()
-        var sonList = mutableListOf<Instance>()
-        sonList.add(Instance("x"))
-        sonList.add(Instance("x"))
-        sonList.add(Instance("x"))
-        sonList.add(Instance("x"))
-        sonList.add(Instance("x"))
-        sonList.add(Instance("x"))
-        sonList.add(Instance("x"))
-        sonList.add(Instance("x"))
-        sonList.add(Instance("x"))
-        sonList.add(Instance("x"))
-        sonList.add(Instance("x"))
-        list.add(sonList)
-
         if (adapter == null) {
-
             //适配器
-            adapter = InstanceListAdapter(recycler, screenWidth,picWidth, glide,list, { item ->
+            adapter = InstanceListAdapter(recycler, screenWidth, picWidth,  list, { item ->
 
-                toast("xx")
+
+                lateinit var intent: Intent
+                //跳转详情
+                intent = Intent(mContext, InstanceActivity::class.java)
+                intent.putExtra("url", item.url)
+                intent.putExtra("logo", item.logo)
+                intent.putExtra("name", item.name)
+                intent.putExtra("id", item.id)
+
+                startActivity(intent)
+                activity!!.overridePendingTransition(R.anim.right_in, R.anim.left_out)
+
             })
             //设置适配器
             recycler.setAdapter(adapter)
         } else {
 
-            // adapter!!.addRecruitInfoList(list)
+             adapter!!.addRecruitInfoList(sonList,pageNum,pageSize)
 
         }
 

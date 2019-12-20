@@ -8,12 +8,12 @@ import android.widget.FrameLayout
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
+import app.findbest.vip.R
 import app.findbest.vip.commonfrgmant.BottomButton
 import app.findbest.vip.instance.fragment.InstanceDisplay
 import app.findbest.vip.project.fragment.ProjectFragment
 import app.findbest.vip.utils.BaseActivity
-import com.bumptech.glide.Glide
-import com.jaeger.library.StatusBarUtil
+
 import org.jetbrains.anko.*
 
 class MainActivity : BaseActivity() {
@@ -23,14 +23,19 @@ class MainActivity : BaseActivity() {
     private var exitTime: Long = 0
     lateinit var mainFrameLayout: FrameLayout
 
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
 
 
+
         verticalLayout {
+
+
+
             var topPartId = 10
-            mainFrameLayout=frameLayout {
+            mainFrameLayout = frameLayout {
                 id = topPartId
 
 
@@ -75,11 +80,10 @@ class MainActivity : BaseActivity() {
     }
 
 
-
     override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {
         if (event != null) {
-            if(keyCode == KeyEvent.KEYCODE_BACK && event.action == KeyEvent.ACTION_DOWN){
-                if((System.currentTimeMillis()-exitTime) > 2000){
+            if (keyCode == KeyEvent.KEYCODE_BACK && event.action == KeyEvent.ACTION_DOWN) {
+                if ((System.currentTimeMillis() - exitTime) > 2000) {
                     Toast.makeText(applicationContext, "再按一次退出程序", Toast.LENGTH_SHORT).show();
                     exitTime = System.currentTimeMillis()
                 } else {
@@ -96,25 +100,27 @@ class MainActivity : BaseActivity() {
 
 
     //跳转页面
-    fun jumpPage(type:Int){
+    fun jumpPage(type: Int) {
 
-        when(type){
-            1->{
-                val glide=Glide.with(this@MainActivity)
-                topFragment = InstanceDisplay.newInstance(glide);
-                supportFragmentManager.beginTransaction().replace(mainFrameLayout.id, topFragment).commit()
-
-            }
-            2->{
+        when (type) {
+            1 -> {
+                topFragment = ProjectFragment.newInstance(this@MainActivity)
+                supportFragmentManager.beginTransaction().add(mainFrameLayout.id, topFragment)
+                    .commit()
 
             }
-            3->{
+            2 -> {
+                topFragment = InstanceDisplay.newInstance(this@MainActivity);
+                supportFragmentManager.beginTransaction().replace(mainFrameLayout.id, topFragment)
+                    .commit()
+            }
+            3 -> {
 
             }
-            4->{
+            4 -> {
 
             }
-            5->{
+            5 -> {
 
             }
         }
