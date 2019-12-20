@@ -31,11 +31,9 @@ class MainActivity : BaseActivity() {
         frameLayout {
             id = mainId
             verticalLayout {
-                var topPartId = 10
+                val topPartId = 10
                 mainFrameLayout=frameLayout {
                     id = topPartId
-
-
                     val projectList = ProjectFragment.newInstance(this@MainActivity)
                     supportFragmentManager.beginTransaction().add(id, projectList).commit()
 
@@ -45,7 +43,7 @@ class MainActivity : BaseActivity() {
                     width = matchParent
                 }
 
-                var bottomPartId = 11
+                val bottomPartId = 11
                 frameLayout {
                     id = bottomPartId
                     bottomButton = BottomButton.newInstance(this@MainActivity);
