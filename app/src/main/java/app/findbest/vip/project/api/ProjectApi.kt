@@ -1,12 +1,14 @@
 package app.findbest.vip.project.api
 
 import app.findbest.vip.project.model.PageModel
+import app.findbest.vip.project.model.ProjectInfoModel
 import com.google.gson.JsonArray
 import com.google.gson.JsonObject
 import io.reactivex.Observable
 import retrofit2.Response
 import retrofit2.http.GET
 import retrofit2.http.Headers
+import retrofit2.http.Path
 import retrofit2.http.Query
 
 interface ProjectApi {
@@ -37,5 +39,9 @@ interface ProjectApi {
     @GET("/api/v1/styles/styles-list")
     fun getStyleList(@Query("lang") language : String, @Query("categoryId") categoryId : Int): Observable<Response<JsonArray>>
 
+    //获取项目详情
+    @Headers("Content-Type: application/json")
+    @GET("/api/v1/projects/detail/{id}")
+    fun getProjectInfoById(@Path("id") id : String, @Query("lang") lang : String): Observable<Response<ProjectInfoModel>>
 
 }

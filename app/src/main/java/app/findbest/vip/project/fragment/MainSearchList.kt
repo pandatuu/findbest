@@ -65,7 +65,7 @@ class MainSearchList : Fragment(), ProjectMainListAdapter.ListAdapter {
     }
 
     //选择recycle里的单个card
-    override fun oneClick() {
+    override fun oneClick(id: String) {
         startActivity<ProjectInformation>()
         activity?.overridePendingTransition(R.anim.right_in, R.anim.left_out)
     }
