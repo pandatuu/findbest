@@ -2,6 +2,7 @@ package app.findbest.vip.instance.adapter
 
 import android.annotation.SuppressLint
 import android.graphics.Color
+import android.graphics.Typeface
 import android.provider.Contacts
 import android.view.Gravity
 
@@ -30,12 +31,12 @@ class MyProjectListAdapter
     private val screenWidth: Int,
     private val picWidth: Int,
     private val projectList: MutableList<ProjectItem>,
-    private val listener: (ProjectItem) -> Unit
+    private val listener: (ProjectItem, Boolean) -> Unit
 ) : RecyclerView.Adapter<MyProjectListAdapter.ViewHolder>() {
 
 
     //清除数据
-    fun clear(){
+    fun clear() {
 
         projectList.clear()
         notifyDataSetChanged()
@@ -70,16 +71,21 @@ class MyProjectListAdapter
 
         lateinit var flagImage: ImageView
 
+        lateinit var linearLayout: LinearLayout
+
         var view = with(parent.context) {
 
             linearLayout {
-                linearLayout {
 
-                    linearLayout() {
+                linearLayout {
+                    backgroundColor = Color.WHITE
+
+                    verticalLayout {
                         leftPadding = dip(25)
                         title = textView {
                             textSize = 16f
                             textColor = Color.parseColor("#FF202020")
+                            setTypeface(Typeface.defaultFromStyle(Typeface.BOLD))
 
                         }.lparams {
                             topMargin = dip(15)
@@ -111,7 +117,7 @@ class MyProjectListAdapter
                             }.lparams {
                                 width = dip(15)
                                 height = dip(12)
-                                leftMargin = dip(24)
+                                leftMargin = dip(20)
                             }
 
                             textView2 = textView {
@@ -128,7 +134,7 @@ class MyProjectListAdapter
                             }.lparams {
                                 width = dip(15)
                                 height = dip(12)
-                                leftMargin = dip(24)
+                                leftMargin = dip(20)
                             }
 
                             textView3 = textView {
@@ -143,7 +149,6 @@ class MyProjectListAdapter
                             width = matchParent
                             topMargin = dip(15)
                         }
-
                     }.lparams {
                         width = dip(0)
                         weight = 1f
@@ -156,8 +161,18 @@ class MyProjectListAdapter
 
                         gravity = Gravity.CENTER
 
-                        flagImage = imageView {
-                            setImageResource(R.mipmap.login_ico_checkbox_pre)
+                        linearLayout = linearLayout {
+                            gravity = Gravity.CENTER
+                            flagImage = imageView {
+                                isSelected = false
+                                setImageResource(R.mipmap.login_ico_checkbox_nor)
+                            }.lparams() {
+                                width = dip(20)
+                                height = dip(20)
+                            }
+                        }.lparams {
+                            width = dip(40)
+                            height = dip(40)
                         }
 
                     }.lparams {
@@ -167,8 +182,9 @@ class MyProjectListAdapter
 
 
                 }.lparams() {
-                    width = matchParent
+                    width = dip(screenWidth - 20)
                     height = dip(87)
+                    topMargin = dip(10)
                     leftMargin = dip(10)
                     rightMargin = dip(10)
                 }
@@ -185,20 +201,21 @@ class MyProjectListAdapter
             textView1,
             textView2,
             textView3,
-            flagImage
+            flagImage,
+            linearLayout
         )
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
 
 
-        holder.title.text=projectList.get(position).name
+        holder.title.text = projectList.get(position).name
 
-        holder.textView1.text=projectList.get(position).size
+        holder.textView1.text = projectList.get(position).size
 
-        holder.textView2.text=projectList.get(position).format
+        holder.textView2.text = projectList.get(position).format
 
-        holder.textView2.text=projectList.get(position).time
+        holder.textView3.text = projectList.get(position).time
 
 
 
@@ -221,21 +238,30 @@ class MyProjectListAdapter
         val textView1: TextView,
         val textView2: TextView,
         val textView3: TextView,
-        val flagImage: ImageView
-
+        val flagImage: ImageView,
+        val linearLayout: LinearLayout
 
     ) : RecyclerView.ViewHolder(view) {
         @SuppressLint("ResourceType")
         fun bindItem(
             list: MutableList<ProjectItem>,
             position: Int,
-            listener: (ProjectItem) -> Unit
+            listener: (ProjectItem, Boolean) -> Unit
         ) {
             //主体点击
-            this.flagImage.withTrigger().click {
+            this.linearLayout.withTrigger(10).click {
+                if (flagImage.isSelected == false) {
+                    flagImage.isSelected = true
+                    listener(list.get(position), true)
+                    flagImage.setImageResource(R.mipmap.login_ico_checkbox_pre)
+                } else {
+                    flagImage.isSelected = false
+                    listener(list.get(position), false)
+                    flagImage.setImageResource(R.mipmap.login_ico_checkbox_nor)
+                }
 
-                listener(list.get(position))
             }
+
 
         }
     }

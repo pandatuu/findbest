@@ -43,10 +43,15 @@ import com.scwang.smart.refresh.layout.constant.SpinnerStyle
 import io.reactivex.schedulers.Schedulers
 import kotlinx.coroutines.*
 import kotlinx.coroutines.rx2.awaitSingle
+import okhttp3.RequestBody
 import org.jetbrains.anko.support.v4.toast
+import org.json.JSONArray
 import org.json.JSONObject
 import withTrigger
 import java.lang.Runnable
+import java.text.SimpleDateFormat
+import java.util.*
+import kotlin.collections.HashSet
 
 
 class InvitationList : FragmentParent() {
@@ -65,9 +70,12 @@ class InvitationList : FragmentParent() {
 
     lateinit var recycler: RecyclerView
 
+    var sdf = SimpleDateFormat("yyyy-MM-dd")
 
     private lateinit var instanceApi: InstanceApi
 
+    var selectedItem = mutableListOf<String>()
+    var outId = 111
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -113,149 +121,159 @@ class InvitationList : FragmentParent() {
 
 
         var view = UI {
-            verticalLayout {
 
-                relativeLayout() {
+            frameLayout {
+                id = outId
+                verticalLayout {
+
+                    relativeLayout() {
+
+                        textView() {
+                            backgroundColor = Color.parseColor("#FFE3E3E3")
+                        }.lparams() {
+                            width = matchParent
+                            height = dip(1)
+                            alignParentBottom()
+
+                        }
+                        relativeLayout() {
+
+
+                            toolbar1 = toolbar {
+                                backgroundResource = R.color.transparent
+                                isEnabled = true
+                                navigationIconResource = R.mipmap.nav_ico_return
+
+                                title = ""
+                                this.withTrigger().click {
+
+                                    activity!!.finish()
+                                    activity!!.overridePendingTransition(
+                                        R.anim.left_in,
+                                        R.anim.right_out
+                                    )
+
+                                }
+                            }.lparams() {
+                                width = matchParent
+                                height = dip(65)
+                                alignParentBottom()
+                                height = dip(65 - getStatusBarHeight(this@InvitationList.context!!))
+                            }
+
+
+
+                            textView {
+                                text = "选择项目"
+                                backgroundColor = Color.TRANSPARENT
+                                gravity = Gravity.CENTER
+                                textColor = Color.parseColor("#FF222222")
+                                textSize = 17f
+                                setTypeface(Typeface.defaultFromStyle(Typeface.BOLD))
+
+                            }.lparams() {
+                                width = matchParent
+                                height = wrapContent
+                                height = dip(65 - getStatusBarHeight(this@InvitationList.context!!))
+                                alignParentBottom()
+                            }
+
+                        }.lparams() {
+                            width = matchParent
+                            height = dip(65)
+                        }
+                    }.lparams() {
+                        width = matchParent
+                        height = dip(65)
+                    }
+
+                    //////////////////////////////////////////////////////////////////
+                    /////////////////////////////////////////////////////////////////
+
 
                     textView() {
                         backgroundColor = Color.parseColor("#FFE3E3E3")
                     }.lparams() {
                         width = matchParent
                         height = dip(1)
-                        alignParentBottom()
 
                     }
-                    relativeLayout() {
+
+                    //////////////////////////////////////////////////////////////////////
+                    //////////////////////////////////////////////////////////////////////
 
 
-                        toolbar1 = toolbar {
-                            backgroundResource = R.color.transparent
-                            isEnabled = true
-                            navigationIconResource = R.mipmap.nav_ico_return
+                    linearLayout {
 
-                            title = ""
-                            this.withTrigger().click {
+                        backgroundColor = Color.parseColor("#FFF6F6F6")
 
-                                activity!!.finish()
-                                activity!!.overridePendingTransition(
-                                    R.anim.left_in,
-                                    R.anim.right_out
-                                )
+                        gravity = Gravity.CENTER
+
+
+
+
+                        smart = smartRefreshLayout {
+                            setEnableAutoLoadMore(false)
+                            setRefreshHeader(MaterialHeader(activity))
+                            setOnRefreshListener {
+                                GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
+                                    Refresh()
+                                    it.finishRefresh(300)
+                                }
+                            }
+                            setOnLoadMoreListener {
+                                LoadMore()
+                                it.finishLoadMore(300)
+                            }
+                            setRefreshFooter(BallPulseFooter(mContext).setSpinnerStyle(SpinnerStyle.Scale))
+
+                            recycler = recyclerView {
+                                layoutManager = LinearLayoutManager(mContext)
+                                overScrollMode = View.OVER_SCROLL_NEVER
 
                             }
-                        }.lparams() {
-                            width = matchParent
-                            height = dip(65)
-                            alignParentBottom()
-                            height = dip(65 - getStatusBarHeight(this@InvitationList.context!!))
+
+                        }.lparams(matchParent, matchParent) {
                         }
 
-
-
-                        textView {
-                            text = "选择项目"
-                            backgroundColor = Color.TRANSPARENT
-                            gravity = Gravity.CENTER
-                            textColor = Color.parseColor("#FF222222")
-                            textSize = 17f
-                            setTypeface(Typeface.defaultFromStyle(Typeface.BOLD))
-
-                        }.lparams() {
-                            width = matchParent
-                            height = wrapContent
-                            height = dip(65 - getStatusBarHeight(this@InvitationList.context!!))
-                            alignParentBottom()
-                        }
 
                     }.lparams() {
+                        height = dip(0)
+                        weight = 1f
                         width = matchParent
-                        height = dip(65)
                     }
-                }.lparams() {
-                    width = matchParent
-                    height = dip(65)
-                }
-
-                //////////////////////////////////////////////////////////////////
-                /////////////////////////////////////////////////////////////////
-
-
-                textView() {
-                    backgroundColor = Color.parseColor("#FFE3E3E3")
-                }.lparams() {
-                    width = matchParent
-                    height = dip(1)
-
-                }
-
-                //////////////////////////////////////////////////////////////////////
-                //////////////////////////////////////////////////////////////////////
-
-
-                linearLayout {
-
-                    backgroundColor = Color.parseColor("#FFF6F6F6")
-
-                    gravity = Gravity.CENTER
 
 
 
+                    textView {
 
-                    smart = smartRefreshLayout {
-                        setEnableAutoLoadMore(false)
-                        setRefreshHeader(MaterialHeader(activity))
-                        setOnRefreshListener {
-                            GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
-                                Refresh()
-                                it.finishRefresh(300)
+                        gravity = Gravity.CENTER
+                        text = "发送邀请"
+                        textSize = 16f
+                        textColor = Color.WHITE
+                        backgroundResource = R.drawable.enable_rectangle_button
+
+
+
+                        this.withTrigger().click {
+                            if (selectedItem.size > 0) {
+                                invite()
                             }
-                        }
-                        setOnLoadMoreListener {
-                            LoadMore()
-                            it.finishLoadMore(300)
-                        }
-                        setRefreshFooter(BallPulseFooter(mContext).setSpinnerStyle(SpinnerStyle.Scale))
 
-                        recycler = recyclerView {
-                            layoutManager = LinearLayoutManager(mContext)
-                            overScrollMode = View.OVER_SCROLL_NEVER
 
                         }
 
-                    }.lparams(matchParent, matchParent) {
+
+                    }.lparams() {
+                        height = dip(50)
+                        width = matchParent
                     }
 
 
                 }.lparams() {
-                    height = dip(0)
-                    weight = 1f
                     width = matchParent
+                    height = matchParent
                 }
-
-
-
-                textView {
-
-                    gravity = Gravity.CENTER
-                    text = "发送邀请"
-                    textSize = 16f
-                    textColor = Color.WHITE
-                    backgroundResource = R.drawable.enable_rectangle_button
-
-
-
-                    this.withTrigger().click {
-
-
-                    }
-
-
-                }.lparams() {
-                    height = dip(50)
-                    width = matchParent
-                }
-
-
             }
         }.view
 
@@ -266,15 +284,15 @@ class InvitationList : FragmentParent() {
     }
 
 
-    fun Refresh(){
-        pageNum=1
+    fun Refresh() {
+        pageNum = 1
         adapter?.clear()
         requestTheList()
 
     }
 
-    fun LoadMore(){
-        pageNum=pageNum+1
+    fun LoadMore() {
+        pageNum = pageNum + 1
         requestTheList()
     }
 
@@ -303,42 +321,85 @@ class InvitationList : FragmentParent() {
 
                 for (i in 0 until array.length()) {
                     var ob = array.getJSONObject(i)
+
                     dataList.add(
                         ProjectItem(
-                            ob.getString("format"),
+                            DataDictionary.getFormat(ob.getString("format").toInt()),
                             ob.getString("size"),
                             ob.getString("name"),
                             ob.getString("id"),
-                            ""
+                            sdf.format(Date(ob.getString("createAt").toLong()))
                         )
                     )
                 }
 
                 withContext(Dispatchers.Main) {
-                    appendRecyclerData(dataList,screenWidth, picWidth)
+                    appendRecyclerData(dataList, screenWidth, picWidth)
                 }
 
             } else {
-                println("xxxxxxxxxxxxxxxxxxxxxxxxxx")
 
-                println(response.code())
             }
         }
+
+
+    }
+
+
+    fun invite() {
+        GlobalScope.launch {
+
+            var json = JSONObject()
+            json.put("providerId", activity!!.intent.getStringExtra("id"))
+
+            val projectIds = JSONArray()
+
+            for (i in 0 until selectedItem.size) {
+                projectIds.put(selectedItem.get(i))
+            }
+            json.put("projectIds", projectIds)
+
+
+            val body = RequestBody.create(MimeType.APPLICATION_JSON, json.toString())
+
+            var response = instanceApi.invitePainterAndGroup(
+                body
+            )
+                .subscribeOn(Schedulers.io()) //被观察者 开子线程请求网络
+                .awaitSingle()
+            println("得到的数据")
+            println(response.body())
+            println(response.code())
+            if (response.code() == 200) {
+                println("得到的数据")
+                println(response.body())
+
+                var manager = childFragmentManager.beginTransaction()
+                val messageDialog = MessageDialog.newInstance(manager, activity!!)
+                childFragmentManager.beginTransaction().add(outId, messageDialog).commit()
+
+            } else {
+
+            }
+        }
+
 
     }
 
     fun appendRecyclerData(
-        list:MutableList<ProjectItem>,
+        list: MutableList<ProjectItem>,
         screenWidth: Int,
         picWidth: Int
     ) {
         if (adapter == null) {
             //适配器
-            adapter = MyProjectListAdapter(recycler, screenWidth, picWidth, list, { item ->
+            adapter = MyProjectListAdapter(recycler, screenWidth, picWidth, list, { item, f ->
 
-
-
-
+                if (f) {
+                    selectedItem.add(item.id)
+                } else {
+                    selectedItem.remove(item.id)
+                }
             })
             //设置适配器
             recycler.setAdapter(adapter)

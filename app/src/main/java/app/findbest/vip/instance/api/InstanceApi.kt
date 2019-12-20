@@ -32,4 +32,14 @@ interface InstanceApi {
 
     ):  Observable<Response<String>>
 
+
+    //邀请画师
+    @Headers("Content-Type: application/json")
+    @POST("/api/v1/invites")
+    fun invitePainterAndGroup(
+        @Body array: RequestBody
+    ):  Observable<Response<String>>
+
+
+
 }
