@@ -81,7 +81,11 @@
             android:theme="@style/AppTheme.NoActionBar">
         </activity>
 
-
+        <!-- 搜索页面 -->
+        <activity android:name=".project.view.MainSearchActivity"
+            android:windowSoftInputMode="adjustPan"
+            android:theme="@style/AppTheme.NoActionBar">
+        </activity>
 
         <!-- 项目-项目需求和画师应聘页 -->
         <activity android:name=".project.view.ProjectInformation"
