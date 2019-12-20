@@ -121,10 +121,7 @@ class InstanceDetail : FragmentParent() {
                             this.withTrigger().click {
 
                                 activity!!.finish()
-                                activity!!.overridePendingTransition(
-                                    R.anim.right_out,
-                                    R.anim.right_out
-                                )
+                                activity!!.overridePendingTransition(R.anim.left_in, R.anim.right_out)
 
                             }
                         }.lparams() {

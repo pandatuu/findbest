@@ -22,50 +22,44 @@ class MainActivity : BaseActivity() {
     lateinit var bottomButton: BottomButton
     private var exitTime: Long = 0
     lateinit var mainFrameLayout: FrameLayout
+    var mainId = 1
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
 
+        frameLayout {
+            id = mainId
+            verticalLayout {
+                var topPartId = 10
+                mainFrameLayout = frameLayout {
+                    id = topPartId
 
+                    val projectList = ProjectFragment.newInstance(this@MainActivity)
+                    supportFragmentManager.beginTransaction().add(id, projectList).commit()
 
-        verticalLayout {
+                }.lparams {
+                    height = dip(0)
+                    weight = 1f
+                    width = matchParent
+                }
 
-
-
-            var topPartId = 10
-            mainFrameLayout = frameLayout {
-                id = topPartId
-
-
-                val projectList = ProjectFragment.newInstance(this@MainActivity)
-                supportFragmentManager.beginTransaction().add(id, projectList).commit()
-
-            }.lparams {
-                height = dip(0)
-                weight = 1f
-                width = matchParent
+                var bottomPartId = 11
+                frameLayout {
+                    id = bottomPartId
+                    bottomButton = BottomButton.newInstance(this@MainActivity);
+                    supportFragmentManager.beginTransaction().replace(id, bottomButton)
+                        .commit()
+                }.lparams {
+                    height = dip(50)
+                    width = matchParent
+                }
             }
-
-            var bottomPartId = 11
-            frameLayout {
-                id = bottomPartId
-                bottomButton = BottomButton.newInstance(this@MainActivity);
-                supportFragmentManager.beginTransaction().replace(id, bottomButton).commit()
-            }.lparams {
-                height = dip(50)
-                width = matchParent
-            }
-
-
         }
-
-
     }
-
-    override fun onStart() {
-        super.onStart()
+//            override fun onStart() {
+//                super.onStart()
 
 
 //        setActionBar((topFragment as InstanceDisplay).toolbar1)
@@ -77,14 +71,15 @@ class MainActivity : BaseActivity() {
 //        getWindow().getDecorView()
 //            .setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR)
 
-    }
+//            }
 
 
     override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {
         if (event != null) {
             if (keyCode == KeyEvent.KEYCODE_BACK && event.action == KeyEvent.ACTION_DOWN) {
                 if ((System.currentTimeMillis() - exitTime) > 2000) {
-                    Toast.makeText(applicationContext, "再按一次退出程序", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(applicationContext, "再按一次退出程序", Toast.LENGTH_SHORT)
+                        .show();
                     exitTime = System.currentTimeMillis()
                 } else {
                     val startMain = Intent(Intent.ACTION_MAIN)
@@ -105,13 +100,15 @@ class MainActivity : BaseActivity() {
         when (type) {
             1 -> {
                 topFragment = ProjectFragment.newInstance(this@MainActivity)
-                supportFragmentManager.beginTransaction().add(mainFrameLayout.id, topFragment)
+                supportFragmentManager.beginTransaction()
+                    .add(mainFrameLayout.id, topFragment)
                     .commit()
 
             }
             2 -> {
                 topFragment = InstanceDisplay.newInstance(this@MainActivity);
-                supportFragmentManager.beginTransaction().replace(mainFrameLayout.id, topFragment)
+                supportFragmentManager.beginTransaction()
+                    .replace(mainFrameLayout.id, topFragment)
                     .commit()
             }
             3 -> {

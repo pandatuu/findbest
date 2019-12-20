@@ -9,9 +9,12 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import app.findbest.vip.R
 import app.findbest.vip.commonfrgmant.BackgroundFragment
-import org.jetbrains.anko.*
+import org.jetbrains.anko.backgroundColor
+import org.jetbrains.anko.frameLayout
+import org.jetbrains.anko.matchParent
 import org.jetbrains.anko.support.v4.UI
 import org.jetbrains.anko.support.v4.toast
+import org.jetbrains.anko.verticalLayout
 
 class ProjectFragment : Fragment(), ProjectMainTitle.ChildrenClick,BackgroundFragment.ClickBack, ProjectMainScreen.ProjectScreen {
 
@@ -26,8 +29,11 @@ class ProjectFragment : Fragment(), ProjectMainTitle.ChildrenClick,BackgroundFra
     lateinit var mContext: Context
 
     private var mainId = 1
+    private val top = 2
+    val list = 3
     private var backgroundFragment: BackgroundFragment? = null
     private var projectMainScreen: ProjectMainScreen? = null
+    var main: ProjectMainList? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -50,8 +56,8 @@ class ProjectFragment : Fragment(), ProjectMainTitle.ChildrenClick,BackgroundFra
         closeAlertDialog()
     }
     //点击dialog确认按钮
-    override fun confirmClick(array: ArrayList<String>) {
-        toast("${array[0]}---${array[1]}")
+    override fun confirmClick(array: ArrayList<Int>) {
+        main?.setCategoryList(array[0],array[1])
         closeAlertDialog()
     }
 
@@ -59,30 +65,28 @@ class ProjectFragment : Fragment(), ProjectMainTitle.ChildrenClick,BackgroundFra
     private fun createV(): View {
         return UI {
             frameLayout {
-                id = mainId
                 //上部分
                 verticalLayout{
-                    val top = 2
                     frameLayout {
-                        id = top
+                        id = this@ProjectFragment.top
                         val title = ProjectMainTitle.newInstance(this@ProjectFragment)
-                        childFragmentManager.beginTransaction().add(top, title).commit()
+                        childFragmentManager.beginTransaction().add(this@ProjectFragment.top, title).commit()
                     }
                     //中间adapter
-                    val list = 3
                     frameLayout {
                         backgroundColor = Color.GREEN
                         id = list
-                        val main = ProjectMainList.newInstance(mContext)
-                        childFragmentManager.beginTransaction().add(list, main).commit()
+                        main = ProjectMainList.newInstance(mContext)
+                        childFragmentManager.beginTransaction().add(list, main!!).commit()
                     }.lparams(matchParent, matchParent)
                 }
             }
         }.view
     }
 
+
     private fun openDialog() {
-        val mTransaction = childFragmentManager.beginTransaction()
+        val mTransaction = activity!!.supportFragmentManager.beginTransaction()
 
         if (backgroundFragment == null) {
             backgroundFragment = BackgroundFragment.newInstance(this@ProjectFragment)
@@ -92,7 +96,7 @@ class ProjectFragment : Fragment(), ProjectMainTitle.ChildrenClick,BackgroundFra
 
         mTransaction.setCustomAnimations(R.anim.right_in, R.anim.right_in)
 
-        projectMainScreen = ProjectMainScreen.newInstance(this@ProjectFragment)
+        projectMainScreen = ProjectMainScreen.newInstance(mContext,this@ProjectFragment)
         mTransaction.add(mainId, projectMainScreen!!)
 
         mTransaction.commit()
@@ -100,7 +104,7 @@ class ProjectFragment : Fragment(), ProjectMainTitle.ChildrenClick,BackgroundFra
 
     private fun closeAlertDialog() {
 
-        val mTransaction = childFragmentManager.beginTransaction()
+        val mTransaction = activity!!.supportFragmentManager.beginTransaction()
         if (projectMainScreen != null) {
             mTransaction.setCustomAnimations(R.anim.right_out, R.anim.right_out)
 
