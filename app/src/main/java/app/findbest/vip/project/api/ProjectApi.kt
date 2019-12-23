@@ -44,4 +44,9 @@ interface ProjectApi {
     @GET("/api/v1/projects/detail/{id}")
     fun getProjectInfoById(@Path("id") id : String, @Query("lang") lang : String): Observable<Response<ProjectInfoModel>>
 
+    //获取应征画师列表
+    @Headers("Content-Type: application/json")
+    @GET("/api/v1/projects/applies")
+    fun getPrintersById(@Query("id") id : String): Observable<Response<PageModel>>
+
 }

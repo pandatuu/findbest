@@ -46,7 +46,7 @@ class ProjectInformation: BaseActivity() {
         listTitle.add("应征画师")
         val datas = ArrayList<Fragment>()
         datas.add(ProjectDemand.newInstance(this@ProjectInformation,projectId))
-        datas.add(ProjectApplicants.newInstance(this@ProjectInformation))
+        datas.add(ProjectApplicants.newInstance(this@ProjectInformation,projectId))
         frameLayout {
             id = mainId
             linearLayout {
