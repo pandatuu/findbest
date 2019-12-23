@@ -11,6 +11,7 @@ import android.widget.LinearLayout
 import androidx.fragment.app.Fragment
 import app.findbest.vip.R
 import app.findbest.vip.project.api.ProjectApi
+import app.findbest.vip.project.view.EnlistProject
 import app.findbest.vip.utils.RetrofitUtils
 import io.reactivex.schedulers.Schedulers
 import kotlinx.coroutines.CoroutineStart
@@ -64,6 +65,10 @@ class ProjectDemand: Fragment() {
                     text = "我要应征"
                     textSize = 16f
                     textColor = Color.parseColor("#FFFFFFFF")
+                    setOnClickListener {
+                        startActivity<EnlistProject>("projectId" to projectId)
+                        activity!!.overridePendingTransition(R.anim.right_in, R.anim.left_out)
+                    }
                 }.lparams(dip(300),dip(50)){
                     gravity = Gravity.CENTER_HORIZONTAL
                     bottomMargin = dip(30)

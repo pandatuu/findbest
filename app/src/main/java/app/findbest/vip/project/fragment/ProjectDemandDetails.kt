@@ -164,7 +164,11 @@ class ProjectDemandDetails: Fragment() {
         }
 
         //参考图例
-        val images = model.samples as ArrayList<Any>
+        val images = arrayListOf<String>()
+        model.samples.forEach {
+            val item = it.asJsonObject
+            images.add(item["url"].asString)
+        }
         if(images.size==0){
             samplesParent.visibility = LinearLayout.GONE
         }
@@ -252,21 +256,18 @@ class ProjectDemandDetails: Fragment() {
                                     }
                                     verticalLayout {
                                         commitAtDate = textView {
-                                            text = "2019-11-22"
                                             textSize = 14f
                                             textColor = Color.parseColor("#FF444444")
                                         }.lparams {
                                             topMargin = dip(15)
                                         }
                                         userBounty = textView {
-                                            text = "¥ 800.00"
                                             textSize = 14f
                                             textColor = Color.parseColor("#FF444444")
                                         }.lparams {
                                             topMargin = dip(15)
                                         }
                                         margin = textView {
-                                            text = "¥ 8000.00"
                                             textSize = 14f
                                             textColor = Color.parseColor("#FF444444")
                                         }.lparams {
@@ -299,14 +300,12 @@ class ProjectDemandDetails: Fragment() {
                                     }
                                     verticalLayout {
                                         payCurrency = textView {
-                                            text = "人民币"
                                             textSize = 14f
                                             textColor = Color.parseColor("#FF444444")
                                         }.lparams {
                                             topMargin = dip(15)
                                         }
                                         entityCount = textView {
-                                            text = "8"
                                             textSize = 14f
                                             textColor = Color.parseColor("#FF444444")
                                         }.lparams {
@@ -366,14 +365,12 @@ class ProjectDemandDetails: Fragment() {
                                     }
                                     verticalLayout {
                                         bountyFirst = textView {
-                                            text = "100"
                                             textSize = 14f
                                             textColor = Color.parseColor("#FF444444")
                                         }.lparams {
                                             topMargin = dip(15)
                                         }
                                         bountyThrid = textView {
-                                            text = "400"
                                             textSize = 14f
                                             textColor = Color.parseColor("#FF444444")
                                         }.lparams {
@@ -409,14 +406,12 @@ class ProjectDemandDetails: Fragment() {
                                     }
                                     verticalLayout {
                                         bountySecond = textView {
-                                            text = "200"
                                             textSize = 14f
                                             textColor = Color.parseColor("#FF444444")
                                         }.lparams {
                                             topMargin = dip(15)
                                         }
                                         bountyForth = textView {
-                                            text = "800"
                                             textSize = 14f
                                             textColor = Color.parseColor("#FF444444")
                                         }.lparams {
@@ -512,49 +507,42 @@ class ProjectDemandDetails: Fragment() {
                                     }
                                     verticalLayout {
                                         category = textView {
-                                            text = "儿童插画，擅长画儿童，童趣温馨细腻"
                                             textSize = 14f
                                             textColor = Color.parseColor("#FF444444")
                                         }.lparams {
                                             topMargin = dip(15)
                                         }
                                         style = textView {
-                                            text = "儿童插画"
                                             textSize = 14f
                                             textColor = Color.parseColor("#FF444444")
                                         }.lparams {
                                             topMargin = dip(15)
                                         }
                                         size = textView {
-                                            text = "1920*1080 px"
                                             textSize = 14f
                                             textColor = Color.parseColor("#FF444444")
                                         }.lparams {
                                             topMargin = dip(15)
                                         }
                                         testing = textView {
-                                            text = "不需要试稿"
                                             textSize = 14f
                                             textColor = Color.parseColor("#FF444444")
                                         }.lparams {
                                             topMargin = dip(15)
                                         }
                                         publicity = textView {
-                                            text = "可公开"
                                             textSize = 14f
                                             textColor = Color.parseColor("#FF444444")
                                         }.lparams {
                                             topMargin = dip(15)
                                         }
                                         color = textView {
-                                            text = "RGB"
                                             textSize = 14f
                                             textColor = Color.parseColor("#FF444444")
                                         }.lparams {
                                             topMargin = dip(15)
                                         }
                                         format = textView {
-                                            text = "PSD"
                                             textSize = 14f
                                             textColor = Color.parseColor("#FF444444")
                                         }.lparams {
@@ -593,8 +581,6 @@ class ProjectDemandDetails: Fragment() {
                             }
                             relativeLayout {
                                 conception = textView {
-                                    text = "需要单色线条稿18张以内，封面插图1张，用于外国儿童文学作品的封面和内插。" +
-                                            "封面图价格单独计算。上面的报价是内文插图价格。"
                                     textSize = 14f
                                     textColor = Color.parseColor("#FF444444")
                                 }.lparams {
@@ -630,8 +616,6 @@ class ProjectDemandDetails: Fragment() {
                             }
                             relativeLayout {
                                 supplement = textView {
-                                    text = "图书的目标读者为8-13岁儿童。人物形象较多，包括10岁左右的男孩女孩，" +
-                                            "成年男人，老年男人、老年女人。擅长儿童插画和人物形象的插画师优先。"
                                     textSize = 14f
                                     textColor = Color.parseColor("#FF444444")
                                 }.lparams {

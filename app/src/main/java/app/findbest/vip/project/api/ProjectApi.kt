@@ -5,11 +5,9 @@ import app.findbest.vip.project.model.ProjectInfoModel
 import com.google.gson.JsonArray
 import com.google.gson.JsonObject
 import io.reactivex.Observable
+import okhttp3.RequestBody
 import retrofit2.Response
-import retrofit2.http.GET
-import retrofit2.http.Headers
-import retrofit2.http.Path
-import retrofit2.http.Query
+import retrofit2.http.*
 
 interface ProjectApi {
 
@@ -49,4 +47,13 @@ interface ProjectApi {
     @GET("/api/v1/projects/applies")
     fun getPrintersById(@Query("id") id : String): Observable<Response<PageModel>>
 
+    //应征项目
+    @Headers("Content-Type: application/json")
+    @POST("/api/v1/projects/applies")
+    fun enlistProject(@Body body: RequestBody): Observable<Response<JsonObject>>
+
+    //获取我发布过的图片
+    @Headers("Content-Type: application/json")
+    @GET("/api/v1/users/works")
+    fun getMyPicsById(): Observable<Response<PageModel>>
 }
