@@ -15,6 +15,7 @@ import app.findbest.vip.project.fragment.ProjectFragment
 import app.findbest.vip.utils.BaseActivity
 
 import org.jetbrains.anko.*
+import org.jetbrains.anko.support.v4.toast
 
 class MainActivity : BaseActivity() {
 
@@ -122,5 +123,24 @@ class MainActivity : BaseActivity() {
             }
         }
     }
+
+
+    /**
+     *  得到返回的值
+     */
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (data != null) {
+            if(resultCode==222){
+                println(intent.getStringExtra("content"))
+                println(data.getStringExtra("content"))
+                println("xxxxxxxxxxxxxxxxxxxxxxxxxxx")
+              //  toast(data.getStringExtra("content"))
+              //  (topFragment as InstanceDisplay).searchByContent("")
+            }
+        }
+    }
+
+
 
 }

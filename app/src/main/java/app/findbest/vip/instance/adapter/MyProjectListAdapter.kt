@@ -165,7 +165,7 @@ class MyProjectListAdapter
                             gravity = Gravity.CENTER
                             flagImage = imageView {
                                 isSelected = false
-                                setImageResource(R.mipmap.login_ico_checkbox_nor)
+                                setImageResource(R.mipmap.ico_checkbox_nor)
                             }.lparams() {
                                 width = dip(20)
                                 height = dip(20)
@@ -253,11 +253,11 @@ class MyProjectListAdapter
                 if (flagImage.isSelected == false) {
                     flagImage.isSelected = true
                     listener(list.get(position), true)
-                    flagImage.setImageResource(R.mipmap.login_ico_checkbox_pre)
+                    flagImage.setImageResource(R.mipmap.ico_checkbox_pre)
                 } else {
                     flagImage.isSelected = false
                     listener(list.get(position), false)
-                    flagImage.setImageResource(R.mipmap.login_ico_checkbox_nor)
+                    flagImage.setImageResource(R.mipmap.ico_checkbox_nor)
                 }
 
             }

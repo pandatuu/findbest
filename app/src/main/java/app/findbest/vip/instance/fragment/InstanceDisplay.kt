@@ -23,6 +23,8 @@ import android.widget.*
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import app.findbest.vip.instance.activity.InstanceActivity
+import app.findbest.vip.instance.activity.InstanceSearchActivity
+import app.findbest.vip.instance.activity.InvitationActivity
 import app.findbest.vip.instance.adapter.InstanceListAdapter
 import app.findbest.vip.instance.api.InstanceApi
 import app.findbest.vip.instance.model.Instance
@@ -70,8 +72,8 @@ class InstanceDisplay : FragmentParent() {
 
     private lateinit var instanceApi: InstanceApi
 
-    var screenWidth=0
-    var picWidth=0
+    var screenWidth = 0
+    var picWidth = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -101,7 +103,6 @@ class InstanceDisplay : FragmentParent() {
         savedInstanceState: Bundle?
     ): View? {
         var fragmentView = createView()
-        println("ssssssssssssssssssssss")
 
         smart.autoRefresh()
         return fragmentView
@@ -111,7 +112,6 @@ class InstanceDisplay : FragmentParent() {
 //    override fun onResume() {
 //        super.onResume()
 //    }
-
 
 
     private fun createView(): View {
@@ -187,17 +187,20 @@ class InstanceDisplay : FragmentParent() {
                 linearLayout {
 
 
-                    setOnClickListener {
-                        search.requestFocus()
-                        val imm =
-                            search.context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-                        imm.showSoftInput(search, 0)
-                    }
-
-
                     gravity = Gravity.CENTER_VERTICAL
 
                     linearLayout {
+
+
+                        //去搜索
+                        setOnClickListener {
+
+                            var intent = Intent(activityInstance, InstanceSearchActivity::class.java)
+                            activity!!.startActivityForResult(intent,100)
+                            activity!!.overridePendingTransition(R.anim.right_in, R.anim.left_out)
+
+                        }
+
                         gravity = Gravity.CENTER_VERTICAL
 
                         backgroundResource = R.drawable.edit_text_background
@@ -212,14 +215,21 @@ class InstanceDisplay : FragmentParent() {
 
                         }
 
-                        editText {
-                        }.lparams() {
-                            width = dip(0)
-                            height = dip(0)
-                        }
-
                         isFocusable
                         search = editText {
+
+
+                            //去搜索
+                            setOnClickListener {
+
+                                var intent = Intent(activityInstance, InstanceSearchActivity::class.java)
+                                activity!!.startActivityForResult(intent,22)
+                                activity!!.overridePendingTransition(R.anim.right_in, R.anim.left_out)
+
+                            }
+
+
+                            setFocusable(false)
                             hint = "搜索"
                             hintTextColor = Color.parseColor("#ff666666")
                             backgroundColor = Color.TRANSPARENT
@@ -245,6 +255,15 @@ class InstanceDisplay : FragmentParent() {
 
 
                     linearLayout {
+
+
+                        setOnClickListener {
+
+
+                        }
+
+
+
                         gravity = Gravity.CENTER_VERTICAL or Gravity.RIGHT
 
 
@@ -284,7 +303,6 @@ class InstanceDisplay : FragmentParent() {
                 //////////////////////////////////////////////////////////////////////
 
 
-
                 linearLayout {
 
                     setOnClickListener {
@@ -312,6 +330,7 @@ class InstanceDisplay : FragmentParent() {
                                 overScrollMode = View.OVER_SCROLL_NEVER
                                 layoutManager = LinearLayoutManager(mContext)
                             }
+
                         }.lparams(matchParent, matchParent) {
                         }
 
@@ -340,15 +359,15 @@ class InstanceDisplay : FragmentParent() {
     }
 
 
-    fun Refresh(){
-        pageNum=1
+    fun Refresh() {
+        pageNum = 1
         sonList.clear()
         requestPicData(screenWidth, picWidth, null, null, null)
 
     }
 
-    fun LoadMore(){
-        pageNum=pageNum+1
+    fun LoadMore() {
+        pageNum = pageNum + 1
         requestPicData(screenWidth, picWidth, null, null, null)
     }
 
@@ -378,18 +397,20 @@ class InstanceDisplay : FragmentParent() {
 
                 var jsonObject = JSONObject(response.body().toString())
                 var array = jsonObject.getJSONArray("data")
-                if(array.length()==0 &&  pageNum>1){
-                    pageNum=pageNum-1
+                if (array.length() == 0 && pageNum > 1) {
+                    pageNum = pageNum - 1
                 }
 
                 for (i in 0 until array.length()) {
                     var ob = array.getJSONObject(i)
-                    sonList.add(Instance(
-                        ob.getString("url"),
-                        ob.getString("logo"),
-                        ob.getString("name"),
-                        ob.getString("id")
-                        ))
+                    sonList.add(
+                        Instance(
+                            ob.getString("url"),
+                            ob.getString("logo"),
+                            ob.getString("name"),
+                            ob.getString("id")
+                        )
+                    )
                 }
 
                 withContext(Dispatchers.Main) {
@@ -408,7 +429,7 @@ class InstanceDisplay : FragmentParent() {
     ) {
         if (adapter == null) {
             //适配器
-            adapter = InstanceListAdapter(recycler, screenWidth, picWidth,  list, { item ->
+            adapter = InstanceListAdapter(recycler, screenWidth, picWidth, list, { item ->
 
 
                 lateinit var intent: Intent
@@ -427,10 +448,20 @@ class InstanceDisplay : FragmentParent() {
             recycler.setAdapter(adapter)
         } else {
 
-             adapter!!.addInstanceList(sonList,pageNum,pageSize)
+            adapter!!.addInstanceList(sonList, pageNum, pageSize)
 
         }
 
+
+    }
+
+
+
+    fun searchByContent(content:String){
+
+        pageNum = 1
+        sonList.clear()
+        requestPicData(screenWidth, picWidth, null, null, content)
 
     }
 

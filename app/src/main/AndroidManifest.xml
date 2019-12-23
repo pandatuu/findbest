@@ -95,6 +95,13 @@
             android:theme="@style/AppTheme.NoActionBar">
         </activity>
 
+
+        <activity android:name=".instance.activity.InstanceSearchActivity"
+            android:windowSoftInputMode="stateVisible"
+            android:theme="@style/AppTheme.NoActionBar">
+        </activity>
+
+
         <!-- 项目-项目需求和画师应聘页 -->
         <activity android:name=".project.view.ProjectInformation"
             android:windowSoftInputMode="adjustPan"
@@ -103,8 +110,13 @@
 
         <activity android:name=".instance.activity.InstanceActivity"
             android:windowSoftInputMode="adjustPan"
+            android:launchMode="standard"
             android:theme="@style/AppTheme.NoActionBar">
         </activity>
+
+
+
+
 
 
 
