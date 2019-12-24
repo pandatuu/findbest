@@ -7,6 +7,8 @@ apply plugin: 'kotlin-android-extensions'
 android {
     compileSdkVersion 29
     buildToolsVersion "29.0.2"
+
+
     defaultConfig {
         applicationId "app.findbest.vip"
         minSdkVersion 23
@@ -87,6 +89,7 @@ dependencies {
     implementation project(':messagelist')
 
     //JWT token解析
+
     implementation 'com.auth0.android:jwtdecode:1.4.0'
 
     //下拉刷新
@@ -96,5 +99,9 @@ dependencies {
 
     //actionBar沉底
     implementation 'com.jaeger.statusbarutil:library:1.5.1'
+
+
+
+
 
 }

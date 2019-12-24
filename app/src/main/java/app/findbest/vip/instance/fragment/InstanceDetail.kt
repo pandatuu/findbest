@@ -1,6 +1,7 @@
 package app.findbest.vip.instance.fragment
 
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -21,14 +22,14 @@ import android.os.Looper
 import android.widget.*
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import app.findbest.vip.instance.activity.InstanceActivity
+import app.findbest.vip.instance.activity.InvitationActivity
 import app.findbest.vip.instance.adapter.InstanceListAdapter
 import app.findbest.vip.instance.api.InstanceApi
 import app.findbest.vip.instance.model.Instance
-import app.findbest.vip.utils.RetrofitUtils
-import app.findbest.vip.utils.recyclerView
-import app.findbest.vip.utils.roundImageView
-import app.findbest.vip.utils.smartRefreshLayout
+import app.findbest.vip.utils.*
 import click
+import cn.jiguang.imui.view.ShapeImageView
 import com.biao.pulltorefresh.OnRefreshListener
 import com.biao.pulltorefresh.PtrHandler
 import com.biao.pulltorefresh.PtrLayout
@@ -96,6 +97,9 @@ class InstanceDetail : FragmentParent() {
             picWidth = 180
         }
 
+
+        lateinit var image: ImageView
+
         var view = UI {
             verticalLayout {
 
@@ -121,7 +125,10 @@ class InstanceDetail : FragmentParent() {
                             this.withTrigger().click {
 
                                 activity!!.finish()
-                                activity!!.overridePendingTransition(R.anim.left_in, R.anim.right_out)
+                                activity!!.overridePendingTransition(
+                                    R.anim.left_in,
+                                    R.anim.right_out
+                                )
 
                             }
                         }.lparams() {
@@ -211,6 +218,22 @@ class InstanceDetail : FragmentParent() {
 
 
                 linearLayout {
+                    gravity=Gravity.CENTER
+
+
+                    image= imageView {
+                        //setImageResource(R.drawable.pic2)
+                      //  setTheWidth(screenWidth)
+
+                    }.lparams() {
+                        width = matchParent
+                        height=matchParent
+                        margin = dip(5)
+                        rightMargin=dip(10)
+                        leftMargin=dip(10)
+                    }
+
+
 
 
                 }.lparams() {
@@ -229,6 +252,25 @@ class InstanceDetail : FragmentParent() {
                     textColor=Color.WHITE
                     backgroundResource=R.drawable.enable_rectangle_button
 
+
+
+                    this.withTrigger().click {
+
+
+
+                        lateinit var intent: Intent
+                        //跳转详情
+                        intent = Intent(activityInstance, InvitationActivity::class.java)
+                        //画师/团队的id
+                        intent.putExtra("id", activity!!.intent.getStringExtra("id"))
+
+                        startActivity(intent)
+                        activity!!.overridePendingTransition(R.anim.right_in, R.anim.left_out)
+
+
+                    }
+
+
                 }.lparams() {
                     height = dip(50)
                     width = matchParent
@@ -237,6 +279,12 @@ class InstanceDetail : FragmentParent() {
 
             }
         }.view
+
+        Glide.with(image.context)
+            .load(activity!!.intent.getStringExtra("url"))
+            .centerCrop()
+            .placeholder(R.mipmap.no_pic_show)
+            .into(image)
 
 
 

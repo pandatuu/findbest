@@ -12,13 +12,13 @@ import app.findbest.vip.R
 import app.findbest.vip.commonfrgmant.BottomButton
 import app.findbest.vip.instance.fragment.InstanceDetail
 import app.findbest.vip.instance.fragment.InstanceDisplay
+import app.findbest.vip.instance.fragment.InvitationList
 import app.findbest.vip.project.fragment.ProjectFragment
 import app.findbest.vip.utils.BaseActivity
 
 import org.jetbrains.anko.*
-import org.jetbrains.anko.support.v4.toast
 
-class InstanceActivity : BaseActivity() {
+class InvitationActivity : BaseActivity() {
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -34,8 +34,8 @@ class InstanceActivity : BaseActivity() {
             frameLayout {
                 id = topPartId
 
-                val instanceDetail = InstanceDetail.newInstance(this@InstanceActivity)
-                supportFragmentManager.beginTransaction().add(id, instanceDetail).commit()
+                val invitationList = InvitationList.newInstance()
+                supportFragmentManager.beginTransaction().add(id, invitationList).commit()
 
             }.lparams {
                 height = matchParent
@@ -49,6 +49,11 @@ class InstanceActivity : BaseActivity() {
 
 
     }
+
+
+
+
+
 
 
 }

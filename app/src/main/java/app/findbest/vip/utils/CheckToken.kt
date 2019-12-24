@@ -26,11 +26,13 @@ class CheckToken(val mContext: Context) {
 ////            }
             val jwt = JWT(token)
 
+
             if(!jwt.subject.isNullOrBlank()){
                 return jwt.getClaim("accountStatus").asString() ?: ""
             }
             return ""
         } catch (t: Throwable) {
+
             //报错
             println("-----JWT error---: $t")
             return ""

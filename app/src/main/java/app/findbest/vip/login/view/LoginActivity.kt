@@ -310,6 +310,7 @@ class LoginActivity : BaseActivity(), BackgroundFragment.ClickBack, ChooseCountr
             if (it.code() == 500) {
                 toast("")
             }
+
         } catch (throwable: Throwable) {
             if (throwable is HttpException) {
                 println(throwable.message())
