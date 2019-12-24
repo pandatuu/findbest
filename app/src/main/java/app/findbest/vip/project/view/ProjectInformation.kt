@@ -28,8 +28,8 @@ import retrofit2.HttpException
 class ProjectInformation: BaseActivity() {
 
     lateinit var viewpager: ViewPager
-    val viewPagerId = 2
-    val mainId = 1
+    private val viewPagerId = 2
+    private val mainId = 1
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

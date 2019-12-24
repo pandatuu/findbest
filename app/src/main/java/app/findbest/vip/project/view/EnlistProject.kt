@@ -233,10 +233,6 @@ class EnlistProject : BaseActivity(), EnlistSuccessTipsDialog.ButtomClick, Backg
 
     private suspend fun enlist(id: String) {
         try {
-//            val array: Array<String> = arrayOf()
-//            imageList.forEach {
-//                array[imageList.indexOf(it)] = it
-//            }
             val params = mapOf(
                 "projectId" to id,
                 "comment" to commitText.text.toString(),

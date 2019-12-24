@@ -65,12 +65,6 @@ class ProjectMainList : Fragment(), ProjectMainListAdapter.ListAdapter {
         activity?.overridePendingTransition(R.anim.right_in, R.anim.left_out)
     }
 
-    override fun onResume() {
-        super.onResume()
-        println("resume")
-        smart.autoRefresh()
-    }
-
     fun setCategoryList(category: Int, style: Int) {
         mCategory = category
         mStyle = style
@@ -79,7 +73,7 @@ class ProjectMainList : Fragment(), ProjectMainListAdapter.ListAdapter {
 
     private fun createV(): View {
         projectMain = ProjectMainListAdapter(mContext, this@ProjectMainList)
-        return UI {
+        val view = UI {
             linearLayout {
                 backgroundColor = Color.parseColor("#FFF6F6F6")
                 smart = smartRefreshLayout {
@@ -111,6 +105,8 @@ class ProjectMainList : Fragment(), ProjectMainListAdapter.ListAdapter {
                 }
             }
         }.view
+        smart.autoRefresh()
+        return view
     }
 
     private suspend fun getProjectList() {

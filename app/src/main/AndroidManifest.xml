@@ -15,8 +15,6 @@
         android:theme="@style/AppTheme.NoActionBar"
         android:networkSecurityConfig="@xml/network_security_config"
         tools:ignore="GoogleAppIndexingWarning">
-
-
         <activity android:name=".login.view.GuideView"
             android:theme="@style/AppTheme.NoActionBar"
             >
@@ -89,6 +87,18 @@
 
         <!-- 项目-项目需求和画师应聘页 -->
         <activity android:name=".project.view.ProjectInformation"
+            android:windowSoftInputMode="adjustPan"
+            android:theme="@style/AppTheme.NoActionBar">
+        </activity>
+
+        <!-- 项目-应征项目 -->
+        <activity android:name=".project.view.EnlistProject"
+            android:windowSoftInputMode="adjustPan"
+            android:theme="@style/AppTheme.NoActionBar">
+        </activity>
+
+        <!-- 项目-选择项目图片 -->
+        <activity android:name=".project.view.RecentProject"
             android:windowSoftInputMode="adjustPan"
             android:theme="@style/AppTheme.NoActionBar">
         </activity>
