@@ -25,10 +25,9 @@ import kotlinx.coroutines.rx2.awaitSingle
 import okhttp3.RequestBody
 import org.jetbrains.anko.*
 import org.jetbrains.anko.support.v4.UI
-import org.jetbrains.anko.support.v4.dip
 import retrofit2.HttpException
 
-class ProjectDemand : Fragment(), TipsDialog.ButtomClick, BackgroundFragment.ClickBack {
+class ProjectDemand : Fragment(), EnlistCheckTipsDialog.ButtomClick, BackgroundFragment.ClickBack {
 
     companion object {
         fun newInstance(context: Context, id: String): ProjectDemand {
@@ -45,7 +44,7 @@ class ProjectDemand : Fragment(), TipsDialog.ButtomClick, BackgroundFragment.Cli
     val mainId = 1
 
     private var backgroundFragment: BackgroundFragment? = null
-    private var tipsDialog: TipsDialog? = null
+    private var tipsDialog: EnlistCheckTipsDialog? = null
 
 
     override fun onCreateView(
@@ -159,7 +158,7 @@ class ProjectDemand : Fragment(), TipsDialog.ButtomClick, BackgroundFragment.Cli
 
         mTransaction.setCustomAnimations(R.anim.right_in, R.anim.right_in)
 
-        tipsDialog = TipsDialog.newInstance(this@ProjectDemand, status)
+        tipsDialog = EnlistCheckTipsDialog.newInstance(this@ProjectDemand, status)
         mTransaction.add(mainId, tipsDialog!!)
 
         mTransaction.commit()

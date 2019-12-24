@@ -10,13 +10,12 @@ import androidx.fragment.app.Fragment
 import app.findbest.vip.R
 import org.jetbrains.anko.*
 import org.jetbrains.anko.support.v4.UI
-import org.jetbrains.anko.support.v4.dip
 
-class TipsDialog : Fragment() {
+class EnlistCheckTipsDialog : Fragment() {
 
     companion object {
-        fun newInstance(buttomClick: ButtomClick, status: Int): TipsDialog {
-            val fragment = TipsDialog()
+        fun newInstance(buttomClick: ButtomClick, status: Int): EnlistCheckTipsDialog {
+            val fragment = EnlistCheckTipsDialog()
             fragment.buttomClick = buttomClick
             fragment.status = status
             return fragment

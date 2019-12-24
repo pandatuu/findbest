@@ -49,7 +49,7 @@ interface ProjectApi {
 
     //应征项目
     @Headers("Content-Type: application/json")
-    @POST("/api/v1/projects/applies")
+    @POST("/api/v1/applies")
     fun enlistProject(@Body body: RequestBody): Observable<Response<JsonObject>>
 
     //获取我发布过的图片

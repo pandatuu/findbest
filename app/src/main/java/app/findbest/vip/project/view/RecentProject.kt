@@ -131,7 +131,20 @@ class RecentProject : BaseActivity() {
                                 Glide.with(this.context)
                                     .load(imageUrl)
                                     .into(image)
-                                val smallImage = imageView {
+                                imageView {
+                                    if(imageList.size>0){
+                                        for (i in 0 until imageList.size) {
+                                            if (imageList[i] == imageUrl) {
+                                                imageResource = R.mipmap.login_ico_checkbox_pre
+                                                isClick = true
+                                                break
+                                            }else{
+                                                imageResource = R.mipmap.login_ico_checkbox_nor
+                                            }
+                                        }
+                                    }else{
+                                        imageResource = R.mipmap.login_ico_checkbox_nor
+                                    }
                                     setOnClickListener {
                                         if(isClick){
                                             imageResource = R.mipmap.login_ico_checkbox_nor
@@ -153,18 +166,6 @@ class RecentProject : BaseActivity() {
                                     gravity = Gravity.RIGHT
                                     rightMargin = dip(5)
                                     topMargin = dip(5)
-                                }
-                                if(imageList.size>0){
-                                    for (index in 0 until imageList.size) {
-                                        if (imageList[index] == imageUrl) {
-                                            smallImage.imageResource = R.mipmap.login_ico_checkbox_pre
-                                            isClick = true
-                                        }else{
-                                            smallImage.imageResource = R.mipmap.login_ico_checkbox_nor
-                                        }
-                                    }
-                                }else{
-                                    smallImage.imageResource = R.mipmap.login_ico_checkbox_nor
                                 }
                             }.lparams(dip(83),dip(83)){
                                 leftMargin = dip(5)

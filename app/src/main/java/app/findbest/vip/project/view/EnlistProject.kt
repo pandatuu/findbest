@@ -13,7 +13,10 @@ import android.widget.EditText
 import android.widget.LinearLayout
 import android.widget.TextView
 import app.findbest.vip.R
+import app.findbest.vip.commonfrgmant.BackgroundFragment
 import app.findbest.vip.project.api.ProjectApi
+import app.findbest.vip.project.fragment.EnlistCheckTipsDialog
+import app.findbest.vip.project.fragment.EnlistSuccessTipsDialog
 import app.findbest.vip.utils.BaseActivity
 import app.findbest.vip.utils.MimeType
 import app.findbest.vip.utils.RetrofitUtils
@@ -29,15 +32,18 @@ import okhttp3.RequestBody
 import org.jetbrains.anko.*
 import retrofit2.HttpException
 
-class EnlistProject : BaseActivity() {
+class EnlistProject : BaseActivity(), EnlistSuccessTipsDialog.ButtomClick, BackgroundFragment.ClickBack {
 
     private val SYSTEM_PICTRUES = 13
     private var imageList = arrayListOf<String>()
     private lateinit var listText: TextView
     private lateinit var commitText: EditText
     private var projectId = ""
+    private var mainId = 1
 
     private lateinit var linea: LinearLayout
+    private var backgroundFragment: BackgroundFragment? = null
+    private var tipsDialog: EnlistSuccessTipsDialog? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -47,6 +53,7 @@ class EnlistProject : BaseActivity() {
         }
 
         frameLayout {
+            id = mainId
             verticalLayout {
                 relativeLayout {
                     backgroundResource = R.drawable.ffe3e3e3_bottom_line
@@ -148,6 +155,17 @@ class EnlistProject : BaseActivity() {
             }
         }
     }
+
+
+    override fun click() {
+        closeAlertDialog()
+        finish()
+        overridePendingTransition(R.anim.left_in, R.anim.right_out)
+    }
+
+    override fun clickAll() {
+
+    }
     @SuppressLint("SetTextI18n")
     private fun changeImageList(){
         listText.text = "（${imageList.size}/4）"
@@ -215,6 +233,10 @@ class EnlistProject : BaseActivity() {
 
     private suspend fun enlist(id: String) {
         try {
+//            val array: Array<String> = arrayOf()
+//            imageList.forEach {
+//                array[imageList.indexOf(it)] = it
+//            }
             val params = mapOf(
                 "projectId" to id,
                 "comment" to commitText.text.toString(),
@@ -230,13 +252,56 @@ class EnlistProject : BaseActivity() {
                 .subscribeOn(Schedulers.io())
                 .awaitSingle()
             if(it.code() in 200..299){
-                val model = it.body()!!
-
+                val status = it.body()!!["status"].asString
+                if(status == "OK"){
+                    openDialog()
+                }
+            }
+            if(it.code() == 400){
+                toast("至少上传一个作品")
             }
         } catch (throwable: Throwable) {
             if (throwable is HttpException) {
                 println(throwable.code())
             }
         }
+    }
+
+
+    private fun openDialog() {
+        val mTransaction = supportFragmentManager.beginTransaction()
+
+        if (backgroundFragment == null) {
+            backgroundFragment = BackgroundFragment.newInstance(this@EnlistProject)
+
+            mTransaction.add(mainId, backgroundFragment!!)
+        }
+
+        mTransaction.setCustomAnimations(R.anim.right_in, R.anim.right_in)
+
+        tipsDialog = EnlistSuccessTipsDialog.newInstance(this@EnlistProject)
+        mTransaction.add(mainId, tipsDialog!!)
+
+        mTransaction.commit()
+    }
+
+    private fun closeAlertDialog() {
+
+        val mTransaction = supportFragmentManager.beginTransaction()
+        if (tipsDialog != null) {
+            mTransaction.setCustomAnimations(R.anim.right_out, R.anim.right_out)
+
+            mTransaction.remove(tipsDialog!!)
+            tipsDialog = null
+        }
+
+        if (backgroundFragment != null) {
+            mTransaction.setCustomAnimations(
+                R.anim.fade_in_out_a, R.anim.fade_in_out_a
+            )
+            mTransaction.remove(backgroundFragment!!)
+            backgroundFragment = null
+        }
+        mTransaction.commit()
     }
 }
