@@ -1,0 +1,296 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/image_browser_view"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <FrameLayout
+        android:id="@+id/mainBody"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:id="@+id/topPart"
+                android:layout_width="match_parent"
+                android:layout_height="130dp"
+                android:background="#ffffff"
+                android:orientation="vertical">
+
+                <RelativeLayout
+                    android:id="@+id/message_actionBar"
+                    android:layout_width="match_parent"
+                    android:layout_height="65dp"
+                    android:background="@drawable/bottom_border">
+
+                    <Toolbar
+                        android:id="@+id/message_toolBar"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:navigationIcon="@drawable/icon_back"
+                        android:title=" " />
+
+                    <LinearLayout
+                        android:id="@+id/action_bar_title_container"
+                        android:layout_width="match_parent"
+                        android:layout_height="45dp"
+                        android:layout_alignParentBottom="true"
+                        android:gravity="center"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:id="@+id/chat_user_name"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="清水さん"
+                            android:textColor="#333333"
+                            android:textSize="16sp"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:id="@+id/chat_user_company"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="任天堂株式会社"
+                            android:textColor="#202020"
+                            android:textSize="12sp" />
+                    </LinearLayout>
+                </RelativeLayout>
+
+
+                <LinearLayout
+                    android:id="@+id/message_middle_select_bar_container"
+                    android:layout_width="match_parent"
+                    android:layout_height="60dp"
+                    android:orientation="horizontal">
+
+                    <LinearLayout
+                        android:id="@+id/message_middle_select_bar1"
+                        android:layout_width="0dp"
+                        android:layout_height="60dp"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:orientation="vertical">
+
+
+                        <!--android:src="@drawable/phone_icon"-->
+                        <ImageView
+                            android:id="@+id/message_middle_select_bar_image1"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:src="@mipmap/phone_gray"
+                             />
+
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="7dip"
+                            android:text="電話交換"
+                            android:textColor="#777777"
+                            android:textSize="11sp"
+
+                            />
+
+                    </LinearLayout>
+
+
+                    <LinearLayout
+                        android:id="@+id/message_middle_select_bar2"
+                        android:layout_width="0dp"
+                        android:layout_height="60dp"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:orientation="vertical">
+
+                        <!--android:src="@drawable/line_icon"-->
+                        <ImageView
+                            android:id="@+id/message_middle_select_bar_image2"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:src="@mipmap/line_gray"
+
+                             />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="7dip"
+                            android:text="Line交換"
+                            android:textColor="#777777"
+                            android:textSize="11sp"
+
+                            />
+
+                    </LinearLayout>
+
+
+                    <LinearLayout
+                        android:id="@+id/message_middle_select_bar3"
+                        android:layout_width="0dp"
+                        android:layout_height="60dp"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:orientation="vertical">
+
+                        <!--android:src="@drawable/self_introduce_icon"-->
+                        <ImageView
+                            android:id="@+id/message_middle_select_bar_image3"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:src="@mipmap/resume_gray"
+
+                             />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="7dip"
+                            android:text="履歴書送信"
+                            android:textColor="#777777"
+                            android:textSize="11sp"
+
+                            />
+
+
+                    </LinearLayout>
+
+
+                    <LinearLayout
+                        android:id="@+id/message_middle_select_bar4"
+                        android:layout_width="0dp"
+                        android:layout_height="60dp"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:orientation="vertical">
+
+                        <ImageView
+                            android:id="@+id/message_middle_select_bar_image4"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:src="@drawable/label_icon" />
+
+
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="7dip"
+                            android:gravity="center_vertical"
+                            android:orientation="horizontal">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+
+                                android:text="マーク"
+                                android:textColor="#777777"
+                                android:textSize="11sp" />
+
+
+                            <ImageView
+                                android:id="@+id/selectflag"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginLeft="5dp"
+                                android:src="@drawable/icon_down_home" />
+
+
+                        </LinearLayout>
+
+                    </LinearLayout>
+
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+
+            <github.ll.view.FloatOnKeyboardLayout
+                android:id="@+id/bottomPartContainer"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+
+
+                <imui.jiguang.cn.imuisample.views.ChatView xmlns:app="http://schemas.android.com/apk/res-auto"
+                    android:id="@+id/chat_view"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginTop="0dp"
+                    android:background="#f3f3f3"
+                    android:orientation="vertical">
+
+
+                    <!--<ScrollView-->
+
+                    <!--android:layout_width="match_parent"-->
+                    <!--android:layout_height="match_parent"-->
+
+
+
+                    <cn.jiguang.imui.messages.ptr.PullToRefreshLayout
+                        android:id="@+id/pull_to_refresh_layout"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_above="@+id/chat_input"
+                        android:layout_below="@+id/title_container"
+                        android:background="#f6f6f6"
+                        android:gravity="bottom"
+                        app:PtrCloseDuration="300"
+                        app:PtrCloseHeaderDuration="2000"
+                        app:PtrKeepHeaderWhenRefresh="true"
+                        app:PtrPullToRefresh="true"
+                        app:PtrRatioHeightToRefresh="1.2"
+                        app:PtrResistance="1.2">
+
+                        <cn.jiguang.imui.messages.MessageList
+                            android:id="@+id/msg_list"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:scrollbars="vertical"
+                            app:avatarHeight="48dp"
+                            app:avatarRadius="5dp"
+                            app:avatarWidth="48dp"
+                            app:bubbleMaxWidth="0.70"
+                            app:dateTextSize="14sp"
+                            app:receiveBubblePaddingLeft="16dp"
+                            app:receiveBubblePaddingRight="8dp"
+                            app:receiveTextColor="#ffffff"
+                            app:receiveTextSize="16sp"
+                            app:sendBubblePaddingLeft="8dp"
+                            app:sendBubblePaddingRight="16dp"
+                            app:sendTextColor="#7587A8"
+                            app:sendTextSize="16sp"
+                            app:showReceiverDisplayName="true"
+                            app:showSenderDisplayName="false" />
+
+                    </cn.jiguang.imui.messages.ptr.PullToRefreshLayout>
+
+
+                    <cn.jiguang.imui.chatinput.ChatInputView
+                        android:id="@+id/chat_input"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentBottom="true"
+                        app:cameraQuality="0.6"
+                        app:inputMarginLeft="3dp"
+                        app:inputMarginRight="3dp"
+                        app:showSelectAlbum="true" />
+
+
+                    <!--</ScrollView>-->
+
+                </imui.jiguang.cn.imuisample.views.ChatView>
+            </github.ll.view.FloatOnKeyboardLayout>
+        </LinearLayout>
+
+    </FrameLayout>
+
+</LinearLayout>
