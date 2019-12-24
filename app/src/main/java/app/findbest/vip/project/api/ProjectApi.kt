@@ -56,4 +56,10 @@ interface ProjectApi {
     @Headers("Content-Type: application/json")
     @GET("/api/v1/users/works")
     fun getMyPicsById(): Observable<Response<PageModel>>
+
+    //提前校验应征是否合法
+    @Headers("Content-Type: application/json")
+    @POST("/api/v1/applies/validation")
+    fun getAppliesValidation(@Body body: RequestBody): Observable<Response<JsonObject>>
+
 }

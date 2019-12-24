@@ -51,8 +51,7 @@ class ProjectDemandDetails: Fragment() {
     private lateinit var supplement	: TextView //补充内容
     private lateinit var samplesParent: LinearLayout
     private lateinit var samples: ArrayList<String> //参考图例
-    private lateinit var step: TextView //阶段名称
-    private lateinit var stepPercent: TextView //阶段百分比
+    private lateinit var stages: LinearLayout// 项目阶段
     private lateinit var isLast	: LinearLayout //是否是最后阶段，是-隐藏，否-显示
 
     override fun onCreateView(
@@ -63,6 +62,7 @@ class ProjectDemandDetails: Fragment() {
         return createV()
     }
 
+    @SuppressLint("SetTextI18n")
     fun setInfomation(model: ProjectInfoModel){
         //项目名称
         projectName.text = model.name
@@ -172,12 +172,61 @@ class ProjectDemandDetails: Fragment() {
         if(images.size==0){
             samplesParent.visibility = LinearLayout.GONE
         }
-//        //阶段名称
-//        step =
-//
-//        //阶段百分比
-//        stepPercent
-//
+
+        val stepList = arrayListOf("2 草稿验收","3 线稿验收","4 上色验收")
+        val stepPercent = arrayListOf("草稿","线稿","上色")
+        for(index in 0 until model.stages.size()){
+            val item = model.stages[index].asJsonObject
+
+            val view = UI {
+                linearLayout {
+                    orientation = LinearLayout.VERTICAL
+                    linearLayout {
+                        imageView {
+                            imageResource = R.mipmap.project_stage_scale
+                        }.lparams(dip(8), dip(8)) {
+                            gravity = Gravity.CENTER_VERTICAL
+                            leftMargin = dip(3.5f)
+                        }
+                        textView {
+                            text = "${stepPercent[index]}${item["step"]}%"
+                            textSize = 13f
+                            textColor = Color.parseColor("#FF666666")
+                        }.lparams {
+                            leftMargin = dip(10)
+                        }
+                    }.lparams(wrapContent, dip(20))
+                    linearLayout {
+                        backgroundResource = R.mipmap.dotted_line
+                    }.lparams(dip(1), wrapContent) {
+                        leftMargin = dip(7)
+                    }
+                    linearLayout {
+                        imageView {
+                            imageResource = R.mipmap.project_stage
+                        }.lparams(dip(15), dip(15)) {
+                            gravity = Gravity.CENTER_VERTICAL
+                        }
+                        textView {
+                            text = stepList[index]
+                            textSize = 15f
+                            textColor = Color.parseColor("#FF444444")
+                        }.lparams {
+                            leftMargin = dip(10)
+                        }
+                    }.lparams(wrapContent, dip(20))
+                    if(!item["last"].asBoolean){
+                        linearLayout {
+                            backgroundResource = R.mipmap.dotted_line
+                        }.lparams(dip(1), wrapContent) {
+                            leftMargin = dip(7)
+                        }
+                    }
+                }
+            }.view
+            stages.addView(view)
+
+        }
 //        //是否是最后阶段，是-隐藏，否-显示
 //        isLast
 
@@ -683,7 +732,8 @@ class ProjectDemandDetails: Fragment() {
                                 leftMargin = dip(15)
                                 rightMargin = dip(15)
                             }
-                            verticalLayout {
+                            stages = verticalLayout {
+                                gravity = Gravity.CENTER_HORIZONTAL
                                 /**
                                  * 1 开始制作
                                  */
@@ -712,48 +762,6 @@ class ProjectDemandDetails: Fragment() {
                                 /**
                                  * 2 草稿验收
                                  */
-                                linearLayout {
-                                    orientation = LinearLayout.VERTICAL
-                                    linearLayout {
-                                        imageView {
-                                            imageResource = R.mipmap.project_stage_scale
-                                        }.lparams(dip(8), dip(8)) {
-                                            gravity = Gravity.CENTER_VERTICAL
-                                            leftMargin = dip(3.5f)
-                                        }
-                                        stepPercent = textView {
-                                            text = "草稿15%"
-                                            textSize = 13f
-                                            textColor = Color.parseColor("#FF666666")
-                                        }.lparams {
-                                            leftMargin = dip(10)
-                                        }
-                                    }.lparams(wrapContent, dip(20))
-                                    linearLayout {
-                                        backgroundResource = R.mipmap.dotted_line
-                                    }.lparams(dip(1), wrapContent) {
-                                        leftMargin = dip(7)
-                                    }
-                                    linearLayout {
-                                        imageView {
-                                            imageResource = R.mipmap.project_stage
-                                        }.lparams(dip(15), dip(15)) {
-                                            gravity = Gravity.CENTER_VERTICAL
-                                        }
-                                        step = textView {
-                                            text = "2 草稿验收"
-                                            textSize = 15f
-                                            textColor = Color.parseColor("#FF444444")
-                                        }.lparams {
-                                            leftMargin = dip(10)
-                                        }
-                                    }.lparams(wrapContent, dip(20))
-                                    isLast = linearLayout {
-                                        backgroundResource = R.mipmap.dotted_line
-                                    }.lparams(dip(1), wrapContent) {
-                                        leftMargin = dip(7)
-                                    }
-                                }
                                 /**
                                  * 3 线稿验收
                                  */
