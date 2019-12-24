@@ -197,9 +197,9 @@ class InstanceSearch : FragmentParent() {
                                             if (actionId === EditorInfo.IME_ACTION_SEARCH || event != null && event.keyCode === KeyEvent.KEYCODE_ENTER) {
                                                 if(event!=null){
 
-
-                                                    var mIntent = Intent()
-                                                    mIntent.putExtra("content", text)
+                                                    val result = editText.text.toString().trim()
+                                                    val mIntent = Intent()
+                                                    mIntent.putExtra("content", result)
 
                                                     activity!!.setResult(222, mIntent)
 
@@ -307,6 +307,7 @@ class InstanceSearch : FragmentParent() {
         return view
 
     }
+
 
 
 }
