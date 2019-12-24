@@ -41,6 +41,7 @@ class ProjectMainTitle: Fragment() {
         return UI {
             linearLayout {
                 orientation = LinearLayout.VERTICAL
+                backgroundColor = Color.parseColor("#FFFFFF")
                 relativeLayout {
                     backgroundResource = R.drawable.ffe3e3e3_bottom_line
                     textView {
