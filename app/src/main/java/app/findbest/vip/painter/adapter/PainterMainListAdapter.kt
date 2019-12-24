@@ -97,7 +97,7 @@ class PainterMainListAdapter(
         if (!model["name"].isJsonNull) {
             name.text = model["name"].asString
         }else{
-            name.text = "匿名用户"
+            name.text = "******(匿名用户)"
         }
 
         val star = model["star"].asInt
