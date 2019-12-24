@@ -80,16 +80,13 @@ class ProjectMainList : Fragment(), ProjectMainListAdapter.ListAdapter {
                     setEnableAutoLoadMore(false)
                     setRefreshHeader(MaterialHeader(activity))
                     setOnRefreshListener {
-                        toast("刷新....")
                         GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
                             getProjectList()
                             it.finishRefresh(1000)
                         }
-//                        list.setItems(a)
                     }
                     setRefreshFooter(BallPulseFooter(mContext).setSpinnerStyle(SpinnerStyle.Scale))
                     setOnLoadMoreListener {
-                        toast("刷新....")
                         GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
                             getProjectList(nowPage + 1)
                             it.finishLoadMore(1000)

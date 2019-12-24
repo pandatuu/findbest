@@ -11,6 +11,7 @@ import androidx.fragment.app.Fragment
 import app.findbest.vip.R
 import app.findbest.vip.commonfrgmant.BottomButton
 import app.findbest.vip.instance.fragment.InstanceDisplay
+import app.findbest.vip.painter.fragment.PainterFragment
 import app.findbest.vip.project.fragment.ProjectFragment
 import app.findbest.vip.utils.BaseActivity
 
@@ -107,13 +108,16 @@ class MainActivity : BaseActivity() {
 
             }
             2 -> {
-                topFragment = InstanceDisplay.newInstance(this@MainActivity);
+                topFragment = InstanceDisplay.newInstance(this@MainActivity)
                 supportFragmentManager.beginTransaction()
                     .replace(mainFrameLayout.id, topFragment)
                     .commit()
             }
             3 -> {
-
+                topFragment = PainterFragment.newInstance(this@MainActivity)
+                supportFragmentManager.beginTransaction()
+                    .replace(mainFrameLayout.id, topFragment)
+                    .commit()
             }
             4 -> {
 

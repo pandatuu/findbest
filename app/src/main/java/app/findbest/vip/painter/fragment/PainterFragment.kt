@@ -1,4 +1,4 @@
-package app.findbest.vip.project.fragment
+package app.findbest.vip.painter.fragment
 
 import android.content.Context
 import android.graphics.Color
@@ -13,27 +13,26 @@ import org.jetbrains.anko.backgroundColor
 import org.jetbrains.anko.frameLayout
 import org.jetbrains.anko.matchParent
 import org.jetbrains.anko.support.v4.UI
-import org.jetbrains.anko.support.v4.toast
 import org.jetbrains.anko.verticalLayout
 
-class ProjectFragment : Fragment(), ProjectMainTitle.ChildrenClick,BackgroundFragment.ClickBack, ProjectMainScreen.ProjectScreen {
+class PainterFragment: Fragment(), PainterMainTitle.ChildrenClick, BackgroundFragment.ClickBack,
+    PainterSort.SortClick{
 
     companion object {
-        fun newInstance(context: Context): ProjectFragment {
-            val fragment = ProjectFragment()
+        fun newInstance(context: Context): PainterFragment {
+            val fragment = PainterFragment()
             fragment.mContext = context
             return fragment
         }
     }
 
     lateinit var mContext: Context
-
     private var mainId = 1
-    private val top = 2
-    val list = 3
+    private val toptitle = 2
+    private val list = 3
     private var backgroundFragment: BackgroundFragment? = null
-    private var projectMainScreen: ProjectMainScreen? = null
-    var main: ProjectMainList? = null
+    private var painterSort: PainterSort? = null
+    private var mainList: PainterMainList? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -42,22 +41,20 @@ class ProjectFragment : Fragment(), ProjectMainTitle.ChildrenClick,BackgroundFra
     ): View? {
         return createV()
     }
-
-    //点击筛选按钮
-    override fun clickFragment() {
+    // 点击排序
+    override fun clickSort() {
         openDialog()
     }
-    //点击dialog黑色背景色
-    override fun backgroundClick() {
-        closeAlertDialog()
+    // 筛选
+    override fun clickScreen() {
+
     }
-    //点击dialog黑色背景色
     override fun clickAll() {
         closeAlertDialog()
     }
-    //点击dialog确认按钮
-    override fun confirmClick(array: ArrayList<Int>) {
-        main?.setCategoryList(array[0],array[1])
+    // 排序选择
+    override fun chooseSort(index: Int) {
+        mainList?.setSortList(index)
         closeAlertDialog()
     }
 
@@ -67,35 +64,38 @@ class ProjectFragment : Fragment(), ProjectMainTitle.ChildrenClick,BackgroundFra
                 //上部分
                 verticalLayout{
                     frameLayout {
-                        id = this@ProjectFragment.top
-                        val title = ProjectMainTitle.newInstance(this@ProjectFragment)
-                        childFragmentManager.beginTransaction().add(this@ProjectFragment.top, title).commit()
+                        id = toptitle
+                        val title = PainterMainTitle.newInstance(this@PainterFragment)
+                        childFragmentManager.beginTransaction().add(toptitle, title).commit()
                     }
                     //中间adapter
                     frameLayout {
                         backgroundColor = Color.GREEN
                         id = list
-                        main = ProjectMainList.newInstance(mContext)
-                        childFragmentManager.beginTransaction().add(list, main!!).commit()
+                        mainList = PainterMainList.newInstance(mContext)
+                        childFragmentManager.beginTransaction().add(list, mainList!!).commit()
                     }.lparams(matchParent, matchParent)
                 }
             }
         }.view
     }
 
+
     private fun openDialog() {
         val mTransaction = activity!!.supportFragmentManager.beginTransaction()
 
         if (backgroundFragment == null) {
-            backgroundFragment = BackgroundFragment.newInstance(this@ProjectFragment)
+            backgroundFragment = BackgroundFragment.newInstance(this@PainterFragment)
 
-            mTransaction.add(mainId, backgroundFragment!!)
+            mTransaction.add(list, backgroundFragment!!)
         }
 
-        mTransaction.setCustomAnimations(R.anim.right_in, R.anim.right_in)
+        mTransaction.setCustomAnimations(R.anim.top_in, R.anim.top_in)
 
-        projectMainScreen = ProjectMainScreen.newInstance(mContext,this@ProjectFragment)
-        mTransaction.add(mainId, projectMainScreen!!)
+        if (painterSort == null) {
+            painterSort = PainterSort.newInstance(mContext,this@PainterFragment)
+            mTransaction.add(list, painterSort!!)
+        }
 
         mTransaction.commit()
     }
@@ -103,11 +103,10 @@ class ProjectFragment : Fragment(), ProjectMainTitle.ChildrenClick,BackgroundFra
     private fun closeAlertDialog() {
 
         val mTransaction = activity!!.supportFragmentManager.beginTransaction()
-        if (projectMainScreen != null) {
-            mTransaction.setCustomAnimations(R.anim.right_out, R.anim.right_out)
-
-            mTransaction.remove(projectMainScreen!!)
-            projectMainScreen = null
+        if (painterSort != null) {
+            mTransaction.setCustomAnimations(R.anim.top_out, R.anim.top_out)
+            mTransaction.remove(painterSort!!)
+            painterSort = null
         }
 
         if (backgroundFragment != null) {
