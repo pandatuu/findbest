@@ -2511,7 +2511,7 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
                     message.setUserInfo(new DefaultUser("1", "", myLogo));
                     message.setMediaFilePath(voidPath);
                     message.setDuration(voiceDuration);
-                    message.setTimeString(new SimpleDateFormat("HH:mm", Locale.getDefault()).format(new Date()));
+                  //  message.setTimeString(new SimpleDateFormat("HH:mm", Locale.getDefault()).format(new Date()));
                     message.setMessageStatus(IMessage.MessageStatus.SEND_GOING);
 
                     final MyMessage fMsg_sending = message;
@@ -2635,7 +2635,7 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
 
                         mPathList.add(path);
                         mMsgIdList.add(message.getMsgId());
-                        message.setTimeString(new SimpleDateFormat("HH:mm", Locale.getDefault()).format(new Date()));
+                     //   message.setTimeString(new SimpleDateFormat("HH:mm", Locale.getDefault()).format(new Date()));
                         message.setMediaFilePath(path);
                         message.setUserInfo(new DefaultUser("1", "", myLogo));
                         message.setMessageStatus(IMessage.MessageStatus.SEND_GOING);
