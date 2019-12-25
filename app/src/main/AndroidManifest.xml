@@ -126,7 +126,11 @@
             android:theme="@style/AppTheme.NoActionBar">
         </activity>
 
-
+        <!-- 画师-搜索 -->
+        <activity android:name=".painter.view.PainterSearchActivity"
+            android:windowSoftInputMode="adjustPan"
+            android:theme="@style/AppTheme.NoActionBar">
+        </activity>
 
 
 

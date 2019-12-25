@@ -1,24 +1,17 @@
 package app.findbest.vip.painter.fragment
 
 import android.content.Context
-import android.graphics.Color
 import android.os.Bundle
-import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.LinearLayout
 import androidx.fragment.app.Fragment
 import androidx.preference.PreferenceManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import app.findbest.vip.R
-import app.findbest.vip.commonfrgmant.BackgroundFragment
 import app.findbest.vip.painter.adapter.PainterMainListAdapter
 import app.findbest.vip.painter.api.PainterApi
-import app.findbest.vip.project.adapter.ProjectApplicantsAdapter
-import app.findbest.vip.project.api.ProjectApi
-import app.findbest.vip.project.fragment.BigImage
 import app.findbest.vip.utils.RetrofitUtils
 import app.findbest.vip.utils.recyclerView
 import app.findbest.vip.utils.smartRefreshLayout
@@ -35,10 +28,16 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.rx2.awaitSingle
 import org.jetbrains.anko.*
 import org.jetbrains.anko.support.v4.UI
-import org.jetbrains.anko.support.v4.dip
 import retrofit2.HttpException
 
-class PainterCompanyList : Fragment() {
+class PainterCompanyList : Fragment(), PainterMainListAdapter.ImageClick, BigImage2.ImageClick {
+    override fun click(str: String) {
+        openDialog(str)
+    }
+
+    override fun clickclose() {
+        closeAlertDialog()
+    }
 
     companion object {
         fun newInstance(context: Context): PainterCompanyList {
@@ -49,16 +48,15 @@ class PainterCompanyList : Fragment() {
     }
 
     private lateinit var mContext: Context
-    private var bigImage: BigImage? = null
-    private var backgroundFragment: BackgroundFragment? = null
+    private var bigImage: BigImage2? = null
+    val mainId = 1
     private var recycle: RecyclerView? = null
     lateinit var painterMain: PainterMainListAdapter
     lateinit var smart: SmartRefreshLayout
     var nowPage = 0
-    var mWeight = 0
-    var mStar = 0
-    var mAmountCompleted = 0
-    var mTimeOfEntity = 0
+    var mWeight = 1
+    var mCategory = 0
+    var mStyle = 0
 
 
     override fun onCreateView(
@@ -68,25 +66,12 @@ class PainterCompanyList : Fragment() {
     ): View? {
         val mPerferences =
             PreferenceManager.getDefaultSharedPreferences(mContext)
-        when(mPerferences.getInt("painterSort",0)){
-            0 -> {
-                mWeight = 1
-            }
-            1 -> {
-                mStar = 1
-            }
-            2 -> {
-                mAmountCompleted = 1
-            }
-            3 -> {
-                mTimeOfEntity = 1
-            }
-        }
+        mWeight += mPerferences.getInt("painterSort",0)
         return createV()
     }
 
     private fun createV(): View {
-        painterMain = PainterMainListAdapter(this@PainterCompanyList.context!!)
+        painterMain = PainterMainListAdapter(mContext,this@PainterCompanyList)
         val view = UI {
             linearLayout {
                 smart = smartRefreshLayout {
@@ -123,27 +108,72 @@ class PainterCompanyList : Fragment() {
             val retrofitUils =
                 RetrofitUtils(mContext, resources.getString(R.string.developmentUrl))
 
-            val it = when {
-                mWeight==1 -> retrofitUils.create(PainterApi::class.java)
-                    .getCompanyPainterList(2,5,1,null,null,null)//个人画师传1
-                    .subscribeOn(Schedulers.io())
-                    .awaitSingle()
-                mStar==1 -> retrofitUils.create(PainterApi::class.java)
-                    .getCompanyPainterList(2,5,null,1,null,null)//个人画师传1
-                    .subscribeOn(Schedulers.io())
-                    .awaitSingle()
-                mAmountCompleted==1 -> retrofitUils.create(PainterApi::class.java)
-                    .getCompanyPainterList(2,5,null,null,1,null)//个人画师传1
-                    .subscribeOn(Schedulers.io())
-                    .awaitSingle()
-                mTimeOfEntity==1 -> retrofitUils.create(PainterApi::class.java)
-                    .getCompanyPainterList(2,5,null,null,null,1)//个人画师传1
-                    .subscribeOn(Schedulers.io())
-                    .awaitSingle()
-                else -> retrofitUils.create(PainterApi::class.java)
-                    .getCompanyPainterList(2,5,1,null,null,null)//个人画师传1
-                    .subscribeOn(Schedulers.io())
-                    .awaitSingle()
+            val it = when(mWeight) {
+                1 -> {
+                    if (mStyle != 0 && mCategory != 0) {
+                        retrofitUils.create(PainterApi::class.java)
+                            .getCompanyPainterList(2,5,1,mWeight,mCategory,mStyle)//个人画师传1
+                            .subscribeOn(Schedulers.io())
+                            .awaitSingle()
+                    }else{
+                        retrofitUils.create(PainterApi::class.java)
+                            .getCompanyPainterList(2,5,1,mWeight)//个人画师传1
+                            .subscribeOn(Schedulers.io())
+                            .awaitSingle()
+                    }
+                }
+                2 -> {
+                    if (mStyle != 0 && mCategory != 0) {
+                        retrofitUils.create(PainterApi::class.java)
+                            .getCompanyPainterList(2,5,1,mWeight,mCategory,mStyle)//个人画师传1
+                            .subscribeOn(Schedulers.io())
+                            .awaitSingle()
+                    }else{
+                        retrofitUils.create(PainterApi::class.java)
+                            .getCompanyPainterList(2,5,1,mWeight)//个人画师传1
+                            .subscribeOn(Schedulers.io())
+                            .awaitSingle()
+                    }
+                }
+                3 -> {
+                    if (mStyle != 0 && mCategory != 0) {
+                        retrofitUils.create(PainterApi::class.java)
+                            .getCompanyPainterList(2,5,1,mWeight,mCategory,mStyle)//个人画师传1
+                            .subscribeOn(Schedulers.io())
+                            .awaitSingle()
+                    }else{
+                        retrofitUils.create(PainterApi::class.java)
+                            .getCompanyPainterList(2,5,1,mWeight)//个人画师传1
+                            .subscribeOn(Schedulers.io())
+                            .awaitSingle()
+                    }
+                }
+                4 -> {
+                    if (mStyle != 0 && mCategory != 0) {
+                        retrofitUils.create(PainterApi::class.java)
+                            .getCompanyPainterList(2,5,1,mWeight,mCategory,mStyle)//个人画师传1
+                            .subscribeOn(Schedulers.io())
+                            .awaitSingle()
+                    }else{
+                        retrofitUils.create(PainterApi::class.java)
+                            .getCompanyPainterList(2,5,1,mWeight)//个人画师传1
+                            .subscribeOn(Schedulers.io())
+                            .awaitSingle()
+                    }
+                }
+                else -> {
+                    if (mStyle != 0 && mCategory != 0) {
+                        retrofitUils.create(PainterApi::class.java)
+                            .getCompanyPainterList(2,5,1,mWeight,mCategory,mStyle)//个人画师传1
+                            .subscribeOn(Schedulers.io())
+                            .awaitSingle()
+                    }else{
+                        retrofitUils.create(PainterApi::class.java)
+                            .getCompanyPainterList(2,5,1,mWeight)//个人画师传1
+                            .subscribeOn(Schedulers.io())
+                            .awaitSingle()
+                    }
+                }
             }
             if (it.code() in 200..299) {
                 val array = it.body()!!.data
@@ -166,27 +196,72 @@ class PainterCompanyList : Fragment() {
             val retrofitUils =
                 RetrofitUtils(mContext, resources.getString(R.string.developmentUrl))
 
-            val it = when {
-                mWeight==1 -> retrofitUils.create(PainterApi::class.java)
-                    .getPainterList(2,5,page,1,null,null,null)//个人画师传1
-                    .subscribeOn(Schedulers.io())
-                    .awaitSingle()
-                mStar==1 -> retrofitUils.create(PainterApi::class.java)
-                    .getPainterList(2,5,page,null,1,null,null)//个人画师传1
-                    .subscribeOn(Schedulers.io())
-                    .awaitSingle()
-                mAmountCompleted==1 -> retrofitUils.create(PainterApi::class.java)
-                    .getPainterList(2,5,page,null,null,1,null)//个人画师传1
-                    .subscribeOn(Schedulers.io())
-                    .awaitSingle()
-                mTimeOfEntity==1 -> retrofitUils.create(PainterApi::class.java)
-                    .getPainterList(2,5,page,null,null,null,1)//个人画师传1
-                    .subscribeOn(Schedulers.io())
-                    .awaitSingle()
-                else -> retrofitUils.create(PainterApi::class.java)
-                    .getPainterList(2,5,page,1,null,null,null)//个人画师传1
-                    .subscribeOn(Schedulers.io())
-                    .awaitSingle()
+            val it = when(mWeight) {
+                1 ->{
+                    if (mStyle != 0 && mCategory != 0) {
+                        retrofitUils.create(PainterApi::class.java)
+                            .getCompanyPainterList(2,5,page,mWeight,mCategory,mStyle)//个人画师传1
+                            .subscribeOn(Schedulers.io())
+                            .awaitSingle()
+                    }else{
+                        retrofitUils.create(PainterApi::class.java)
+                            .getCompanyPainterList(2,5,page,mWeight)//个人画师传1
+                            .subscribeOn(Schedulers.io())
+                            .awaitSingle()
+                    }
+                }
+                2 -> {
+                    if (mStyle != 0 && mCategory != 0) {
+                        retrofitUils.create(PainterApi::class.java)
+                            .getCompanyPainterList(2,5,page,mWeight,mCategory,mStyle)//个人画师传1
+                            .subscribeOn(Schedulers.io())
+                            .awaitSingle()
+                    }else{
+                        retrofitUils.create(PainterApi::class.java)
+                            .getCompanyPainterList(2,5,page,mWeight)//个人画师传1
+                            .subscribeOn(Schedulers.io())
+                            .awaitSingle()
+                    }
+                }
+                3 -> {
+                    if (mStyle != 0 && mCategory != 0) {
+                        retrofitUils.create(PainterApi::class.java)
+                            .getCompanyPainterList(2,5,page,mWeight,mCategory,mStyle)//个人画师传1
+                            .subscribeOn(Schedulers.io())
+                            .awaitSingle()
+                    }else{
+                        retrofitUils.create(PainterApi::class.java)
+                            .getCompanyPainterList(2,5,page,mWeight)//个人画师传1
+                            .subscribeOn(Schedulers.io())
+                            .awaitSingle()
+                    }
+                }
+                4 -> {
+                    if (mStyle != 0 && mCategory != 0) {
+                        retrofitUils.create(PainterApi::class.java)
+                            .getCompanyPainterList(2,5,page,mWeight,mCategory,mStyle)//个人画师传1
+                            .subscribeOn(Schedulers.io())
+                            .awaitSingle()
+                    }else{
+                        retrofitUils.create(PainterApi::class.java)
+                            .getCompanyPainterList(2,5,page,mWeight)//个人画师传1
+                            .subscribeOn(Schedulers.io())
+                            .awaitSingle()
+                    }
+                }
+                else -> {
+                    if (mStyle != 0 && mCategory != 0) {
+                        retrofitUils.create(PainterApi::class.java)
+                            .getCompanyPainterList(2,5,page,mWeight,mCategory,mStyle)//个人画师传1
+                            .subscribeOn(Schedulers.io())
+                            .awaitSingle()
+                    }else{
+                        retrofitUils.create(PainterApi::class.java)
+                            .getCompanyPainterList(2,5,page,mWeight)//个人画师传1
+                            .subscribeOn(Schedulers.io())
+                            .awaitSingle()
+                    }
+                }
             }
             if (it.code() in 200..299) {
                 val array = it.body()!!.data
@@ -204,33 +279,38 @@ class PainterCompanyList : Fragment() {
         }
     }
 
-    fun setSortList(index: Int) {
-        when(index){
-            0 -> {
-                mWeight = 1
-                mStar = 0
-                mAmountCompleted = 0
-                mTimeOfEntity = 0
-            }
-            1 -> {
-                mWeight = 0
-                mStar = 1
-                mAmountCompleted = 0
-                mTimeOfEntity = 0
-            }
-            2 -> {
-                mWeight = 0
-                mStar = 0
-                mAmountCompleted = 1
-                mTimeOfEntity = 0
-            }
-            3 -> {
-                mWeight = 0
-                mStar = 0
-                mAmountCompleted = 0
-                mTimeOfEntity = 1
-            }
-        }
+    fun setCategoryList(category: Int, style: Int) {
+        mCategory = category
+        mStyle = style
         smart.autoRefresh()
+    }
+
+    fun setSortList(index: Int) {
+        mWeight += index
+        smart.autoRefresh()
+    }
+
+    private fun openDialog(url: String) {
+        val mTransaction = activity!!.supportFragmentManager.beginTransaction()
+
+        mTransaction.setCustomAnimations(R.anim.right_in, R.anim.right_in)
+
+        bigImage = BigImage2.newInstance(url,this@PainterCompanyList)
+        mTransaction.add(mainId, bigImage!!)
+
+        mTransaction.commit()
+    }
+
+    private fun closeAlertDialog() {
+
+        val mTransaction = activity!!.supportFragmentManager.beginTransaction()
+        if (bigImage != null) {
+            mTransaction.setCustomAnimations(R.anim.fade_in_out, R.anim.fade_in_out)
+
+            mTransaction.remove(bigImage!!)
+            bigImage = null
+        }
+
+        mTransaction.commit()
     }
 }

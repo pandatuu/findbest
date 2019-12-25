@@ -31,7 +31,15 @@ import org.jetbrains.anko.support.v4.UI
 import retrofit2.HttpException
 
 @Suppress("IMPLICIT_CAST_TO_ANY")
-class PainterPersonList : Fragment() {
+class PainterPersonList : Fragment(), PainterMainListAdapter.ImageClick, BigImage2.ImageClick {
+    // 点击关闭图片
+    override fun clickclose() {
+        closeAlertDialog()
+    }
+    // 点击放大图片
+    override fun click(str: String) {
+        openDialog(str)
+    }
 
     companion object {
         fun newInstance(context: Context): PainterPersonList {
@@ -46,10 +54,11 @@ class PainterPersonList : Fragment() {
     lateinit var painterMain: PainterMainListAdapter
     lateinit var smart: SmartRefreshLayout
     var nowPage = 0
-    var mWeight = 0
-    var mStar = 0
-    var mAmountCompleted = 0
-    var mTimeOfEntity = 0
+    var mWeight = 1
+    private var bigImage: BigImage2? = null
+    val mainId = 1
+    var mCategory = 0
+    var mStyle = 0
 
 
     override fun onCreateView(
@@ -59,25 +68,12 @@ class PainterPersonList : Fragment() {
     ): View? {
         val mPerferences =
             PreferenceManager.getDefaultSharedPreferences(mContext)
-        when(mPerferences.getInt("painterSort",0)){
-            0 -> {
-                mWeight = 1
-            }
-            1 -> {
-                mStar = 1
-            }
-            2 -> {
-                mAmountCompleted = 1
-            }
-            3 -> {
-                mTimeOfEntity = 1
-            }
-        }
+        mWeight += mPerferences.getInt("painterSort",0)
         return createV()
     }
 
     private fun createV(): View {
-        painterMain = PainterMainListAdapter(this@PainterPersonList.context!!)
+        painterMain = PainterMainListAdapter(mContext,this@PainterPersonList)
         val view = UI {
             linearLayout {
                 smart = smartRefreshLayout {
@@ -114,36 +110,71 @@ class PainterPersonList : Fragment() {
             val retrofitUils =
                 RetrofitUtils(mContext, resources.getString(R.string.developmentUrl))
 
-            val it = when {
-                mWeight==1 -> {
-                    retrofitUils.create(PainterApi::class.java)
-                        .getPainterList(1,5,1,null,null,null)//个人画师传1
-                        .subscribeOn(Schedulers.io())
-                        .awaitSingle()
+            val it = when(mWeight) {
+                1 -> {
+                    if (mStyle != 0 && mCategory != 0) {
+                        retrofitUils.create(PainterApi::class.java)
+                            .getPainterList(1,5,1,1,mCategory,mStyle)//个人画师传1
+                            .subscribeOn(Schedulers.io())
+                            .awaitSingle()
+                    }else{
+                        retrofitUils.create(PainterApi::class.java)
+                            .getPainterList(1,5,1,1)//个人画师传1
+                            .subscribeOn(Schedulers.io())
+                            .awaitSingle()
+                    }
                 }
-                mStar==1 -> {
-                    retrofitUils.create(PainterApi::class.java)
-                        .getPainterList(1,5,null,1,null,null)//个人画师传1
-                        .subscribeOn(Schedulers.io())
-                        .awaitSingle()
+                2 -> {
+                    if (mStyle != 0 && mCategory != 0) {
+                        retrofitUils.create(PainterApi::class.java)
+                            .getPainterList(1,5,1,2,mCategory,mStyle)//个人画师传1
+                            .subscribeOn(Schedulers.io())
+                            .awaitSingle()
+                    }else{
+                        retrofitUils.create(PainterApi::class.java)
+                            .getPainterList(1,5,1,2)//个人画师传1
+                            .subscribeOn(Schedulers.io())
+                            .awaitSingle()
+                    }
                 }
-                mAmountCompleted==1 -> {
-                    retrofitUils.create(PainterApi::class.java)
-                        .getPainterList(1,5,null,null,1,null)//个人画师传1
-                        .subscribeOn(Schedulers.io())
-                        .awaitSingle()
+                3 -> {
+                    if (mStyle != 0 && mCategory != 0) {
+                        retrofitUils.create(PainterApi::class.java)
+                            .getPainterList(1,5,1,3,mCategory,mStyle)//个人画师传1
+                            .subscribeOn(Schedulers.io())
+                            .awaitSingle()
+                    }else{
+                        retrofitUils.create(PainterApi::class.java)
+                            .getPainterList(1,5,1,3)//个人画师传1
+                            .subscribeOn(Schedulers.io())
+                            .awaitSingle()
+                    }
                 }
-                mTimeOfEntity==1 -> {
-                    retrofitUils.create(PainterApi::class.java)
-                        .getPainterList(1,5,null,null,null,1)//个人画师传1
-                        .subscribeOn(Schedulers.io())
-                        .awaitSingle()
+                4 -> {
+                    if (mStyle != 0 && mCategory != 0) {
+                        retrofitUils.create(PainterApi::class.java)
+                            .getPainterList(1,5,1,4,mCategory,mStyle)//个人画师传1
+                            .subscribeOn(Schedulers.io())
+                            .awaitSingle()
+                    }else{
+                        retrofitUils.create(PainterApi::class.java)
+                            .getPainterList(1,5,1,4)//个人画师传1
+                            .subscribeOn(Schedulers.io())
+                            .awaitSingle()
+                    }
                 }
                 else -> {
-                    retrofitUils.create(PainterApi::class.java)
-                        .getPainterList(1,5,1,null,null,null)//个人画师传1
-                        .subscribeOn(Schedulers.io())
-                        .awaitSingle()
+                    if (mStyle != 0 && mCategory != 0) {
+                        retrofitUils.create(PainterApi::class.java)
+                            .getPainterList(1,5,1,1,mCategory,mStyle)//个人画师传1
+                            .subscribeOn(Schedulers.io())
+                            .awaitSingle()
+                    }else{
+                        retrofitUils.create(PainterApi::class.java)
+                            .getPainterList(1,5,1,1)//个人画师传1
+                            .subscribeOn(Schedulers.io())
+                            .awaitSingle()
+                    }
                 }
             }
             if (it.code() in 200..299) {
@@ -167,36 +198,71 @@ class PainterPersonList : Fragment() {
             val retrofitUils =
                 RetrofitUtils(mContext, resources.getString(R.string.developmentUrl))
 
-            val it = when {
-                mWeight==1 -> {
-                    retrofitUils.create(PainterApi::class.java)
-                        .getPainterList(1,5,page,1,null,null,null)//个人画师传1
-                        .subscribeOn(Schedulers.io())
-                        .awaitSingle()
+            val it = when(mWeight) {
+                1 -> {
+                    if (mStyle != 0 && mCategory != 0) {
+                        retrofitUils.create(PainterApi::class.java)
+                            .getPainterList(1,5,page,1,mCategory,mStyle)//个人画师传1
+                            .subscribeOn(Schedulers.io())
+                            .awaitSingle()
+                    }else{
+                        retrofitUils.create(PainterApi::class.java)
+                            .getPainterList(1,5,page,1)//个人画师传1
+                            .subscribeOn(Schedulers.io())
+                            .awaitSingle()
+                    }
                 }
-                mStar==1 -> {
-                    retrofitUils.create(PainterApi::class.java)
-                        .getPainterList(1,5,page,null,1,null,null)//个人画师传1
-                        .subscribeOn(Schedulers.io())
-                        .awaitSingle()
+                2 -> {
+                    if (mStyle != 0 && mCategory != 0) {
+                        retrofitUils.create(PainterApi::class.java)
+                            .getPainterList(1,5,page,2,mCategory,mStyle)//个人画师传1
+                            .subscribeOn(Schedulers.io())
+                            .awaitSingle()
+                    }else{
+                        retrofitUils.create(PainterApi::class.java)
+                            .getPainterList(1,5,page,2)//个人画师传1
+                            .subscribeOn(Schedulers.io())
+                            .awaitSingle()
+                    }
                 }
-                mAmountCompleted==1 -> {
-                    retrofitUils.create(PainterApi::class.java)
-                        .getPainterList(1,5,page,null,null,1,null)//个人画师传1
-                        .subscribeOn(Schedulers.io())
-                        .awaitSingle()
+                3 -> {
+                    if (mStyle != 0 && mCategory != 0) {
+                        retrofitUils.create(PainterApi::class.java)
+                            .getPainterList(1,5,page,3,mCategory,mStyle)//个人画师传1
+                            .subscribeOn(Schedulers.io())
+                            .awaitSingle()
+                    }else{
+                        retrofitUils.create(PainterApi::class.java)
+                            .getPainterList(1,5,page,3)//个人画师传1
+                            .subscribeOn(Schedulers.io())
+                            .awaitSingle()
+                    }
                 }
-                mTimeOfEntity==1 -> {
-                    retrofitUils.create(PainterApi::class.java)
-                        .getPainterList(1,5,page,null,null,null,1)//个人画师传1
-                        .subscribeOn(Schedulers.io())
-                        .awaitSingle()
+                4 -> {
+                    if (mStyle != 0 && mCategory != 0) {
+                        retrofitUils.create(PainterApi::class.java)
+                            .getPainterList(1,5,page,4,mCategory,mStyle)//个人画师传1
+                            .subscribeOn(Schedulers.io())
+                            .awaitSingle()
+                    }else{
+                        retrofitUils.create(PainterApi::class.java)
+                            .getPainterList(1,5,page,4)//个人画师传1
+                            .subscribeOn(Schedulers.io())
+                            .awaitSingle()
+                    }
                 }
                 else -> {
-                    retrofitUils.create(PainterApi::class.java)
-                        .getPainterList(1,5,page,1,null,null,null)//个人画师传1
-                        .subscribeOn(Schedulers.io())
-                        .awaitSingle()
+                    if (mStyle != 0 && mCategory != 0) {
+                        retrofitUils.create(PainterApi::class.java)
+                            .getPainterList(1,5,page,1,mCategory,mStyle)//个人画师传1
+                            .subscribeOn(Schedulers.io())
+                            .awaitSingle()
+                    }else{
+                        retrofitUils.create(PainterApi::class.java)
+                            .getPainterList(1,5,page,1)//个人画师传1
+                            .subscribeOn(Schedulers.io())
+                            .awaitSingle()
+                    }
                 }
             }
             if (it.code() in 200..299) {
@@ -215,33 +281,40 @@ class PainterPersonList : Fragment() {
         }
     }
 
-    fun setSortList(index: Int) {
-        when(index){
-            0 -> {
-                mWeight = 1
-                mStar = 0
-                mAmountCompleted = 0
-                mTimeOfEntity = 0
-            }
-            1 -> {
-                mWeight = 0
-                mStar = 1
-                mAmountCompleted = 0
-                mTimeOfEntity = 0
-            }
-            2 -> {
-                mWeight = 0
-                mStar = 0
-                mAmountCompleted = 1
-                mTimeOfEntity = 0
-            }
-            3 -> {
-                mWeight = 0
-                mStar = 0
-                mAmountCompleted = 0
-                mTimeOfEntity = 1
-            }
-        }
+
+    fun setCategoryList(category: Int, style: Int) {
+        mCategory = category
+        mStyle = style
         smart.autoRefresh()
+    }
+
+    fun setSortList(index: Int) {
+        mWeight += index
+        smart.autoRefresh()
+    }
+
+
+    private fun openDialog(pic: String) {
+        val mTransaction = activity!!.supportFragmentManager.beginTransaction()
+
+        mTransaction.setCustomAnimations(R.anim.right_in, R.anim.right_in)
+
+        bigImage = BigImage2.newInstance(pic,this@PainterPersonList)
+        mTransaction.add(mainId, bigImage!!)
+
+        mTransaction.commit()
+    }
+
+    private fun closeAlertDialog() {
+
+        val mTransaction = activity!!.supportFragmentManager.beginTransaction()
+        if (bigImage != null) {
+            mTransaction.setCustomAnimations(R.anim.fade_in_out, R.anim.fade_in_out)
+
+            mTransaction.remove(bigImage!!)
+            bigImage = null
+        }
+
+        mTransaction.commit()
     }
 }

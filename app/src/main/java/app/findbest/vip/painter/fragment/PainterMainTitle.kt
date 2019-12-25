@@ -9,7 +9,6 @@ import android.view.ViewGroup
 import android.widget.LinearLayout
 import androidx.fragment.app.Fragment
 import app.findbest.vip.R
-import app.findbest.vip.project.view.MainSearchActivity
 import org.jetbrains.anko.*
 import org.jetbrains.anko.support.v4.UI
 
@@ -18,6 +17,7 @@ class PainterMainTitle: Fragment() {
     interface ChildrenClick{
         fun clickSort()
         fun clickScreen()
+        fun clickSearch()
     }
 
     companion object{
@@ -71,8 +71,7 @@ class PainterMainTitle: Fragment() {
                             gravity = Gravity.CENTER_VERTICAL
                         }
                         setOnClickListener {
-                            startActivity<MainSearchActivity>()
-                            activity?.overridePendingTransition(R.anim.right_in, R.anim.left_out)
+                            child.clickSearch()
                         }
                     }.lparams(dip(0), dip(30)){
                         weight = 1f

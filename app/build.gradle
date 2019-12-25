@@ -100,8 +100,8 @@ dependencies {
     //actionBar沉底
     implementation 'com.jaeger.statusbarutil:library:1.5.1'
 
-
-
+    //图片缩放
+    implementation 'com.github.chrisbanes:PhotoView:2.3.0'
 
 
 }

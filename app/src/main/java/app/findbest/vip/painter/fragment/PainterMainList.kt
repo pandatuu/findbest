@@ -3,19 +3,13 @@ package app.findbest.vip.painter.fragment
 import android.content.Context
 import android.graphics.Color
 import android.os.Bundle
-import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import androidx.fragment.app.Fragment
 import androidx.viewpager.widget.ViewPager
-import app.findbest.vip.R
 import app.findbest.vip.painter.adapter.PainterAdapter
-import app.findbest.vip.project.adapter.ProjectInformationAdapter
-import app.findbest.vip.project.fragment.ProjectApplicants
-import app.findbest.vip.project.fragment.ProjectDemand
-import app.findbest.vip.project.view.MainSearchActivity
 import app.findbest.vip.utils.tabLayout
 import com.google.android.material.tabs.TabLayout
 import org.jetbrains.anko.*
@@ -48,6 +42,12 @@ class PainterMainList: Fragment() {
         return createV()
     }
 
+    // 筛选
+    fun setCategoryList(category: Int, style: Int) {
+        personList?.setCategoryList(category, style)
+        companyList?.setCategoryList(category, style)
+    }
+    // 排序
     fun setSortList(index: Int){
         personList?.setSortList(index)
         companyList?.setSortList(index)

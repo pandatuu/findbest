@@ -1,5 +1,6 @@
 package app.findbest.vip.painter.adapter
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Color
 import android.view.Gravity
@@ -9,9 +10,13 @@ import android.widget.HorizontalScrollView
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import app.findbest.vip.R
+import app.findbest.vip.painter.fragment.PainterPersonList
 import app.findbest.vip.project.model.ProjectListModel
+import app.findbest.vip.utils.recyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.CircleCrop
 import com.bumptech.glide.request.RequestOptions
@@ -21,9 +26,13 @@ import org.jetbrains.anko.*
 
 class PainterMainListAdapter(
     context: Context,
+    imageClick: ImageClick,
     private var mData: MutableList<JsonObject> = mutableListOf()
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
+    interface ImageClick{
+        fun click(str: String)
+    }
 
     private var mContext: Context = context
     private lateinit var headPic: ImageView
@@ -31,7 +40,9 @@ class PainterMainListAdapter(
     private lateinit var stars: LinearLayout
     private lateinit var country: ImageView
     private lateinit var imageList: HorizontalScrollView
+    private var imageClick: ImageClick = imageClick
 
+    @SuppressLint("WrongConstant")
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         val view = with(mContext) {
             verticalLayout {
@@ -128,12 +139,19 @@ class PainterMainListAdapter(
             }
         }
 
+        val imgList = arrayListOf<String>()
+        images.forEach {
+            imgList.add(it.asJsonObject["url"].asString)
+        }
         val view = with(mContext) {
             linearLayout {
                 orientation = LinearLayout.HORIZONTAL
                 images.forEach {
                     val imageObject = it.asJsonObject
                     val image = imageView {
+                        setOnClickListener {
+                            imageClick.click(imageObject["url"].asString)
+                        }
                     }.lparams(wrapContent, matchParent){
                         leftMargin = dip(10)
                     }
