@@ -1,4 +1,4 @@
-package cgland.job.sk_android.mvp.view.fragment.message
+package app.findbest.vip.message.fragment
 
 import android.os.Bundle
 import android.view.*
@@ -10,10 +10,10 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import app.findbest.vip.R
+import app.findbest.vip.message.adapter.MessageChatRecordListAdapter
+import app.findbest.vip.message.model.ChatRecordModel
 import app.findbest.vip.utils.recyclerView
-import cgland.job.sk_android.mvp.model.message.ChatRecordModel
-import cgland.job.sk_android.mvp.view.activity.message.MessageChatRecordActivity
-import cgland.job.sk_android.mvp.view.adapter.message.MessageChatRecordListAdapter
+
 
 import com.facebook.react.bridge.UiThreadUtil.runOnUiThread
 import imui.jiguang.cn.imuisample.messages.MessageListActivity
@@ -86,7 +86,12 @@ class MessageChatRecordListFragment : Fragment(){
             intent.putExtra("hisId",item.uid)
             intent.putExtra("companyName",item.companyName)
             intent.putExtra("hisName",item.userName)
+
+
+
             intent.putExtra("hislogo",item.avatar)
+
+
 
 
             if(item.lastPositionId==null || "".equals(item.lastPositionId)){
@@ -118,8 +123,8 @@ class MessageChatRecordListFragment : Fragment(){
         recycler.setAdapter(adapter)
 
         setRecyclerAdapter(
-            MessageChatRecordActivity.chatRecordList,
-            MessageChatRecordActivity.groupArray
+            MessageChatRecordFragment.chatRecordList,
+            MessageChatRecordFragment.groupArray
         )
 
 

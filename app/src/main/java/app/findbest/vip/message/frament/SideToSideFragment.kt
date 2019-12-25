@@ -1,4 +1,4 @@
-package cgland.job.sk_android.mvp.view.fragment.message
+package app.findbest.vip.message.fragment
 
 import android.os.Bundle
 import android.view.*

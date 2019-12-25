@@ -1,10 +1,10 @@
-package cgland.job.sk_android.mvp.model.message
-
+package app.findbest.vip.message.model
+import android.os.Parcel
 import android.os.Parcelable
 import kotlinx.android.parcel.Parcelize
+import java.io.Serializable
 
 
-@Parcelize
 data class ChatRecordModel(
     val uid:String,
     val userName:String,
@@ -13,4 +13,8 @@ data class ChatRecordModel(
     val massage:String,
     val number:String,
     val companyName:String,
-    val lastPositionId:String) : Parcelable
+    val lastPositionId:String,
+    val time:String
+
+): Serializable
+

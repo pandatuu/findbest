@@ -1,4 +1,4 @@
-package cgland.job.sk_android.mvp.view.fragment.message
+package app.findbest.vip.message.fragment
 
 import android.graphics.Color
 import android.os.Bundle
@@ -48,13 +48,7 @@ class MessageChatRecordActionBarFragment : Fragment() {
     private fun createView(): View {
         return UI {
             linearLayout { relativeLayout() {
-                textView() {
-                    backgroundResource = R.drawable.actionbar_bottom_border
-                }.lparams() {
-                    width = matchParent
-                    height = dip(65)
 
-                }
                 relativeLayout() {
 
                     toolbar1 = toolbar {
@@ -72,11 +66,11 @@ class MessageChatRecordActionBarFragment : Fragment() {
 
 
                     textView {
-                        text = "メッセージ"
+                        text = "消息"
                         backgroundColor = Color.TRANSPARENT
                         gravity = Gravity.CENTER
                         textColorResource = R.color.toolBarTextColor
-                        textSize = 16f
+                        textSize = 17f
                         setTypeface(Typeface.defaultFromStyle(Typeface.BOLD))
 
                     }.lparams() {
@@ -94,22 +88,22 @@ class MessageChatRecordActionBarFragment : Fragment() {
 
 
 
-                        imageView {
-
-                            scaleType = ImageView.ScaleType.CENTER_CROP
-                            setImageResource(R.mipmap.icon_search_nor)
-                            setOnClickListener(object:View.OnClickListener{
-                                override fun onClick(v: View?) {
-                                    actionBarSelecter.searchGotClick()
-                                }
-                            })
-
-                        }.lparams() {
-                            width = wrapContent
-                            height =wrapContent
-                            rightMargin=dip(15)
-
-                        }
+//                        imageView {
+//
+//                            scaleType = ImageView.ScaleType.CENTER_CROP
+//                            setImageResource(R.mipmap.icon_search_nor)
+//                            setOnClickListener(object:View.OnClickListener{
+//                                override fun onClick(v: View?) {
+//                                    actionBarSelecter.searchGotClick()
+//                                }
+//                            })
+//
+//                        }.lparams() {
+//                            width = wrapContent
+//                            height =wrapContent
+//                            rightMargin=dip(15)
+//
+//                        }
 
 
                     }.lparams() {
@@ -122,6 +116,15 @@ class MessageChatRecordActionBarFragment : Fragment() {
                     width = matchParent
                     height = dip(65)
                 }
+
+                textView() {
+                    backgroundColor=Color.parseColor("#FFE3E3E3")
+                }.lparams() {
+                    width = matchParent
+                    height = dip(1)
+                    alignParentBottom()
+                }
+
             }.lparams() {
                 width = matchParent
                 height = dip(65)

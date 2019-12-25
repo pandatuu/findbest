@@ -1,18 +1,24 @@
-package cgland.job.sk_android.mvp.view.fragment.message
+package app.findbest.vip.message.fragment
 
 import android.content.Context
+import android.content.Intent
+import android.graphics.Color
 import android.os.Bundle
 import android.os.Handler
 import android.os.Message
+import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.EditText
 import android.widget.FrameLayout
 import androidx.fragment.app.Fragment
 import app.findbest.vip.R
 import app.findbest.vip.application.App
-import cgland.job.sk_android.mvp.listener.message.ChatRecord
-import cgland.job.sk_android.mvp.model.message.ChatRecordModel
+import app.findbest.vip.instance.activity.InstanceSearchActivity
+import app.findbest.vip.message.listener.ChatRecord
+import app.findbest.vip.message.model.ChatRecordModel
+
 import cn.jiguang.imui.chatinput.emoji.EmoticonsKeyboardUtils
 
 import com.jaeger.library.StatusBarUtil
@@ -23,20 +29,22 @@ import org.jetbrains.anko.*
 import org.jetbrains.anko.support.v4.UI
 import org.json.JSONArray
 import org.json.JSONObject
+import java.text.SimpleDateFormat
+import java.util.*
 
 
 class MessageChatRecordFragment : Fragment(), MessageChatRecordActionBarFragment.ActionBarSearch,
-    MessageChatRecordSelectMenuFragment.MenuSelect, MessageChatRecordSearchActionBarFragment.SendSearcherText,
+    MessageChatRecordSearchActionBarFragment.SendSearcherText,
     MessageChatRecordFilterMenuFragment.FilterMenu {
 
     var mHandler = Handler()
-    private  lateinit var mContext: Context
+    private lateinit var mContext: Context
 
 
     //筛选菜单
     override fun getFilterMenuselect(index: Int) {
         groupId = index
-       // bottomMenuFragment!!.groupId == index
+        // bottomMenuFragment!!.groupId == index
         val message = Message()
         Listhandler.sendMessage(message)
     }
@@ -51,7 +59,6 @@ class MessageChatRecordFragment : Fragment(), MessageChatRecordActionBarFragment
         messageChatRecordActionBarFragment = MessageChatRecordActionBarFragment.newInstance();
         mTransaction.replace(actionBar.id, messageChatRecordActionBarFragment!!)
         mTransaction.commit()
-        afterSearchList()
     }
 
     //搜索框输入的文字
@@ -70,34 +77,6 @@ class MessageChatRecordFragment : Fragment(), MessageChatRecordActionBarFragment
     }
 
 
-
-    //顶部菜单(チャット履歴/連絡先)
-    override fun getMenuSelect(index: Int) {
-        var mTransaction = childFragmentManager.beginTransaction()
-        if (index == 1) {
-            if (messageChatRecordFilterMenuFragment == null) {
-                messageChatRecordFilterMenuFragment = MessageChatRecordFilterMenuFragment.newInstance(map);
-
-                mTransaction.add(middleMenu.id, messageChatRecordFilterMenuFragment!!)
-            }
-
-        } else {
-            if (messageChatRecordFilterMenuFragment != null) {
-                mTransaction.remove(messageChatRecordFilterMenuFragment!!)
-                messageChatRecordFilterMenuFragment = null
-            }
-            if (0 != groupId) {
-                groupId = 0
-     //           bottomMenuFragment!!.groupId == index
-                val message = Message()
-                Listhandler.sendMessage(message)
-            }
-
-        }
-        mTransaction.commit()
-
-    }
-
     //打开搜索框
     override fun searchGotClick() {
 
@@ -107,10 +86,10 @@ class MessageChatRecordFragment : Fragment(), MessageChatRecordActionBarFragment
 
 
         var mTransaction = childFragmentManager.beginTransaction()
-        messageChatRecordSearchActionBarFragment = MessageChatRecordSearchActionBarFragment.newInstance();
+        messageChatRecordSearchActionBarFragment =
+            MessageChatRecordSearchActionBarFragment.newInstance();
         mTransaction.replace(actionBar.id, messageChatRecordSearchActionBarFragment!!)
         mTransaction.commit()
-        whenSearchList()
     }
 
 
@@ -118,11 +97,10 @@ class MessageChatRecordFragment : Fragment(), MessageChatRecordActionBarFragment
     lateinit var middleMenu: FrameLayout
     lateinit var actionBar: FrameLayout
     lateinit var recordList: FrameLayout
-    lateinit var selectMenu: FrameLayout
     lateinit var bottomMenu: FrameLayout
+    lateinit var   searchEditText:EditText
 
     var messageChatRecordActionBarFragment: MessageChatRecordActionBarFragment? = null
-    var messageChatRecordSelectMenuFragment: MessageChatRecordSelectMenuFragment? = null
     lateinit var messageChatRecordListFragment: MessageChatRecordListFragment
     var messageChatRecordFilterMenuFragment: MessageChatRecordFilterMenuFragment? = null
 
@@ -130,11 +108,8 @@ class MessageChatRecordFragment : Fragment(), MessageChatRecordActionBarFragment
 
 
     var isFirstGotGroup: Boolean = true
-
-
-
-
-
+    var sdf=SimpleDateFormat("yyyy年MM月dd日")
+    var year = sdf.format(Date()).substring(0,4)
     private val Listhandler = object : Handler() {
         override fun handleMessage(msg: Message) {
             println("+++++++++++++++++++++++")
@@ -197,7 +172,9 @@ class MessageChatRecordFragment : Fragment(), MessageChatRecordActionBarFragment
                     var name = item["name"].toString()
 
                     var lastMsg: JSONObject? = null
-                    if (item.has("lastMsg") && item.getString("lastMsg") != null && !item.getString("lastMsg").equals("") && !item.getString(
+                    if (item.has("lastMsg") && item.getString("lastMsg") != null && !item.getString(
+                            "lastMsg"
+                        ).equals("") && !item.getString(
                             "lastMsg"
                         ).equals("null")
                     ) {
@@ -241,6 +218,15 @@ class MessageChatRecordFragment : Fragment(), MessageChatRecordActionBarFragment
                             msg = content.getString("msg")
                         }
                     }
+
+                    var  createdTime=sdf.format(Date(lastMsg!!.get("created").toString().toLong()))
+
+                    if(year  !=  createdTime.substring(0,4)){
+
+                    }else{
+                        createdTime=createdTime.substring(5,11)
+                    }
+
                     var ChatRecordModel = ChatRecordModel(
                         uid,
                         name,
@@ -249,7 +235,8 @@ class MessageChatRecordFragment : Fragment(), MessageChatRecordActionBarFragment
                         msg,
                         unreads,
                         companyName,
-                        lastPositionId
+                        lastPositionId,
+                        createdTime
                     )
                     chatRecordList.add(ChatRecordModel)
                 }
@@ -325,7 +312,11 @@ class MessageChatRecordFragment : Fragment(), MessageChatRecordActionBarFragment
     }
 
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         return createView()
     }
 
@@ -348,7 +339,9 @@ class MessageChatRecordFragment : Fragment(), MessageChatRecordActionBarFragment
                 //(activity as PagesActivity).recruitInfoBottomMenuFragment.showData(str)
             }
         })
-        val   view= UI {
+
+
+        val view = UI {
             mainContainer = frameLayout {
                 id = mainContainerId
                 backgroundColorResource = R.color.white
@@ -368,19 +361,79 @@ class MessageChatRecordFragment : Fragment(), MessageChatRecordActionBarFragment
                         width = matchParent
                     }
 
-                    //select menu
-                    var selectMenurId = 3
-                    selectMenu = frameLayout {
-                        id = selectMenurId
-                        messageChatRecordSelectMenuFragment =
-                            MessageChatRecordSelectMenuFragment.newInstance();
-                        childFragmentManager.beginTransaction()
-                            .replace(id, messageChatRecordSelectMenuFragment!!)
-                            .commit()
+                    //search
+                    linearLayout {
+                            gravity=Gravity.CENTER
+                        //搜索框
+                        linearLayout {
+
+                            //去搜索
+                            setOnClickListener {
+
+                                var intent = Intent(activity, InstanceSearchActivity::class.java)
+                                activity!!.startActivityForResult(intent,101)
+                                activity!!.overridePendingTransition(R.anim.right_in, R.anim.left_out)
+
+                            }
+
+                            gravity = Gravity.CENTER_VERTICAL
+
+                            backgroundResource = R.drawable.edit_text_background
+                            imageView() {
+
+                                setImageResource(R.mipmap.icon_search_nor)
+
+                            }.lparams() {
+                                width = dip(17)
+                                height = dip(17)
+                                leftMargin = dip(10)
+
+                            }
+
+                            isFocusable
+
+                            searchEditText = editText {
+
+
+                                //去搜索
+                                setOnClickListener {
+
+                                    var intent = Intent(activity, InstanceSearchActivity::class.java)
+                                    activity!!.startActivityForResult(intent,22)
+                                    activity!!.overridePendingTransition(R.anim.right_in, R.anim.left_out)
+
+                                }
+
+
+                                setFocusable(false)
+                                hint = "搜索"
+                                hintTextColor = Color.parseColor("#ff666666")
+                                backgroundColor = Color.TRANSPARENT
+
+                                textColor = Color.BLACK
+                                singleLine = true
+                                gravity = Gravity.CENTER_VERTICAL
+                                textSize = 13f
+                                padding = dip(0)
+                                clearFocus()
+
+                            }.lparams {
+                                leftMargin = dip(9)
+                                width = matchParent
+                                height = matchParent
+                            }
+
+
+                        }.lparams() {
+                            width = matchParent
+                            height = dip(30)
+                            leftMargin=dip(10)
+                            rightMargin=dip(10)
+                        }
 
 
                     }.lparams {
-                        height = wrapContent
+                        height = dip(40)
                         width = matchParent
                     }
 
@@ -392,7 +445,7 @@ class MessageChatRecordFragment : Fragment(), MessageChatRecordActionBarFragment
                         textView {
 
                         }.lparams {
-                            height = dip(8)
+                            height = dip(1)
                             width = matchParent
                         }
 
@@ -461,19 +514,6 @@ class MessageChatRecordFragment : Fragment(), MessageChatRecordActionBarFragment
     }
 
 
-    fun whenSearchList() {
-        selectMenu.visibility = View.GONE
-        middleMenu.visibility = View.GONE
-        //bottomMenu.visibility = View.GONE
-    }
-
-    fun afterSearchList() {
-        selectMenu.visibility = View.VISIBLE
-        middleMenu.visibility = View.VISIBLE
-        //bottomMenu.visibility = View.VISIBLE
-    }
-
-
     fun initRequest() {
         //发送消息请求,获取联系人列表
 //        app!!.setChatRecord(messageChatRecordListFragment)
@@ -485,8 +525,6 @@ class MessageChatRecordFragment : Fragment(), MessageChatRecordActionBarFragment
     override fun onDestroy() {
         super.onDestroy()
         application!!.setMessageChatRecordListFragment(null)
-
-
 
 
     }

@@ -20,15 +20,17 @@
             <LinearLayout
                 android:id="@+id/topPart"
                 android:layout_width="match_parent"
-                android:layout_height="130dp"
+                android:layout_height="70dp"
                 android:background="#ffffff"
                 android:orientation="vertical">
 
                 <RelativeLayout
                     android:id="@+id/message_actionBar"
                     android:layout_width="match_parent"
-                    android:layout_height="65dp"
-                    android:background="@drawable/bottom_border">
+                    android:layout_height="67dp"
+                    android:background="@drawable/bottom_border"
+
+                >
 
                     <Toolbar
                         android:id="@+id/message_toolBar"
@@ -54,160 +56,175 @@
                             android:textSize="16sp"
                             android:textStyle="bold" />
 
-                        <TextView
-                            android:id="@+id/chat_user_company"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="任天堂株式会社"
-                            android:textColor="#202020"
-                            android:textSize="12sp" />
+<!--                        <TextView-->
+<!--                            android:id="@+id/chat_user_company"-->
+<!--                            android:layout_width="wrap_content"-->
+<!--                            android:layout_height="wrap_content"-->
+<!--                            android:text="任天堂株式会社"-->
+<!--                            android:textColor="#202020"-->
+<!--                            android:textSize="12sp" />-->
                     </LinearLayout>
+
+
+                    <TextView
+                        android:id="@+id/translateText"
+                        android:layout_width="wrap_content"
+                        android:layout_height="45dp"
+                        android:text="启用翻译"
+                        android:textColor="#F87517"
+                        android:textSize="17sp"
+                        android:gravity="center"
+                        android:layout_marginRight="15dp"
+                        android:layout_alignParentBottom="true"
+                        android:layout_alignParentRight="true"
+                        />
                 </RelativeLayout>
 
 
-                <LinearLayout
-                    android:id="@+id/message_middle_select_bar_container"
-                    android:layout_width="match_parent"
-                    android:layout_height="60dp"
-                    android:orientation="horizontal">
 
-                    <LinearLayout
-                        android:id="@+id/message_middle_select_bar1"
-                        android:layout_width="0dp"
-                        android:layout_height="60dp"
-                        android:layout_weight="1"
-                        android:gravity="center"
-                        android:orientation="vertical">
+<!--                <LinearLayout-->
+<!--                    android:id="@+id/message_middle_select_bar_container"-->
+<!--                    android:layout_width="match_parent"-->
+<!--                    android:layout_height="60dp"-->
+<!--                    android:orientation="horizontal">-->
 
-
-                        <!--android:src="@drawable/phone_icon"-->
-                        <ImageView
-                            android:id="@+id/message_middle_select_bar_image1"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:src="@mipmap/phone_gray"
-                             />
+<!--                    <LinearLayout-->
+<!--                        android:id="@+id/message_middle_select_bar1"-->
+<!--                        android:layout_width="0dp"-->
+<!--                        android:layout_height="60dp"-->
+<!--                        android:layout_weight="1"-->
+<!--                        android:gravity="center"-->
+<!--                        android:orientation="vertical">-->
 
 
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="7dip"
-                            android:text="電話交換"
-                            android:textColor="#777777"
-                            android:textSize="11sp"
-
-                            />
-
-                    </LinearLayout>
+<!--                        &lt;!&ndash;android:src="@drawable/phone_icon"&ndash;&gt;-->
+<!--                        <ImageView-->
+<!--                            android:id="@+id/message_middle_select_bar_image1"-->
+<!--                            android:layout_width="wrap_content"-->
+<!--                            android:layout_height="wrap_content"-->
+<!--                            android:src="@mipmap/phone_gray"-->
+<!--                             />-->
 
 
-                    <LinearLayout
-                        android:id="@+id/message_middle_select_bar2"
-                        android:layout_width="0dp"
-                        android:layout_height="60dp"
-                        android:layout_weight="1"
-                        android:gravity="center"
-                        android:orientation="vertical">
+<!--                        <TextView-->
+<!--                            android:layout_width="wrap_content"-->
+<!--                            android:layout_height="wrap_content"-->
+<!--                            android:layout_marginTop="7dip"-->
+<!--                            android:text="電話交換"-->
+<!--                            android:textColor="#777777"-->
+<!--                            android:textSize="11sp"-->
 
-                        <!--android:src="@drawable/line_icon"-->
-                        <ImageView
-                            android:id="@+id/message_middle_select_bar_image2"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:src="@mipmap/line_gray"
+<!--                            />-->
 
-                             />
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="7dip"
-                            android:text="Line交換"
-                            android:textColor="#777777"
-                            android:textSize="11sp"
-
-                            />
-
-                    </LinearLayout>
+<!--                    </LinearLayout>-->
 
 
-                    <LinearLayout
-                        android:id="@+id/message_middle_select_bar3"
-                        android:layout_width="0dp"
-                        android:layout_height="60dp"
-                        android:layout_weight="1"
-                        android:gravity="center"
-                        android:orientation="vertical">
+<!--                    <LinearLayout-->
+<!--                        android:id="@+id/message_middle_select_bar2"-->
+<!--                        android:layout_width="0dp"-->
+<!--                        android:layout_height="60dp"-->
+<!--                        android:layout_weight="1"-->
+<!--                        android:gravity="center"-->
+<!--                        android:orientation="vertical">-->
 
-                        <!--android:src="@drawable/self_introduce_icon"-->
-                        <ImageView
-                            android:id="@+id/message_middle_select_bar_image3"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:src="@mipmap/resume_gray"
+<!--                        &lt;!&ndash;android:src="@drawable/line_icon"&ndash;&gt;-->
+<!--                        <ImageView-->
+<!--                            android:id="@+id/message_middle_select_bar_image2"-->
+<!--                            android:layout_width="wrap_content"-->
+<!--                            android:layout_height="wrap_content"-->
+<!--                            android:src="@mipmap/line_gray"-->
 
-                             />
+<!--                             />-->
 
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="7dip"
-                            android:text="履歴書送信"
-                            android:textColor="#777777"
-                            android:textSize="11sp"
+<!--                        <TextView-->
+<!--                            android:layout_width="wrap_content"-->
+<!--                            android:layout_height="wrap_content"-->
+<!--                            android:layout_marginTop="7dip"-->
+<!--                            android:text="Line交換"-->
+<!--                            android:textColor="#777777"-->
+<!--                            android:textSize="11sp"-->
 
-                            />
+<!--                            />-->
 
-
-                    </LinearLayout>
-
-
-                    <LinearLayout
-                        android:id="@+id/message_middle_select_bar4"
-                        android:layout_width="0dp"
-                        android:layout_height="60dp"
-                        android:layout_weight="1"
-                        android:gravity="center"
-                        android:orientation="vertical">
-
-                        <ImageView
-                            android:id="@+id/message_middle_select_bar_image4"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:src="@drawable/label_icon" />
+<!--                    </LinearLayout>-->
 
 
-                        <LinearLayout
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="7dip"
-                            android:gravity="center_vertical"
-                            android:orientation="horizontal">
+<!--                    <LinearLayout-->
+<!--                        android:id="@+id/message_middle_select_bar3"-->
+<!--                        android:layout_width="0dp"-->
+<!--                        android:layout_height="60dp"-->
+<!--                        android:layout_weight="1"-->
+<!--                        android:gravity="center"-->
+<!--                        android:orientation="vertical">-->
 
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
+<!--                        &lt;!&ndash;android:src="@drawable/self_introduce_icon"&ndash;&gt;-->
+<!--                        <ImageView-->
+<!--                            android:id="@+id/message_middle_select_bar_image3"-->
+<!--                            android:layout_width="wrap_content"-->
+<!--                            android:layout_height="wrap_content"-->
+<!--                            android:src="@mipmap/resume_gray"-->
 
-                                android:text="マーク"
-                                android:textColor="#777777"
-                                android:textSize="11sp" />
+<!--                             />-->
 
+<!--                        <TextView-->
+<!--                            android:layout_width="wrap_content"-->
+<!--                            android:layout_height="wrap_content"-->
+<!--                            android:layout_marginTop="7dip"-->
+<!--                            android:text="履歴書送信"-->
+<!--                            android:textColor="#777777"-->
+<!--                            android:textSize="11sp"-->
 
-                            <ImageView
-                                android:id="@+id/selectflag"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginLeft="5dp"
-                                android:src="@drawable/icon_down_home" />
-
-
-                        </LinearLayout>
-
-                    </LinearLayout>
+<!--                            />-->
 
 
-                </LinearLayout>
+<!--                    </LinearLayout>-->
+
+
+<!--                    <LinearLayout-->
+<!--                        android:id="@+id/message_middle_select_bar4"-->
+<!--                        android:layout_width="0dp"-->
+<!--                        android:layout_height="60dp"-->
+<!--                        android:layout_weight="1"-->
+<!--                        android:gravity="center"-->
+<!--                        android:orientation="vertical">-->
+
+<!--                        <ImageView-->
+<!--                            android:id="@+id/message_middle_select_bar_image4"-->
+<!--                            android:layout_width="wrap_content"-->
+<!--                            android:layout_height="wrap_content"-->
+<!--                            android:src="@drawable/label_icon" />-->
+
+
+<!--                        <LinearLayout-->
+<!--                            android:layout_width="wrap_content"-->
+<!--                            android:layout_height="wrap_content"-->
+<!--                            android:layout_marginTop="7dip"-->
+<!--                            android:gravity="center_vertical"-->
+<!--                            android:orientation="horizontal">-->
+
+<!--                            <TextView-->
+<!--                                android:layout_width="wrap_content"-->
+<!--                                android:layout_height="wrap_content"-->
+
+<!--                                android:text="マーク"-->
+<!--                                android:textColor="#777777"-->
+<!--                                android:textSize="11sp" />-->
+
+
+<!--                            <ImageView-->
+<!--                                android:id="@+id/selectflag"-->
+<!--                                android:layout_width="wrap_content"-->
+<!--                                android:layout_height="wrap_content"-->
+<!--                                android:layout_marginLeft="5dp"-->
+<!--                                android:src="@drawable/icon_down_home" />-->
+
+
+<!--                        </LinearLayout>-->
+
+<!--                    </LinearLayout>-->
+
+
+<!--                </LinearLayout>-->
 
             </LinearLayout>
 
@@ -216,6 +233,7 @@
                 android:id="@+id/bottomPartContainer"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+
                 android:orientation="vertical">
 
 

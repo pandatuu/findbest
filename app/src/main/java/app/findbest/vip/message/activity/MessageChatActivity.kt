@@ -1,11 +1,11 @@
-package cgland.job.sk_android.mvp.view.activity.message
+package app.findbest.vip.message.activity;
 
 import android.os.Bundle
 import android.view.View
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import app.findbest.vip.R
-import cgland.job.sk_android.mvp.view.fragment.message.MessageChatRecordActionBarFragment
+import app.findbest.vip.message.fragment.MessageChatRecordActionBarFragment
 import com.jaeger.library.StatusBarUtil
 import org.jetbrains.anko.*
 import com.umeng.message.PushAgent

@@ -1,4 +1,4 @@
-package cgland.job.sk_android.mvp.view.fragment.message
+package app.findbest.vip.message.fragment
 
 import android.graphics.Color
 import android.os.Bundle
@@ -11,7 +11,6 @@ import android.widget.TextView
 import android.widget.Toolbar
 import androidx.fragment.app.Fragment
 import app.findbest.vip.R
-import cgland.job.sk_android.mvp.model.message.ChatRecordModel
 
 class MessageChatRecordFilterMenuFragment : Fragment() {
 

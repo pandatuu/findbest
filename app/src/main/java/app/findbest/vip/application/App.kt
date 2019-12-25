@@ -6,14 +6,14 @@ import android.util.Log
 import androidx.constraintlayout.widget.Constraints.TAG
 import com.umeng.commonsdk.UMConfigure
 import com.umeng.message.PushAgent
-import androidx.core.content.ContextCompat.getSystemService
 import androidx.preference.PreferenceManager
 import app.findbest.vip.R
-import cgland.job.sk_android.mvp.listener.message.ChatRecord
-import cgland.job.sk_android.mvp.listener.message.RecieveMessageListener
-import cgland.job.sk_android.mvp.model.message.ChatRecordModel
-import cgland.job.sk_android.mvp.view.activity.message.MessageChatRecordActivity
-import cgland.job.sk_android.mvp.view.fragment.message.MessageChatRecordListFragment
+import app.findbest.vip.message.fragment.MessageChatRecordFragment
+
+import app.findbest.vip.message.fragment.MessageChatRecordListFragment
+import app.findbest.vip.message.listener.ChatRecord
+import app.findbest.vip.message.listener.RecieveMessageListener
+import app.findbest.vip.message.model.ChatRecordModel
 import com.alibaba.fastjson.JSON
 import com.neovisionaries.ws.client.WebSocketException
 import com.neovisionaries.ws.client.WebSocketFrame
@@ -21,6 +21,8 @@ import com.umeng.message.IUmengRegisterCallback
 import io.github.sac.*
 import org.json.JSONArray
 import org.json.JSONObject
+import java.text.SimpleDateFormat
+import java.util.*
 
 
 class App : Application() {
@@ -46,6 +48,9 @@ class App : Application() {
 
     var mRecieveMessageListener: RecieveMessageListener? = null
     private var messageChatRecordListFragment: MessageChatRecordListFragment? = null
+
+    var sdf= SimpleDateFormat("yyyy年MM月dd日")
+    var year = sdf.format(Date()).substring(0,4)
 
 
     private val defaultPreferences: SharedPreferences
@@ -78,6 +83,7 @@ class App : Application() {
                 Log.e(TAG, "注册失败：-------->  p0:$p0,p1:$p1")
             }
         })
+        initMessage()
     }
 
 
@@ -102,77 +108,87 @@ class App : Application() {
             override fun onConnected(socket: Socket, headers: Map<String, List<String>>) {
                 println("socket链接成功")
 
-                val obj = JSONObject("{\"token\":\"$token\"}")
+                val obj = JSONObject("{\"token\":\"eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJzdWIiOiI5MTExMjQ0Yy02NmY3LTQ4MDUtODBiZC1kNTEwMzQ3M2Q5MjIiLCJ1c2VybmFtZSI6Ijg2MTU4ODIzMzUwMDciLCJ0aW1lc3RhbXAiOjE1NzQ5OTI3NTU2MDcsImRldmljZVR5cGUiOiJBTkRST0lEIiwiaWF0IjoxNTc0OTkyNzU1fQ.F4LpzLJoBwNY6-IcIBx_f3O1drgupyRMUMkVJOYvUPXllrGh4WVdAOZ3w91DTV8yKi4QbElS15ICt4qSBoNs1XWS0ucCcIy7kWVTf6LUo-jdG1l-U6wlB5ALVUm2CKJiYgXgY5F9piuzN8coSsTe84p_HdLgNM-eMjzM8h_ojNx_govWHKOke_QqIuha13kUwf48QSKAq8xrvL1nM6dB175_8_8Zc22a_8TGAhbBV17gmwEDExCz9-H1eK4uGX1yFhvTdDhnzKu3Qx9T2usvqKyjrIxXajwkkFyQoKRqIenCT7m0m_lKeGdDdUrixqyIGAltJeDFEg1kjRXLgriaGQ\"}")
 
-                socket.emit("login", obj, object : Ack {
-                    override fun call(eventName: String, error: Any, data: Any) {
-                        println("Got message for :$eventName error is :$error data is :$data")
-                        //订阅通道
-                        val uId = getMyId()
 
-                        messageLoginState=true
+                socket.emit("login", obj) { eventName, error, data ->
 
-                        println("用户id:$uId")
-                        println("用户id:$token")
+                    println("Got message for :$eventName error is :$error data is :$data")
+                    //订阅通道
+                    val uId = getMyId()
 
-                        if (uId.isBlank()) {
+
+
+
+
+                    messageLoginState=true
+
+                    println("用户id:$uId")
+                    println("用户id:$token")
+
+                    if (uId.isBlank()) {
 //                        val toast = Toast.makeText(applicationContext, "ID取得失敗", Toast.LENGTH_SHORT)
 //                        toast.setGravity(Gravity.CENTER, 0, 0)
 //                        toast.show()
-                        }
-
-                        channelRecieve = socket.createChannel("p_${uId.replace("\"", "")}")
-                        channelRecieve.subscribe(object : Ack {
-                            override fun call(channelName: String, error: Any, data: Any) {
-                                if (error == null) {
-                                    println("Subscribed to channel $channelName successfully")
-                                } else {
-                                }
-                            }
-                        })
-
-
-                        //接受消息
-                        channelRecieve.onMessage(object : Emitter.Listener {
-                            override fun call(name: String?, data: Any?) {
-                                println("app收到消息内容")
-                                println(obj)
-                                println("app收到消息")
-
-                                val json = JSON.parseObject(obj.toString())
-                                val type = json.getString("type")
-                                try {
-                                    if (type != null && type == "contactList") {
-                                        println("准备发送contactList")
-                                        println("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxx================xxx")
-                                        getContactList(obj.toString())
-                                        chatRecord?.getContactList(obj.toString())
-                                        println("发送contactList完毕")
-                                    } else if (type != null && type == "setStatus") {
-
-
-                                    } else if (type != null && type == "historyMsg") {
-                                        mRecieveMessageListener?.getHistoryMessage(obj.toString())
-                                    } else {
-                                        mRecieveMessageListener?.getNormalMessage(obj.toString())
-                                        socket.emit("queryContactList", token)
-
-                                    }
-                                } catch (e: UninitializedPropertyAccessException) {
-                                    //e.printStackTrace()
-                                    println("请求联系人列表")
-                                    chatRecord?.requestContactList()
-                                }
-                            }
-                        })
-
-
-
-
-                        socket.emit("queryContactList", token)
                     }
+
+                    channelRecieve = socket.createChannel("p_${uId.replace("\"", "")}")
+
+
+                    channelRecieve.subscribe { channelName, error, _ ->
+                        if (error == null) {
+                            println("Subscribed to channel $channelName successfully")
+                        } else {
+
+                        }
+                    }
+
+
+
+                    //接受
+                    channelRecieve.onMessage { _, obj ->
+                        println("app收到消息内容")
+                        println(obj)
+                        println("app收到消息")
+
+                        val json = JSON.parseObject(obj.toString())
+                        val type = json.getString("type")
+                        try {
+                            if (type != null && type == "contactList") {
+                                println("准备发送contactList")
+                                println("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxx================xxx")
+                                println((chatRecord == null).toString())
+                                println("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxx================xxx")
+                                getContactList(obj.toString())
+                                chatRecord?.getContactList(obj.toString())
+                                println("发送contactList完毕")
+                            } else if (type != null && type == "setStatus") {
+
+
+                            } else if (type != null && type == "historyMsg") {
+                                mRecieveMessageListener?.getHistoryMessage(obj.toString())
+                            } else {
+                                mRecieveMessageListener?.getNormalMessage(obj.toString())
+                                socket.emit("queryContactList", token)
+
+                            }
+                        } catch (e: UninitializedPropertyAccessException) {
+                            //e.printStackTrace()
+                            println("请求联系人列表")
+                            chatRecord?.requestContactList()
+
+                        }
+                    }
+
+
+
+                    socket.emit("queryContactList", token)
+
+
                 }
-                )
+
+
+
 
             }
 
@@ -271,7 +287,7 @@ class App : Application() {
                 map.put(name, id.toInt())
             }
 
-            if (id == MessageChatRecordActivity.groupId) {
+            if (id == MessageChatRecordFragment.groupId) {
                 println("现在groupId")
 
                 members = item.getJSONArray("members")
@@ -349,6 +365,13 @@ class App : Application() {
                     msg = content.getString("msg")
                 }
             }
+
+            var createdTime = sdf.format(Date(lastMsg!!.get("created").toString().toLong()))
+            if(year  !=  createdTime.substring(0,4)){
+            }else{
+                createdTime=createdTime.substring(5,11)
+            }
+
             var ChatRecordModel = ChatRecordModel(
                 uid,
                 name,
@@ -357,16 +380,17 @@ class App : Application() {
                 msg,
                 unreads,
                 companyName,
-                lastPositionId
+                lastPositionId,
+                createdTime
             )
             chatRecordList.add(ChatRecordModel)
         }
 
 
-        MessageChatRecordActivity.chatRecordList = chatRecordList
-        MessageChatRecordActivity.groupArray = groupArray
-        MessageChatRecordActivity.map = map
-        MessageChatRecordActivity.json = json
+        MessageChatRecordFragment.chatRecordList = chatRecordList
+        MessageChatRecordFragment.groupArray = groupArray
+        MessageChatRecordFragment.map = map
+        MessageChatRecordFragment.json = json
 
 
         MessageChatRecordListFragment.thisGroupArray = groupArray
@@ -408,12 +432,12 @@ class App : Application() {
 //            }).start()
         }
 
-        return token.replace("\"", "")
+      return token.replace("\"", "")
     }
 
 
     fun getMyId(): String {
-        return defaultPreferences.getString("id", "") ?: ""
+        return defaultPreferences.getString("id", "9111244c-66f7-4805-80bd-d5103473d922") ?: "9111244c-66f7-4805-80bd-d5103473d922"
     }
 
 
@@ -425,7 +449,7 @@ class App : Application() {
 
 
     fun getMyLogoUrl(): String {
-        var avatarURL = defaultPreferences.getString("avatarURL", "") ?: ""
+        var avatarURL = defaultPreferences.getString("avatarURL", "https://findbest-test-1258431445.cos.ap-chengdu.myqcloud.com/61967e90-b4b5-478b-94db-19b4ab338261.jpg") ?: ""
         val arra = avatarURL.split(",")
         if (arra.isNotEmpty()) {
             avatarURL = arra[0]

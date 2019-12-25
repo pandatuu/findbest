@@ -1,4 +1,5 @@
-package cgland.job.sk_android.mvp.view.activity.message
+package app.findbest.vip.message.activity;
+
 
 import android.app.Activity
 import android.content.Intent
@@ -8,8 +9,8 @@ import android.widget.FrameLayout
 import androidx.appcompat.app.AppCompatActivity
 import app.findbest.vip.R
 import app.findbest.vip.application.App
-import cgland.job.sk_android.mvp.view.fragment.message.MessageChatWithoutLoginActionBarFragment
-import cgland.job.sk_android.mvp.view.fragment.message.MessageChatWithoutLoginFragment
+import app.findbest.vip.message.fragment.MessageChatWithoutLoginActionBarFragment
+import app.findbest.vip.message.fragment.MessageChatWithoutLoginFragment
 import click
 
 import com.jaeger.library.StatusBarUtil
@@ -57,9 +58,6 @@ class MessageChatWithoutLoginActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        intent = Intent(this@MessageChatWithoutLoginActivity, MessageChatRecordActivity::class.java)
-        startActivity(intent)
-        finish()
 
 
 
@@ -102,9 +100,9 @@ class MessageChatWithoutLoginActivity : AppCompatActivity() {
                             sleep(300)
                             lateinit var intent: Intent
                             if (App.getInstance()!!.getMessageLoginState()) {
-                                intent = Intent(this@MessageChatWithoutLoginActivity, MessageChatRecordActivity::class.java)
-                                startActivity(intent)
-                                finish()
+//                                intent = Intent(this@MessageChatWithoutLoginActivity, MessageChatRecordActivity::class.java)
+//                                startActivity(intent)
+//                                finish()
                             } else {
                                 intent = Intent(this@MessageChatWithoutLoginActivity, MessageChatWithoutLoginActivity::class.java)
                                 startActivity(intent)

@@ -29,8 +29,7 @@ import androidx.annotation.Nullable;
 
 import app.findbest.vip.R;
 import app.findbest.vip.application.App;
-import app.findbest.vip.utils.RetrofitUtils;
-import cgland.job.sk_android.mvp.listener.message.RecieveMessageListener;
+import app.findbest.vip.message.listener.RecieveMessageListener;
 import cgland.job.sk_android.utils.UploadPic;
 import cgland.job.sk_android.utils.UploadVoice;
 import cn.jiguang.imui.chatinput.ChatInputView;
@@ -46,7 +45,7 @@ import cn.jiguang.imui.messages.MsgListAdapter;
 import cn.jiguang.imui.messages.ViewHolderController;
 import cn.jiguang.imui.messages.ptr.PtrHandler;
 import cn.jiguang.imui.messages.ptr.PullToRefreshLayout;
-import cn.jiguang.imui.model.JobInfoModel;
+
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.bumptech.glide.request.target.SimpleTarget;
@@ -54,6 +53,7 @@ import com.bumptech.glide.request.transition.Transition;
 
 import com.jaeger.library.StatusBarUtil;
 import com.neovisionaries.ws.client.WebSocketState;
+
 import github.ll.view.FloatOnKeyboardLayout;
 import imui.jiguang.cn.imuisample.fragment.common.ShadowFragment;
 import imui.jiguang.cn.imuisample.listener.VideoChatControllerListener;
@@ -68,6 +68,7 @@ import io.github.sac.Socket;
 import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
 import okhttp3.*;
+
 import org.jetbrains.annotations.NotNull;
 import org.jitsi.meet.sdk.JitsiMeet;
 import org.jitsi.meet.sdk.JitsiMeetConferenceOptions;
@@ -75,6 +76,7 @@ import org.jitsi.meet.sdk.JitsiMeetUserInfo;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
 import pub.devrel.easypermissions.AppSettingsDialog;
 import pub.devrel.easypermissions.EasyPermissions;
 
@@ -113,21 +115,24 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
     private PowerManager mPowerManager;
     private PowerManager.WakeLock mWakeLock;
     private PullToRefreshLayout pullToRefreshLayout;
-    private LinearLayout message_middle_select_bar4;
-    private LinearLayout message_middle_select_bar3;
-    private LinearLayout message_middle_select_bar2;
-    private LinearLayout message_middle_select_bar1;
+//    private LinearLayout message_middle_select_bar4;
+//    private LinearLayout message_middle_select_bar3;
+//    private LinearLayout message_middle_select_bar2;
+//    private LinearLayout message_middle_select_bar1;
 
-    private ImageView message_middle_select_bar_image1;
-    private ImageView message_middle_select_bar_image2;
-    private ImageView message_middle_select_bar_image3;
+//    private ImageView message_middle_select_bar_image1;
+//    private ImageView message_middle_select_bar_image2;
+//    private ImageView message_middle_select_bar_image3;
 
 
     private LinearLayout topPart;
     private FloatOnKeyboardLayout bottomPartContainer;
     private MessageList msg_list;
     private TextView hisName;
-    private TextView hisCompany;
+
+
+    private TextView translateText;
+//    private TextView hisCompany;
 
     boolean isInitHistory = true;
     boolean isFirstRequestHistory = true;
@@ -187,6 +192,16 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
 
     Boolean sendMeesage_me = false;
     Boolean sendMessage_he = false;
+
+
+    SimpleDateFormat sdf_show_hour = new SimpleDateFormat("HH:mm");
+    SimpleDateFormat sdf_show_month = new SimpleDateFormat("MM月dd日 HH:mm");
+    SimpleDateFormat sdf_show_year = new SimpleDateFormat("yyyy年MM月dd日 HH:mm");
+
+    String nowTimeString = sdf_show_year.format(new Date());
+
+
+    Long latestMessageTime = null;
 
     @Override
     protected void onStart() {
@@ -260,23 +275,39 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
             }
         });
 
+
+        translateText = findViewById(R.id.translateText);
+        translateText.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+
+                Toast toast = Toast.makeText(getApplicationContext(), "这里是翻译", Toast.LENGTH_SHORT);
+                toast.setGravity(Gravity.CENTER, 0, 0);
+                toast.show();
+
+
+            }
+        });
+
+
         //顶部菜单
-        message_middle_select_bar1 = findViewById(R.id.message_middle_select_bar1);
-        message_middle_select_bar2 = findViewById(R.id.message_middle_select_bar2);
-        message_middle_select_bar3 = findViewById(R.id.message_middle_select_bar3);
-        message_middle_select_bar4 = findViewById(R.id.message_middle_select_bar4);
+//        message_middle_select_bar1 = findViewById(R.id.message_middle_select_bar1);
+//        message_middle_select_bar2 = findViewById(R.id.message_middle_select_bar2);
+//        message_middle_select_bar3 = findViewById(R.id.message_middle_select_bar3);
+//        message_middle_select_bar4 = findViewById(R.id.message_middle_select_bar4);
         //顶部菜单 图标
-        message_middle_select_bar_image1 = findViewById(R.id.message_middle_select_bar_image1);
-        message_middle_select_bar_image2 = findViewById(R.id.message_middle_select_bar_image2);
-        message_middle_select_bar_image3 = findViewById(R.id.message_middle_select_bar_image3);
+//        message_middle_select_bar_image1 = findViewById(R.id.message_middle_select_bar_image1);
+//        message_middle_select_bar_image2 = findViewById(R.id.message_middle_select_bar_image2);
+//        message_middle_select_bar_image3 = findViewById(R.id.message_middle_select_bar_image3);
 
 
         //初始化顶部菜单的点击事件
-        initTopMenuClickListener();
+//        initTopMenuClickListener();
 
         //顶部用户名和公司名
         hisName = findViewById(R.id.chat_user_name);
-        hisCompany = findViewById(R.id.chat_user_company);
+//        hisCompany = findViewById(R.id.chat_user_company);
         initTopName();
 
 
@@ -361,12 +392,6 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
     }
 
 
-
-
-
-
-
-
     @Override
     public void onAccuracyChanged(Sensor sensor, int accuracy) {
 
@@ -381,8 +406,6 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
     public void onPointerCaptureChanged(boolean hasCapture) {
 
     }
-
-
 
 
 //    @Override
@@ -475,7 +498,7 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
         String name = intent.getStringExtra("hisName");
 
         hisName.setText(name);
-        hisCompany.setText(companyName);
+//        hisCompany.setText(companyName);
     }
 
 
@@ -1162,28 +1185,97 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
 
 
     //发送请求交换Line的信息
-    private void sendPhoneExchangeRequestMessage(String interviewId) {
+//    private void sendPhoneExchangeRequestMessage(String interviewId) {
+//
+//        reconnectSocket();
+//
+//        System.out.println("给双方发送交换PHONE信息");
+//
+//        try {
+//            //电话交换
+//            JSONObject requestJson = new JSONObject();
+//            requestJson.put("receiver_id", HIS_ID);
+//
+//            JSONObject message = new JSONObject(sendMessageModel.toString());
+//            message.getJSONObject("content").put("type", "exchangePhone");
+//            message.getJSONObject("content").put("msg", "向こうはあなた電話交換の申請を出しました");
+//            message.getJSONObject("content").put("interviewId", interviewId);
+//
+//            requestJson.put("message", message);
+//
+//            socket.emit("forwardSystemMsg", requestJson);
+//
+//
+//            //系统消息
+//            JSONObject systemMessage = new JSONObject();
+//            systemMessage.put("receiver_id", MY_ID);
+//
+//            JSONObject system = new JSONObject(sendMessageModel.toString());
+//            system.getJSONObject("receiver").put("id", MY_ID);
+//            system.getJSONObject("sender").put("id", HIS_ID);
+//            system.getJSONObject("content").put("type", "system");
+//            system.getJSONObject("content").put("msg", "電話交換の申請を送信しました");
+//            systemMessage.put("message", system);
+//
+//            socket.emit("forwardSystemMsg", systemMessage);
+//
+//
+//        } catch (JSONException e) {
+//            e.printStackTrace();
+//        }
+//
+//    }
 
+
+    //发送请求交换Line的信息
+//    private void sendLineExchangeRequestMessage(String interviewId) {
+//        reconnectSocket();
+//        //给双方发送交换LINE信息
+//        System.out.println("给双方发送交换LINE信息");
+//        try {
+//            //Line交换
+//            JSONObject requestJson = new JSONObject();
+//            requestJson.put("receiver_id", HIS_ID);
+//
+//            JSONObject message = new JSONObject(sendMessageModel.toString());
+//            message.getJSONObject("content").put("type", "exchangeLine");
+//            message.getJSONObject("content").put("msg", "向こうはあなたにline交換の申請を出しました。同意しますか？");
+//            message.getJSONObject("content").put("interviewId", interviewId);
+//
+//            requestJson.put("message", message);
+//
+//            socket.emit("forwardSystemMsg", requestJson);
+//
+//            //系统消息
+//            JSONObject systemMessage = new JSONObject();
+//            systemMessage.put("receiver_id", MY_ID);
+//
+//            JSONObject system = new JSONObject(sendMessageModel.toString());
+//            system.getJSONObject("receiver").put("id", MY_ID);
+//            system.getJSONObject("sender").put("id", HIS_ID);
+//            system.getJSONObject("content").put("type", "system");
+//            system.getJSONObject("content").put("msg", "Line交換の申請を送信しました");
+//            systemMessage.put("message", system);
+//
+//            socket.emit("forwardSystemMsg", systemMessage);
+//
+//        } catch (JSONException e) {
+//            e.printStackTrace();
+//        }
+//
+//    }
+
+
+    /**
+     * 发送系统消息给自己
+     */
+    private void sendSystemMessageToMyself(String message) {
         reconnectSocket();
 
-        System.out.println("给双方发送交换PHONE信息");
+        System.out.println("发送!!!!!!!!!!!!!!");
 
+        //系统消息
         try {
-            //电话交换
-            JSONObject requestJson = new JSONObject();
-            requestJson.put("receiver_id", HIS_ID);
-
-            JSONObject message = new JSONObject(sendMessageModel.toString());
-            message.getJSONObject("content").put("type", "exchangePhone");
-            message.getJSONObject("content").put("msg", "向こうはあなた電話交換の申請を出しました");
-            message.getJSONObject("content").put("interviewId", interviewId);
-
-            requestJson.put("message", message);
-
-            socket.emit("forwardSystemMsg", requestJson);
-
-
-            //系统消息
             JSONObject systemMessage = new JSONObject();
             systemMessage.put("receiver_id", MY_ID);
 
@@ -1191,24 +1283,41 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
             system.getJSONObject("receiver").put("id", MY_ID);
             system.getJSONObject("sender").put("id", HIS_ID);
             system.getJSONObject("content").put("type", "system");
-            system.getJSONObject("content").put("msg", "電話交換の申請を送信しました");
+            system.getJSONObject("content").put("msg", message);
             systemMessage.put("message", system);
 
             socket.emit("forwardSystemMsg", systemMessage);
-
-
         } catch (JSONException e) {
             e.printStackTrace();
+        }
+
+
+        if (message.startsWith("TIME")) {
+            //是时间的系统消息
+
+            MyMessage messageTime = null;
+
+            String messageTimeString = sdf_show_year.format(new Date(Long.parseLong(message.substring(4, message.length()))));
+            if (nowTimeString.substring(0, 4).equals(messageTimeString.substring(0, 4))) {
+                if (nowTimeString.substring(8, 10).equals(messageTimeString.substring(8, 10))) {
+                    messageTimeString = messageTimeString.substring(12, 17);
+                } else {
+                    messageTimeString = messageTimeString.substring(5, 17);
+                }
+            }
+            messageTime = new MyMessage(messageTimeString, IMessage.MessageType.EVENT.ordinal());
+            mAdapter.addToStart(messageTime, true);
         }
 
     }
 
 
-    //发送请求交换Line的信息
-    private void sendLineExchangeRequestMessage(String interviewId) {
+    /**
+     * 发送系统消息给自己
+     */
+    private void sendSystemMessageToOther(String mes) {
         reconnectSocket();
-        //给双方发送交换LINE信息
-        System.out.println("给双方发送交换LINE信息");
+        //系统消息
         try {
             //Line交换
             JSONObject requestJson = new JSONObject();
@@ -1216,30 +1325,15 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
 
             JSONObject message = new JSONObject(sendMessageModel.toString());
             message.getJSONObject("content").put("type", "exchangeLine");
-            message.getJSONObject("content").put("msg", "向こうはあなたにline交換の申請を出しました。同意しますか？");
-            message.getJSONObject("content").put("interviewId", interviewId);
+            message.getJSONObject("content").put("msg", mes);
+            message.getJSONObject("content").put("interviewId", "");
 
             requestJson.put("message", message);
 
             socket.emit("forwardSystemMsg", requestJson);
-
-            //系统消息
-            JSONObject systemMessage = new JSONObject();
-            systemMessage.put("receiver_id", MY_ID);
-
-            JSONObject system = new JSONObject(sendMessageModel.toString());
-            system.getJSONObject("receiver").put("id", MY_ID);
-            system.getJSONObject("sender").put("id", HIS_ID);
-            system.getJSONObject("content").put("type", "system");
-            system.getJSONObject("content").put("msg", "Line交換の申請を送信しました");
-            systemMessage.put("message", system);
-
-            socket.emit("forwardSystemMsg", systemMessage);
-
         } catch (JSONException e) {
             e.printStackTrace();
         }
-
     }
 
 
@@ -1253,8 +1347,8 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
 //
 //
 //        if (thisCommunicationPositionId != null && !"".equals(thisCommunicationPositionId)) {
-            //测试地址 https://organization-position.sk.cgland.top/
-            //正式地址 https://organization-position.sk.skjob.jp/
+        //测试地址 https://organization-position.sk.cgland.top/
+        //正式地址 https://organization-position.sk.skjob.jp/
 //            RetrofitUtils requestForPosition = new RetrofitUtils(thisContext, this.getString(R.string.organizationUrl));
 //            requestForPosition.create(RecruitInfoApi.class)
 //                    .getRecruitInfoById(
@@ -1738,12 +1832,26 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
     //聊天控件菜单点击事件
     private void initChatViewMenuClickListener() {
         mChatView.setMenuClickListener(new OnMenuClickListener() {
+            @Override
+            public void videoChat() {
+                //视频聊天的代码
+
+
+                Toast toast = Toast.makeText(getApplicationContext(), "视频", Toast.LENGTH_SHORT);
+                toast.setGravity(Gravity.CENTER, 0, 0);
+                toast.show();
+
+
+            }
+
             //发送文字消息
             @Override
             public boolean onSendTextMessage(CharSequence input) {
                 if (input.length() == 0) {
                     return false;
                 }
+
+                sendTimeBar();
                 String text = input.toString();
                 sendTextMessage(text, null);
                 return true;
@@ -1755,6 +1863,8 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
                 if (list == null || list.isEmpty()) {
                     return;
                 }
+
+                sendTimeBar();
                 UploadPic uploadPic = new UploadPic();
                 //遍历选择的文件
                 for (FileItem item : list) {
@@ -1857,48 +1967,48 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
         });
     }
 
-
-    //初始化顶部菜单点击事件
-    private void initTopMenuClickListener() {
-
-        //发送电话交换请求
-        message_middle_select_bar1.setOnClickListener(new View.OnClickListener() {
-            @SuppressLint("ResourceType")
-            @Override
-            public void onClick(View v) {
-                if (exchangeInfoEnabled) {
-                    requestCreateExchangesInfoApi("TELEPHONE", null, false);
-                }
-            }
-        });
-
-        //发送Line交换请求
-        message_middle_select_bar2.setOnClickListener(new View.OnClickListener() {
-            @SuppressLint("ResourceType")
-            @Override
-            public void onClick(View v) {
-                if (exchangeInfoEnabled) {
-                    requestCreateExchangesInfoApi("LINE", null, false);
-                }
-            }
-        });
-
-        //简历上弹框的显示与关闭
-        message_middle_select_bar3.setOnClickListener(new View.OnClickListener() {
-            @SuppressLint("ResourceType")
-            @Override
-            public void onClick(View v) {
+//
+//    //初始化顶部菜单点击事件
+//    private void initTopMenuClickListener() {
+//
+//        //发送电话交换请求
+//        message_middle_select_bar1.setOnClickListener(new View.OnClickListener() {
+//            @SuppressLint("ResourceType")
+//            @Override
+//            public void onClick(View v) {
 //                if (exchangeInfoEnabled) {
-//                    showResumeList(1, "");
+//                    requestCreateExchangesInfoApi("TELEPHONE", null, false);
 //                }
-            }
-        });
-
-        //标记对方
-        message_middle_select_bar4.setOnClickListener(new View.OnClickListener() {
-            @SuppressLint("ResourceType")
-            @Override
-            public void onClick(View v) {
+//            }
+//        });
+//
+//        //发送Line交换请求
+//        message_middle_select_bar2.setOnClickListener(new View.OnClickListener() {
+//            @SuppressLint("ResourceType")
+//            @Override
+//            public void onClick(View v) {
+//                if (exchangeInfoEnabled) {
+//                    requestCreateExchangesInfoApi("LINE", null, false);
+//                }
+//            }
+//        });
+//
+//        //简历上弹框的显示与关闭
+//        message_middle_select_bar3.setOnClickListener(new View.OnClickListener() {
+//            @SuppressLint("ResourceType")
+//            @Override
+//            public void onClick(View v) {
+////                if (exchangeInfoEnabled) {
+////                    showResumeList(1, "");
+////                }
+//            }
+//        });
+//
+//        //标记对方
+//        message_middle_select_bar4.setOnClickListener(new View.OnClickListener() {
+//            @SuppressLint("ResourceType")
+//            @Override
+//            public void onClick(View v) {
 //                hideResumeMenu();
 //                mChatView.getChatInputView().closeKeyBoard();
 //
@@ -1922,14 +2032,12 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
 //                } else {
 //                    hideDropMenu();
 //                }
-            }
-        });
-    }
+//            }
+//        });
+//    }
 
 
     private void sendTextMessage(String str, String ico) {
-
-
 
 
         reconnectSocket();
@@ -1950,7 +2058,7 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
                 mMsgIdList.add(message.getMsgId());
             }
             message.setUserInfo(new DefaultUser("1", "", myLogo));
-            message.setTimeString(new SimpleDateFormat("HH:mm", Locale.getDefault()).format(new Date()));
+            //  message.setTimeString(new SimpleDateFormat("HH:mm", Locale.getDefault()).format(new Date()));
             message.setMessageStatus(IMessage.MessageStatus.SEND_GOING);
             mAdapter.addToStart(message, true);
 
@@ -2126,14 +2234,33 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
                         mPathList.add(contentMsg);
                         mMsgIdList.add(message.getMsgId());
                     } else if (msgType != null && msgType.equals("system")) {
-                        //系统消息
-                        message = new MyMessage(contentMsg, IMessage.MessageType.EVENT.ordinal());
-                        if (content.has("interviewId") && content.has("duration")) {
-                            if (content.getInt("duration") == 1) {
-                                latestVideoMessageInterviewId.add(content.getString("interviewId"));
-                                setVideoInviteHandled();
+
+                        if (contentMsg.startsWith("TIME")) {
+                            //时间
+                            //不能在这里显示,因为当此系统消息显示时间的时候,是在回调的时候才显示,而相对应的消息是秒显示在屏幕
+                            //历史消息没有问题可以这样,应为历史消息是按照顺序显示的
+//                            String messageTimeString=sdf_show_year.format(new Date(Long.parseLong(contentMsg.substring(4,contentMsg.length()))));
+//                            if (nowTimeString.substring(0, 4).equals(messageTimeString.substring(0, 4))) {
+//                                if (nowTimeString.substring(8, 10).equals(messageTimeString.substring(8, 10))) {
+//                                    messageTimeString = messageTimeString.substring(12, 17);
+//                                } else {
+//                                    messageTimeString = messageTimeString.substring(5, 17);
+//                                }
+//                            }
+//                            message = new MyMessage(messageTimeString, IMessage.MessageType.EVENT.ordinal());
+
+
+                        } else {
+                            //系统消息
+                            message = new MyMessage(contentMsg, IMessage.MessageType.EVENT.ordinal());
+                            if (content.has("interviewId") && content.has("duration")) {
+                                if (content.getInt("duration") == 1) {
+                                    latestVideoMessageInterviewId.add(content.getString("interviewId"));
+                                    setVideoInviteHandled();
+                                }
                             }
                         }
+
 
                     } else if (msgType != null && msgType.equals("exchangePhone")) {
                         //对方的电话交换请求
@@ -2236,6 +2363,10 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
             if (lastShowedMessageId == null) {
                 lastShowedMessageId = jsono.getString("_id");
             }
+
+
+            latestMessageTime = Long.parseLong(jsono.get("created").toString());
+
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -2243,7 +2374,7 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
 
         if (!exchangeInfoEnabled && sendMessage_he && sendMeesage_me) {
             exchangeInfoEnabled = true;
-            setEnabledStyleOfExchangeIcon();
+            //setEnabledStyleOfExchangeIcon();
         }
     }
 
@@ -2253,10 +2384,9 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
         socket = application.getSocket();
 
 
+        if (WebSocketState.OPEN == socket.getCurrentState() || WebSocketState.CREATED == socket.getCurrentState()) {
 
-        if(WebSocketState.OPEN == socket.getCurrentState() || WebSocketState.CREATED == socket.getCurrentState()){
-
-        }else{
+        } else {
             System.out.println("socket失效，重连中！！！！！！！--");
 
 
@@ -2267,7 +2397,7 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
             application.closeMessage();
 
 
-            while(true){
+            while (true) {
                 if (WebSocketState.OPEN == socket.getCurrentState() || WebSocketState.CREATED == socket.getCurrentState()) {
 
                     break;
@@ -2282,15 +2412,17 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
 
         thisCommunicationPositionId = intent.getStringExtra("position_id");
         String company_id = intent.getStringExtra("company_id");
-
+        //设置他的logo
         hisLogo = intent.getStringExtra("hislogo");
-
+        hisLogo = "https://findbest-test-1258431445.cos.ap-chengdu.myqcloud.com/97a3823c-fd8f-468b-842a-d418d49ae3b8.jpg";
         authorization = "Bearer " + application.getMyToken();
         MY_ID = application.getMyId();
         HIS_ID = hisId;
 
         System.out.println("他的ID" + HIS_ID);
         System.out.println("我的ID" + MY_ID);
+
+        //设置我的头像
         myLogo = application.getMyLogoUrl();
 
         try {
@@ -2403,7 +2535,7 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
                     //测试地址 https://storage.sk.cgland.top/api/v1/storage
                     //正式地址 https://storage.sk.skjob.jp/api/v1/storage
                     Request request = new Request.Builder()
-                            .url(thisContext.getString(R.string.storageUrl)+"api/v1/storage")
+                            .url(thisContext.getString(R.string.storageUrl) + "api/v1/storage")
                             .addHeader("Authorization", authorization)
                             .post(requestBody)
                             .build();
@@ -2538,7 +2670,7 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
                         //测试地址 https://storage.sk.cgland.top/api/v1/storage
                         //正式地址 https://storage.sk.skjob.jp/api/v1/storage
                         Request request = new Request.Builder()
-                                .url(thisContext.getString(R.string.storageUrl)+"api/v1/storage")
+                                .url(thisContext.getString(R.string.storageUrl) + "api/v1/storage")
                                 .addHeader("Authorization", authorization)
                                 .post(requestBody)
                                 .build();
@@ -2774,15 +2906,39 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
                                     message.setMediaFilePath(msg);
                                     message.setDuration(voiceDuration);
                                 } else if (contetType != null && contetType.equals("system")) {
-                                    //系统消息
-                                    message = new MyMessage(msg, IMessage.MessageType.EVENT.ordinal());
 
-                                    if (content.has("interviewId") && content.has("duration")) {
-                                        if (content.getInt("duration") == 1) {
-                                            latestVideoMessageInterviewId.add(content.getString("interviewId"));
-                                            setVideoInviteHandled();
+                                    if (msg.startsWith("TIME")) {
+                                        //时间
+
+                                        System.out.println("asdasdasdasd");
+
+                                        System.out.println(msg);
+                                        System.out.println(msg.substring(4, msg.length()));
+
+                                        String messageTimeString = sdf_show_year.format(new Date(Long.parseLong(msg.substring(4, msg.length()))));
+
+                                        if (nowTimeString.substring(0, 4).equals(messageTimeString.substring(0, 4))) {
+                                            if (nowTimeString.substring(8, 10).equals(messageTimeString.substring(8, 10))) {
+                                                messageTimeString = messageTimeString.substring(12, 17);
+                                            } else {
+                                                messageTimeString = messageTimeString.substring(5, 17);
+                                            }
+                                        }
+
+                                        message = new MyMessage(messageTimeString, IMessage.MessageType.EVENT.ordinal());
+
+                                    } else {
+                                        //系统消息
+                                        message = new MyMessage(msg, IMessage.MessageType.EVENT.ordinal());
+
+                                        if (content.has("interviewId") && content.has("duration")) {
+                                            if (content.getInt("duration") == 1) {
+                                                latestVideoMessageInterviewId.add(content.getString("interviewId"));
+                                                setVideoInviteHandled();
+                                            }
                                         }
                                     }
+
 
                                 } else if (contetType != null && contetType.equals("exchangePhone")) {
                                     //对方请求交换电话
@@ -2938,14 +3094,24 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
 //                                Date createdDate = sdf.parse(created);
 //                                SimpleDateFormat sdf_show = new SimpleDateFormat("HH:mm");
 
-                                    Long created = historyMessage.getJSONObject(i).getLong("created");//又变成毫秒了
+                                    //原来做的把历史记录每一页的最后一条就设一个时间显示
+                                    //现在把时间显示用system的方式作为消息显示了
 
-                                    Date createdDate = new Date(created);
-
-                                    SimpleDateFormat sdf_show = new SimpleDateFormat("HH:mm");
-
-                                    // System.out.println(createdDate.getTime());
-                                    message.setTimeString(sdf_show.format(createdDate));
+//                                    Long created = historyMessage.getJSONObject(i).getLong("created");//又变成毫秒了
+//
+//                                    String createdDate = sdf_show_year.format(new Date(created));
+//
+//
+//                                    // System.out.println(createdDate.getTime());
+//                                    if (nowTimeString.substring(0, 4).equals(createdDate.substring(0, 4))) {
+//                                        if (nowTimeString.substring(8, 10).equals(createdDate.substring(8, 10))) {
+//                                            createdDate = createdDate.substring(12, 17);
+//                                        } else {
+//                                            createdDate = createdDate.substring(5, 17);
+//                                        }
+//                                    }
+//
+//                                    message.setTimeString(createdDate);
                                 } catch (Exception e) {
                                     e.printStackTrace();
                                 }
@@ -2970,43 +3136,51 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
                             list.add(RESET2);
                             topBlankMessageId = RESET2.getMsgId();
                         }
+
+
+                        if (i == 0) {
+                            //最新一条消息的时间
+                            latestMessageTime = historyMessage.getJSONObject(i).getLong("created");
+                        }
+
+
                     }
 
 
                     System.out.println("请求历史记录.....................");
 
                     //在最后添加职位信息
-                    if (historyMessage.length() < 15 && positionshowedFlag) {
-                        //lastPositionId
-
-                        if (isFirstChat) {
-
-
-                        }
-
-                        if (thisCommunicationPositionId != null && !"".equals(thisCommunicationPositionId)) {
-
-
-                            System.out.println("thisCommunicationPositionId.....................");
-                            System.out.println(thisCommunicationPositionId);
-
-
-                            Intent intent = getIntent();
-                            MyMessage jobInfo = new MyMessage(thisCommunicationPositionId, IMessage.MessageType.JOB_INFO.ordinal());
-                            list.add(jobInfo);
-                            //requestPosisionInfo(thisCommunicationPositionId, jobInfo.getMsgId());
-                        } else {
-                            System.out.println("聊天界面在展示职位信息时,数据异常:缺少positionId");
-                        }
-
-                        positionshowedFlag = false;
-
-
-                        MyMessage RESET2 = new MyMessage("", IMessage.MessageType.EMPTY.ordinal());
-                        list.add(RESET2);
-                        topBlankMessageId = RESET2.getMsgId();
-
-                    }
+//                    if (historyMessage.length() < 15 && positionshowedFlag) {
+//                        //lastPositionId
+//
+//                        if (isFirstChat) {
+//
+//
+//                        }
+//
+//                        if (thisCommunicationPositionId != null && !"".equals(thisCommunicationPositionId)) {
+//
+//
+//                            System.out.println("thisCommunicationPositionId.....................");
+//                            System.out.println(thisCommunicationPositionId);
+//
+//
+//                            Intent intent = getIntent();
+//                            MyMessage jobInfo = new MyMessage(thisCommunicationPositionId, IMessage.MessageType.JOB_INFO.ordinal());
+//                            list.add(jobInfo);
+//                            //requestPosisionInfo(thisCommunicationPositionId, jobInfo.getMsgId());
+//                        } else {
+//                            System.out.println("聊天界面在展示职位信息时,数据异常:缺少positionId");
+//                        }
+//
+//                        positionshowedFlag = false;
+//
+//
+//                        MyMessage RESET2 = new MyMessage("", IMessage.MessageType.EMPTY.ordinal());
+//                        list.add(RESET2);
+//                        topBlankMessageId = RESET2.getMsgId();
+//
+//                    }
                 }
             } catch (JSONException e) {
 
@@ -3022,7 +3196,7 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
             mChatView.getMessageListView().setScrollY(1000);
 
 
-            if(HIS_ID!=null){
+            if (HIS_ID != null) {
                 if (isFirstChat && !"000000000000000000000000".equals(HIS_ID) && !HIS_ID.equals(MY_ID)) {
                     isFirstChat = false;
                     sendGreeting();
@@ -3034,7 +3208,7 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
 
             if (!exchangeInfoEnabled && sendMessage_he && sendMeesage_me) {
                 exchangeInfoEnabled = true;
-                setEnabledStyleOfExchangeIcon();
+                //setEnabledStyleOfExchangeIcon();
 
             }
         }
@@ -4169,11 +4343,20 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
     }
 
 
-    public void setEnabledStyleOfExchangeIcon() {
+//    public void setEnabledStyleOfExchangeIcon() {
+//
+//        message_middle_select_bar_image3.setImageResource(R.drawable.self_introduce_icon);
+//
+//
+//    }
 
-        message_middle_select_bar_image3.setImageResource(R.drawable.self_introduce_icon);
 
-
+    private void sendTimeBar(){
+        Date now = new Date();
+        //大于5分钟,显示时间定位消息
+        if (latestMessageTime == null || now.getTime() - latestMessageTime > 1000 * 60 * 1) {
+            sendSystemMessageToMyself("TIME" + now.getTime() + "");
+        }
     }
 
     //销毁时
