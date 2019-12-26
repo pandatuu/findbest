@@ -12,7 +12,9 @@
     <string name="jitsiUrl" translatable="false">https://meet.skjob.jp/</string> <!-- https://jitsi.skjob.jp/-->
 
 
-    <string name="storageUrl" translatable="false">http://192.168.2.200:3300/</string>
+    <string name="storageUrl" translatable="false">http://192.168.2.200:3800/</string>
+
+
 
 
 </resources>

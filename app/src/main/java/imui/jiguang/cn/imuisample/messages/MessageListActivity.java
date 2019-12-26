@@ -29,6 +29,7 @@ import androidx.annotation.Nullable;
 
 import app.findbest.vip.R;
 import app.findbest.vip.application.App;
+import app.findbest.vip.message.activity.videoRequestActivity;
 import app.findbest.vip.message.listener.RecieveMessageListener;
 import cgland.job.sk_android.utils.UploadPic;
 import cgland.job.sk_android.utils.UploadVoice;
@@ -1840,6 +1841,13 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
                 Toast toast = Toast.makeText(getApplicationContext(), "这里是视频", Toast.LENGTH_SHORT);
                 toast.setGravity(Gravity.CENTER, 0, 0);
                 toast.show();
+
+
+                Intent intent = new Intent(MessageListActivity.this, videoRequestActivity.class);
+                startActivity(intent);
+                overridePendingTransition(R.anim.fade_in_out, R.anim.fade_in_out);
+
+
 
 
             }
