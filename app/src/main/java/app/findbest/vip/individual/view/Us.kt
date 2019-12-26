@@ -1,14 +1,12 @@
-package app.findbest.vip.individual.artist.view.activity
+package app.findbest.vip.individual.view
 
 import android.os.Bundle
 import android.view.View
 import android.widget.LinearLayout
 import androidx.appcompat.app.AppCompatActivity
 import app.findbest.vip.R
-import app.findbest.vip.individual.artist.view.fragment.FbActionbar
-import app.findbest.vip.individual.artist.view.fragment.FbMain
-import app.findbest.vip.individual.artist.view.fragment.UsActionbar
-import app.findbest.vip.individual.artist.view.fragment.UsMain
+import app.findbest.vip.individual.fragment.UsActionbar
+import app.findbest.vip.individual.fragment.UsMain
 import com.jaeger.library.StatusBarUtil
 import org.jetbrains.anko.frameLayout
 import org.jetbrains.anko.linearLayout

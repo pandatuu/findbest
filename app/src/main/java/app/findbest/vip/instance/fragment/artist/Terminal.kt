@@ -11,14 +11,9 @@ import android.view.ViewGroup
 import android.widget.Toolbar
 import app.findbest.vip.R
 import app.findbest.vip.commonfrgmant.FragmentParent
-<<<<<<< HEAD
-import app.findbest.vip.individual.artist.view.activity.Feedback
-import app.findbest.vip.individual.artist.view.activity.Help
-import app.findbest.vip.individual.artist.view.activity.Us
-=======
 import app.findbest.vip.individual.view.Feedback
 import app.findbest.vip.individual.view.Help
->>>>>>> 62f86276e5d1003cea987e574276d4c9926219ce
+import app.findbest.vip.individual.view.Us
 import click
 import org.jetbrains.anko.*
 import org.jetbrains.anko.sdk27.coroutines.onClick
