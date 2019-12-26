@@ -61,7 +61,6 @@ class ProjectFragment : Fragment(), ProjectMainTitle.ChildrenClick,BackgroundFra
         closeAlertDialog()
     }
 
-
     private fun createV(): View {
         return UI {
             frameLayout {
@@ -83,7 +82,6 @@ class ProjectFragment : Fragment(), ProjectMainTitle.ChildrenClick,BackgroundFra
             }
         }.view
     }
-
 
     private fun openDialog() {
         val mTransaction = activity!!.supportFragmentManager.beginTransaction()

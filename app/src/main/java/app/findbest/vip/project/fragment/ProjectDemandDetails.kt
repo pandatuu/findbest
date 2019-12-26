@@ -8,11 +8,16 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
+import android.widget.TextView
 import androidx.fragment.app.Fragment
 import app.findbest.vip.R
+import app.findbest.vip.project.model.ProjectInfoModel
 import org.jetbrains.anko.*
 import org.jetbrains.anko.support.v4.UI
 import org.jetbrains.anko.support.v4.dip
+import java.text.SimpleDateFormat
+import java.util.*
+import kotlin.collections.ArrayList
 
 class ProjectDemandDetails: Fragment() {
 
@@ -23,12 +28,208 @@ class ProjectDemandDetails: Fragment() {
         }
     }
 
+    private lateinit var projectName: TextView //项目名称
+    private lateinit var commitAtDate: TextView //截稿日期
+    private lateinit var userBounty: TextView //个人单价
+    private lateinit var margin: TextView //总金额
+    private lateinit var payCurrency: TextView //结算币种
+    private lateinit var entityCount: TextView //原画数量
+    private lateinit var bountyFirst: TextView //满意
+    private lateinit var bountySecond: TextView //非常满意
+    private lateinit var bountyThrid: TextView //超越期待
+    private lateinit var bountyForth: TextView //惊为天人
+    private lateinit var category: TextView //稿件类型
+    private lateinit var style: TextView //风格
+    private lateinit var size: TextView //规格
+    private lateinit var testing: TextView //试稿要求
+    private lateinit var publicity: TextView //公开权限
+    private lateinit var color: TextView //颜色模式
+    private lateinit var format: TextView //稿件格式
+    private lateinit var conceptionParent: LinearLayout
+    private lateinit var conception: TextView //稿件构思
+    private lateinit var supplementParent	: LinearLayout
+    private lateinit var supplement	: TextView //补充内容
+    private lateinit var samplesParent: LinearLayout
+    private lateinit var samples: ArrayList<String> //参考图例
+    private lateinit var stages: LinearLayout// 项目阶段
+    private lateinit var isLast	: LinearLayout //是否是最后阶段，是-隐藏，否-显示
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         return createV()
+    }
+
+    @SuppressLint("SetTextI18n")
+    fun setInfomation(model: ProjectInfoModel){
+        //项目名称
+        projectName.text = model.name
+
+        //截稿日期
+        commitAtDate.text = longToString(model.commitAt)
+
+        //个人单价
+        userBounty.text = model.userBounty
+
+        //总金额
+        margin.text = model.margin
+
+        //结算币种
+        payCurrency.text = model.payCurrency["name"].asString
+
+        //原画数量
+        entityCount.text = model.entityCount.toString()
+
+        val bonuses = model.bonuses.asJsonArray
+        //满意
+        bountyFirst.text = bonuses[0].asJsonObject["bounty"].asString
+
+        //非常满意
+        bountySecond.text = bonuses[1].asJsonObject["bounty"].asString
+
+        //超越期待
+        bountyThrid.text = bonuses[2].asJsonObject["bounty"].asString
+
+        //惊为天人
+        bountyForth.text = bonuses[3].asJsonObject["bounty"].asString
+
+        //稿件类型
+        category.text = model.category
+
+        var styleText = ""
+//        model.styles.forEach {
+//            styleText = "$styleText ${it.toString().trim()}"
+//        }
+        for (index in 0 until model.styles.size()){
+            styleText = if (index == 0){
+                model.styles[index].asString.trim()
+            }else{
+                "$styleText ${model.styles[index].asString.trim()}"
+            }
+        }
+        //风格
+        style.text = styleText
+
+        //规格
+        size.text = model.size
+
+        //试稿要求
+        testing.text = when(model.testing){
+            3 -> "无需试稿"
+            6 -> "有偿试稿"
+            9 -> "无偿试稿"
+            else -> "获取错误"
+        }
+
+        //公开权限
+        publicity.text = when(model.publicity){
+            0 -> "不公开"
+            1 -> "只允许个人"
+            2 -> "只允许公司"
+            3 -> "允许个人和公司"
+            else -> "获取错误"
+        }
+
+        //颜色模式
+        color.text = when(model.color){
+            3 -> "RGB"
+            6 -> "CMYK"
+            12 -> "不限"
+            else -> "获取错误"
+        }
+
+        //稿件格式
+        format.text = when(model.format){
+            3 -> "PSD"
+            6 -> "JPEG"
+            9 -> "PNG"
+            12 -> "其他格式"
+            else -> "获取错误"
+        }
+
+        //稿件构思
+        if(model.conception.isNullOrBlank()){
+            conceptionParent.visibility = LinearLayout.GONE
+        }else{
+            conception.text = model.conception
+        }
+
+        //补充内容
+        if(model.supplement.isNullOrBlank()){
+            supplementParent.visibility = LinearLayout.GONE
+        }else{
+            supplement.text = model.supplement
+        }
+
+        //参考图例
+        val images = arrayListOf<String>()
+        model.samples.forEach {
+            val item = it.asJsonObject
+            images.add(item["url"].asString)
+        }
+        if(images.size==0){
+            samplesParent.visibility = LinearLayout.GONE
+        }
+
+        val stepList = arrayListOf("2 草稿验收","3 线稿验收","4 上色验收")
+        val stepPercent = arrayListOf("草稿","线稿","上色")
+        for(index in 0 until model.stages.size()){
+            val item = model.stages[index].asJsonObject
+
+            val view = UI {
+                linearLayout {
+                    orientation = LinearLayout.VERTICAL
+                    linearLayout {
+                        imageView {
+                            imageResource = R.mipmap.project_stage_scale
+                        }.lparams(dip(8), dip(8)) {
+                            gravity = Gravity.CENTER_VERTICAL
+                            leftMargin = dip(3.5f)
+                        }
+                        textView {
+                            text = "${stepPercent[index]}${item["step"]}%"
+                            textSize = 13f
+                            textColor = Color.parseColor("#FF666666")
+                        }.lparams {
+                            leftMargin = dip(10)
+                        }
+                    }.lparams(wrapContent, dip(20))
+                    linearLayout {
+                        backgroundResource = R.mipmap.dotted_line
+                    }.lparams(dip(1), wrapContent) {
+                        leftMargin = dip(7)
+                    }
+                    linearLayout {
+                        imageView {
+                            imageResource = R.mipmap.project_stage
+                        }.lparams(dip(15), dip(15)) {
+                            gravity = Gravity.CENTER_VERTICAL
+                        }
+                        textView {
+                            text = stepList[index]
+                            textSize = 15f
+                            textColor = Color.parseColor("#FF444444")
+                        }.lparams {
+                            leftMargin = dip(10)
+                        }
+                    }.lparams(wrapContent, dip(20))
+                    if(!item["last"].asBoolean){
+                        linearLayout {
+                            backgroundResource = R.mipmap.dotted_line
+                        }.lparams(dip(1), wrapContent) {
+                            leftMargin = dip(7)
+                        }
+                    }
+                }
+            }.view
+            stages.addView(view)
+
+        }
+//        //是否是最后阶段，是-隐藏，否-显示
+//        isLast
+
     }
 
     @SuppressLint("SetTextI18n")
@@ -40,545 +241,549 @@ class ProjectDemandDetails: Fragment() {
                     linearLayout{
                         orientation = LinearLayout.VERTICAL
                         /**
+                         * 项目名字
+                         */
+                        linearLayout {
+                            orientation = LinearLayout.VERTICAL
+                            linearLayout {
+                                projectName = textView {
+                                    textSize = 21f
+                                    textColor = Color.parseColor("#FF202020")
+                                }.lparams {
+                                    leftMargin = dip(15)
+                                    gravity = Gravity.CENTER_VERTICAL
+                                }
+                            }.lparams(matchParent, dip(70))
+                            linearLayout {
+                                backgroundColor = Color.parseColor("#FFF6F6F6")
+                            }.lparams(matchParent, dip(5))
+                        }
+                        /**
                          * 制作费用
                          */
                         linearLayout {
-                            backgroundResource = R.drawable.ffe4e4e4_bottom_line
-                            textView {
-                                text = "制作费用"
-                                textSize = 17f
-                                textColor = Color.parseColor("#FF444444")
-                            }.lparams{
-                                gravity = Gravity.CENTER_VERTICAL
-                            }
-                        }.lparams(matchParent,dip(55)){
-                            leftMargin = dip(15)
-                            rightMargin = dip(15)
-                        }
-                        relativeLayout {
+                            orientation = LinearLayout.VERTICAL
                             linearLayout {
-                                orientation = LinearLayout.HORIZONTAL
-                                verticalLayout {
-                                    textView {
-                                        text = "截稿日期"
-                                        textSize = 14f
-                                        textColor = Color.parseColor("#FF999999")
-                                    }.lparams{
-                                        topMargin = dip(15)
-                                    }
-                                    textView {
-                                        text = "总金额"
-                                        textSize = 14f
-                                        textColor = Color.parseColor("#FF999999")
-                                    }.lparams{
-                                        topMargin = dip(15)
-                                    }
-                                    textView {
-                                        text = "结算币种"
-                                        textSize = 14f
-                                        textColor = Color.parseColor("#FF999999")
-                                    }.lparams{
-                                        topMargin = dip(15)
-                                        bottomMargin = dip(15)
-                                    }
+                                backgroundResource = R.drawable.ffe4e4e4_bottom_line
+                                textView {
+                                    text = "制作费用"
+                                    textSize = 17f
+                                    textColor = Color.parseColor("#FF444444")
+                                }.lparams {
+                                    gravity = Gravity.CENTER_VERTICAL
                                 }
-                                verticalLayout {
-                                    textView {
-                                        text = "2019-11-22"
-                                        textSize = 14f
-                                        textColor = Color.parseColor("#FF444444")
-                                    }.lparams{
-                                        topMargin = dip(15)
+                            }.lparams(matchParent, dip(55)) {
+                                leftMargin = dip(15)
+                                rightMargin = dip(15)
+                            }
+                            relativeLayout {
+                                linearLayout {
+                                    orientation = LinearLayout.HORIZONTAL
+                                    verticalLayout {
+                                        textView {
+                                            text = "截稿日期"
+                                            textSize = 14f
+                                            textColor = Color.parseColor("#FF999999")
+                                        }.lparams {
+                                            topMargin = dip(15)
+                                        }
+                                        textView {
+                                            text = "个人单价"
+                                            textSize = 14f
+                                            textColor = Color.parseColor("#FF999999")
+                                        }.lparams {
+                                            topMargin = dip(15)
+                                        }
+                                        textView {
+                                            text = "总金额"
+                                            textSize = 14f
+                                            textColor = Color.parseColor("#FF999999")
+                                        }.lparams {
+                                            topMargin = dip(15)
+                                            bottomMargin = dip(15)
+                                        }
                                     }
-                                    textView {
-                                        text = "¥ 8000.00"
-                                        textSize = 14f
-                                        textColor = Color.parseColor("#FF444444")
-                                    }.lparams{
-                                        topMargin = dip(15)
+                                    verticalLayout {
+                                        commitAtDate = textView {
+                                            textSize = 14f
+                                            textColor = Color.parseColor("#FF444444")
+                                        }.lparams {
+                                            topMargin = dip(15)
+                                        }
+                                        userBounty = textView {
+                                            textSize = 14f
+                                            textColor = Color.parseColor("#FF444444")
+                                        }.lparams {
+                                            topMargin = dip(15)
+                                        }
+                                        margin = textView {
+                                            textSize = 14f
+                                            textColor = Color.parseColor("#FF444444")
+                                        }.lparams {
+                                            topMargin = dip(15)
+                                            bottomMargin = dip(15)
+                                        }
+                                    }.lparams {
+                                        leftMargin = dip(12)
                                     }
-                                    textView {
-                                        text = "人民币"
-                                        textSize = 14f
-                                        textColor = Color.parseColor("#FF444444")
-                                    }.lparams{
-                                        topMargin = dip(15)
-                                        bottomMargin = dip(15)
-                                    }
-                                }.lparams{
-                                    leftMargin = dip(12)
+                                }.lparams(wrapContent, matchParent) {
+                                    alignParentLeft()
                                 }
-                            }.lparams(wrapContent, matchParent){
-                                alignParentLeft()
+                                linearLayout {
+                                    orientation = LinearLayout.HORIZONTAL
+                                    verticalLayout {
+                                        textView {
+                                            text = "结算币种"
+                                            textSize = 14f
+                                            textColor = Color.parseColor("#FF999999")
+                                        }.lparams {
+                                            topMargin = dip(15)
+                                        }
+                                        textView {
+                                            text = "原画数量"
+                                            textSize = 14f
+                                            textColor = Color.parseColor("#FF999999")
+                                        }.lparams {
+                                            topMargin = dip(15)
+                                        }
+                                    }
+                                    verticalLayout {
+                                        payCurrency = textView {
+                                            textSize = 14f
+                                            textColor = Color.parseColor("#FF444444")
+                                        }.lparams {
+                                            topMargin = dip(15)
+                                        }
+                                        entityCount = textView {
+                                            textSize = 14f
+                                            textColor = Color.parseColor("#FF444444")
+                                        }.lparams {
+                                            topMargin = dip(15)
+                                        }
+                                    }.lparams {
+                                        leftMargin = dip(12)
+                                    }
+                                }.lparams(wrapContent, matchParent) {
+                                    alignParentRight()
+                                }
+                            }.lparams(matchParent, wrapContent) {
+                                leftMargin = dip(15)
+                                rightMargin = dip(15)
                             }
                             linearLayout {
-                                orientation = LinearLayout.HORIZONTAL
-                                verticalLayout {
-                                    textView {
-                                        text = "原画数量"
-                                        textSize = 14f
-                                        textColor = Color.parseColor("#FF999999")
-                                    }.lparams{
-                                        topMargin = dip(15)
-                                    }
-                                    textView {
-                                        text = "个人单价"
-                                        textSize = 14f
-                                        textColor = Color.parseColor("#FF999999")
-                                    }.lparams{
-                                        topMargin = dip(15)
-                                    }
-                                    textView {
-                                        text = "源泉税率"
-                                        textSize = 14f
-                                        textColor = Color.parseColor("#FF999999")
-                                    }.lparams{
-                                        topMargin = dip(15)
-                                        bottomMargin = dip(15)
-                                    }
-                                }
-                                verticalLayout {
-                                    textView {
-                                        text = "8"
-                                        textSize = 14f
-                                        textColor = Color.parseColor("#FF444444")
-                                    }.lparams{
-                                        topMargin = dip(15)
-                                    }
-                                    textView {
-                                        text = "¥ 800.00"
-                                        textSize = 14f
-                                        textColor = Color.parseColor("#FF444444")
-                                    }.lparams{
-                                        topMargin = dip(15)
-                                    }
-                                    textView {
-                                        text = "15%"
-                                        textSize = 14f
-                                        textColor = Color.parseColor("#FF444444")
-                                    }.lparams{
-                                        topMargin = dip(15)
-                                        bottomMargin = dip(15)
-                                    }
-                                }.lparams{
-                                    leftMargin = dip(12)
-                                }
-                            }.lparams(wrapContent, matchParent){
-                                alignParentRight()
-                            }
-                        }.lparams(matchParent, wrapContent){
-                            leftMargin = dip(15)
-                            rightMargin = dip(15)
+                                backgroundColor = Color.parseColor("#FFF6F6F6")
+                            }.lparams(matchParent, dip(5))
                         }
-                        linearLayout {
-                            backgroundColor = Color.parseColor("#FFF6F6F6")
-                        }.lparams(matchParent,dip(5))
-
                         /**
                          * 评价奖金
                          */
                         linearLayout {
-                            backgroundResource = R.drawable.ffe4e4e4_bottom_line
-                            textView {
-                                text = "制作费用"
-                                textSize = 17f
-                                textColor = Color.parseColor("#FF444444")
-                            }.lparams{
-                                gravity = Gravity.CENTER_VERTICAL
-                            }
-                        }.lparams(matchParent,dip(55)){
-                            leftMargin = dip(15)
-                            rightMargin = dip(15)
-                        }
-                        relativeLayout {
+                            orientation = LinearLayout.VERTICAL
                             linearLayout {
-                                orientation = LinearLayout.HORIZONTAL
-                                verticalLayout {
-                                    textView {
-                                        text = "满意"
-                                        textSize = 14f
-                                        textColor = Color.parseColor("#FF999999")
-                                    }.lparams{
-                                        topMargin = dip(15)
-                                    }
-                                    textView {
-                                        text = "超越期待"
-                                        textSize = 14f
-                                        textColor = Color.parseColor("#FF999999")
-                                    }.lparams{
-                                        topMargin = dip(15)
-                                        bottomMargin = dip(15)
-                                    }
+                                backgroundResource = R.drawable.ffe4e4e4_bottom_line
+                                textView {
+                                    text = "制作费用"
+                                    textSize = 17f
+                                    textColor = Color.parseColor("#FF444444")
+                                }.lparams {
+                                    gravity = Gravity.CENTER_VERTICAL
                                 }
-                                verticalLayout {
-                                    textView {
-                                        text = "100"
-                                        textSize = 14f
-                                        textColor = Color.parseColor("#FF444444")
-                                    }.lparams{
-                                        topMargin = dip(15)
+                            }.lparams(matchParent, dip(55)) {
+                                leftMargin = dip(15)
+                                rightMargin = dip(15)
+                            }
+                            relativeLayout {
+                                linearLayout {
+                                    orientation = LinearLayout.HORIZONTAL
+                                    verticalLayout {
+                                        textView {
+                                            text = "满意"
+                                            textSize = 14f
+                                            textColor = Color.parseColor("#FF999999")
+                                        }.lparams {
+                                            topMargin = dip(15)
+                                        }
+                                        textView {
+                                            text = "超越期待"
+                                            textSize = 14f
+                                            textColor = Color.parseColor("#FF999999")
+                                        }.lparams {
+                                            topMargin = dip(15)
+                                            bottomMargin = dip(15)
+                                        }
                                     }
-                                    textView {
-                                        text = "400"
-                                        textSize = 14f
-                                        textColor = Color.parseColor("#FF444444")
-                                    }.lparams{
-                                        topMargin = dip(15)
-                                        bottomMargin = dip(15)
+                                    verticalLayout {
+                                        bountyFirst = textView {
+                                            textSize = 14f
+                                            textColor = Color.parseColor("#FF444444")
+                                        }.lparams {
+                                            topMargin = dip(15)
+                                        }
+                                        bountyThrid = textView {
+                                            textSize = 14f
+                                            textColor = Color.parseColor("#FF444444")
+                                        }.lparams {
+                                            topMargin = dip(15)
+                                            bottomMargin = dip(15)
+                                        }
+                                    }.lparams {
+                                        leftMargin = dip(12)
                                     }
-                                }.lparams{
-                                    leftMargin = dip(12)
+                                }.lparams(wrapContent, matchParent) {
+                                    alignParentLeft()
                                 }
-                            }.lparams(wrapContent, matchParent){
-                                alignParentLeft()
+                                linearLayout {
+                                    orientation = LinearLayout.HORIZONTAL
+                                    verticalLayout {
+                                        textView {
+                                            text = "非常满意"
+                                            textSize = 14f
+                                            textColor = Color.parseColor("#FF999999")
+                                        }.lparams {
+                                            topMargin = dip(15)
+                                        }
+                                        textView {
+                                            text = "惊为天人"
+                                            textSize = 14f
+                                            textColor = Color.parseColor("#FF999999")
+                                        }.lparams {
+                                            topMargin = dip(15)
+                                            bottomMargin = dip(15)
+                                        }
+                                    }.lparams {
+                                        topMargin
+                                    }
+                                    verticalLayout {
+                                        bountySecond = textView {
+                                            textSize = 14f
+                                            textColor = Color.parseColor("#FF444444")
+                                        }.lparams {
+                                            topMargin = dip(15)
+                                        }
+                                        bountyForth = textView {
+                                            textSize = 14f
+                                            textColor = Color.parseColor("#FF444444")
+                                        }.lparams {
+                                            topMargin = dip(15)
+                                            bottomMargin = dip(15)
+                                        }
+                                    }.lparams {
+                                        leftMargin = dip(12)
+                                    }
+                                }.lparams(wrapContent, matchParent) {
+                                    alignParentRight()
+                                }
+                            }.lparams(matchParent, wrapContent) {
+                                leftMargin = dip(15)
+                                rightMargin = dip(15)
                             }
                             linearLayout {
-                                orientation = LinearLayout.HORIZONTAL
-                                verticalLayout {
-                                    textView {
-                                        text = "非常满意"
-                                        textSize = 14f
-                                        textColor = Color.parseColor("#FF999999")
-                                    }.lparams{
-                                        topMargin = dip(15)
-                                    }
-                                    textView {
-                                        text = "惊为天人"
-                                        textSize = 14f
-                                        textColor = Color.parseColor("#FF999999")
-                                    }.lparams{
-                                        topMargin = dip(15)
-                                        bottomMargin = dip(15)
-                                    }
-                                }.lparams{
-                                    topMargin
-                                }
-                                verticalLayout {
-                                    textView {
-                                        text = "200"
-                                        textSize = 14f
-                                        textColor = Color.parseColor("#FF444444")
-                                    }.lparams{
-                                        topMargin = dip(15)
-                                    }
-                                    textView {
-                                        text = "800"
-                                        textSize = 14f
-                                        textColor = Color.parseColor("#FF444444")
-                                    }.lparams{
-                                        topMargin = dip(15)
-                                        bottomMargin = dip(15)
-                                    }
-                                }.lparams{
-                                    leftMargin = dip(12)
-                                }
-                            }.lparams(wrapContent, matchParent){
-                                alignParentRight()
-                            }
-                        }.lparams(matchParent, wrapContent){
-                            leftMargin = dip(15)
-                            rightMargin = dip(15)
+                                backgroundColor = Color.parseColor("#FFF6F6F6")
+                            }.lparams(matchParent, dip(5))
                         }
-                        linearLayout {
-                            backgroundColor = Color.parseColor("#FFF6F6F6")
-                        }.lparams(matchParent,dip(5))
-
                         /**
                          * 需求详情
                          */
                         linearLayout {
-                            backgroundResource = R.drawable.ffe4e4e4_bottom_line
-                            textView {
-                                text = "需求详情"
-                                textSize = 17f
-                                textColor = Color.parseColor("#FF444444")
-                            }.lparams{
-                                gravity = Gravity.CENTER_VERTICAL
-                            }
-                        }.lparams(matchParent,dip(55)){
-                            leftMargin = dip(15)
-                            rightMargin = dip(15)
-                        }
-                        relativeLayout {
+                            orientation = LinearLayout.VERTICAL
                             linearLayout {
-                                orientation = LinearLayout.HORIZONTAL
-                                verticalLayout {
-                                    textView {
-                                        text = "稿件类型"
-                                        textSize = 14f
-                                        textColor = Color.parseColor("#FF999999")
-                                    }.lparams{
-                                        topMargin = dip(15)
-                                    }
-                                    textView {
-                                        text = "风格"
-                                        textSize = 14f
-                                        textColor = Color.parseColor("#FF999999")
-                                    }.lparams{
-                                        topMargin = dip(15)
-                                    }
-                                    textView {
-                                        text = "规格"
-                                        textSize = 14f
-                                        textColor = Color.parseColor("#FF999999")
-                                    }.lparams{
-                                        topMargin = dip(15)
-                                    }
-                                    textView {
-                                        text = "试稿要求"
-                                        textSize = 14f
-                                        textColor = Color.parseColor("#FF999999")
-                                    }.lparams{
-                                        topMargin = dip(15)
-                                    }
-                                    textView {
-                                        text = "公开权限"
-                                        textSize = 14f
-                                        textColor = Color.parseColor("#FF999999")
-                                    }.lparams{
-                                        topMargin = dip(15)
-                                    }
-                                    textView {
-                                        text = "颜色模式"
-                                        textSize = 14f
-                                        textColor = Color.parseColor("#FF999999")
-                                    }.lparams{
-                                        topMargin = dip(15)
-                                    }
-                                    textView {
-                                        text = "稿件格式"
-                                        textSize = 14f
-                                        textColor = Color.parseColor("#FF999999")
-                                    }.lparams{
-                                        topMargin = dip(15)
-                                        bottomMargin = dip(15)
-                                    }
+                                backgroundResource = R.drawable.ffe4e4e4_bottom_line
+                                textView {
+                                    text = "需求详情"
+                                    textSize = 17f
+                                    textColor = Color.parseColor("#FF444444")
+                                }.lparams {
+                                    gravity = Gravity.CENTER_VERTICAL
                                 }
-                                verticalLayout {
-                                    textView {
-                                        text = "儿童插画，擅长画儿童，童趣温馨细腻"
-                                        textSize = 14f
-                                        textColor = Color.parseColor("#FF444444")
-                                    }.lparams{
-                                        topMargin = dip(15)
+                            }.lparams(matchParent, dip(55)) {
+                                leftMargin = dip(15)
+                                rightMargin = dip(15)
+                            }
+                            relativeLayout {
+                                linearLayout {
+                                    orientation = LinearLayout.HORIZONTAL
+                                    verticalLayout {
+                                        textView {
+                                            text = "稿件类型"
+                                            textSize = 14f
+                                            textColor = Color.parseColor("#FF999999")
+                                        }.lparams {
+                                            topMargin = dip(15)
+                                        }
+                                        textView {
+                                            text = "风格"
+                                            textSize = 14f
+                                            textColor = Color.parseColor("#FF999999")
+                                        }.lparams {
+                                            topMargin = dip(15)
+                                        }
+                                        textView {
+                                            text = "规格"
+                                            textSize = 14f
+                                            textColor = Color.parseColor("#FF999999")
+                                        }.lparams {
+                                            topMargin = dip(15)
+                                        }
+                                        textView {
+                                            text = "试稿要求"
+                                            textSize = 14f
+                                            textColor = Color.parseColor("#FF999999")
+                                        }.lparams {
+                                            topMargin = dip(15)
+                                        }
+                                        textView {
+                                            text = "公开权限"
+                                            textSize = 14f
+                                            textColor = Color.parseColor("#FF999999")
+                                        }.lparams {
+                                            topMargin = dip(15)
+                                        }
+                                        textView {
+                                            text = "颜色模式"
+                                            textSize = 14f
+                                            textColor = Color.parseColor("#FF999999")
+                                        }.lparams {
+                                            topMargin = dip(15)
+                                        }
+                                        textView {
+                                            text = "稿件格式"
+                                            textSize = 14f
+                                            textColor = Color.parseColor("#FF999999")
+                                        }.lparams {
+                                            topMargin = dip(15)
+                                            bottomMargin = dip(15)
+                                        }
                                     }
-                                    textView {
-                                        text = "儿童插画"
-                                        textSize = 14f
-                                        textColor = Color.parseColor("#FF444444")
-                                    }.lparams{
-                                        topMargin = dip(15)
+                                    verticalLayout {
+                                        category = textView {
+                                            textSize = 14f
+                                            textColor = Color.parseColor("#FF444444")
+                                        }.lparams {
+                                            topMargin = dip(15)
+                                        }
+                                        style = textView {
+                                            textSize = 14f
+                                            textColor = Color.parseColor("#FF444444")
+                                        }.lparams {
+                                            topMargin = dip(15)
+                                        }
+                                        size = textView {
+                                            textSize = 14f
+                                            textColor = Color.parseColor("#FF444444")
+                                        }.lparams {
+                                            topMargin = dip(15)
+                                        }
+                                        testing = textView {
+                                            textSize = 14f
+                                            textColor = Color.parseColor("#FF444444")
+                                        }.lparams {
+                                            topMargin = dip(15)
+                                        }
+                                        publicity = textView {
+                                            textSize = 14f
+                                            textColor = Color.parseColor("#FF444444")
+                                        }.lparams {
+                                            topMargin = dip(15)
+                                        }
+                                        color = textView {
+                                            textSize = 14f
+                                            textColor = Color.parseColor("#FF444444")
+                                        }.lparams {
+                                            topMargin = dip(15)
+                                        }
+                                        format = textView {
+                                            textSize = 14f
+                                            textColor = Color.parseColor("#FF444444")
+                                        }.lparams {
+                                            topMargin = dip(15)
+                                            bottomMargin = dip(15)
+                                        }
+                                    }.lparams {
+                                        leftMargin = dip(12)
                                     }
-                                    textView {
-                                        text = "1920*1080 px"
-                                        textSize = 14f
-                                        textColor = Color.parseColor("#FF444444")
-                                    }.lparams{
-                                        topMargin = dip(15)
-                                    }
-                                    textView {
-                                        text = "不需要试稿"
-                                        textSize = 14f
-                                        textColor = Color.parseColor("#FF444444")
-                                    }.lparams{
-                                        topMargin = dip(15)
-                                    }
-                                    textView {
-                                        text = "可公开"
-                                        textSize = 14f
-                                        textColor = Color.parseColor("#FF444444")
-                                    }.lparams{
-                                        topMargin = dip(15)
-                                    }
-                                    textView {
-                                        text = "RGB"
-                                        textSize = 14f
-                                        textColor = Color.parseColor("#FF444444")
-                                    }.lparams{
-                                        topMargin = dip(15)
-                                    }
-                                    textView {
-                                        text = "PSD"
-                                        textSize = 14f
-                                        textColor = Color.parseColor("#FF444444")
-                                    }.lparams{
-                                        topMargin = dip(15)
-                                        bottomMargin = dip(15)
-                                    }
-                                }.lparams{
-                                    leftMargin = dip(12)
-                                }
-                            }.lparams(wrapContent, matchParent)
-                        }.lparams(matchParent, wrapContent){
-                            leftMargin = dip(15)
-                            rightMargin = dip(15)
+                                }.lparams(wrapContent, matchParent)
+                            }.lparams(matchParent, wrapContent) {
+                                leftMargin = dip(15)
+                                rightMargin = dip(15)
+                            }
+                            linearLayout {
+                                backgroundColor = Color.parseColor("#FFF6F6F6")
+                            }.lparams(matchParent, dip(5))
                         }
-                        linearLayout {
-                            backgroundColor = Color.parseColor("#FFF6F6F6")
-                        }.lparams(matchParent,dip(5))
-
                         /**
                          * 稿件构思
                          */
-                        linearLayout {
-                            backgroundResource = R.drawable.ffe4e4e4_bottom_line
-                            textView {
-                                text = "稿件构思"
-                                textSize = 17f
-                                textColor = Color.parseColor("#FF444444")
-                            }.lparams{
-                                gravity = Gravity.CENTER_VERTICAL
+                        conceptionParent = linearLayout {
+                            orientation = LinearLayout.VERTICAL
+                            linearLayout {
+                                backgroundResource = R.drawable.ffe4e4e4_bottom_line
+                                textView {
+                                    text = "稿件构思"
+                                    textSize = 17f
+                                    textColor = Color.parseColor("#FF444444")
+                                }.lparams {
+                                    gravity = Gravity.CENTER_VERTICAL
+                                }
+                            }.lparams(matchParent, dip(55)) {
+                                leftMargin = dip(15)
+                                rightMargin = dip(15)
                             }
-                        }.lparams(matchParent,dip(55)){
-                            leftMargin = dip(15)
-                            rightMargin = dip(15)
-                        }
-                        relativeLayout {
-                            textView {
-                                text = "需要单色线条稿18张以内，封面插图1张，用于外国儿童文学作品的封面和内插。" +
-                                        "封面图价格单独计算。上面的报价是内文插图价格。"
-                                textSize = 14f
-                                textColor = Color.parseColor("#FF444444")
-                            }.lparams{
-                                centerVertically()
-                                topMargin = dip(15)
-                                bottomMargin = dip(20)
+                            relativeLayout {
+                                conception = textView {
+                                    textSize = 14f
+                                    textColor = Color.parseColor("#FF444444")
+                                }.lparams {
+                                    centerVertically()
+                                    topMargin = dip(15)
+                                    bottomMargin = dip(20)
+                                }
+                            }.lparams(matchParent, wrapContent) {
+                                leftMargin = dip(15)
+                                rightMargin = dip(15)
                             }
-                        }.lparams(matchParent, wrapContent){
-                            leftMargin = dip(15)
-                            rightMargin = dip(15)
+                            linearLayout {
+                                backgroundColor = Color.parseColor("#FFF6F6F6")
+                            }.lparams(matchParent, dip(5))
                         }
-                        linearLayout {
-                            backgroundColor = Color.parseColor("#FFF6F6F6")
-                        }.lparams(matchParent,dip(5))
-
                         /**
                          * 补充内容
                          */
-                        linearLayout {
-                            backgroundResource = R.drawable.ffe4e4e4_bottom_line
-                            textView {
-                                text = "补充内容"
-                                textSize = 17f
-                                textColor = Color.parseColor("#FF444444")
-                            }.lparams{
-                                gravity = Gravity.CENTER_VERTICAL
+                        supplementParent = linearLayout {
+                            orientation = LinearLayout.VERTICAL
+                            linearLayout {
+                                backgroundResource = R.drawable.ffe4e4e4_bottom_line
+                                textView {
+                                    text = "补充内容"
+                                    textSize = 17f
+                                    textColor = Color.parseColor("#FF444444")
+                                }.lparams {
+                                    gravity = Gravity.CENTER_VERTICAL
+                                }
+                            }.lparams(matchParent, dip(55)) {
+                                leftMargin = dip(15)
+                                rightMargin = dip(15)
                             }
-                        }.lparams(matchParent,dip(55)){
-                            leftMargin = dip(15)
-                            rightMargin = dip(15)
-                        }
-                        relativeLayout {
-                            textView {
-                                text = "图书的目标读者为8-13岁儿童。人物形象较多，包括10岁左右的男孩女孩，" +
-                                        "成年男人，老年男人、老年女人。擅长儿童插画和人物形象的插画师优先。"
-                                textSize = 14f
-                                textColor = Color.parseColor("#FF444444")
-                            }.lparams{
-                                centerVertically()
-                                topMargin = dip(15)
-                                bottomMargin = dip(20)
+                            relativeLayout {
+                                supplement = textView {
+                                    textSize = 14f
+                                    textColor = Color.parseColor("#FF444444")
+                                }.lparams {
+                                    centerVertically()
+                                    topMargin = dip(15)
+                                    bottomMargin = dip(20)
+                                }
+                            }.lparams(matchParent, wrapContent) {
+                                leftMargin = dip(15)
+                                rightMargin = dip(15)
                             }
-                        }.lparams(matchParent, wrapContent){
-                            leftMargin = dip(15)
-                            rightMargin = dip(15)
+                            linearLayout {
+                                backgroundColor = Color.parseColor("#FFF6F6F6")
+                            }.lparams(matchParent, dip(5))
                         }
-                        linearLayout {
-                            backgroundColor = Color.parseColor("#FFF6F6F6")
-                        }.lparams(matchParent,dip(5))
-
                         /**
                          * 参考图例
                          */
-                        linearLayout {
-                            backgroundResource = R.drawable.ffe4e4e4_bottom_line
-                            textView {
-                                text = "补充内容"
-                                textSize = 17f
-                                textColor = Color.parseColor("#FF444444")
-                            }.lparams{
-                                gravity = Gravity.CENTER_VERTICAL
+                        samplesParent = linearLayout {
+                            orientation = LinearLayout.VERTICAL
+                            linearLayout {
+                                backgroundResource = R.drawable.ffe4e4e4_bottom_line
+                                textView {
+                                    text = "参考图例"
+                                    textSize = 17f
+                                    textColor = Color.parseColor("#FF444444")
+                                }.lparams{
+                                    gravity = Gravity.CENTER_VERTICAL
+                                }
+                            }.lparams(matchParent,dip(55)){
+                                leftMargin = dip(15)
+                                rightMargin = dip(15)
                             }
-                        }.lparams(matchParent,dip(55)){
-                            leftMargin = dip(15)
-                            rightMargin = dip(15)
-                        }
-                        verticalLayout {
-                            textView {
-                                text = "图书的目标读者为8-13岁儿童。人物形象较多，包括10岁左右的男孩女孩，" +
-                                        "成年男人，老年男人、老年女人。擅长儿童插画和人物形象的插画师优先。"
-                                textSize = 14f
-                                textColor = Color.parseColor("#FF444444")
-                            }.lparams{
-                                topMargin = dip(15)
-                            }
-                            horizontalScrollView {
-                                linearLayout {
-                                    for (index in 0..4){
-                                        imageView {
-                                            imageResource = R.mipmap.test_pic
-                                        }.lparams(wrapContent, matchParent)
-                                    }
-                                }.lparams(matchParent, matchParent)
-                            }.lparams(matchParent,dip(75)){
-                                topMargin = dip(15)
+                            verticalLayout {
+                                horizontalScrollView {
+                                    linearLayout {
+                                    }.lparams(matchParent, matchParent)
+                                }.lparams(matchParent,dip(75)){
+                                    topMargin = dip(15)
+                                }
+                            }.lparams(matchParent, wrapContent){
+                                leftMargin = dip(15)
+                                rightMargin = dip(15)
                                 bottomMargin = dip(20)
                             }
-                        }.lparams(matchParent, wrapContent){
-                            leftMargin = dip(15)
-                            rightMargin = dip(15)
+                            linearLayout {
+                                backgroundColor = Color.parseColor("#FFF6F6F6")
+                            }.lparams(matchParent,dip(5))
                         }
-                        linearLayout {
-                            backgroundColor = Color.parseColor("#FFF6F6F6")
-                        }.lparams(matchParent,dip(5))
-
                         /**
                          * 各阶段费用占比及交稿时间
                          */
                         linearLayout {
-                            backgroundResource = R.drawable.ffe4e4e4_bottom_line
-                            textView {
-                                text = "各阶段费用占比及交稿时间"
-                                textSize = 17f
-                                textColor = Color.parseColor("#FF444444")
-                            }.lparams{
-                                gravity = Gravity.CENTER_VERTICAL
+                            orientation = LinearLayout.VERTICAL
+                            linearLayout {
+                                backgroundResource = R.drawable.ffe4e4e4_bottom_line
+                                textView {
+                                    text = "各阶段费用占比及交稿时间"
+                                    textSize = 17f
+                                    textColor = Color.parseColor("#FF444444")
+                                }.lparams {
+                                    gravity = Gravity.CENTER_VERTICAL
+                                }
+                            }.lparams(matchParent, dip(55)) {
+                                leftMargin = dip(15)
+                                rightMargin = dip(15)
                             }
-                        }.lparams(matchParent,dip(55)){
-                            leftMargin = dip(15)
-                            rightMargin = dip(15)
-                        }
-                        verticalLayout {
-                            textView {
-                                text = "图书的目标读者为8-13岁儿童。人物形象较多，包括10岁左右的男孩女孩，" +
-                                        "成年男人，老年男人、老年女人。擅长儿童插画和人物形象的插画师优先。"
-                                textSize = 14f
-                                textColor = Color.parseColor("#FF444444")
-                            }.lparams{
-                                topMargin = dip(15)
-                            }
-                            horizontalScrollView {
+                            stages = verticalLayout {
+                                gravity = Gravity.CENTER_HORIZONTAL
+                                /**
+                                 * 1 开始制作
+                                 */
                                 linearLayout {
-                                    for (index in 0..4){
+                                    orientation = LinearLayout.VERTICAL
+                                    linearLayout {
                                         imageView {
-                                            imageResource = R.mipmap.test_pic
-                                        }.lparams(wrapContent, matchParent)
+                                            imageResource = R.mipmap.project_stage
+                                        }.lparams(dip(15), dip(15)) {
+                                            gravity = Gravity.CENTER_VERTICAL
+                                        }
+                                        textView {
+                                            text = "1 开始制作"
+                                            textSize = 15f
+                                            textColor = Color.parseColor("#FF444444")
+                                        }.lparams {
+                                            leftMargin = dip(10)
+                                        }
+                                    }.lparams(wrapContent, dip(20))
+                                    linearLayout {
+                                        backgroundResource = R.mipmap.dotted_line
+                                    }.lparams(dip(1), wrapContent) {
+                                        leftMargin = dip(7)
                                     }
-                                }.lparams(matchParent, matchParent)
-                            }.lparams(matchParent,dip(75)){
-                                topMargin = dip(15)
-                                bottomMargin = dip(20)
+                                }
+                                /**
+                                 * 2 草稿验收
+                                 */
+                                /**
+                                 * 3 线稿验收
+                                 */
+                                /**
+                                 * 4 上色验收
+                                 */
+                            }.lparams(matchParent, wrapContent) {
+                                setMargins(dip(15), dip(15), dip(15), dip(20))
                             }
-                        }.lparams(matchParent, wrapContent){
-                            leftMargin = dip(15)
-                            rightMargin = dip(15)
+                            linearLayout {
+                                backgroundColor = Color.parseColor("#FFF6F6F6")
+                            }.lparams(matchParent, dip(5))
                         }
-                        linearLayout {
-                            backgroundColor = Color.parseColor("#FFF6F6F6")
-                        }.lparams(matchParent,dip(5))
                     }.lparams(matchParent, matchParent)
                 }
             }
         }.view
+    }
+
+    // 类型转换
+    @SuppressLint("SimpleDateFormat")
+    private fun longToString(long: Long): String {
+        return SimpleDateFormat("yyyy/MM/dd").format(Date(long))
     }
 }

@@ -108,31 +108,53 @@
             android:theme="@style/AppTheme.NoActionBar">
         </activity>
 
+        <!-- 项目-应征项目 -->
+        <activity android:name=".project.view.EnlistProject"
+            android:windowSoftInputMode="adjustPan"
+            android:theme="@style/AppTheme.NoActionBar">
+        </activity>
+
+        <!-- 项目-选择项目图片 -->
+        <activity android:name=".project.view.RecentProject"
+            android:windowSoftInputMode="adjustPan"
+            android:theme="@style/AppTheme.NoActionBar">
+        </activity>
+
+        <!-- 画师-搜索 -->
+        <activity android:name=".painter.view.PainterSearchActivity"
+            android:windowSoftInputMode="adjustPan"
+            android:theme="@style/AppTheme.NoActionBar">
+        </activity>
+
+        <!-- 画师-画师详情 -->
+        <activity android:name=".painter.view.PainterInfomation"
+            android:windowSoftInputMode="adjustPan"
+            android:theme="@style/AppTheme.NoActionBar">
+        </activity>
+        
+        <!--意见反馈页面-->
+        <activity android:name="app.findbest.vip.individual.view.Feedback"
+            android:windowSoftInputMode="adjustUnspecified|adjustResize|stateHidden"
+            android:theme="@style/AppTheme.NoActionBar">
+        </activity>
+
+        <!--使用帮助页面-->
+        <activity android:name="app.findbest.vip.individual.view.Help"
+            android:windowSoftInputMode="adjustUnspecified|adjustResize|stateHidden"
+            android:theme="@style/AppTheme.NoActionBar">
+        </activity>
+
         <activity android:name=".instance.activity.InstanceActivity"
             android:windowSoftInputMode="adjustPan"
             android:launchMode="standard"
             android:theme="@style/AppTheme.NoActionBar">
         </activity>
 
-        <!--意见反馈页面-->
-        <activity android:name=".individual.artist.view.activity.Feedback"
-            android:windowSoftInputMode="adjustUnspecified|adjustResize|stateHidden"
-            android:theme="@style/AppTheme.NoActionBar">
-        </activity>
-
-        <!--使用帮助页面-->
-        <activity android:name=".individual.artist.view.activity.Help"
-            android:windowSoftInputMode="adjustUnspecified|adjustResize|stateHidden"
-            android:theme="@style/AppTheme.NoActionBar">
-        </activity>
-
-
         <activity android:name="imui.jiguang.cn.imuisample.messages.MessageListActivity"
             android:windowSoftInputMode="adjustPan"
             android:launchMode="standard"
             android:theme="@style/AppTheme.NoActionBar">
         </activity>
-
 
 
 

@@ -5,7 +5,7 @@ import android.view.ViewManager
 import androidx.recyclerview.widget.RecyclerView
 import cn.jiguang.imui.view.RoundImageView
 import cn.jiguang.imui.view.ShapeImageView
-import com.biao.pulltorefresh.PtrLayout
+import com.github.chrisbanes.photoview.PhotoView
 import com.google.android.material.tabs.TabLayout
 import com.scwang.smart.refresh.layout.SmartRefreshLayout
 import org.jetbrains.anko.AnkoViewDslMarker
@@ -48,6 +48,10 @@ inline fun ViewManager.tabLayout(init: (@AnkoViewDslMarker TabLayout).() -> Unit
 
 inline fun ViewManager.smartRefreshLayout(init: (@AnkoViewDslMarker SmartRefreshLayout).() -> Unit): SmartRefreshLayout {
     return ankoView({ ctx: Context -> SmartRefreshLayout(ctx) }, theme = 0) { init() }
+}
+
+inline fun ViewManager.photoView(init: (@AnkoViewDslMarker PhotoView).() -> Unit): PhotoView {
+    return ankoView({ ctx: Context -> PhotoView(ctx) }, theme = 0) { init() }
 }
 //inline fun ViewManager.ptrLayout(
 //    ctx: Context = AnkoInternals.getContext(this),

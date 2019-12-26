@@ -9,6 +9,7 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import app.findbest.vip.R
+import app.findbest.vip.painter.fragment.PainterScreenType
 import app.findbest.vip.utils.FlowLayout
 import app.findbest.vip.utils.flowLayout
 import org.jetbrains.anko.*
@@ -17,16 +18,23 @@ import org.jetbrains.anko.support.v4.toast
 
 class ProjectScreenStyle : Fragment() {
 
+    interface ScreenAll {
+        fun clickMore()
+    }
+
     companion object {
         fun newInstance(
+            screenAll: ScreenAll,
             styleList: MutableList<String>
         ): ProjectScreenStyle {
             val fragment = ProjectScreenStyle()
+            fragment.screenAll = screenAll
             fragment.mStyleList = styleList
             return fragment
         }
     }
 
+    private lateinit var screenAll: ScreenAll
     private var styleFlow: FlowLayout? = null
     private lateinit var mStyleList: MutableList<String>
     private var styleSomeView: LinearLayout? = null
@@ -150,7 +158,7 @@ class ProjectScreenStyle : Fragment() {
                         styleFlow?.addView(firstView)
                         styleFlow?.addView(view)
                     }
-                    mStyleList.size - 1 -> {
+                    9 -> {
                         styleFlow?.addView(view)
                         val lastView = UI {
                             linearLayout {
@@ -183,6 +191,7 @@ class ProjectScreenStyle : Fragment() {
                                             styleSomeView!!.backgroundColor =
                                                 Color.parseColor("#FFF8F8F8")
                                         }
+                                        screenAll.clickMore()
                                     }
                                 }.lparams(wrapContent, dip(30)) {
                                     leftMargin = dip(10)
@@ -192,7 +201,7 @@ class ProjectScreenStyle : Fragment() {
                         }.view
                         styleFlow?.addView(lastView)
                     }
-                    else -> {
+                    in 1..8 -> {
                         styleFlow?.addView(view)
                     }
                 }
@@ -213,5 +222,46 @@ class ProjectScreenStyle : Fragment() {
             return style.text.toString()
         }
         return ""
+    }
+
+    fun setMore() {
+        styleSomeView = null
+        styleFlow?.removeViewAt(11)
+        for (index in mStyleList.indices) {
+            val view = UI {
+                linearLayout {
+                    linearLayout {
+                        id = index + 1
+                        backgroundColor = Color.parseColor("#FFF8F8F8")
+                        textView {
+                            text = mStyleList[index]
+                            textSize = 12f
+                            textColor = Color.parseColor("#FF555555")
+                        }.lparams {
+                            setMargins(dip(10), dip(7), dip(10), dip(7))
+                        }
+                        setOnClickListener {
+                            if (styleSomeView != null) {
+                                if (styleSomeView!!.id != it.id) {
+                                    styleSomeView!!.backgroundColor = Color.parseColor("#FFF8F8F8")
+                                    styleSomeView = it as LinearLayout
+                                    styleSomeView!!.backgroundColor = Color.parseColor("#FFFF7C00")
+                                }
+                            } else {
+                                styleSomeView = it as LinearLayout
+                                styleSomeView!!.backgroundColor = Color.parseColor("#FFF8F8F8")
+                            }
+                            backgroundColor = Color.parseColor("#FFFF7C00")
+                        }
+                    }.lparams(wrapContent, dip(30)) {
+                        leftMargin = dip(10)
+                        topMargin = dip(10)
+                    }
+                }
+            }.view
+            if (index > 9) {
+                styleFlow?.addView(view)
+            }
+        }
     }
 }

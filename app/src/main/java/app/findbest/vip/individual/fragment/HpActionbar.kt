@@ -1,4 +1,4 @@
-package app.findbest.vip.individual.artist.view.fragment
+package app.findbest.vip.individual.fragment
 
 
 import android.content.Context
