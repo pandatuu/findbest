@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="18dp"
+        android:layout_marginRight="18dp">
+
+        <EditText
+            android:id="@+id/et_word"
+            android:layout_width="match_parent"
+            android:layout_height="230dp"
+            android:layout_marginTop="12dp"
+            android:background="@drawable/edit_number"
+            android:maxLength="200"
+            android:gravity="top"
+            android:paddingBottom="35dp"
+            android:paddingLeft="15dp"
+            android:paddingRight="15dp"
+            android:paddingTop="15dp"
+            android:textColor="#333333"
+            android:hint="请输入您要反馈的内容"
+            android:textSize="15sp" />
+
+        <TextView
+            android:id="@+id/tv_word_total"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@id/et_word"
+            android:layout_alignParentRight="true"
+            android:layout_marginBottom="10dp"
+            android:layout_marginRight="18dp"
+            android:text="/200"
+            android:textColor="#B5B5B5"
+            android:textSize="12sp" />
+
+        <TextView
+            android:id="@+id/tv_word_count"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@id/et_word"
+            android:layout_marginBottom="10dp"
+            android:layout_toLeftOf="@id/tv_word_total"
+            android:text="0"
+            android:textColor="#B5B5B5"
+            android:textSize="12sp" />
+
+    </RelativeLayout>
+
+</LinearLayout>

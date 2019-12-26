@@ -23,6 +23,7 @@ allprojects {
         mavenCentral()
         maven { url "file:/home/zjh/jitsi_repository" }
         maven { url 'https://dl.bintray.com/umsdk/release' }
+        maven { url 'https://jitpack.io' }
     }
 }
 

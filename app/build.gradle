@@ -136,6 +136,8 @@ dependencies {
     //聊天初始
     implementation 'com.neovisionaries:nv-websocket-client:2.8'
 
+    //图片缩放
+    implementation 'com.github.chrisbanes:PhotoView:2.3.0'
     implementation project(path: ':chatinput')
     implementation project(':messagelist')
 

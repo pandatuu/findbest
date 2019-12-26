@@ -13,7 +13,6 @@ import android.widget.RelativeLayout
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import app.findbest.vip.R
-import app.findbest.vip.project.fragment.ProjectMainList
 import app.findbest.vip.project.model.ProjectListModel
 import org.jetbrains.anko.*
 import java.text.SimpleDateFormat
@@ -27,7 +26,7 @@ class ProjectMainListAdapter(
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     interface ListAdapter{
-        fun oneClick()
+        fun oneClick(id: String)
     }
 
     private var mContext: Context = context
@@ -215,7 +214,7 @@ class ProjectMainListAdapter(
         }
         maxPrice.text = mDataSet[position].maxPrice.toString()
         rela.setOnClickListener {
-            listAdapter.oneClick()
+            listAdapter.oneClick(mDataSet[position].id)
         }
         //防止RecycleView数据刷新错乱
         h.setIsRecyclable(false)

@@ -12,7 +12,7 @@ import androidx.fragment.app.Fragment
 open class FragmentParent: Fragment() {
 
 
-    fun getStatusBarHeight(context: Context): Int {
+    open fun getStatusBarHeight(context: Context): Int {
         var result = 0
         val resourceId =
             context.getResources().getIdentifier("status_bar_height", "dimen", "android")

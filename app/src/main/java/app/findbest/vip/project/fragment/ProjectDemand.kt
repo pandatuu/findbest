@@ -1,5 +1,6 @@
 package app.findbest.vip.project.fragment
 
+import android.content.Context
 import android.graphics.Color
 import android.os.Bundle
 import android.view.Gravity
@@ -8,18 +9,43 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import androidx.fragment.app.Fragment
+import app.findbest.vip.R
+import app.findbest.vip.commonfrgmant.BackgroundFragment
+import app.findbest.vip.project.api.ProjectApi
+import app.findbest.vip.project.view.EnlistProject
+import app.findbest.vip.utils.MimeType
+import app.findbest.vip.utils.RetrofitUtils
+import com.alibaba.fastjson.JSON
+import io.reactivex.schedulers.Schedulers
+import kotlinx.coroutines.CoroutineStart
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.rx2.awaitSingle
+import okhttp3.RequestBody
 import org.jetbrains.anko.*
 import org.jetbrains.anko.support.v4.UI
-import org.jetbrains.anko.support.v4.dip
+import retrofit2.HttpException
 
-class ProjectDemand: Fragment() {
+class ProjectDemand : Fragment(), EnlistCheckTipsDialog.ButtomClick, BackgroundFragment.ClickBack {
 
-    companion object{
-        fun newInstance(): ProjectDemand{
+    companion object {
+        fun newInstance(context: Context, id: String): ProjectDemand {
             val fragment = ProjectDemand()
+            fragment.mContext = context
+            fragment.projectId = id
             return fragment
         }
     }
+
+    lateinit var mContext: Context
+    var demand: ProjectDemandDetails? = null
+    var projectId = ""
+    val mainId = 1
+
+    private var backgroundFragment: BackgroundFragment? = null
+    private var tipsDialog: EnlistCheckTipsDialog? = null
+
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -29,30 +55,132 @@ class ProjectDemand: Fragment() {
         return createV()
     }
 
+    override fun clickAll() {
+//        closeAlertDialog()
+    }
+
+    override fun click() {
+        closeAlertDialog()
+    }
+
     private fun createV(): View {
-        return UI {
+        val view = UI {
             linearLayout {
                 orientation = LinearLayout.VERTICAL
-                linearLayout {
-                    textView {
-                        text = "外国儿童文学小说插图+封面"
-                        textSize = 21f
-                        textColor = Color.parseColor("#FF202020")
-                    }.lparams{
-                        leftMargin = dip(15)
-                        gravity = Gravity.CENTER_VERTICAL
-                    }
-                }.lparams(matchParent,dip(70))
-                linearLayout {
-                    backgroundColor = Color.parseColor("#FFF6F6F6")
-                }.lparams(matchParent,dip(5))
                 val details = 2
                 frameLayout {
                     id = details
-                    val de = ProjectDemandDetails.newInstance()
-                    childFragmentManager.beginTransaction().add(details,de).commit()
-                }.lparams(matchParent, matchParent)
+                    demand = ProjectDemandDetails.newInstance()
+                    childFragmentManager.beginTransaction().add(details, demand!!).commit()
+                }.lparams(matchParent, dip(0)) {
+                    weight = 1f
+                    bottomMargin = dip(20)
+                }
+                button {
+                    backgroundResource = R.drawable.enable_around_button
+                    text = "我要应征"
+                    textSize = 16f
+                    textColor = Color.parseColor("#FFFFFFFF")
+                    setOnClickListener {
+                        GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
+                            getAppliesValidation(projectId)
+                        }
+                    }
+                }.lparams(dip(300), dip(50)) {
+                    gravity = Gravity.CENTER_HORIZONTAL
+                    bottomMargin = dip(30)
+                }
             }
         }.view
+        GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
+            getInfo(projectId)
+        }
+        return view
+    }
+
+
+    private suspend fun getInfo(id: String) {
+        try {
+            val retrofitUils =
+                RetrofitUtils(mContext, resources.getString(R.string.developmentUrl))
+            val it = retrofitUils.create(ProjectApi::class.java)
+                .getProjectInfoById(id, "zh")
+                .subscribeOn(Schedulers.io())
+                .awaitSingle()
+            if (it.code() in 200..299) {
+                val model = it.body()!!
+                demand?.setInfomation(model)
+            }
+        } catch (throwable: Throwable) {
+            if (throwable is HttpException) {
+                println(throwable.code())
+            }
+        }
+    }
+
+    private suspend fun getAppliesValidation(id: String) {
+        try {
+            val params = mapOf(
+                "projectId" to id
+            )
+            val userJson = JSON.toJSONString(params)
+            val body = RequestBody.create(MimeType.APPLICATION_JSON, userJson)
+            val retrofitUils =
+                RetrofitUtils(mContext, resources.getString(R.string.developmentUrl))
+            val it = retrofitUils.create(ProjectApi::class.java)
+                .getAppliesValidation(body)
+                .subscribeOn(Schedulers.io())
+                .awaitSingle()
+            if (it.code() in 200..299) {
+                val status = it.body()!!["status"].asInt
+                if (status == 0) {
+                    activity!!.startActivity<EnlistProject>("projectId" to id)
+                    activity!!.overridePendingTransition(R.anim.right_in, R.anim.left_out)
+                } else {
+                    openDialog(status)
+                }
+            }
+        } catch (throwable: Throwable) {
+            if (throwable is HttpException) {
+                println(throwable.code())
+            }
+        }
+    }
+
+    private fun openDialog(status: Int) {
+        val mTransaction = activity!!.supportFragmentManager.beginTransaction()
+
+        if (backgroundFragment == null) {
+            backgroundFragment = BackgroundFragment.newInstance(this@ProjectDemand)
+
+            mTransaction.add(mainId, backgroundFragment!!)
+        }
+
+        mTransaction.setCustomAnimations(R.anim.right_in, R.anim.right_in)
+
+        tipsDialog = EnlistCheckTipsDialog.newInstance(this@ProjectDemand, status)
+        mTransaction.add(mainId, tipsDialog!!)
+
+        mTransaction.commit()
+    }
+
+    private fun closeAlertDialog() {
+
+        val mTransaction = activity!!.supportFragmentManager.beginTransaction()
+        if (tipsDialog != null) {
+            mTransaction.setCustomAnimations(R.anim.right_out, R.anim.right_out)
+
+            mTransaction.remove(tipsDialog!!)
+            tipsDialog = null
+        }
+
+        if (backgroundFragment != null) {
+            mTransaction.setCustomAnimations(
+                R.anim.fade_in_out_a, R.anim.fade_in_out_a
+            )
+            mTransaction.remove(backgroundFragment!!)
+            backgroundFragment = null
+        }
+        mTransaction.commit()
     }
 }
