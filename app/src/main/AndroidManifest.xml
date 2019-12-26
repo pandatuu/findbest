@@ -114,6 +114,18 @@
             android:theme="@style/AppTheme.NoActionBar">
         </activity>
 
+        <!--意见反馈页面-->
+        <activity android:name=".individual.artist.view.activity.Feedback"
+            android:windowSoftInputMode="adjustUnspecified|adjustResize|stateHidden"
+            android:theme="@style/AppTheme.NoActionBar">
+        </activity>
+
+        <!--使用帮助页面-->
+        <activity android:name=".individual.artist.view.activity.Help"
+            android:windowSoftInputMode="adjustUnspecified|adjustResize|stateHidden"
+            android:theme="@style/AppTheme.NoActionBar">
+        </activity>
+
 
         <activity android:name="imui.jiguang.cn.imuisample.messages.MessageListActivity"
             android:windowSoftInputMode="adjustPan"

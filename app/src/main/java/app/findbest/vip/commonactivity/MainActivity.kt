@@ -3,14 +3,15 @@ package app.findbest.vip.commonactivity
 import android.content.Intent
 import android.os.Bundle
 import android.view.KeyEvent
-import android.view.View
+
 import android.widget.FrameLayout
 import android.widget.Toast
-import androidx.appcompat.app.AppCompatActivity
+
 import androidx.fragment.app.Fragment
-import app.findbest.vip.R
+
 import app.findbest.vip.commonfrgmant.BottomButton
 import app.findbest.vip.instance.fragment.InstanceDisplay
+import app.findbest.vip.instance.fragment.artist.Terminal
 import app.findbest.vip.message.fragment.MessageChatRecordFragment
 import app.findbest.vip.project.fragment.ProjectFragment
 import app.findbest.vip.utils.BaseActivity
@@ -123,12 +124,10 @@ class MainActivity : BaseActivity() {
                     .commit()
             }
             5 -> {
-
-
-
-
-
-
+                topFragment = Terminal.newInstance(this@MainActivity);
+                supportFragmentManager.beginTransaction()
+                    .replace(mainFrameLayout.id, topFragment)
+                    .commit()
             }
         }
     }
