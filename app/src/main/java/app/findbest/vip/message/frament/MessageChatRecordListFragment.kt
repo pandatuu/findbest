@@ -38,7 +38,6 @@ class MessageChatRecordListFragment : Fragment(){
 
     companion object {
 
-        lateinit var thisGroupArray:JSONArray
 
         fun newInstance(): MessageChatRecordListFragment {
             val fragment = MessageChatRecordListFragment()
@@ -103,19 +102,7 @@ class MessageChatRecordListFragment : Fragment(){
 
             intent.putExtra("position_id",item.lastPositionId)
 
-            for(i in 0..thisGroupArray.length()-1){
-                var array=thisGroupArray.get(i) as JSONArray
-                for(j in 0..array.length()-1){
-                    var json=array.getJSONObject(j)
-                    //传递组别,初始化组别分类的显示
-                    if(json.get("uid")==item.uid){
-
-                        println("groupIddddd-"+i)
-
-                        intent.putExtra("groupId",i%3)
-                    }
-                }
-            }
+  
 
             startActivity(intent)
             activity!!.overridePendingTransition(R.anim.right_in, R.anim.left_out)
@@ -123,8 +110,7 @@ class MessageChatRecordListFragment : Fragment(){
         recycler.setAdapter(adapter)
 
         setRecyclerAdapter(
-            MessageChatRecordFragment.chatRecordList,
-            MessageChatRecordFragment.groupArray
+            MessageChatRecordFragment.chatRecordList
         )
 
 
@@ -134,10 +120,9 @@ class MessageChatRecordListFragment : Fragment(){
     }
 
 
-    fun setRecyclerAdapter(chatRecordList: MutableList<ChatRecordModel>, groupArray: JSONArray){
+    fun setRecyclerAdapter(chatRecordList: MutableList<ChatRecordModel>){
         runOnUiThread(Runnable {
             adapter.setChatRecords(chatRecordList)
-            thisGroupArray=groupArray
         })
     }
 

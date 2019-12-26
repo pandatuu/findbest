@@ -33,8 +33,7 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 
-class MessageChatRecordFragment : Fragment(), MessageChatRecordActionBarFragment.ActionBarSearch,
-    MessageChatRecordSearchActionBarFragment.SendSearcherText,
+class MessageChatRecordFragment : Fragment(),
     MessageChatRecordFilterMenuFragment.FilterMenu {
 
     var mHandler = Handler()
@@ -50,47 +49,47 @@ class MessageChatRecordFragment : Fragment(), MessageChatRecordActionBarFragment
     }
 
     //取消 搜索框
-    override fun cancle() {
-
-        messageChatRecordListFragment.setRecyclerAdapter(chatRecordList, groupArray)
-
-
-        var mTransaction = childFragmentManager.beginTransaction()
-        messageChatRecordActionBarFragment = MessageChatRecordActionBarFragment.newInstance();
-        mTransaction.replace(actionBar.id, messageChatRecordActionBarFragment!!)
-        mTransaction.commit()
-    }
+//    override fun cancle() {
+//
+//        messageChatRecordListFragment.setRecyclerAdapter(chatRecordList, groupArray)
+//
+//
+//        var mTransaction = childFragmentManager.beginTransaction()
+//        messageChatRecordActionBarFragment = MessageChatRecordActionBarFragment.newInstance();
+//        mTransaction.replace(actionBar.id, messageChatRecordActionBarFragment!!)
+//        mTransaction.commit()
+//    }
 
     //搜索框输入的文字
-    override fun sendMessage(msg: String) {
-
-
-        var NewList: MutableList<ChatRecordModel> = mutableListOf()
-        for (item in chatRecordList) {
-            if (item.userName.contains(msg)) {
-                NewList.add(item)
-            }
-        }
-
-        messageChatRecordListFragment.setRecyclerAdapter(NewList, groupArray)
-
-    }
+//    override fun sendMessage(msg: String) {
+//
+//
+//        var NewList: MutableList<ChatRecordModel> = mutableListOf()
+//        for (item in chatRecordList) {
+//            if (item.userName.contains(msg)) {
+//                NewList.add(item)
+//            }
+//        }
+//
+//        messageChatRecordListFragment.setRecyclerAdapter(NewList, groupArray)
+//
+//    }
 
 
     //打开搜索框
-    override fun searchGotClick() {
-
-
-        var NewList: MutableList<ChatRecordModel> = mutableListOf()
-        messageChatRecordListFragment.setRecyclerAdapter(NewList, groupArray)
-
-
-        var mTransaction = childFragmentManager.beginTransaction()
-        messageChatRecordSearchActionBarFragment =
-            MessageChatRecordSearchActionBarFragment.newInstance();
-        mTransaction.replace(actionBar.id, messageChatRecordSearchActionBarFragment!!)
-        mTransaction.commit()
-    }
+//    override fun searchGotClick() {
+//
+//
+//        var NewList: MutableList<ChatRecordModel> = mutableListOf()
+//        messageChatRecordListFragment.setRecyclerAdapter(NewList, groupArray)
+//
+//
+//        var mTransaction = childFragmentManager.beginTransaction()
+//        messageChatRecordSearchActionBarFragment =
+//            MessageChatRecordSearchActionBarFragment.newInstance();
+//        mTransaction.replace(actionBar.id, messageChatRecordSearchActionBarFragment!!)
+//        mTransaction.commit()
+//    }
 
 
     lateinit var mainContainer: FrameLayout
@@ -119,48 +118,48 @@ class MessageChatRecordFragment : Fragment(), MessageChatRecordActionBarFragment
             if (type != null && type.equals("contactList")) {
 
 
-                var array: JSONArray = json.getJSONObject("content").getJSONArray("groups")
+//                var array: JSONArray = json.getJSONObject("content").getJSONArray("groups")
 
-                var members: JSONArray = JSONArray()
-                if (isFirstGotGroup) {
-                    groupArray = JSONArray()
-                }
-                for (i in 0..array.length() - 1) {
-                    var item = array.getJSONObject(i)
-
-                    var id = item.getInt("id")
-                    var name = item.getString("name")
-                    if (name == "全部") {
-                        name = "全て"
-                    }
-                    if (name != null && !name.equals("約束済み")) {
-                        map.put(name, id.toInt())
-                    }
-
-                    if (id == groupId) {
-
-                        println("现在groupId")
-                        println(groupId)
-
-                        members = item.getJSONArray("members")
-                    }
-                    if (isFirstGotGroup) {
-                        if (id == 4) {
-                            var group1 = item.getJSONArray("members")
-                            groupArray.put(group1)
-                        }
-                        if (id == 5) {
-                            var group2 = item.getJSONArray("members")
-                            groupArray.put(group2)
-                        }
-                        if (id == 6) {
-                            var group3 = item.getJSONArray("members")
-                            groupArray.put(group3)
-                        }
-
-
-                    }
-                }
+                var members: JSONArray = json.getJSONObject("content").getJSONArray("members")
+//                if (isFirstGotGroup) {
+//                    groupArray = JSONArray()
+//                }
+//                for (i in 0..array.length() - 1) {
+//                    var item = array.getJSONObject(i)
+//
+//                    var id = item.getInt("id")
+//                    var name = item.getString("name")
+//                    if (name == "全部") {
+//                        name = "全て"
+//                    }
+//                    if (name != null && !name.equals("約束済み")) {
+//                        map.put(name, id.toInt())
+//                    }
+//
+//                    if (id == groupId) {
+//
+//                        println("现在groupId")
+//                        println(groupId)
+//
+//                        members = item.getJSONArray("members")
+//                    }
+//                    if (isFirstGotGroup) {
+//                        if (id == 4) {
+//                            var group1 = item.getJSONArray("members")
+//                            groupArray.put(group1)
+//                        }
+//                        if (id == 5) {
+//                            var group2 = item.getJSONArray("members")
+//                            groupArray.put(group2)
+//                        }
+//                        if (id == 6) {
+//                            var group3 = item.getJSONArray("members")
+//                            groupArray.put(group3)
+//                        }
+//
+//
+//                    }
+//                }
                 isFirstGotGroup = true
                 chatRecordList = mutableListOf()
                 for (i in 0..members.length() - 1) {
@@ -186,8 +185,7 @@ class MessageChatRecordFragment : Fragment(), MessageChatRecordActionBarFragment
                     var msg = ""
                     //对方ID
                     var uid = item["uid"].toString()
-                    //对方职位
-                    var position = item["position"].toString()
+
                     //对方头像
                     var avatar = item["avatar"].toString()
                     if (avatar != null) {
@@ -199,13 +197,7 @@ class MessageChatRecordFragment : Fragment(), MessageChatRecordActionBarFragment
 
                     //公司
                     var companyName = item["companyName"].toString()
-                    // 显示的职位的id
-                    var lastPositionId = item.getString("lastPositionId")
-                    if (lastPositionId == null || lastPositionId.equals("")) {
-                        println("联系人信息中没有lastPositionId")
-                        lastPositionId = ""
-                    }
-
+                    var  createdTime=""
                     if (lastMsg == null) {
                     } else {
                         var content = lastMsg.getJSONObject("content")
@@ -217,25 +209,27 @@ class MessageChatRecordFragment : Fragment(), MessageChatRecordActionBarFragment
                         } else {
                             msg = content.getString("msg")
                         }
+                        createdTime =sdf.format(Date(lastMsg!!.get("created").toString().toLong()))
+                        if(year  !=  createdTime.substring(0,4)){
+
+                        }else{
+                            createdTime=createdTime.substring(5,11)
+                        }
+
                     }
 
-                    var  createdTime=sdf.format(Date(lastMsg!!.get("created").toString().toLong()))
 
-                    if(year  !=  createdTime.substring(0,4)){
 
-                    }else{
-                        createdTime=createdTime.substring(5,11)
-                    }
 
                     var ChatRecordModel = ChatRecordModel(
                         uid,
                         name,
-                        position,
+                        "",
                         avatar,
                         msg,
                         unreads,
                         companyName,
-                        lastPositionId,
+                        "",
                         createdTime
                     )
                     chatRecordList.add(ChatRecordModel)
@@ -243,11 +237,11 @@ class MessageChatRecordFragment : Fragment(), MessageChatRecordActionBarFragment
 
             }
             println("xxxxxxxxxxxxxxx")
+            println(chatRecordList)
 
-            println(groupArray)
 
 
-            messageChatRecordListFragment.setRecyclerAdapter(chatRecordList, groupArray)
+            messageChatRecordListFragment.setRecyclerAdapter(chatRecordList)
 
         }
     }
@@ -302,7 +296,7 @@ class MessageChatRecordFragment : Fragment(), MessageChatRecordActionBarFragment
 
     companion object {
         var chatRecordList: MutableList<ChatRecordModel> = mutableListOf()
-        var groupArray: JSONArray = JSONArray()
+//        var groupArray: JSONArray = JSONArray()
         var map: MutableMap<String, Int> = mutableMapOf()
         lateinit var json: JSONObject
         var groupId = 0;

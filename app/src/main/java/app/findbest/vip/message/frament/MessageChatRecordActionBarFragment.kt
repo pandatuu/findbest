@@ -17,7 +17,6 @@ class MessageChatRecordActionBarFragment : Fragment() {
     var toolbar1: Toolbar?=null
     private var mContext: Context? = null
 
-    private lateinit var actionBarSelecter: ActionBarSearch
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -37,11 +36,6 @@ class MessageChatRecordActionBarFragment : Fragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val fragmentView=createView()
 
-        if(parentFragment==null){
-            actionBarSelecter =  activity as ActionBarSearch
-        }else{
-            actionBarSelecter =  parentFragment as ActionBarSearch
-        }
 
         return fragmentView
     }
@@ -146,10 +140,6 @@ class MessageChatRecordActionBarFragment : Fragment() {
     }
 
 
-    interface  ActionBarSearch{
-
-        fun  searchGotClick()
-    }
 
 }
 

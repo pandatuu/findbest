@@ -51,7 +51,7 @@ class App : Application() {
 
     var sdf= SimpleDateFormat("yyyy年MM月dd日")
     var year = sdf.format(Date()).substring(0,4)
-
+    private var myId = ""
 
     private val defaultPreferences: SharedPreferences
         get() = PreferenceManager.getDefaultSharedPreferences(this)
@@ -92,34 +92,33 @@ class App : Application() {
 
         mRecieveMessageListener = null
 
-        socket = Socket("${getString(R.string.imUrl)}sk/")
+        socket = Socket("${getString(R.string.imUrl)}")
 
         println("初始化消息系统")
 
         val token = getMyToken()
         println("token:$token")
 
-
         if (socket.isconnected()) {
-            println("初始化消息系统")
+            println("断开连接,初始化消息系统")
             socket.disconnect()
         }
         socket.setListener(object : BasicListener {
             override fun onConnected(socket: Socket, headers: Map<String, List<String>>) {
                 println("socket链接成功")
 
-                val obj = JSONObject("{\"token\":\"eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJzdWIiOiI5MTExMjQ0Yy02NmY3LTQ4MDUtODBiZC1kNTEwMzQ3M2Q5MjIiLCJ1c2VybmFtZSI6Ijg2MTU4ODIzMzUwMDciLCJ0aW1lc3RhbXAiOjE1NzQ5OTI3NTU2MDcsImRldmljZVR5cGUiOiJBTkRST0lEIiwiaWF0IjoxNTc0OTkyNzU1fQ.F4LpzLJoBwNY6-IcIBx_f3O1drgupyRMUMkVJOYvUPXllrGh4WVdAOZ3w91DTV8yKi4QbElS15ICt4qSBoNs1XWS0ucCcIy7kWVTf6LUo-jdG1l-U6wlB5ALVUm2CKJiYgXgY5F9piuzN8coSsTe84p_HdLgNM-eMjzM8h_ojNx_govWHKOke_QqIuha13kUwf48QSKAq8xrvL1nM6dB175_8_8Zc22a_8TGAhbBV17gmwEDExCz9-H1eK4uGX1yFhvTdDhnzKu3Qx9T2usvqKyjrIxXajwkkFyQoKRqIenCT7m0m_lKeGdDdUrixqyIGAltJeDFEg1kjRXLgriaGQ\"}")
-
+                //val obj = JSONObject("{\"token\":\"eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJzdWIiOiI5MTExMjQ0Yy02NmY3LTQ4MDUtODBiZC1kNTEwMzQ3M2Q5MjIiLCJ1c2VybmFtZSI6Ijg2MTU4ODIzMzUwMDciLCJ0aW1lc3RhbXAiOjE1NzQ5OTI3NTU2MDcsImRldmljZVR5cGUiOiJBTkRST0lEIiwiaWF0IjoxNTc0OTkyNzU1fQ.F4LpzLJoBwNY6-IcIBx_f3O1drgupyRMUMkVJOYvUPXllrGh4WVdAOZ3w91DTV8yKi4QbElS15ICt4qSBoNs1XWS0ucCcIy7kWVTf6LUo-jdG1l-U6wlB5ALVUm2CKJiYgXgY5F9piuzN8coSsTe84p_HdLgNM-eMjzM8h_ojNx_govWHKOke_QqIuha13kUwf48QSKAq8xrvL1nM6dB175_8_8Zc22a_8TGAhbBV17gmwEDExCz9-H1eK4uGX1yFhvTdDhnzKu3Qx9T2usvqKyjrIxXajwkkFyQoKRqIenCT7m0m_lKeGdDdUrixqyIGAltJeDFEg1kjRXLgriaGQ\"}")
+                val obj = JSONObject("{\"token\":\"$token\"}")
 
                 socket.emit("login", obj) { eventName, error, data ->
 
-                    println("Got message for :$eventName error is :$error data is :$data")
+                    println("login接口返回信息:Got message for :$eventName error is :$error data is :$data")
                     //订阅通道
+
+
+                    var json=JSONObject(data.toString())
+                    myId=json.getString("uid")
                     val uId = getMyId()
-
-
-
-
 
                     messageLoginState=true
 
@@ -132,7 +131,7 @@ class App : Application() {
 //                        toast.show()
                     }
 
-                    channelRecieve = socket.createChannel("p_${uId.replace("\"", "")}")
+                    channelRecieve = socket.createChannel("f_${uId.replace("\"", "")}")
 
 
                     channelRecieve.subscribe { channelName, error, _ ->
@@ -261,145 +260,105 @@ class App : Application() {
 
     //解析联系人列表数据
     fun getContactList(s: String) {
+        try {
+            println("sssssssssssssssssssssssssssssssssssssssss")
 
-        var chatRecordList: MutableList<ChatRecordModel> = mutableListOf()
-        var groupArray: JSONArray = JSONArray()
-        var map: MutableMap<String, Int> = mutableMapOf()
-        var json: JSONObject = JSONObject(s)
-        var isFirstGotGroup = true
+            var chatRecordList: MutableList<ChatRecordModel> = mutableListOf()
+            var map: MutableMap<String, Int> = mutableMapOf()
+            var json: JSONObject = JSONObject(s)
 
 
-        var array: JSONArray =
-            json.getJSONObject("content").getJSONArray("groups")
+            var members: JSONArray =
+                json.getJSONObject("content").getJSONArray("members")
 
-        var members: JSONArray = JSONArray()
-        if (isFirstGotGroup) {
-            groupArray = JSONArray()
-        }
-        for (i in 0..array.length() - 1) {
-            var item = array.getJSONObject(i)
-            var id = item.getInt("id")
-            var name = item.getString("name")
-            if (name == "全部") {
-                name = "全て"
-            }
-            if (name != null && !name.equals("約束済み")) {
-                map.put(name, id.toInt())
-            }
-
-            if (id == MessageChatRecordFragment.groupId) {
-                println("现在groupId")
-
-                members = item.getJSONArray("members")
-            }
-
-            if (isFirstGotGroup) {
-                if (id == 4) {
-                    var group1 = item.getJSONArray("members")
-                    groupArray.put(group1)
-                }
-                if (id == 5) {
-                    var group2 = item.getJSONArray("members")
-                    groupArray.put(group2)
-                }
-                if (id == 6) {
-                    var group3 = item.getJSONArray("members")
-                    groupArray.put(group3)
+            chatRecordList = mutableListOf()
+            for (i in 0..members.length() - 1) {
+                var item = members.getJSONObject(i)
+                println(item)
+                //未读条数
+                var unreads = item.getInt("unreads").toString()
+                //对方名
+                var name = item["name"].toString()
+                //最后一条消息
+                var lastMsg: JSONObject? = null
+                if (item.has("lastMsg") && !item.getString("lastMsg").equals("") && !item.getString(
+                        "lastMsg"
+                    ).equals(
+                        "null"
+                    )
+                ) {
+                    lastMsg = (item.getJSONObject("lastMsg"))
                 }
 
+                var msg = ""
+                //对方ID
+                var uid = item["uid"].toString()
 
-            }
-        }
-        isFirstGotGroup = true
-        chatRecordList = mutableListOf()
-        for (i in 0..members.length() - 1) {
-            var item = members.getJSONObject(i)
-            println(item)
-            //未读条数
-            var unreads = item.getInt("unreads").toString()
-            //对方名
-            var name = item["name"].toString()
-            //最后一条消息
-            var lastMsg: JSONObject? = null
-            if (item.has("lastMsg") && !item.getString("lastMsg").equals("") && !item.getString(
-                    "lastMsg"
-                ).equals(
-                    "null"
-                )
-            ) {
-                lastMsg = (item.getJSONObject("lastMsg"))
-            }
-
-            var msg = ""
-            //对方ID
-            var uid = item["uid"].toString()
-            //对方职位
-            var position = item["position"].toString()
-            //对方头像
-            var avatar = item["avatar"].toString()
-            if (avatar != null) {
-                var arra = avatar.split(";")
-                if (arra != null && arra.size > 0) {
-                    avatar = arra[0]
+                //对方头像
+                var avatar = item["avatar"].toString()
+                if (avatar != null) {
+                    var arra = avatar.split(";")
+                    if (arra != null && arra.size > 0) {
+                        avatar = arra[0]
+                    }
                 }
-            }
 
-            //公司
-            var companyName = item["companyName"].toString()
-            // 显示的职位的id
-            var lastPositionId = item.getString("lastPositionId")
-            if (lastPositionId == null) {
-                println("联系人信息中没有lastPositionId")
-                lastPositionId = ""
-            }
+                //公司
+                var companyName = item["companyName"].toString()
 
-            if (lastMsg == null) {
-            } else {
-                var content = lastMsg.getJSONObject("content")
-                var contentType = content.getString("type")
-                if (contentType.equals("image")) {
-                    msg = "[图片]"
-                } else if (contentType.equals("voice")) {
-                    msg = "[语音]"
+                var createdTime=""
+                if (lastMsg == null) {
                 } else {
-                    msg = content.getString("msg")
+                    var content = lastMsg.getJSONObject("content")
+                    var contentType = content.getString("type")
+                    if (contentType.equals("image")) {
+                        msg = "[图片]"
+                    } else if (contentType.equals("voice")) {
+                        msg = "[语音]"
+                    } else {
+                        msg = content.getString("msg")
+                    }
+                    createdTime =sdf.format(Date(lastMsg!!.get("created").toString().toLong()))
+                    if(year  !=  createdTime.substring(0,4)){
+
+                    }else{
+                        createdTime=createdTime.substring(5,11)
+                    }
+
+
                 }
+
+
+                var ChatRecordModel = ChatRecordModel(
+                    uid,
+                    name,
+                    "",
+                    avatar,
+                    msg,
+                    unreads,
+                    companyName,
+                    "",
+                    createdTime
+                )
+                chatRecordList.add(ChatRecordModel)
             }
 
-            var createdTime = sdf.format(Date(lastMsg!!.get("created").toString().toLong()))
-            if(year  !=  createdTime.substring(0,4)){
-            }else{
-                createdTime=createdTime.substring(5,11)
+
+            MessageChatRecordFragment.chatRecordList = chatRecordList
+            MessageChatRecordFragment.map = map
+            MessageChatRecordFragment.json = json
+
+
+
+            if (messageChatRecordListFragment != null) {
+                messageChatRecordListFragment?.setRecyclerAdapter(
+                    chatRecordList
+                )
             }
 
-            var ChatRecordModel = ChatRecordModel(
-                uid,
-                name,
-                position,
-                avatar,
-                msg,
-                unreads,
-                companyName,
-                lastPositionId,
-                createdTime
-            )
-            chatRecordList.add(ChatRecordModel)
-        }
-
-
-        MessageChatRecordFragment.chatRecordList = chatRecordList
-        MessageChatRecordFragment.groupArray = groupArray
-        MessageChatRecordFragment.map = map
-        MessageChatRecordFragment.json = json
-
-
-        MessageChatRecordListFragment.thisGroupArray = groupArray
-
-        if (messageChatRecordListFragment != null) {
-            messageChatRecordListFragment?.setRecyclerAdapter(
-                chatRecordList,
-                groupArray
-            )
+            println("sssssssssssssssssssssssssssssssssssssssss")
+        }catch (e:Exception){
+            e.printStackTrace()
         }
     }
 
@@ -437,7 +396,9 @@ class App : Application() {
 
 
     fun getMyId(): String {
-        return defaultPreferences.getString("id", "9111244c-66f7-4805-80bd-d5103473d922") ?: "9111244c-66f7-4805-80bd-d5103473d922"
+        //9111244c-66f7-4805-80bd-d5103473d922
+        return this.myId
+        //return defaultPreferences.getString("id", "") ?: ""
     }
 
 
@@ -449,7 +410,7 @@ class App : Application() {
 
 
     fun getMyLogoUrl(): String {
-        var avatarURL = defaultPreferences.getString("avatarURL", "https://findbest-test-1258431445.cos.ap-chengdu.myqcloud.com/61967e90-b4b5-478b-94db-19b4ab338261.jpg") ?: ""
+        var avatarURL = defaultPreferences.getString("avatarURL", "") ?: ""
         val arra = avatarURL.split(",")
         if (arra.isNotEmpty()) {
             avatarURL = arra[0]

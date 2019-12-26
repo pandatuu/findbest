@@ -11,12 +11,10 @@ import org.jetbrains.anko.*
 import com.umeng.message.PushAgent
 
 
-class MessageChatActivity : AppCompatActivity(), MessageChatRecordActionBarFragment.ActionBarSearch
+class MessageChatActivity : AppCompatActivity()
 
 {
-    override fun searchGotClick() {
 
-    }
 
     lateinit var mainContainer:FrameLayout
     lateinit var actionBar:FrameLayout

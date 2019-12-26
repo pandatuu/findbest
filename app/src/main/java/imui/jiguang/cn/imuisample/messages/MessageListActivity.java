@@ -1837,7 +1837,7 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
                 //视频聊天的代码
 
 
-                Toast toast = Toast.makeText(getApplicationContext(), "视频", Toast.LENGTH_SHORT);
+                Toast toast = Toast.makeText(getApplicationContext(), "这里是视频", Toast.LENGTH_SHORT);
                 toast.setGravity(Gravity.CENTER, 0, 0);
                 toast.show();
 
@@ -2065,7 +2065,7 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
             final String thisMessageId = message.getMsgId();
 
             if (channelSend == null && HIS_ID != null && !HIS_ID.trim().equals("")) {
-                channelSend = socket.createChannel("p_" + HIS_ID);
+                channelSend = socket.createChannel("f_" + HIS_ID);
             }
 
 
@@ -2414,7 +2414,6 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
         String company_id = intent.getStringExtra("company_id");
         //设置他的logo
         hisLogo = intent.getStringExtra("hislogo");
-        hisLogo = "https://findbest-test-1258431445.cos.ap-chengdu.myqcloud.com/97a3823c-fd8f-468b-842a-d418d49ae3b8.jpg";
         authorization = "Bearer " + application.getMyToken();
         MY_ID = application.getMyId();
         HIS_ID = hisId;
@@ -2460,7 +2459,7 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
         });
 
         if (HIS_ID != null && !HIS_ID.trim().equals("")) {
-            channelSend = socket.createChannel("p_" + HIS_ID);
+            channelSend = socket.createChannel("f_" + HIS_ID);
         } else {
             Toast toast1 = Toast.makeText(getApplicationContext(), "No ID", Toast.LENGTH_SHORT);
             toast1.setGravity(Gravity.CENTER, 0, 0);
@@ -2559,7 +2558,7 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
                         final MyMessage message_f = message;
 
                         if (channelSend == null && HIS_ID != null && !HIS_ID.trim().equals("")) {
-                            channelSend = socket.createChannel("p_" + HIS_ID);
+                            channelSend = socket.createChannel("f_" + HIS_ID);
                         }
 
 
@@ -2672,6 +2671,7 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
                         Request request = new Request.Builder()
                                 .url(thisContext.getString(R.string.storageUrl) + "api/v1/storage")
                                 .addHeader("Authorization", authorization)
+                                .addHeader("Content-Type", "multipart/form-data")
                                 .post(requestBody)
                                 .build();
 
@@ -2694,7 +2694,7 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
 
 
                             if (channelSend == null && HIS_ID != null && !HIS_ID.trim().equals("")) {
-                                channelSend = socket.createChannel("p_" + HIS_ID);
+                                channelSend = socket.createChannel("f_" + HIS_ID);
                             }
 
 
@@ -2732,7 +2732,12 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
                             });
 
                         } else {
+
                             System.out.println("发送图片请求失败");
+                            System.out.println(response.code());
+                            System.out.println(response.body().string());
+                            System.out.println(response.message());
+
                         }
                         response.close();
                     } catch (Exception e) {
@@ -2910,10 +2915,7 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
                                     if (msg.startsWith("TIME")) {
                                         //时间
 
-                                        System.out.println("asdasdasdasd");
 
-                                        System.out.println(msg);
-                                        System.out.println(msg.substring(4, msg.length()));
 
                                         String messageTimeString = sdf_show_year.format(new Date(Long.parseLong(msg.substring(4, msg.length()))));
 
@@ -3281,7 +3283,7 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
 //            mAdapter.addToStart(message_f, true);
 //
 //            if (channelSend == null && HIS_ID != null && !HIS_ID.trim().equals("")) {
-//                channelSend = socket.createChannel("p_" + HIS_ID);
+//                channelSend = socket.createChannel("f_" + HIS_ID);
 //            }
 //
 //
@@ -4354,7 +4356,7 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
     private void sendTimeBar(){
         Date now = new Date();
         //大于5分钟,显示时间定位消息
-        if (latestMessageTime == null || now.getTime() - latestMessageTime > 1000 * 60 * 1) {
+        if (latestMessageTime == null || now.getTime() - latestMessageTime > 1000 * 60 * 5) {
             sendSystemMessageToMyself("TIME" + now.getTime() + "");
         }
     }
