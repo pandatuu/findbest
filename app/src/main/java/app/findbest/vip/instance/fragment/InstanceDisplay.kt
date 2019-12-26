@@ -160,7 +160,7 @@ class InstanceDisplay : FragmentParent() {
                         }
 
                         textView {
-                            text = "案例"
+                            text = activity!!.getString(R.string.sample)
                             backgroundColor = Color.TRANSPARENT
                             gravity = Gravity.CENTER
                             textColor = Color.parseColor("#FF222222")

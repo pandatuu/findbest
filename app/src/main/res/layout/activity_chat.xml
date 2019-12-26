@@ -70,7 +70,7 @@
                         android:id="@+id/translateText"
                         android:layout_width="wrap_content"
                         android:layout_height="45dp"
-                        android:text="启用翻译"
+                        android:text="@string/use_translate"
                         android:textColor="#F87517"
                         android:textSize="16sp"
                         android:gravity="center"

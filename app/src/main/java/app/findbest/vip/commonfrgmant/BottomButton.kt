@@ -88,7 +88,7 @@ class BottomButton : Fragment() {
 
                             textView {
                                 textSize = 10f
-                                text = "项目"
+                                text = activity!!.getString(R.string.project_xiangmu)
                                 textColor = Color.parseColor("#FF666666")
                                 gravity = Gravity.CENTER
                             }.lparams() {
