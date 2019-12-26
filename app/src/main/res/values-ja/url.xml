@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+<!--    <string name="developmentUrl">http://192.168.2.200:4000/</string>-->
+    <string name="developmentUrl" translatable="false">http://192.168.2.200:3300/</string>
+
+    <string name="imUrl" translatable="false">https://im.skjob.jp/</string>
+    <string name="jitsiUrl" translatable="false">https://meet.skjob.jp/</string> <!-- https://jitsi.skjob.jp/-->
+    <string name="storageUrl" translatable="false">https://storage.skjob.jp/</string>
+
+</resources>

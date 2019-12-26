@@ -10,6 +10,13 @@ import cn.jiguang.imui.chatinput.model.FileItem;
  */
 public interface OnMenuClickListener {
 
+
+
+    //发送视频聊天
+    void videoChat();
+
+
+
     /**
      * Fires when send button is on click.
      *
