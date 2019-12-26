@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.RecyclerView
 import app.findbest.vip.R
 import app.findbest.vip.painter.adapter.PainterMainListAdapter
 import app.findbest.vip.painter.api.PainterApi
+import app.findbest.vip.painter.view.PainterInfomation
 import app.findbest.vip.utils.RetrofitUtils
 import app.findbest.vip.utils.recyclerView
 import app.findbest.vip.utils.smartRefreshLayout
@@ -32,14 +33,6 @@ import retrofit2.HttpException
 
 @Suppress("IMPLICIT_CAST_TO_ANY")
 class PainterPersonList : Fragment(), PainterMainListAdapter.ImageClick, BigImage2.ImageClick {
-    // 点击关闭图片
-    override fun clickclose() {
-        closeAlertDialog()
-    }
-    // 点击放大图片
-    override fun click(str: String) {
-        openDialog(str)
-    }
 
     companion object {
         fun newInstance(context: Context): PainterPersonList {
@@ -71,6 +64,21 @@ class PainterPersonList : Fragment(), PainterMainListAdapter.ImageClick, BigImag
         mWeight += mPerferences.getInt("painterSort",0)
         return createV()
     }
+
+    override fun jumpToInfo(id: String) {
+        activity!!.startActivity<PainterInfomation>("userId" to id)
+        activity!!.overridePendingTransition(R.anim.right_in, R.anim.left_out)
+    }
+
+    // 点击关闭图片
+    override fun clickclose() {
+        closeAlertDialog()
+    }
+    // 点击放大图片
+    override fun click(str: String) {
+        openDialog(str)
+    }
+
 
     private fun createV(): View {
         painterMain = PainterMainListAdapter(mContext,this@PainterPersonList)

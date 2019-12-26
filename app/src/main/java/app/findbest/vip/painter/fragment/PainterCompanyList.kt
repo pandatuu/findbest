@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.RecyclerView
 import app.findbest.vip.R
 import app.findbest.vip.painter.adapter.PainterMainListAdapter
 import app.findbest.vip.painter.api.PainterApi
+import app.findbest.vip.painter.view.PainterInfomation
 import app.findbest.vip.utils.RetrofitUtils
 import app.findbest.vip.utils.recyclerView
 import app.findbest.vip.utils.smartRefreshLayout
@@ -31,13 +32,6 @@ import org.jetbrains.anko.support.v4.UI
 import retrofit2.HttpException
 
 class PainterCompanyList : Fragment(), PainterMainListAdapter.ImageClick, BigImage2.ImageClick {
-    override fun click(str: String) {
-        openDialog(str)
-    }
-
-    override fun clickclose() {
-        closeAlertDialog()
-    }
 
     companion object {
         fun newInstance(context: Context): PainterCompanyList {
@@ -68,6 +62,19 @@ class PainterCompanyList : Fragment(), PainterMainListAdapter.ImageClick, BigIma
             PreferenceManager.getDefaultSharedPreferences(mContext)
         mWeight += mPerferences.getInt("painterSort",0)
         return createV()
+    }
+
+    override fun jumpToInfo(id: String) {
+        activity!!.startActivity<PainterInfomation>("userId" to id)
+        activity!!.overridePendingTransition(R.anim.right_in, R.anim.left_out)
+    }
+
+    override fun click(str: String) {
+        openDialog(str)
+    }
+
+    override fun clickclose() {
+        closeAlertDialog()
     }
 
     private fun createV(): View {

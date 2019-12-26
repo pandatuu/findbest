@@ -13,10 +13,7 @@ import app.findbest.vip.R
 import app.findbest.vip.painter.adapter.PainterMainListAdapter
 import app.findbest.vip.painter.api.PainterApi
 import app.findbest.vip.painter.fragment.BigImage2
-import app.findbest.vip.project.adapter.ProjectMainListAdapter
-import app.findbest.vip.project.api.ProjectApi
-import app.findbest.vip.project.model.ProjectListModel
-import app.findbest.vip.project.view.ProjectInformation
+import app.findbest.vip.painter.view.PainterInfomation
 import app.findbest.vip.utils.RetrofitUtils
 import app.findbest.vip.utils.recyclerView
 import app.findbest.vip.utils.smartRefreshLayout
@@ -33,8 +30,6 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.rx2.awaitSingle
 import org.jetbrains.anko.*
 import org.jetbrains.anko.support.v4.UI
-import org.jetbrains.anko.support.v4.startActivity
-import org.jetbrains.anko.support.v4.toast
 import retrofit2.HttpException
 
 class PainterSearchList : Fragment(), PainterMainListAdapter.ImageClick, BigImage2.ImageClick {
@@ -69,6 +64,10 @@ class PainterSearchList : Fragment(), PainterMainListAdapter.ImageClick, BigImag
         return createV()
     }
 
+    override fun jumpToInfo(id: String) {
+        activity!!.startActivity<PainterInfomation>("userId" to id)
+        activity!!.overridePendingTransition(R.anim.right_in, R.anim.left_out)
+    }
     // 点击关闭图片
     override fun clickclose() {
         closeAlertDialog()
