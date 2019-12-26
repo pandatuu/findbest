@@ -61,6 +61,8 @@
             android:src="@drawable/no_pic_show"
             android:padding="0dp"
             app:photoMessageRadius="8dp"
+            app:theWidth="200"
+
             />
 
         <cn.jiguang.imui.view.RoundImageView

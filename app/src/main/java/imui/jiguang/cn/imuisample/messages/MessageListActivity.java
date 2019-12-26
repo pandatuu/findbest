@@ -545,15 +545,19 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
                     if (!picType.equals("CIRCLE")) {
                         //   UploadPic.Companion.loadPicFromNet(string, avatarImageView);
 
-                        Glide.with(MessageListActivity.this)
-                                .load(string)
-                                .centerCrop()
-                                .placeholder(R.mipmap.no_pic_show)
-                                .into(avatarImageView);
+                        try {
+                            Glide.with(MessageListActivity.this)
+                                    .load(string)
+                                    .centerCrop()
+                                    .placeholder(R.mipmap.no_pic_show)
+                                    .into(avatarImageView);
+                        }catch (Exception e) {
+                            e.printStackTrace();
+                        }
 
 
                     } else {
-                        System.out.println("正方形");
+                        System.out.println("圆形");
                         System.out.println(string);
                         //   UploadPic.Companion.loadPicNormal(string, avatarImageView);
 
@@ -2346,7 +2350,7 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
                                     //系统消息没有头像
                                     //剔除系统消息
                                     message_recieve.setUserInfo(new DefaultUser("1", "", hisLogo));
-                                    message_recieve.setTimeString(new SimpleDateFormat("HH:mm", Locale.getDefault()).format(new Date()));
+                                   // message_recieve.setTimeString(new SimpleDateFormat("HH:mm", Locale.getDefault()).format(new Date()));
                                     message_recieve.setMessageStatus(IMessage.MessageStatus.RECEIVE_SUCCEED);
                                 }
                                 message_recieve.setHandled(false);
@@ -2431,6 +2435,9 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
 
         //设置我的头像
         myLogo = application.getMyLogoUrl();
+
+        //myLogo="https://findbest-test-1258431445.cos.ap-chengdu.myqcloud.com/14e103b6-97e6-45b1-8d1b-ad5852bff725.jpg";
+
 
         try {
             sendMessageModel = new JSONObject("{ \"sender\":{\"id\": \"" + MY_ID + "\",\"name\": \"\" }," +
@@ -2533,10 +2540,7 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
 
                     RequestBody requestBody = new MultipartBody.Builder()
                             .setType(MultipartBody.FORM)
-                            .addFormDataPart("file", fileName, voice_file)
-                            .addFormDataPart("type", "AUDIO")
-                            .addFormDataPart("bucket", "chat-voice")
-//                                                .addFormDataPart("authorization", authorization)
+                            .addFormDataPart("files", fileName, voice_file)
                             .build();
 
                     //测试地址 https://storage.sk.cgland.top/api/v1/storage
@@ -2544,8 +2548,10 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
                     Request request = new Request.Builder()
                             .url(thisContext.getString(R.string.storageUrl) + "api/v1/storage")
                             .addHeader("Authorization", authorization)
+                           // .addHeader("Content-Type", "multipart/form-data")
                             .post(requestBody)
                             .build();
+
 
                     Response response;
                     response = client.newCall(request).execute();
@@ -2585,7 +2591,7 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
                                     System.out.println("Published message to channel " + channelName + " successfully");
                                     System.out.println(data);
 
-                                    message_f.setTimeString(new SimpleDateFormat("HH:mm", Locale.getDefault()).format(new Date()));
+                                  //  message_f.setTimeString(new SimpleDateFormat("HH:mm", Locale.getDefault()).format(new Date()));
                                     message_f.setMediaFilePath(voidPath);
                                     message_f.setUserInfo(new DefaultUser("1", "", myLogo));
                                     message_f.setMessageStatus(IMessage.MessageStatus.SEND_SUCCEED);
@@ -2668,9 +2674,8 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
                                 //                        Headers.of("Content-Disposition", "form-data; name=\"userphone\""),
                                 //                        RequestBody.create(null, userPhone))
 
-                                .addFormDataPart("file", fileName, image_file)
-                                .addFormDataPart("type", "IMAGE")
-                                .addFormDataPart("bucket", "chat-image")
+                                .addFormDataPart("files", fileName, image_file)
+
 //                                                .addFormDataPart("authorization", authorization)
                                 .build();
 
@@ -2679,9 +2684,16 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
                         Request request = new Request.Builder()
                                 .url(thisContext.getString(R.string.storageUrl) + "api/v1/storage")
                                 .addHeader("Authorization", authorization)
-                                .addHeader("Content-Type", "multipart/form-data")
+                               // .addHeader("Content-Type", "multipart/form-data")
                                 .post(requestBody)
                                 .build();
+
+
+
+                        System.out.println("---------------++++");
+                        System.out.println(request.url().query());
+                        System.out.println(request.body().contentType());
+
 
                         Response response;
                         response = client.newCall(request).execute();
@@ -2692,8 +2704,8 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
                             System.out.println(jsonString);
 
 
-                            JSONObject result = new JSONObject(jsonString);
-
+                            JSONArray array = new JSONArray(jsonString);
+                            JSONObject result=array.getJSONObject(0);
                             JSONObject sendMessage = new JSONObject(sendMessageModel.toString());
                             sendMessage.getJSONObject("content").put("msg", result.getString("url"));
                             sendMessage.getJSONObject("content").put("type", "image");
@@ -2719,7 +2731,7 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
                                         System.out.println("Published message to channel " + channelName + " successfully");
                                         System.out.println(data);
 
-                                        message_f.setTimeString(new SimpleDateFormat("HH:mm", Locale.getDefault()).format(new Date()));
+                                        //message_f.setTimeString(new SimpleDateFormat("HH:mm", Locale.getDefault()).format(new Date()));
                                         message_f.setMediaFilePath(path);
                                         message_f.setUserInfo(new DefaultUser("1", "", myLogo));
                                         message_f.setMessageStatus(IMessage.MessageStatus.SEND_SUCCEED);
@@ -4364,6 +4376,10 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
     private void sendTimeBar(){
         Date now = new Date();
         //大于5分钟,显示时间定位消息
+
+
+
+
         if (latestMessageTime == null || now.getTime() - latestMessageTime > 1000 * 60 * 5) {
             sendSystemMessageToMyself("TIME" + now.getTime() + "");
         }

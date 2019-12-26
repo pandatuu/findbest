@@ -9,5 +9,9 @@
     <!-- Request permission end -->
 
 
+    <string name="mine_wode" >我的</string>
+    <string name="message_xiaoxi">消息</string>
+    <string name="painter_huashi">画师</string>
+    <string name="sample_anli">案例</string>
 
 </resources>

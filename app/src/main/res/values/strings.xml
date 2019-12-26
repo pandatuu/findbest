@@ -1,4 +1,4 @@
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
     <string name="app_name">findbest</string>
 
 
@@ -8,6 +8,10 @@
     <string name="rationale_camera">This app needs access camera.！！！</string>
     <!-- Request permission end -->
 
+    <string name="mine_wode">我的</string>
+    <string name="message_xiaoxi">消息</string>
+    <string name="painter_huashi">画师</string>
+    <string name="sample_anli">案例</string>
 
 
 </resources>
