@@ -1,12 +1,12 @@
-package app.findbest.vip.individual.artist.view.activity
+package app.findbest.vip.individual.view
 
 import android.graphics.Color
 import android.os.Bundle
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import app.findbest.vip.R
-import app.findbest.vip.individual.artist.view.fragment.HpActionbar
-import app.findbest.vip.individual.artist.view.fragment.HpMain
+import app.findbest.vip.individual.fragment.HpActionbar
+import app.findbest.vip.individual.fragment.HpMain
 import com.jaeger.library.StatusBarUtil
 import com.umeng.message.PushAgent
 import org.jetbrains.anko.*

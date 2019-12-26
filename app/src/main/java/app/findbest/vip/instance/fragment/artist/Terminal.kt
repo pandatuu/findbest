@@ -3,19 +3,22 @@ package app.findbest.vip.instance.fragment.artist
 import android.content.Context
 import android.content.Intent
 import android.graphics.Color
-import android.graphics.Typeface
 import android.os.Bundle
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toolbar
-import androidx.core.view.marginRight
 import app.findbest.vip.R
 import app.findbest.vip.commonfrgmant.FragmentParent
+<<<<<<< HEAD
 import app.findbest.vip.individual.artist.view.activity.Feedback
 import app.findbest.vip.individual.artist.view.activity.Help
 import app.findbest.vip.individual.artist.view.activity.Us
+=======
+import app.findbest.vip.individual.view.Feedback
+import app.findbest.vip.individual.view.Help
+>>>>>>> 62f86276e5d1003cea987e574276d4c9926219ce
 import click
 import org.jetbrains.anko.*
 import org.jetbrains.anko.sdk27.coroutines.onClick

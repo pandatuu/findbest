@@ -23,8 +23,8 @@ public class SpannableStringUtil {
             while(true){
                 int index=msg.indexOf(key,start);
                 if(index>=0){
-                    ImageSpan img = new ImageSpan(c, DefEmoticons.textToPic.get(key));
-                    spannableString.setSpan(img, index, index+key.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                    ImageSpan IMGS = new ImageSpan(c, DefEmoticons.textToPic.get(key));
+                    spannableString.setSpan(IMGS, index, index+key.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
                     start=index+key.length();
                 }else{
                     break;

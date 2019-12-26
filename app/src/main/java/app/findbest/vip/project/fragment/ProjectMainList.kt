@@ -60,15 +60,9 @@ class ProjectMainList : Fragment(), ProjectMainListAdapter.ListAdapter {
     }
 
     //选择recycle里的单个card
-    override fun oneClick() {
-        startActivity<ProjectInformation>()
+    override fun oneClick(id: String) {
+        startActivity<ProjectInformation>("projectId" to id)
         activity?.overridePendingTransition(R.anim.right_in, R.anim.left_out)
-    }
-
-    override fun onResume() {
-        super.onResume()
-        println("resume")
-        smart.autoRefresh()
     }
 
     fun setCategoryList(category: Int, style: Int) {
@@ -79,23 +73,20 @@ class ProjectMainList : Fragment(), ProjectMainListAdapter.ListAdapter {
 
     private fun createV(): View {
         projectMain = ProjectMainListAdapter(mContext, this@ProjectMainList)
-        return UI {
+        val view = UI {
             linearLayout {
                 backgroundColor = Color.parseColor("#FFF6F6F6")
                 smart = smartRefreshLayout {
                     setEnableAutoLoadMore(false)
                     setRefreshHeader(MaterialHeader(activity))
                     setOnRefreshListener {
-                        toast("刷新....")
                         GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
                             getProjectList()
                             it.finishRefresh(1000)
                         }
-//                        list.setItems(a)
                     }
                     setRefreshFooter(BallPulseFooter(mContext).setSpinnerStyle(SpinnerStyle.Scale))
                     setOnLoadMoreListener {
-                        toast("刷新....")
                         GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
                             getProjectList(nowPage + 1)
                             it.finishLoadMore(1000)
@@ -111,6 +102,8 @@ class ProjectMainList : Fragment(), ProjectMainListAdapter.ListAdapter {
                 }
             }
         }.view
+        smart.autoRefresh()
+        return view
     }
 
     private suspend fun getProjectList() {

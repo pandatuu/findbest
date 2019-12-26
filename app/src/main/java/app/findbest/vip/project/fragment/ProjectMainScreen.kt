@@ -9,6 +9,7 @@ import android.view.ViewGroup
 import android.widget.LinearLayout
 import androidx.fragment.app.Fragment
 import app.findbest.vip.R
+import app.findbest.vip.painter.fragment.PainterScreenStyle
 import app.findbest.vip.project.api.ProjectApi
 import app.findbest.vip.project.model.StyleModel
 import app.findbest.vip.project.model.TypeModel
@@ -25,7 +26,7 @@ import org.jetbrains.anko.support.v4.UI
 import retrofit2.HttpException
 import withTrigger
 
-class ProjectMainScreen : Fragment(), ProjectScreenType.ScreenAll {
+class ProjectMainScreen : Fragment(), ProjectScreenType.ScreenAll, ProjectScreenStyle.ScreenAll {
 
     interface ProjectScreen {
         fun backgroundClick()
@@ -59,7 +60,11 @@ class ProjectMainScreen : Fragment(), ProjectScreenType.ScreenAll {
         return createV()
     }
 
-    //点击某一分类
+    //点击style更多
+    override fun clickMore() {
+        screenStyle!!.setMore()
+    }
+    //点击type
     override fun clickType(name: String) {
         if (name != "全部" && name != "更多") {
             typeModelList.forEach {
@@ -71,6 +76,8 @@ class ProjectMainScreen : Fragment(), ProjectScreenType.ScreenAll {
             }
         }else if(name == "全部"){
             screenStyle!!.setTextGone()
+        }else{
+            screenType!!.setMore()
         }
     }
 
@@ -80,7 +87,7 @@ class ProjectMainScreen : Fragment(), ProjectScreenType.ScreenAll {
             getTypeList()
         }
         screenType = ProjectScreenType.newInstance(this@ProjectMainScreen)
-        screenStyle = ProjectScreenStyle.newInstance(mutableListOf())
+        screenStyle = ProjectScreenStyle.newInstance(this@ProjectMainScreen,mutableListOf())
         return UI {
             linearLayout {
                 orientation = LinearLayout.HORIZONTAL
