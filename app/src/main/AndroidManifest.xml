@@ -126,6 +126,12 @@
             android:theme="@style/AppTheme.NoActionBar">
         </activity>
 
+        <!--关于我们页面-->
+        <activity android:name=".individual.artist.view.activity.Us"
+            android:windowSoftInputMode="adjustUnspecified|adjustResize|stateHidden"
+            android:theme="@style/AppTheme.NoActionBar">
+        </activity>
+
 
         <activity android:name="imui.jiguang.cn.imuisample.messages.MessageListActivity"
             android:windowSoftInputMode="adjustPan"
