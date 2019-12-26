@@ -241,7 +241,7 @@ class BottomButton : Fragment() {
                         verticalLayout {
 
                             this.withTrigger().click {
-                                main.jumpPage(4)
+                                main.jumpPage(5)
 
                                 imageView1.setImageResource(R.mipmap.tab_ico_project_nor)
                                 imageView2.setImageResource(R.mipmap.tab_ico_case_nor)

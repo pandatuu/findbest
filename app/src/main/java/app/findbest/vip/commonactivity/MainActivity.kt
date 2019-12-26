@@ -11,6 +11,7 @@ import androidx.fragment.app.Fragment
 import app.findbest.vip.R
 import app.findbest.vip.commonfrgmant.BottomButton
 import app.findbest.vip.instance.fragment.InstanceDisplay
+import app.findbest.vip.instance.fragment.artist.Terminal
 import app.findbest.vip.project.fragment.ProjectFragment
 import app.findbest.vip.utils.BaseActivity
 
@@ -119,7 +120,10 @@ class MainActivity : BaseActivity() {
 
             }
             5 -> {
-
+                topFragment = Terminal.newInstance(this@MainActivity);
+                supportFragmentManager.beginTransaction()
+                    .replace(mainFrameLayout.id, topFragment)
+                    .commit()
             }
         }
     }
