@@ -23,6 +23,34 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
+
+    dexOptions{
+        preDexLibraries = false
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+    android.applicationVariants.all {
+        variant ->
+            variant.outputs.all {
+                // 此处指定生成的apk文件名
+                outputFileName = "sk.apk"
+            }
+    }
+    lintOptions {
+        abortOnError false
+    }
+
+    packagingOptions {
+        exclude 'META-INF/DEPENDENCIES'
+        exclude 'META-INF/NOTICE'
+        exclude 'META-INF/LICENSE'
+        exclude 'META-INF/LICENSE.txt'
+        exclude 'META-INF/NOTICE.txt'
+
+    }
 }
 
 dependencies {
@@ -86,7 +114,7 @@ dependencies {
     //actionBar沉底
     implementation 'com.jaeger.statusbarutil:library:1.5.1'
 
-    implementation project(':messagelist')
+
 
     //JWT token解析
 
@@ -99,9 +127,26 @@ dependencies {
 
     //actionBar沉底
     implementation 'com.jaeger.statusbarutil:library:1.5.1'
+    //视频
+    implementation('org.jitsi.react:jitsi-meet-sdk:+') { transitive = true }
+    //socket
+    implementation('io.github.sac:SocketclusterClientJava:1.7.5') {
+        exclude group: 'org.json', module: 'json'
+    }
+    //聊天初始
+    implementation 'com.neovisionaries:nv-websocket-client:2.8'
 
+    implementation project(path: ':chatinput')
+    implementation project(':messagelist')
 
+    //解决网络图片加载,图片闪烁
+  //  implementation 'com.pingerx:imagego-glide:1.0.2'
+    
+    //EasyPermissions
+    implementation 'pub.devrel:easypermissions:0.4.0'
 
+    implementation 'org.apache.httpcomponents:httpasyncclient:4.1.3'
+    implementation 'org.slf4j:slf4j-api:1.7.25'
 
 
 }

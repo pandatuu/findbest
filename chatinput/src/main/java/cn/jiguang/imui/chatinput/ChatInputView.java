@@ -124,14 +124,19 @@ public class ChatInputView extends LinearLayout
     private ImageButton mEmojiBtn;
     private ImageButton mSendBtn;
 
-    private TextView changyongyu;
+//    private TextView changyongyu;
     private TextView sendEmojiMessage;
-    private ImageView itemMenuShowOrHide;
+//    private ImageView itemMenuShowOrHide;
     private ImageView voiceSelect;
 
 
     private ImageView smileSelect;
-    private TextView messageSend;
+    private ImageView picSelect;
+    private ImageView videoSelect;
+
+
+
+//    private TextView messageSend;
 
     private LinearLayout myMenuitemContainer;
     private LinearLayout  aurora_ll_input_container;
@@ -279,12 +284,15 @@ public class ChatInputView extends LinearLayout
 
 
         //隐藏显示menu项
-        itemMenuShowOrHide =  findViewById(R.id.menuItemHideOrShow);
-        itemMenuShowOrHide.setOnClickListener(onMenuItemHideShowListener);
+//        itemMenuShowOrHide =  findViewById(R.id.menuItemHideOrShow);
+//        itemMenuShowOrHide.setOnClickListener(onMenuItemHideShowListener);
 
         //voiceSelect =  findViewById(R.id.menuItemVoice);
         smileSelect =  findViewById(R.id.menuItemSmile);
-        messageSend=  findViewById(R.id.messageSend);
+        picSelect =  findViewById(R.id.menuItemPic);
+        videoSelect =  findViewById(R.id.menuItemVideo);
+
+//        messageSend=  findViewById(R.id.messageSend);
 
 
         myMenuitemContainer =  findViewById(R.id.my_menuitem_container);
@@ -314,7 +322,7 @@ public class ChatInputView extends LinearLayout
         mCameraBtn = (ImageButton) findViewById(R.id.aurora_menuitem_ib_camera);
         mEmojiBtn = (ImageButton) findViewById(R.id.aurora_menuitem_ib_emoji);
        // mSendBtn = (ImageButton) findViewById(R.id.aurora_menuitem_ib_emoji);
-        changyongyu=findViewById(R.id.changyongyu);
+//        changyongyu=findViewById(R.id.changyongyu);
 
         mVoiceBtnContainer = findViewById(R.id.aurora_ll_menuitem_voice_container);
         mPhotoBtnContainer = findViewById(R.id.aurora_ll_menuitem_photo_container);
@@ -325,27 +333,30 @@ public class ChatInputView extends LinearLayout
         mCameraBtnContainer.setOnClickListener(onMenuItemClickListener);
 //        mEmojiBtnContainer.setOnClickListener(onMenuItemClickListener);
 //        mSendBtn.setOnClickListener(onMenuItemClickListener);
-        changyongyu.setOnClickListener(onMenuItemClickListener);
+//        changyongyu.setOnClickListener(onMenuItemClickListener);
 
 
 
 
-        messageSend.setOnClickListener(new OnClickListener(){
-
-            /**
-             * Called when a view has been clicked.
-             *
-             * @param v The view that was clicked.
-             */
-            @Override
-            public void onClick(View v) {
-                sendMessage();
-            }
-        });
+//        messageSend.setOnClickListener(new OnClickListener(){
+//
+//            /**
+//             * Called when a view has been clicked.
+//             *
+//             * @param v The view that was clicked.
+//             */
+//            @Override
+//            public void onClick(View v) {
+//                sendMessage();
+//            }
+//        });
 
 
         //voiceSelect.setOnClickListener(onMenuItemClickListener);
         smileSelect.setOnClickListener(onMenuItemClickListener);
+        picSelect.setOnClickListener(onMenuItemClickListener);
+        videoSelect.setOnClickListener(onMenuItemClickListener);
+
 
 
         mSendCountTv = (TextView) findViewById(R.id.aurora_menuitem_tv_send_count);
@@ -497,32 +508,32 @@ public class ChatInputView extends LinearLayout
 
 
     //常用语
-    public  void chagnyongyuAdapter(JSONArray list ){
-
-        for(int i=0;i<list.length();i++){
-            View v=  LayoutInflater.from(chagnyongyu_container.getContext()).inflate(R.layout.changyongyu, null);
-            TextView textView = v.findViewById(R.id.changyongyuItem);
-            try {
-                textView.setText(list.getJSONObject(i).getString("content"));
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-            textView.setOnClickListener(new OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    TextView t= (TextView) v;
-                    mChatInput.setText(t.getText());
-                    sendMessage();
-                }
-            });
-
-            chagnyongyu_container.addView(v);
-        }
-
-
-
-
-    }
+//    public  void chagnyongyuAdapter(JSONArray list ){
+//
+//        for(int i=0;i<list.length();i++){
+//            View v=  LayoutInflater.from(chagnyongyu_container.getContext()).inflate(R.layout.changyongyu, null);
+//            TextView textView = v.findViewById(R.id.changyongyuItem);
+//            try {
+//                textView.setText(list.getJSONObject(i).getString("content"));
+//            } catch (JSONException e) {
+//                e.printStackTrace();
+//            }
+//            textView.setOnClickListener(new OnClickListener() {
+//                @Override
+//                public void onClick(View v) {
+//                    TextView t= (TextView) v;
+//                    mChatInput.setText(t.getText());
+//                    sendMessage();
+//                }
+//            });
+//
+//            chagnyongyu_container.addView(v);
+//        }
+//
+//
+//
+//
+//    }
 
 
 
@@ -781,31 +792,31 @@ public  void sendMessage(){
                         }
                     }
                 }
-                else if (view.getId() == R.id.changyongyu) {
-
-                    if (mListener != null && mListener.switchToEmojiMode()) {
-
-                        myMenuitemContainer.setVisibility(View.GONE);
-
-                        if (chagnyongyu_container.getVisibility() == VISIBLE && my_menu_area_container.getVisibility() == VISIBLE) {
-                            my_menu_area_container.setVisibility(GONE);
-                            dismissMenuLayout();
-                        } else if (isKeyboardVisible()) {
-                            my_menu_area_container.setVisibility(VISIBLE);
-                         //   mPendingShowMenu = true;
-                            EmoticonsKeyboardUtils.closeSoftKeyboard(mChatInput);
-                            changyongyuShow();
-
-                        } else {
-                            my_menu_area_container.setVisibility(VISIBLE);
-
-                            showMenuLayout();
-                            changyongyuShow();
-
-                        }
-
-                    }
-                }
+//                else if (view.getId() == R.id.changyongyu) {
+//
+//                    if (mListener != null && mListener.switchToEmojiMode()) {
+//
+//                        myMenuitemContainer.setVisibility(View.GONE);
+//
+//                        if (chagnyongyu_container.getVisibility() == VISIBLE && my_menu_area_container.getVisibility() == VISIBLE) {
+//                            my_menu_area_container.setVisibility(GONE);
+//                            dismissMenuLayout();
+//                        } else if (isKeyboardVisible()) {
+//                            my_menu_area_container.setVisibility(VISIBLE);
+//                         //   mPendingShowMenu = true;
+//                            EmoticonsKeyboardUtils.closeSoftKeyboard(mChatInput);
+//                            changyongyuShow();
+//
+//                        } else {
+//                            my_menu_area_container.setVisibility(VISIBLE);
+//
+//                            showMenuLayout();
+//                            changyongyuShow();
+//
+//                        }
+//
+//                    }
+//                }
 
                 else if (view.getId() == R.id.menuItemSmile) {
                     if (mListener != null && mListener.switchToEmojiMode()) {
@@ -824,7 +835,7 @@ public  void sendMessage(){
                         }
                         EmoticonsKeyboardUtils.closeSoftKeyboard(mChatInput);
                     }
-                } else if (view.getId() == R.id.aurora_ll_menuitem_photo_container) {
+                } else if (view.getId() == R.id.menuItemPic) {
                     if (mListener != null && mListener.switchToGalleryMode()) {
                         myMenuitemContainer.setVisibility(View.GONE);
                         if (ContextCompat.checkSelfPermission(mContext,
@@ -875,6 +886,9 @@ public  void sendMessage(){
 
 
                     }
+                }else if (view.getId() == R.id.menuItemVideo) {
+                    mListener.videoChat();
+
                 }
             }
         }

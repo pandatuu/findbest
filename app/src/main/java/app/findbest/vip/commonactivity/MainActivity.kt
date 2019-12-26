@@ -11,7 +11,11 @@ import androidx.fragment.app.Fragment
 import app.findbest.vip.R
 import app.findbest.vip.commonfrgmant.BottomButton
 import app.findbest.vip.instance.fragment.InstanceDisplay
+<<<<<<< HEAD
 import app.findbest.vip.instance.fragment.artist.Terminal
+=======
+import app.findbest.vip.message.fragment.MessageChatRecordFragment
+>>>>>>> 547fe77c7c48d8fea783f1358cdd5af63cf9ac2d
 import app.findbest.vip.project.fragment.ProjectFragment
 import app.findbest.vip.utils.BaseActivity
 
@@ -117,13 +121,25 @@ class MainActivity : BaseActivity() {
 
             }
             4 -> {
-
+                topFragment = MessageChatRecordFragment.newInstance();
+                supportFragmentManager.beginTransaction()
+                    .replace(mainFrameLayout.id, topFragment)
+                    .commit()
             }
             5 -> {
+<<<<<<< HEAD
                 topFragment = Terminal.newInstance(this@MainActivity);
                 supportFragmentManager.beginTransaction()
                     .replace(mainFrameLayout.id, topFragment)
                     .commit()
+=======
+
+
+
+
+
+
+>>>>>>> 547fe77c7c48d8fea783f1358cdd5af63cf9ac2d
             }
         }
     }
@@ -135,16 +151,15 @@ class MainActivity : BaseActivity() {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (data != null) {
-            if(resultCode==222){
+            if (resultCode == 222) {
                 println(intent.getStringExtra("content"))
                 println(data.getStringExtra("content"))
                 println("xxxxxxxxxxxxxxxxxxxxxxxxxxx")
-              //  toast(data.getStringExtra("content"))
-              //  (topFragment as InstanceDisplay).searchByContent("")
+                //  toast(data.getStringExtra("content"))
+                //  (topFragment as InstanceDisplay).searchByContent("")
             }
         }
     }
-
 
 
 }
