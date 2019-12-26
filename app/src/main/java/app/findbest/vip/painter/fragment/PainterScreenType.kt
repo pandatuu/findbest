@@ -48,10 +48,10 @@ class PainterScreenType : Fragment() {
 
     override fun onResume() {
         super.onResume()
-        if(typeSomeView!=null){
+        if (typeSomeView != null) {
             typeSomeView = null
         }
-        if(typeFlow!!.childCount > 0){
+        if (typeFlow!!.childCount > 0) {
             typeFlow?.removeAllViews()
         }
         //分别给flow添加全部标签
@@ -129,7 +129,7 @@ class PainterScreenType : Fragment() {
                     typeFlow?.addView(firstView)
                     typeFlow?.addView(view)
                 }
-                mTypeList.size - 1 -> {
+                9 -> {
                     typeFlow?.addView(view)
                     val lastView = UI {
                         linearLayout {
@@ -172,7 +172,7 @@ class PainterScreenType : Fragment() {
                     }.view
                     typeFlow?.addView(lastView)
                 }
-                else -> {
+                in 1..8 -> {
                     typeFlow?.addView(view)
                 }
             }
@@ -215,9 +215,50 @@ class PainterScreenType : Fragment() {
     fun getTypeItem(): String {
         if (typeSomeView != null) {
             val type = typeSomeView?.getChildAt(0) as TextView
-
             return type.text.toString()
         }
         return ""
+    }
+
+    fun setMore() {
+        typeSomeView = null
+        typeFlow?.removeViewAt(11)
+        for (index in mTypeList.indices) {
+            val view = UI {
+                linearLayout {
+                    linearLayout {
+                        id = index + 1
+                        backgroundColor = Color.parseColor("#FFF8F8F8")
+                        textView {
+                            text = mTypeList[index]
+                            textSize = 12f
+                            textColor = Color.parseColor("#FF555555")
+                        }.lparams {
+                            setMargins(dip(10), dip(7), dip(10), dip(7))
+                        }
+                        setOnClickListener {
+                            if (typeSomeView != null) {
+                                if (typeSomeView!!.id != it.id) {
+                                    typeSomeView!!.backgroundColor = Color.parseColor("#FFF8F8F8")
+                                    typeSomeView = it as LinearLayout
+                                    typeSomeView!!.backgroundColor = Color.parseColor("#FFFF7C00")
+                                }
+                            } else {
+                                typeSomeView = it as LinearLayout
+                                typeSomeView!!.backgroundColor = Color.parseColor("#FFF8F8F8")
+                            }
+                            backgroundColor = Color.parseColor("#FFFF7C00")
+                            screenAll.clickType(mTypeList[index])
+                        }
+                    }.lparams(wrapContent, dip(30)) {
+                        leftMargin = dip(10)
+                        topMargin = dip(10)
+                    }
+                }
+            }.view
+            if (index > 9) {
+                typeFlow?.addView(view)
+            }
+        }
     }
 }

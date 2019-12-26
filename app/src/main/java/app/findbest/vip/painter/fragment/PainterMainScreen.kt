@@ -25,7 +25,7 @@ import org.jetbrains.anko.support.v4.UI
 import retrofit2.HttpException
 import withTrigger
 
-class PainterMainScreen : Fragment(), PainterScreenType.ScreenAll {
+class PainterMainScreen : Fragment(), PainterScreenType.ScreenAll, PainterScreenStyle.ScreenAll {
 
     interface PainterScreen {
         fun backgroundClick()
@@ -59,7 +59,11 @@ class PainterMainScreen : Fragment(), PainterScreenType.ScreenAll {
         return createV()
     }
 
-    //点击某一分类
+    //点击style更多
+    override fun clickMore() {
+        screenStyle!!.setMore()
+    }
+    //点击type
     override fun clickType(name: String) {
         if (name != "全部" && name != "更多") {
             typeModelList.forEach {
@@ -71,6 +75,8 @@ class PainterMainScreen : Fragment(), PainterScreenType.ScreenAll {
             }
         }else if(name == "全部"){
             screenStyle!!.setTextGone()
+        }else{
+            screenType!!.setMore()
         }
     }
 
@@ -80,7 +86,7 @@ class PainterMainScreen : Fragment(), PainterScreenType.ScreenAll {
             getTypeList()
         }
         screenType = PainterScreenType.newInstance(this@PainterMainScreen)
-        screenStyle = PainterScreenStyle.newInstance(mutableListOf())
+        screenStyle = PainterScreenStyle.newInstance(this@PainterMainScreen,mutableListOf())
         return UI {
             linearLayout {
                 orientation = LinearLayout.HORIZONTAL
