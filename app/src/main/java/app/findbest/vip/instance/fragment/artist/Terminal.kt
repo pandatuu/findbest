@@ -13,6 +13,7 @@ import app.findbest.vip.R
 import app.findbest.vip.commonfrgmant.FragmentParent
 import app.findbest.vip.individual.view.Feedback
 import app.findbest.vip.individual.view.Help
+import app.findbest.vip.individual.view.MyProjectList
 import click
 import org.jetbrains.anko.*
 import org.jetbrains.anko.sdk27.coroutines.onClick
@@ -372,6 +373,9 @@ class Terminal:FragmentParent() {
                             imageView {
                                 imageResource = R.mipmap.btn_slect_nor
                             }.lparams(width = dip(6),height = dip(11)){
+                            }
+                            setOnClickListener {
+                                activity!!.startActivity<MyProjectList>()
                             }
                         }.lparams(width = matchParent,height = wrapContent){
                             topMargin = dip(25)

@@ -30,10 +30,15 @@ import retrofit2.HttpException
 class ProjectDemand : Fragment(), EnlistCheckTipsDialog.ButtomClick, BackgroundFragment.ClickBack {
 
     companion object {
-        fun newInstance(context: Context, id: String): ProjectDemand {
+        fun newInstance(
+            context: Context,
+            id: String,
+            applicants: ProjectApplicants
+        ): ProjectDemand {
             val fragment = ProjectDemand()
             fragment.mContext = context
             fragment.projectId = id
+            fragment.applicants = applicants
             return fragment
         }
     }
@@ -43,6 +48,7 @@ class ProjectDemand : Fragment(), EnlistCheckTipsDialog.ButtomClick, BackgroundF
     var projectId = ""
     val mainId = 1
 
+    private lateinit var applicants: ProjectApplicants
     private var backgroundFragment: BackgroundFragment? = null
     private var tipsDialog: EnlistCheckTipsDialog? = null
 
@@ -67,6 +73,7 @@ class ProjectDemand : Fragment(), EnlistCheckTipsDialog.ButtomClick, BackgroundF
         val view = UI {
             linearLayout {
                 orientation = LinearLayout.VERTICAL
+                backgroundColor = Color.WHITE
                 val details = 2
                 frameLayout {
                     id = details
@@ -109,6 +116,7 @@ class ProjectDemand : Fragment(), EnlistCheckTipsDialog.ButtomClick, BackgroundF
                 .awaitSingle()
             if (it.code() in 200..299) {
                 val model = it.body()!!
+                applicants.setProjectName(model.name)
                 demand?.setInfomation(model)
             }
         } catch (throwable: Throwable) {

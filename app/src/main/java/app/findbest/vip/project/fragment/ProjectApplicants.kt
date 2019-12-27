@@ -8,11 +8,13 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
+import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import app.findbest.vip.R
 import app.findbest.vip.commonfrgmant.BackgroundFragment
+import app.findbest.vip.painter.fragment.BigImage2
 import app.findbest.vip.project.adapter.ProjectApplicantsAdapter
 import app.findbest.vip.project.api.ProjectApi
 import app.findbest.vip.utils.RetrofitUtils
@@ -30,7 +32,7 @@ import org.jetbrains.anko.support.v4.dip
 import retrofit2.HttpException
 
 class ProjectApplicants : Fragment(), ProjectApplicantsAdapter.PrintedCrad,
-    BackgroundFragment.ClickBack, BigImage.ClickImg {
+    BackgroundFragment.ClickBack, BigImage2.ImageClick {
 
     companion object {
         fun newInstance(context: Context, id: String): ProjectApplicants {
@@ -42,7 +44,8 @@ class ProjectApplicants : Fragment(), ProjectApplicantsAdapter.PrintedCrad,
     }
 
     private lateinit var mContext: Context
-    private var bigImage: BigImage? = null
+    private lateinit var name: TextView
+    private var bigImage: BigImage2? = null
     private var backgroundFragment: BackgroundFragment? = null
     private var recycle: RecyclerView? = null
 
@@ -57,7 +60,7 @@ class ProjectApplicants : Fragment(), ProjectApplicantsAdapter.PrintedCrad,
     }
 
     //单独点击某一张画
-    override fun oneClick(i: Int) {
+    override fun oneClick(str: String) {
         val mainId = 1
         if (backgroundFragment == null) {
             backgroundFragment = BackgroundFragment.newInstance(this@ProjectApplicants)
@@ -65,7 +68,7 @@ class ProjectApplicants : Fragment(), ProjectApplicantsAdapter.PrintedCrad,
                 .commit()
         }
         if (bigImage == null) {
-            bigImage = BigImage.newInstance(i, this@ProjectApplicants)
+            bigImage = BigImage2.newInstance(str, this@ProjectApplicants)
             activity!!.supportFragmentManager.beginTransaction().add(mainId, bigImage!!).commit()
         }
     }
@@ -76,7 +79,7 @@ class ProjectApplicants : Fragment(), ProjectApplicantsAdapter.PrintedCrad,
     }
 
     //点击放大的图片
-    override fun closeImg() {
+    override fun clickclose() {
         closeDialog()
     }
 
@@ -86,8 +89,7 @@ class ProjectApplicants : Fragment(), ProjectApplicantsAdapter.PrintedCrad,
                 orientation = LinearLayout.VERTICAL
                 verticalLayout {
                     linearLayout {
-                        textView {
-                            text = "外国儿童文学小说插图+封面"
+                        name = textView {
                             textSize = 21f
                             textColor = Color.parseColor("#FF202020")
                         }.lparams {
@@ -149,5 +151,9 @@ class ProjectApplicants : Fragment(), ProjectApplicantsAdapter.PrintedCrad,
             bigImage = null
         }
         mTransaction.commit()
+    }
+
+    fun setProjectName(str: String) {
+        name.text = str
     }
 }

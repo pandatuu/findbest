@@ -156,8 +156,26 @@
             android:theme="@style/AppTheme.NoActionBar">
         </activity>
 
+        <!-- 我的-项目列表 -->
+        <activity android:name=".individual.view.MyProjectList"
+            android:windowSoftInputMode="adjustPan"
+            android:launchMode="standard"
+            android:theme="@style/AppTheme.NoActionBar">
+        </activity>
 
+        <!-- 我的-画师方项目详情 -->
+        <activity android:name=".individual.view.PainterSideProjectDetails"
+            android:windowSoftInputMode="adjustPan"
+            android:launchMode="standard"
+            android:theme="@style/AppTheme.NoActionBar">
+        </activity>
 
+        <!-- 我的-项目方项目详情 -->
+        <activity android:name=".individual.view.ProjectSideProjectDetails"
+            android:windowSoftInputMode="adjustPan"
+            android:launchMode="standard"
+            android:theme="@style/AppTheme.NoActionBar">
+        </activity>
 
     </application>
 
