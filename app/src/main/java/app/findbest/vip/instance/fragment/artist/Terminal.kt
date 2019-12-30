@@ -3,8 +3,10 @@ package app.findbest.vip.instance.fragment.artist
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import android.graphics.Color
 import android.os.Bundle
+import android.preference.PreferenceManager
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
@@ -48,6 +50,7 @@ class Terminal:FragmentParent() {
     lateinit var headImage:ImageView
     lateinit var vipImage:ImageView
     lateinit var stateImage:ImageView
+    lateinit var sharedPreferences: SharedPreferences
 
     companion object {
         fun newInstance(context: Context): Terminal {
@@ -64,6 +67,7 @@ class Terminal:FragmentParent() {
         } else {
             mContext = activity
         }
+        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(mContext)
     }
 
     override fun onCreateView(
@@ -592,6 +596,23 @@ class Terminal:FragmentParent() {
                 val before= result?.get("before").toString().trim().replace("\"","")
                 val making= result?.get("making").toString().trim().replace("\"","")
                 val finish= result?.get("finish").toString().trim().replace("\"","")
+                val role = sharedPreferences.getString("role","")?.trim()
+
+                if(role == "consumer"){
+                    if(auditState!!){
+                        stateImage.imageResource =  R.mipmap.certified_enterprise
+                    }else{
+                        stateImage.imageResource = R.mipmap.not_certified
+                    }
+                }else{
+                    if(auditState!!){
+                        stateImage.imageResource =  R.mipmap.retist
+                    }else{
+                        stateImage.imageResource = R.mipmap.not_certified
+                    }
+                }
+
+                // 金额数据
                 val account = result?.get("account")?.asJsonArray
 
                 println(account)
@@ -615,12 +636,6 @@ class Terminal:FragmentParent() {
                     vipImage.imageResource =  R.mipmap.ico_certification_nor
                 }else{
                     vipImage.imageResource = R.mipmap.ico_unauthorized_nor
-                }
-
-                if(auditState!!){
-                    stateImage.imageResource =  R.mipmap.retist
-                }else{
-                    stateImage.imageResource = R.mipmap.not_certified
                 }
             }
         }catch (throwable: Throwable){
