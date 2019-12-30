@@ -150,6 +150,12 @@
             android:theme="@style/AppTheme.NoActionBar">
         </activity>
 
+        <!--修改头像页面-->
+        <activity android:name="app.findbest.vip.individual.view.Head"
+            android:windowSoftInputMode="adjustUnspecified|adjustResize|stateHidden"
+            android:theme="@style/AppTheme.NoActionBar">
+        </activity>
+
 
         <activity android:name=".instance.activity.InstanceActivity"
             android:windowSoftInputMode="adjustPan"

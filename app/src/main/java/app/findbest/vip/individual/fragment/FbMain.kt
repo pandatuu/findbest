@@ -72,7 +72,7 @@ class FbMain:FragmentParent() {
 
                 button {
                     backgroundResource = R.drawable.button_gradient
-                    text = "提交"
+                    textResource = R.string.fb_submit
                     textColor = Color.WHITE
                     textSize = 15f
                 }.lparams(width = matchParent,height = dip(47)){

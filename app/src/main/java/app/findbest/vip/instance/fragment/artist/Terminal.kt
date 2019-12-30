@@ -12,6 +12,7 @@ import android.widget.Toolbar
 import app.findbest.vip.R
 import app.findbest.vip.commonfrgmant.FragmentParent
 import app.findbest.vip.individual.view.Feedback
+import app.findbest.vip.individual.view.Head
 import app.findbest.vip.individual.view.Help
 import app.findbest.vip.individual.view.Us
 import click
@@ -65,7 +66,7 @@ class Terminal:FragmentParent() {
                         }
 //
                         textView {
-                            text= "我的"
+                            textResource= R.string.tl_title
                             gravity = Gravity.CENTER
                             textSize =  17f
                             textColor = Color.WHITE
@@ -87,7 +88,7 @@ class Terminal:FragmentParent() {
                                 rightMargin = dip(7)
                             }
                             textView {
-                                text = "分享"
+                                textResource = R.string.tl_share
                                 textSize = 15f
                                 textColor = Color.WHITE
                             }.lparams(width = dip(31),height = dip(21))
@@ -133,6 +134,12 @@ class Terminal:FragmentParent() {
 
                            imageView {
                                imageResource = R.mipmap.default_avatar
+
+                               this.withTrigger().click {
+                                   var intent = Intent(context, Head::class.java)
+                                   startActivity(intent)
+                                   activity?.overridePendingTransition(R.anim.right_in, R.anim.left_out)
+                               }
                            }.lparams(width = dip(64),height = dip(64)){
 
                                rightMargin = dip(20)
@@ -153,7 +160,7 @@ class Terminal:FragmentParent() {
                                 }
 
                                 textView {
-                                    text = "应征项目"
+                                    textResource = R.string.tl_application_items
                                     textSize = 12f
                                     textColor = Color.WHITE
                                 }.lparams(){
@@ -172,7 +179,7 @@ class Terminal:FragmentParent() {
                                 }
 
                                 textView {
-                                    text = "制作项目"
+                                    textResource = R.string.tl_production_project
                                     textSize = 12f
                                     textColor = Color.WHITE
                                 }.lparams(){
@@ -192,7 +199,7 @@ class Terminal:FragmentParent() {
                                 }
 
                                 textView {
-                                    text = "交易完成"
+                                    textResource = R.string.tl_transaction_complete
                                     textSize = 12f
                                     textColor = Color.WHITE
                                 }.lparams(){
@@ -233,7 +240,7 @@ class Terminal:FragmentParent() {
                             }
 
                             textView {
-                                text = "账户余额"
+                                textResource = R.string.tl_account_balance
                                 textSize = 20f
                                 textColor = Color.parseColor("#333333")
                             }
@@ -251,7 +258,7 @@ class Terminal:FragmentParent() {
                         linearLayout {
                             gravity = Gravity.CENTER_VERTICAL
                             textView {
-                                text = "人民币"
+                                textResource = R.string.tl_rmb
                                 textSize = 13f
                                 textColor = Color.parseColor("#666666")
                             }.lparams(width = wrapContent,height = wrapContent){
@@ -273,7 +280,7 @@ class Terminal:FragmentParent() {
                         linearLayout {
                             gravity = Gravity.CENTER_VERTICAL
                             textView {
-                                text = "冻结金额"
+                                textResource = R.string.tl_frozen_amount
                                 textSize = 13f
                                 textColor = Color.parseColor("#666666")
                             }.lparams(width = wrapContent,height = wrapContent){
@@ -301,7 +308,7 @@ class Terminal:FragmentParent() {
                         linearLayout {
                             gravity = Gravity.CENTER_VERTICAL
                             textView {
-                                text = "日元"
+                                textResource = R.string.tl_jpy
                                 textSize = 13f
                                 textColor = Color.parseColor("#666666")
                             }.lparams(width = wrapContent,height = wrapContent){
@@ -329,7 +336,7 @@ class Terminal:FragmentParent() {
                         linearLayout {
                             gravity = Gravity.CENTER_VERTICAL
                             textView {
-                                text = "韩元"
+                                textResource = R.string.tl_won
                                 textSize = 13f
                                 textColor = Color.parseColor("#666666")
                             }.lparams(width = wrapContent,height = wrapContent){
@@ -361,7 +368,7 @@ class Terminal:FragmentParent() {
                             }.lparams(width = dip(19),height = dip(18))
 
                             textView {
-                                text = "我的项目"
+                                textResource = R.string.tl_my_project
                                 textSize = 13f
                                 textColor = Color.parseColor("#333333")
                             }.lparams(width = wrapContent,height = matchParent){
@@ -393,7 +400,7 @@ class Terminal:FragmentParent() {
                             }.lparams(width = dip(19),height = dip(18))
 
                             textView {
-                                text = "版本更新"
+                                textResource = R.string.tl_version_update
                                 textSize = 13f
                                 textColor = Color.parseColor("#333333")
                             }.lparams(width = wrapContent,height = matchParent){
@@ -438,7 +445,7 @@ class Terminal:FragmentParent() {
                             }.lparams(width = dip(19),height = dip(18))
 
                             textView {
-                                text = "使用帮助"
+                                textResource = R.string.tl_use_help
                                 textSize = 13f
                                 textColor = Color.parseColor("#333333")
                             }.lparams(width = wrapContent,height = matchParent){
@@ -475,7 +482,7 @@ class Terminal:FragmentParent() {
                             }.lparams(width = dip(19),height = dip(18))
 
                             textView {
-                                text = "意见反馈"
+                                textResource = R.string.tl_feedback
                                 textSize = 13f
                                 textColor = Color.parseColor("#333333")
                             }.lparams(width = wrapContent,height = matchParent){
@@ -514,7 +521,7 @@ class Terminal:FragmentParent() {
                             }.lparams(width = dip(19),height = dip(18))
 
                             textView {
-                                text = "关于我们"
+                                textResource = R.string.tl_about_us
                                 textSize = 13f
                                 textColor = Color.parseColor("#333333")
                             }.lparams(width = wrapContent,height = matchParent){

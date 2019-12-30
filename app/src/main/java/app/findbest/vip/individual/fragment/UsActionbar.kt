@@ -58,7 +58,7 @@ class UsActionbar : Fragment() {
                     }
 
                     textView {
-                        text = "关于我们"
+                        textResource = R.string.us_title
                         backgroundColor = Color.TRANSPARENT
                         gravity = Gravity.CENTER
                         textColor = Color.parseColor("#222222")
