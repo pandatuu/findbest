@@ -164,7 +164,7 @@ class InvitationList : FragmentParent() {
 
 
                             textView {
-                                text = "选择项目"
+                                text = activity!!.getString(R.string.chose_project)
                                 backgroundColor = Color.TRANSPARENT
                                 gravity = Gravity.CENTER
                                 textColor = Color.parseColor("#FF222222")
@@ -248,7 +248,7 @@ class InvitationList : FragmentParent() {
                     textView {
 
                         gravity = Gravity.CENTER
-                        text = "发送邀请"
+                        text=activity!!.getString(R.string.send_invitation)
                         textSize = 16f
                         textColor = Color.WHITE
                         backgroundResource = R.drawable.enable_rectangle_button

@@ -279,8 +279,8 @@ class MessageChatRecordListAdapter(
 //
 //            },R.mipmap.default_avatar,R.mipmap.default_avatar,option)
         } else {
-            imageUri =
-                "https://findbest-test-1258431445.cos.ap-chengdu.myqcloud.com/61967e90-b4b5-478b-94db-19b4ab338261.jpg"
+//            imageUri =
+//                "https://findbest-test-1258431445.cos.ap-chengdu.myqcloud.com/61967e90-b4b5-478b-94db-19b4ab338261.jpg"
             Glide.with(context)
                 .load(imageUri)
                 .centerCrop()

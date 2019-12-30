@@ -13,7 +13,7 @@ import app.findbest.vip.R
 import app.findbest.vip.commonfrgmant.FragmentParent
 import app.findbest.vip.individual.view.Feedback
 import app.findbest.vip.individual.view.Help
-import app.findbest.vip.individual.view.MyProjectList
+import app.findbest.vip.individual.view.Us
 import click
 import org.jetbrains.anko.*
 import org.jetbrains.anko.sdk27.coroutines.onClick
@@ -505,6 +505,13 @@ class Terminal:FragmentParent() {
 
                         linearLayout {
                             gravity = Gravity.CENTER
+
+                            this.withTrigger().click {
+                                var intent = Intent(context, Us::class.java)
+                                startActivity(intent)
+                                activity?.overridePendingTransition(R.anim.right_in, R.anim.left_out)
+                            }
+
                             imageView {
                                 imageResource = R.mipmap.ico_aboutus_nor
                             }.lparams(width = dip(19),height = dip(18))

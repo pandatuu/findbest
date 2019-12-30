@@ -86,8 +86,6 @@ class MessageChatRecordListFragment : Fragment(){
             intent.putExtra("companyName",item.companyName)
             intent.putExtra("hisName",item.userName)
 
-
-
             intent.putExtra("hislogo",item.avatar)
 
 

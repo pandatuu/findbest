@@ -88,7 +88,7 @@ class BottomButton : Fragment() {
 
                             textView {
                                 textSize = 10f
-                                text = "项目"
+                                text = activity!!.getString(R.string.project_xiangmu)
                                 textColor = Color.parseColor("#FF666666")
                                 gravity = Gravity.CENTER
                             }.lparams() {
@@ -129,7 +129,7 @@ class BottomButton : Fragment() {
 
                             textView {
                                 textSize = 10f
-                                text = "案例"
+                                text = activity!!.getString(R.string.sample_anli)
                                 textColor = Color.parseColor("#FF666666")
                                 gravity = Gravity.CENTER
                             }.lparams() {
@@ -172,7 +172,7 @@ class BottomButton : Fragment() {
 
                             textView {
                                 textSize = 10f
-                                text = "画师"
+                                text = activity!!.getString(R.string.painter_huashi)
                                 textColor = Color.parseColor("#FF666666")
                                 gravity = Gravity.CENTER
                             }.lparams() {
@@ -214,7 +214,7 @@ class BottomButton : Fragment() {
 
                             textView {
                                 textSize = 10f
-                                text = "消息"
+                                text = activity!!.getString(R.string.message_xiaoxi)
                                 textColor = Color.parseColor("#FF666666")
                                 gravity = Gravity.CENTER
                             }.lparams() {
@@ -256,7 +256,7 @@ class BottomButton : Fragment() {
 
                             textView {
                                 textSize = 10f
-                                text = "我的"
+                                text = activity!!.getString(R.string.mine_wode)
                                 textColor = Color.parseColor("#FF666666")
                                 gravity = Gravity.CENTER
                             }.lparams() {

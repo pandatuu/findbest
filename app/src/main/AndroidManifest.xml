@@ -144,6 +144,13 @@
             android:theme="@style/AppTheme.NoActionBar">
         </activity>
 
+        <!--关于我们页面-->
+        <activity android:name="app.findbest.vip.individual.view.Us"
+            android:windowSoftInputMode="adjustUnspecified|adjustResize|stateHidden"
+            android:theme="@style/AppTheme.NoActionBar">
+        </activity>
+
+
         <activity android:name=".instance.activity.InstanceActivity"
             android:windowSoftInputMode="adjustPan"
             android:launchMode="standard"
@@ -169,6 +176,13 @@
             android:launchMode="standard"
             android:theme="@style/AppTheme.NoActionBar">
         </activity>
+        <activity android:name=".message.activity.videoRequestActivity"
+
+            android:theme="@style/AppTheme.NoActionBar">
+        </activity>
+
+
+
 
         <!-- 我的-项目方项目详情 -->
         <activity android:name=".individual.view.ProjectSideProjectInfo"
