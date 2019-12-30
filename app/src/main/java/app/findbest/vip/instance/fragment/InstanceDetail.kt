@@ -247,7 +247,7 @@ class InstanceDetail : FragmentParent() {
                 textView {
 
                     gravity=Gravity.CENTER
-                    text="邀请画师"
+                    text=activity!!.getString(R.string.invite_painter)
                     textSize=16f
                     textColor=Color.WHITE
                     backgroundResource=R.drawable.enable_rectangle_button

@@ -4,6 +4,14 @@
     <!-->Message List<-->
     <attr name="message_list"/>
     <declare-styleable name="MessageList">
+
+
+
+
+
+
+
+
         <attr name="dateTextSize" format="dimension|reference"/>
         <attr name="dateTextColor" format="color|reference"/>
         <attr name="dateFormat" format="string|reference"/>
@@ -89,4 +97,9 @@
         <attr name="cornerRadius" format="dimension|reference" />
         <attr name="backgroundColor" format="color|reference" />
     </declare-styleable>
+
+    <declare-styleable name="ShapeImageView">
+        <attr name="theWidth"  format="integer"></attr>
+    </declare-styleable>
+
 </resources>

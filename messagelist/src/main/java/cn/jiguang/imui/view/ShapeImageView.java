@@ -1,5 +1,6 @@
 package cn.jiguang.imui.view;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Canvas;
@@ -21,16 +22,19 @@ import java.util.Arrays;
 import cn.jiguang.imui.R;
 
 import static android.view.View.LAYER_TYPE_HARDWARE;
+import static cn.jiguang.imui.R.dimen.aurora_width_height_photo_message;
 
 
 public class ShapeImageView extends AppCompatImageView {
+
+
+    public int theWidth=0;
 
     private Paint mPaint;
     private Shape mShape;
 
     private float mRadius;
 
-    public int theWidth=0;
 
     public ShapeImageView(Context context) {
         super(context);
@@ -46,12 +50,19 @@ public class ShapeImageView extends AppCompatImageView {
         init(context, attrs);
     }
 
+    @SuppressLint("ResourceType")
     private void init(Context context, AttributeSet attrs) {
         setLayerType(LAYER_TYPE_HARDWARE, null);
         if (attrs != null) {
-            TypedArray a = getContext().obtainStyledAttributes(attrs, R.styleable.MessageList);
-            mRadius = a.getDimensionPixelSize(R.styleable.MessageList_photoMessageRadius,
-                    context.getResources().getDimensionPixelSize(R.dimen.aurora_radius_photo_message));
+            TypedArray a = getContext().obtainStyledAttributes(attrs, R.styleable.ShapeImageView);
+            if(theWidth==0){
+                theWidth = a.getInt(R.styleable.ShapeImageView_theWidth,
+                        200);
+            }
+
+            System.out.println("xxxxxxxxxxxxxxxxxxxx55555555");
+            System.out.println(theWidth);
+
             a.recycle();
         }
         mPaint = new Paint();
@@ -63,8 +74,11 @@ public class ShapeImageView extends AppCompatImageView {
     }
 
 
-    public  void setTheWidth(int x){
-        theWidth=x;
+    public  void setTheWidth(int x)
+    {
+        if(theWidth==0) {
+            theWidth = x;
+        }
     }
 
     public int dp2px(float value) {
@@ -79,8 +93,8 @@ public class ShapeImageView extends AppCompatImageView {
 
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-//        System.out.println("xxxxxxxxxxxxxxxxxxxx");
-//        System.out.println(px2dp(1080));
+        System.out.println("xxxxxxxxxxxxxxxxxxxx");
+        System.out.println(theWidth);
 
         Drawable drawable = getDrawable();
         if(drawable!=null ){
@@ -134,7 +148,7 @@ public class ShapeImageView extends AppCompatImageView {
 //        }else{
 //            setScaleType(ScaleType.FIT_END);
 //        }
-        setScaleType(ScaleType.FIT_START);
+        setScaleType(ScaleType.FIT_END);
 
         int saveCount = canvas.getSaveCount();
         canvas.save();

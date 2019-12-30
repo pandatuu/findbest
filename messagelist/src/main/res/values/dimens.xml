@@ -37,4 +37,7 @@
     <dimen name="aurora_height_bubble_hemline">5dp</dimen>
     <dimen name="aurora_Y_bubble_vertex">20dp</dimen>
 
+
+    <dimen name="aurora_width_height_photo_message">200</dimen>
+
 </resources>
