@@ -59,7 +59,7 @@ class HpActionbar:FragmentParent() {
                     }
 
                     textView {
-                        text = "制作方使用帮助"
+                        textResource = R.string.hb_title
                         backgroundColor = Color.TRANSPARENT
                         gravity = Gravity.CENTER
                         textColor = Color.parseColor("#222222")

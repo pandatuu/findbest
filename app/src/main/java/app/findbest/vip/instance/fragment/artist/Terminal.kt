@@ -1,5 +1,6 @@
 package app.findbest.vip.instance.fragment.artist
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.graphics.Color
@@ -8,22 +9,45 @@ import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
+import android.widget.TextView
 import android.widget.Toolbar
 import app.findbest.vip.R
 import app.findbest.vip.commonfrgmant.FragmentParent
+import app.findbest.vip.individual.api.individual
 import app.findbest.vip.individual.view.Feedback
+import app.findbest.vip.individual.view.Head
 import app.findbest.vip.individual.view.Help
 import app.findbest.vip.individual.view.Us
+import app.findbest.vip.utils.RetrofitUtils
 import click
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.resource.bitmap.CircleCrop
+import com.bumptech.glide.request.RequestOptions
+import io.reactivex.schedulers.Schedulers
+import kotlinx.coroutines.CoroutineStart
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.rx2.awaitSingle
 import org.jetbrains.anko.*
 import org.jetbrains.anko.sdk27.coroutines.onClick
 import org.jetbrains.anko.support.v4.UI
+import retrofit2.HttpException
 import withTrigger
+
 
 class Terminal:FragmentParent() {
     var toolbar1: Toolbar? = null
     private var mContext: Context? = null
     lateinit var activityInstance: Context
+    lateinit var personName:TextView
+    lateinit var beforeNumber:TextView
+    lateinit var makingNumber:TextView
+    lateinit var finishNumber:TextView
+    lateinit var headImage:ImageView
+    lateinit var vipImage:ImageView
+    lateinit var stateImage:ImageView
 
     companion object {
         fun newInstance(context: Context): Terminal {
@@ -51,7 +75,7 @@ class Terminal:FragmentParent() {
     }
 
     private fun createView():View {
-        return UI {
+        val view = UI {
             verticalLayout {
                 verticalLayout {
                     backgroundResource = R.mipmap.image_message_png
@@ -65,7 +89,7 @@ class Terminal:FragmentParent() {
                         }
 //
                         textView {
-                            text= "我的"
+                            textResource= R.string.tl_title
                             gravity = Gravity.CENTER
                             textSize =  17f
                             textColor = Color.WHITE
@@ -87,7 +111,7 @@ class Terminal:FragmentParent() {
                                 rightMargin = dip(7)
                             }
                             textView {
-                                text = "分享"
+                                textResource = R.string.tl_share
                                 textSize = 15f
                                 textColor = Color.WHITE
                             }.lparams(width = dip(31),height = dip(21))
@@ -105,7 +129,7 @@ class Terminal:FragmentParent() {
                     verticalLayout {
                        linearLayout {
                            verticalLayout {
-                               textView {
+                               personName = textView {
                                    text = "Amy Gonzalez"
                                    textSize = 30f
                                    textColor = Color.WHITE
@@ -116,14 +140,14 @@ class Terminal:FragmentParent() {
 
                                linearLayout {
                                    gravity = Gravity.CENTER_VERTICAL
-                                   imageView {
-                                       imageResource = R.mipmap.ico_certification_nor
+                                   vipImage = imageView {
+
                                    }.lparams(width = dip(26),height = dip(26)){
                                        rightMargin = dip(3)
                                    }
 
-                                   imageView {
-                                       imageResource = R.mipmap.retist
+                                   stateImage = imageView {
+
                                    }.lparams(width = dip(65),height = dip(21))
                                }
                            }.lparams(width = wrapContent,height = wrapContent){
@@ -131,8 +155,14 @@ class Terminal:FragmentParent() {
                                leftMargin = dip(22)
                            }
 
-                           imageView {
+                           headImage = imageView {
                                imageResource = R.mipmap.default_avatar
+
+                               this.withTrigger().click {
+                                   var intent = Intent(context, Head::class.java)
+                                   startActivity(intent)
+                                   activity?.overridePendingTransition(R.anim.right_in, R.anim.left_out)
+                               }
                            }.lparams(width = dip(64),height = dip(64)){
 
                                rightMargin = dip(20)
@@ -144,8 +174,8 @@ class Terminal:FragmentParent() {
 
                         linearLayout {
                             verticalLayout {
-                                textView {
-                                    text = "3"
+                                beforeNumber = textView {
+                                    text = "0 "
                                     textSize = 25f
                                     textColor = Color.WHITE
                                 }.lparams(){
@@ -153,7 +183,7 @@ class Terminal:FragmentParent() {
                                 }
 
                                 textView {
-                                    text = "应征项目"
+                                    textResource = R.string.tl_application_items
                                     textSize = 12f
                                     textColor = Color.WHITE
                                 }.lparams(){
@@ -163,8 +193,8 @@ class Terminal:FragmentParent() {
                                 weight = 1f
                             }
                             verticalLayout {
-                                textView {
-                                    text = "2"
+                                makingNumber = textView {
+                                    text = "0"
                                     textSize = 25f
                                     textColor = Color.WHITE
                                 }.lparams(){
@@ -172,7 +202,7 @@ class Terminal:FragmentParent() {
                                 }
 
                                 textView {
-                                    text = "制作项目"
+                                    textResource = R.string.tl_production_project
                                     textSize = 12f
                                     textColor = Color.WHITE
                                 }.lparams(){
@@ -183,8 +213,8 @@ class Terminal:FragmentParent() {
                             }
 
                             verticalLayout {
-                                textView {
-                                    text = "168"
+                                finishNumber = textView {
+                                    text = "0"
                                     textSize = 25f
                                     textColor = Color.WHITE
                                 }.lparams(){
@@ -192,7 +222,7 @@ class Terminal:FragmentParent() {
                                 }
 
                                 textView {
-                                    text = "交易完成"
+                                    textResource = R.string.tl_transaction_complete
                                     textSize = 12f
                                     textColor = Color.WHITE
                                 }.lparams(){
@@ -233,7 +263,7 @@ class Terminal:FragmentParent() {
                             }
 
                             textView {
-                                text = "账户余额"
+                                textResource = R.string.tl_account_balance
                                 textSize = 20f
                                 textColor = Color.parseColor("#333333")
                             }
@@ -251,7 +281,7 @@ class Terminal:FragmentParent() {
                         linearLayout {
                             gravity = Gravity.CENTER_VERTICAL
                             textView {
-                                text = "人民币"
+                                textResource = R.string.tl_rmb
                                 textSize = 13f
                                 textColor = Color.parseColor("#666666")
                             }.lparams(width = wrapContent,height = wrapContent){
@@ -273,7 +303,7 @@ class Terminal:FragmentParent() {
                         linearLayout {
                             gravity = Gravity.CENTER_VERTICAL
                             textView {
-                                text = "冻结金额"
+                                textResource = R.string.tl_frozen_amount
                                 textSize = 13f
                                 textColor = Color.parseColor("#666666")
                             }.lparams(width = wrapContent,height = wrapContent){
@@ -301,7 +331,7 @@ class Terminal:FragmentParent() {
                         linearLayout {
                             gravity = Gravity.CENTER_VERTICAL
                             textView {
-                                text = "日元"
+                                textResource = R.string.tl_jpy
                                 textSize = 13f
                                 textColor = Color.parseColor("#666666")
                             }.lparams(width = wrapContent,height = wrapContent){
@@ -329,7 +359,7 @@ class Terminal:FragmentParent() {
                         linearLayout {
                             gravity = Gravity.CENTER_VERTICAL
                             textView {
-                                text = "韩元"
+                                textResource = R.string.tl_won
                                 textSize = 13f
                                 textColor = Color.parseColor("#666666")
                             }.lparams(width = wrapContent,height = wrapContent){
@@ -361,7 +391,7 @@ class Terminal:FragmentParent() {
                             }.lparams(width = dip(19),height = dip(18))
 
                             textView {
-                                text = "我的项目"
+                                textResource = R.string.tl_my_project
                                 textSize = 13f
                                 textColor = Color.parseColor("#333333")
                             }.lparams(width = wrapContent,height = matchParent){
@@ -393,7 +423,7 @@ class Terminal:FragmentParent() {
                             }.lparams(width = dip(19),height = dip(18))
 
                             textView {
-                                text = "版本更新"
+                                textResource = R.string.tl_version_update
                                 textSize = 13f
                                 textColor = Color.parseColor("#333333")
                             }.lparams(width = wrapContent,height = matchParent){
@@ -438,7 +468,7 @@ class Terminal:FragmentParent() {
                             }.lparams(width = dip(19),height = dip(18))
 
                             textView {
-                                text = "使用帮助"
+                                textResource = R.string.tl_use_help
                                 textSize = 13f
                                 textColor = Color.parseColor("#333333")
                             }.lparams(width = wrapContent,height = matchParent){
@@ -475,7 +505,7 @@ class Terminal:FragmentParent() {
                             }.lparams(width = dip(19),height = dip(18))
 
                             textView {
-                                text = "意见反馈"
+                                textResource = R.string.tl_feedback
                                 textSize = 13f
                                 textColor = Color.parseColor("#333333")
                             }.lparams(width = wrapContent,height = matchParent){
@@ -514,7 +544,7 @@ class Terminal:FragmentParent() {
                             }.lparams(width = dip(19),height = dip(18))
 
                             textView {
-                                text = "关于我们"
+                                textResource = R.string.tl_about_us
                                 textSize = 13f
                                 textColor = Color.parseColor("#333333")
                             }.lparams(width = wrapContent,height = matchParent){
@@ -539,5 +569,62 @@ class Terminal:FragmentParent() {
                 }
             }
         }.view
+        GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
+            initData()
+        }
+        return view
+    }
+
+    private suspend fun initData(){
+        try {
+            val retrofitUils = RetrofitUtils(activityInstance, this.getString(R.string.developmentUrl))
+            val it = retrofitUils.create(individual::class.java)
+                .personInformation()
+                .subscribeOn(Schedulers.io())
+                .awaitSingle()
+
+            if(it.code() in 200..299) {
+                val result = it.body()
+                val testName = result?.get("userName").toString().trim().replace("\"","")
+                val logo = result?.get("logo")
+                val vip = result?.get("vip")?.asBoolean
+                val auditState = result?.get("auditState")?.asBoolean
+                val before= result?.get("before").toString().trim().replace("\"","")
+                val making= result?.get("making").toString().trim().replace("\"","")
+                val finish= result?.get("finish").toString().trim().replace("\"","")
+
+                personName.text  = testName
+                beforeNumber.text = before
+                makingNumber.text = making
+                finishNumber.text = finish
+                if (logo?.isJsonNull!!){
+
+                }else{
+                    val headLogo = logo.toString().trim().replace("\"","")
+                    Glide.with(this)
+                        .asBitmap()
+                        .load(headLogo)
+                        .placeholder(R.mipmap.default_avatar)
+                        .apply(RequestOptions.bitmapTransform(CircleCrop()))
+                        .into(headImage)
+                }
+
+                if(vip!!){
+                    vipImage.imageResource =  R.mipmap.ico_certification_nor
+                }else{
+                    vipImage.imageResource = R.mipmap.ico_unauthorized_nor
+                }
+
+                if(auditState!!){
+                    stateImage.imageResource =  R.mipmap.retist
+                }else{
+                    stateImage.imageResource = R.mipmap.not_certified
+                }
+            }
+        }catch (throwable: Throwable){
+            if (throwable is HttpException) {
+                println(throwable.code())
+            }
+        }
     }
 }
