@@ -96,7 +96,17 @@ class App : Application() {
 
         println("初始化消息系统")
 
+
+
+
         val token = getMyToken()
+
+
+        if(token=="")
+        {
+            return
+        }
+
         println("token:$token")
 
         if (socket.isconnected()) {
@@ -404,8 +414,8 @@ class App : Application() {
 
     fun closeMessage(){
 
-        socket.disconnect()
-
+       // socket.disconnect()
+        initMessage()
     }
 
 
