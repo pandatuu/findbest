@@ -50,9 +50,6 @@ class RetrofitUtils(
 
                 val accessToken = mPerferences.getString("token", "")
 
-                println("token")
-                println("${accessToken?.replace("\"","")}")
-
                 if(accessToken!=null && accessToken.isNotBlank()){
                     request.addHeader(
                         "Authorization",
