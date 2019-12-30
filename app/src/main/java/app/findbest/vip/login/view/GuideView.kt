@@ -25,9 +25,8 @@ class GuideView: AppCompatActivity() {
 
         frameLayout {
             backgroundColor = Color.WHITE
-            textView {
-                text= "这是启动页"
-                textSize = 18f
+            imageView {
+                imageResource = R.mipmap.launchimage
             }.lparams{
                 gravity = Gravity.CENTER
             }

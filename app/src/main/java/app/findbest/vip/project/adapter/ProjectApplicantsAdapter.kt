@@ -25,7 +25,7 @@ class ProjectApplicantsAdapter(
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     interface PrintedCrad {
-        fun oneClick(i: Int)
+        fun oneClick(str: String)
     }
 
     private var mContext: Context = context
@@ -121,7 +121,7 @@ class ProjectApplicantsAdapter(
                         imageResource = R.mipmap.not_look
                         setOnClickListener {
                             if (!imageObject["permise"].asBoolean) {
-                                printedCrad.oneClick(R.mipmap.test_pic)
+                                printedCrad.oneClick(imageObject["url"].asString)
                             } else {
                                 toast("被保护中，无法查看")
                             }
