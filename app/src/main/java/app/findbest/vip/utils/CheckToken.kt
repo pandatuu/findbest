@@ -1,6 +1,8 @@
 package app.findbest.vip.utils
 
 import android.content.Context
+import android.content.SharedPreferences
+import androidx.preference.PreferenceManager
 import com.auth0.android.jwt.JWT
 
 
@@ -28,6 +30,13 @@ class CheckToken(val mContext: Context) {
 
 
             if(!jwt.subject.isNullOrBlank()){
+                val role = jwt.getClaim("roles").asList(String::class.java)[0]
+                val mPerferences: SharedPreferences =
+                    PreferenceManager.getDefaultSharedPreferences(mContext)
+                val mEditor = mPerferences.edit()
+                mEditor.putString("role", role)
+                mEditor.commit()
+
                 return jwt.getClaim("accountStatus").asString() ?: ""
             }
             return ""

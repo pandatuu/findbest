@@ -15,10 +15,7 @@ import android.widget.Toolbar
 import app.findbest.vip.R
 import app.findbest.vip.commonfrgmant.FragmentParent
 import app.findbest.vip.individual.api.individual
-import app.findbest.vip.individual.view.Feedback
-import app.findbest.vip.individual.view.Head
-import app.findbest.vip.individual.view.Help
-import app.findbest.vip.individual.view.Us
+import app.findbest.vip.individual.view.*
 import app.findbest.vip.utils.RetrofitUtils
 import click
 import com.bumptech.glide.Glide

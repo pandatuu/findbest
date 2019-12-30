@@ -26,4 +26,13 @@
         <item name="android:windowAnimationStyle">@android:style/Animation.Dialog</item>
         <item name="android:backgroundDimEnabled">false</item>
     </style>
+    <style name="AppTheme.mainPageActionBar">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+        <item name="isLightTheme">false</item>
+        <!-- 加了这两句，就可以冷启动引导页自适应了-->
+        <item name="android:windowDrawsSystemBarBackgrounds">true</item>
+        <item name="android:windowFullscreen">true</item>
+        <item name="android:windowBackground">@mipmap/launchimage</item>
+    </style>
 </resources>
