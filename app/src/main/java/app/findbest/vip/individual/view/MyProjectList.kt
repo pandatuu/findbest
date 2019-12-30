@@ -11,10 +11,8 @@ import android.widget.TextView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import app.findbest.vip.R
-import app.findbest.vip.commonfrgmant.BackgroundFragment
 import app.findbest.vip.individual.adapter.MyProjectListAdapter
 import app.findbest.vip.individual.api.IndividualApi
-import app.findbest.vip.individual.fragment.ProjectListStatus
 import app.findbest.vip.utils.BaseActivity
 import app.findbest.vip.utils.RetrofitUtils
 import app.findbest.vip.utils.recyclerView
@@ -33,19 +31,16 @@ import kotlinx.coroutines.rx2.awaitSingle
 import org.jetbrains.anko.*
 import retrofit2.HttpException
 
-class MyProjectList : BaseActivity(), MyProjectListAdapter.ListAdapter,
-    BackgroundFragment.ClickBack, ProjectListStatus.ClickBack {
+class MyProjectList : BaseActivity(), MyProjectListAdapter.ListAdapter{
 
     private lateinit var recycle: RecyclerView
     private lateinit var smart: SmartRefreshLayout
-    private var backgroundFragment: BackgroundFragment? = null
-    private var projectSideScreen: ProjectListStatus? = null
     private var projectSideList: MyProjectListAdapter? = null
     private lateinit var status: TextView
 
     var nowPage = 0
     val mainId = 1
-    var isPainter = true
+    var isPainter = false
     var screenStatus = 3
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -77,7 +72,7 @@ class MyProjectList : BaseActivity(), MyProjectListAdapter.ListAdapter,
                         alignParentBottom()
                         bottomMargin = dip(10)
                     }
-                    val linea = linearLayout {
+                    linearLayout {
                         orientation = LinearLayout.HORIZONTAL
                         gravity = Gravity.BOTTOM
                         status = textView {
@@ -184,22 +179,13 @@ class MyProjectList : BaseActivity(), MyProjectListAdapter.ListAdapter,
         smart.autoRefresh()
     }
 
-
-    override fun clickAll() {
-//        closeScreenDialog()
-    }
-
-    override fun clicksome(str: String) {
-        status.text = str
-    }
-
     //点击某一项目
-    override fun oneClick(id: String) {
+    override fun oneClick(id: String, status: Int) {
         if (isPainter) {
-            startActivity<PainterSideProjectDetails>("projectId" to id)
+            startActivity<PainterSideProjectInfo>("projectId" to id, "status" to status)
             overridePendingTransition(R.anim.right_in, R.anim.left_out)
         } else {
-            startActivity<ProjectSideProjectDetails>("projectId" to id)
+            startActivity<ProjectSideProjectInfo>("projectId" to id, "status" to status)
             overridePendingTransition(R.anim.right_in, R.anim.left_out)
         }
     }
@@ -391,36 +377,4 @@ class MyProjectList : BaseActivity(), MyProjectListAdapter.ListAdapter,
             }
         }
     }
-
-//    private fun openScreenDialog() {
-//        val mTransaction = supportFragmentManager.beginTransaction()
-//        if (backgroundFragment == null) {
-//            backgroundFragment = BackgroundFragment.newInstance(this@MyProjectList)
-//            mTransaction.add(mainId, backgroundFragment!!)
-//        }
-//
-//        mTransaction.setCustomAnimations(R.anim.right_in, R.anim.right_in)
-//        projectSideScreen = ProjectListStatus.newInstance(this@MyProjectList)
-//        mTransaction.add(mainId, projectSideScreen!!)
-//
-//        mTransaction.commit()
-//    }
-//
-//    private fun closeScreenDialog() {
-//        val mTransaction = supportFragmentManager.beginTransaction()
-//        if (projectSideScreen != null) {
-//            mTransaction.setCustomAnimations(R.anim.right_out, R.anim.right_out)
-//            mTransaction.remove(projectSideScreen!!)
-//            projectSideScreen = null
-//        }
-//
-//        if (backgroundFragment != null) {
-//            mTransaction.setCustomAnimations(
-//                R.anim.fade_in_out_a, R.anim.fade_in_out_a
-//            )
-//            mTransaction.remove(backgroundFragment!!)
-//            backgroundFragment = null
-//        }
-//        mTransaction.commit()
-//    }
 }

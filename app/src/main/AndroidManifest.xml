@@ -164,14 +164,14 @@
         </activity>
 
         <!-- 我的-画师方项目详情 -->
-        <activity android:name=".individual.view.PainterSideProjectDetails"
+        <activity android:name=".individual.view.PainterSideProjectInfo"
             android:windowSoftInputMode="adjustPan"
             android:launchMode="standard"
             android:theme="@style/AppTheme.NoActionBar">
         </activity>
 
         <!-- 我的-项目方项目详情 -->
-        <activity android:name=".individual.view.ProjectSideProjectDetails"
+        <activity android:name=".individual.view.ProjectSideProjectInfo"
             android:windowSoftInputMode="adjustPan"
             android:launchMode="standard"
             android:theme="@style/AppTheme.NoActionBar">

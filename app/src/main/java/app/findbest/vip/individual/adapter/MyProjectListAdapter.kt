@@ -10,11 +10,9 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.LinearLayout
-import android.widget.RelativeLayout
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import app.findbest.vip.R
-import app.findbest.vip.project.model.ProjectListModel
 import com.google.gson.JsonObject
 import org.jetbrains.anko.*
 import java.text.SimpleDateFormat
@@ -28,7 +26,7 @@ class MyProjectListAdapter(
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     interface ListAdapter{
-        fun oneClick(id: String)
+        fun oneClick(id: String, status: Int)
     }
 
     private var mContext: Context = context
@@ -221,7 +219,7 @@ class MyProjectListAdapter(
             }
         }
 
-        if(!model["country"].isJsonNull)
+        if(!model["payCurrency"].isJsonNull)
             countryPrice.text = model["payCurrency"].asString
 
         //风格标签最多三个
@@ -251,7 +249,7 @@ class MyProjectListAdapter(
         maxPrice.text = model["margin"].asString
 
         linea.setOnClickListener {
-            listAdapter.oneClick(model["id"].asString)
+            listAdapter.oneClick(model["id"].asString,model["status"].asInt)
         }
 
 

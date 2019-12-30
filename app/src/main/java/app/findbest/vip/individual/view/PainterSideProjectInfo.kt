@@ -8,7 +8,7 @@ import androidx.fragment.app.Fragment
 import androidx.viewpager.widget.ViewPager
 import app.findbest.vip.R
 import app.findbest.vip.individual.fragment.PainterSideProjectInvite
-import app.findbest.vip.individual.fragment.ProjectDetails
+import app.findbest.vip.individual.fragment.PainterSideProjectDetails
 import app.findbest.vip.project.adapter.ProjectInformationAdapter
 import app.findbest.vip.project.fragment.ProjectApplicants
 import app.findbest.vip.utils.BaseActivity
@@ -17,7 +17,7 @@ import com.google.android.material.tabs.TabLayout
 import org.jetbrains.anko.*
 import org.jetbrains.anko.support.v4.viewPager
 
-class PainterSideProjectDetails : BaseActivity() {
+class PainterSideProjectInfo : BaseActivity() {
 
     private lateinit var viewpager: ViewPager
     private val viewPagerId = 2
@@ -32,10 +32,10 @@ class PainterSideProjectDetails : BaseActivity() {
         listTitle.add("项目信息")
         listTitle.add("应征画师")
         listTitle.add("我的邀请")
-        val applicants = ProjectApplicants.newInstance(this@PainterSideProjectDetails,projectId)
-        val invite = PainterSideProjectInvite.newInstance(this@PainterSideProjectDetails, projectId)
+        val applicants = ProjectApplicants.newInstance(this@PainterSideProjectInfo,projectId)
+        val invite = PainterSideProjectInvite.newInstance(this@PainterSideProjectInfo, projectId)
         val datas = ArrayList<Fragment>()
-        datas.add(ProjectDetails.newInstance(this@PainterSideProjectDetails,projectId, applicants, invite))
+        datas.add(PainterSideProjectDetails.newInstance(this@PainterSideProjectInfo,projectId, applicants, invite))
         datas.add(applicants)
         datas.add(invite)
 

@@ -22,31 +22,30 @@ import org.jetbrains.anko.*
 import org.jetbrains.anko.support.v4.UI
 import retrofit2.HttpException
 
-class ProjectDetails : Fragment() {
+class PainterSideProjectDetails : Fragment() {
 
     companion object {
         fun newInstance(
             context: Context,
             id: String,
             applicants: ProjectApplicants,
-            invite: PainterSideProjectInvite
-        ): ProjectDetails {
-            val fragment = ProjectDetails()
+            painterInvite: PainterSideProjectInvite
+        ): PainterSideProjectDetails {
+            val fragment = PainterSideProjectDetails()
             fragment.mContext = context
             fragment.projectId = id
             fragment.applicants = applicants
-            fragment.invite = invite
+            fragment.painterInvite = painterInvite
             return fragment
         }
     }
 
     lateinit var applicants: ProjectApplicants
-    lateinit var invite: PainterSideProjectInvite
+    lateinit var painterInvite: PainterSideProjectInvite
     lateinit var mContext: Context
     private var demand: ProjectDetailsDetails? = null
     var projectId = ""
     val mainId = 1
-
 
 
     override fun onCreateView(
@@ -90,7 +89,7 @@ class ProjectDetails : Fragment() {
             if (it.code() in 200..299) {
                 val model = it.body()!!
                 applicants.setProjectName(model.name)
-                invite.setProjectName(model.name)
+                painterInvite.setProjectName(model.name)
                 demand?.setInfomation(model)
             }
         } catch (throwable: Throwable) {
