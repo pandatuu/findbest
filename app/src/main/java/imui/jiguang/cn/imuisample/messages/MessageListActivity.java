@@ -2339,7 +2339,10 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
 
 
                     }
-                    sendTimeBar();
+                    if (msgType != null && msgType.equals("system")) {
+                    }else{
+                        sendTimeBar();
+                    }
 
                     final MyMessage message_recieve = message;
                     final String msgType_f = msgType;

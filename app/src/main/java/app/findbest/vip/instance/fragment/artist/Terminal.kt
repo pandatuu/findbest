@@ -592,7 +592,9 @@ class Terminal:FragmentParent() {
                 val before= result?.get("before").toString().trim().replace("\"","")
                 val making= result?.get("making").toString().trim().replace("\"","")
                 val finish= result?.get("finish").toString().trim().replace("\"","")
+                val account = result?.get("account")?.asJsonArray
 
+                println(account)
                 personName.text  = testName
                 beforeNumber.text = before
                 makingNumber.text = making
