@@ -21,9 +21,6 @@ import withTrigger
 
 class UsMain:FragmentParent() {
     private var mContext: Context? = null
-    lateinit var myEdit:EditText
-    lateinit var myText:TextView
-
     companion object {
         fun newInstance(): UsMain {
             return UsMain()
@@ -88,7 +85,7 @@ class UsMain:FragmentParent() {
                     }
 
                     textView {
-                        text = "致力于打造全球顶尖的"
+                        textResource = R.string.us_prefix
                         textColor = Color.parseColor("#222222")
                         textSize = 17f
                         gravity = Gravity.CENTER
@@ -97,7 +94,7 @@ class UsMain:FragmentParent() {
                     }
 
                     textView {
-                        text = "原画创作交易平台"
+                        textResource = R.string.us_suffix
                         textColor = Color.parseColor("#222222")
                         textSize = 17f
                         gravity = Gravity.CENTER
@@ -110,7 +107,7 @@ class UsMain:FragmentParent() {
                         linearLayout {
                             gravity = Gravity.CENTER_VERTICAL
                             textView {
-                                text = "平台网址"
+                                textResource = R.string.us_web
                                 textSize = 15f
                                 textColor = Color.parseColor("#666666")
                             }.lparams(wrapContent, wrapContent){
@@ -122,6 +119,11 @@ class UsMain:FragmentParent() {
                                 textSize = 15f
                                 textColor = Color.parseColor("#202020")
                             }
+
+                            // 预留，不确定是否开放
+//                            this.withTrigger().click {
+//
+//                            }
                         }.lparams(matchParent, dip(55)) {
                             leftMargin = dip(15)
                             rightMargin = dip(15)
@@ -130,7 +132,7 @@ class UsMain:FragmentParent() {
                             gravity = Gravity.CENTER_VERTICAL
                             val phoneNum = "028-61114932"
                             textView {
-                                text = "客服电话"
+                                textResource = R.string.us_phone
                                 textSize = 15f
                                 textColor = Color.parseColor("#666666")
                             }.lparams(wrapContent, wrapContent){
@@ -142,20 +144,14 @@ class UsMain:FragmentParent() {
                                 textSize = 15f
                                 textColor = Color.parseColor("#202020")
                             }
-//                            this.withTrigger().click {
-////                                val intent = Intent(context!!, CompanyWebSiteActivity::class.java)
-////                                intent.putExtra("webUrl", "https://astar2020.jp/")
-////                                intent.putExtra("companyName", "株式会社アジアスター")
-////                                startActivity(intent)
-////                                overridePendingTransition(R.anim.right_in, R.anim.left_out)
-//                            }
 
-                            this.withTrigger().click {
-                                val intent = Intent(Intent.ACTION_DIAL)
-                                val data = Uri.parse("tel:$phoneNum")
-                                intent.data = data
-                                startActivity(intent)
-                            }
+                            // 预留，不确定是否开放
+//                            this.withTrigger().click {
+//                                val intent = Intent(Intent.ACTION_DIAL)
+//                                val data = Uri.parse("tel:$phoneNum")
+//                                intent.data = data
+//                                startActivity(intent)
+//                            }
                         }.lparams(matchParent, dip(55)) {
                             leftMargin = dip(15)
                             rightMargin = dip(15)

@@ -1,23 +1,27 @@
 package app.findbest.vip.individual.fragment
 
 import android.content.Context
+import android.content.Intent
 import android.graphics.Color
 import android.graphics.Typeface
 import android.os.Bundle
+
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toolbar
-import androidx.fragment.app.Fragment
 import app.findbest.vip.R
+import app.findbest.vip.commonfrgmant.FragmentParent
 import org.jetbrains.anko.*
+
 import org.jetbrains.anko.support.v4.UI
 
-class FbActionbar : Fragment() {
+class HActionbar : FragmentParent() {
 
-    var TrpToolbar: Toolbar?=null
+    var TrpToolbar: Toolbar? = null
     private var mContext: Context? = null
+    var resumeId = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -29,8 +33,9 @@ class FbActionbar : Fragment() {
     }
 
     companion object {
-        fun newInstance(): FbActionbar {
-            return FbActionbar()
+        fun newInstance(): HActionbar {
+            val fragment = HActionbar()
+            return fragment
         }
     }
 
@@ -38,10 +43,10 @@ class FbActionbar : Fragment() {
         return createView()
     }
 
-    private fun createView():View{
+    private fun createView(): View {
         return UI {
             verticalLayout {
-                relativeLayout(){
+                relativeLayout {
                     textView {
                         backgroundColor = Color.WHITE
                     }
@@ -58,7 +63,7 @@ class FbActionbar : Fragment() {
                     }
 
                     textView {
-                        textResource = R.string.fb_title
+                        textResource = R.string.h_title
                         backgroundColor = Color.TRANSPARENT
                         gravity = Gravity.CENTER
                         textColor = Color.parseColor("#222222")
@@ -68,10 +73,37 @@ class FbActionbar : Fragment() {
                     }.lparams() {
                         width = matchParent
                         height = wrapContent
-                        height =dip(65-getStatusBarHeight(this@FbActionbar.context!!))
+                        height =dip(65-getStatusBarHeight(this@HActionbar.context!!))
                         alignParentBottom()
                     }
-                }.lparams(){
+
+                    linearLayout {
+                        gravity = Gravity.CENTER_VERTICAL
+                        linearLayout {
+                            gravity = Gravity.CENTER_VERTICAL
+                            textView {
+                                textResource = R.string.h_update
+                                textColor = Color.parseColor("#F87F2D")
+                                textSize = 15f
+                            }
+
+//                            onClick {
+//                                jump()
+//                            }
+
+                        }.lparams {
+                            width = dip(60)
+                            height = dip(25)
+                        }
+
+                    }.lparams {
+
+                        height = dip(65 - getStatusBarHeight(this@HActionbar.context!!))
+                        alignParentRight()
+                        alignParentBottom()
+                    }
+
+                }.lparams {
                     width = matchParent
                     height = dip(65)
                 }
@@ -79,15 +111,25 @@ class FbActionbar : Fragment() {
         }.view
     }
 
-    fun getStatusBarHeight(context: Context): Int {
+    override fun getStatusBarHeight(context: Context): Int {
         var result = 0
-        val resourceId = context.getResources().getIdentifier("status_bar_height", "dimen", "android")
+        val resourceId = context.resources.getIdentifier("status_bar_height", "dimen", "android")
         if (resourceId > 0) {
-            result = context.getResources().getDimensionPixelSize(resourceId)
-            var scale = context.getResources().getDisplayMetrics().density;
-            result = ((result / scale + 0.5f).toInt());
+            result = context.resources.getDimensionPixelSize(resourceId)
+            val scale = context.resources.displayMetrics.density
+            result = ((result / scale + 0.5f).toInt())
         }
         return result
     }
+
+//    private fun jump() {
+//        val intent = Intent(activity, PersonInformationFourActivity::class.java)
+//        val bundle = Bundle()
+//        bundle.putString("resumeId", resumeId)
+//        intent.putExtra("bundle", bundle)
+//        startActivity(intent)
+//        activity!!.overridePendingTransition(R.anim.right_in, R.anim.left_out)
+//
+//    }
 
 }

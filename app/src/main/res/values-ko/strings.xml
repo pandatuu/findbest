@@ -8,6 +8,46 @@
     <string name="rationale_camera">This app needs access camera.！！！</string>
     <!-- Request permission end -->
 
+    <!--Terminal-->
+    <string name="tl_title">我的</string>
+    <string name="tl_share">分享</string>
+    <string name="tl_application_items">应征项目</string>
+    <string name="tl_production_project">制作项目</string>
+    <string name="tl_transaction_complete">交易完成</string>
+    <string name="tl_account_balance">账户余额</string>
+    <string name="tl_rmb">人民币</string>
+    <string name="tl_frozen_amount">冻结金额</string>
+    <string name="tl_jpy">日元</string>
+    <string name="tl_won">韩元</string>
+    <string name="tl_my_project">我的项目</string>
+    <string name="tl_version_update">版本更新</string>
+    <string name="tl_use_help">使用帮助</string>
+    <string name="tl_feedback">意见反馈</string>
+    <string name="tl_about_us">关于我们</string>
+
+    <!--UsActionbar-->
+    <string name="us_title">关于我们</string>
+
+    <!--UsMain-->
+    <string name="us_prefix">致力于打造全球顶尖的</string>
+    <string name="us_suffix">原画创作交易平台</string>
+    <string name="us_web">平台网址</string>
+    <string name="us_phone">028-61114932</string>
+
+    <!--FbActionbar-->
+    <string name="fb_title">意见反馈</string>
+
+    <!--FbMain-->
+    <string name="fb_hint">请输入您要反馈的内容</string>
+    <string name="fb_submit">提交</string>
+
+    <!--HpActionbar-->
+    <string name="hb_title">制作方使用帮助</string>
+
+    <!--HActionbar-->
+    <string name="h_title">个人头像</string>
+    <string name="h_update">修改</string>
+
     <!--    底部菜单-->
     <string name="mine_wode" >我的</string>
     <string name="message_xiaoxi">消息</string>

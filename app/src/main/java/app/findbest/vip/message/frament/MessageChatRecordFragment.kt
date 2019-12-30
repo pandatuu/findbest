@@ -267,7 +267,7 @@ class MessageChatRecordFragment : Fragment(),
 
         // DialogUtils.showLoading(this)
 
-        if (WebSocketState.OPEN == socket?.currentState || WebSocketState.CREATED == socket?.currentState) {
+        if( socket!=null && socket?.isconnected()!!   &&(WebSocketState.OPEN == socket?.currentState || WebSocketState.CREATED == socket?.currentState)) {
 
 
             println("socket有效!!!")

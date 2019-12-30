@@ -2339,6 +2339,7 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
 
 
                     }
+                    sendTimeBar();
 
                     final MyMessage message_recieve = message;
                     final String msgType_f = msgType;
@@ -2396,7 +2397,7 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
         socket = application.getSocket();
 
 
-        if (WebSocketState.OPEN == socket.getCurrentState() || WebSocketState.CREATED == socket.getCurrentState()) {
+        if( socket!=null && socket.isconnected()   &&(WebSocketState.OPEN == socket.getCurrentState() || WebSocketState.CREATED == socket.getCurrentState())) {
 
         } else {
             System.out.println("socket失效，重连中！！！！！！！--");
@@ -2410,7 +2411,7 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
 
 
             while (true) {
-                if (WebSocketState.OPEN == socket.getCurrentState() || WebSocketState.CREATED == socket.getCurrentState()) {
+                if( socket!=null && socket.isconnected()   &&(WebSocketState.OPEN == socket.getCurrentState() || WebSocketState.CREATED == socket.getCurrentState())) {
 
                     break;
 
@@ -4355,7 +4356,7 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
 
     public void reconnectSocket() {
 
-        if (WebSocketState.OPEN == socket.getCurrentState() || WebSocketState.CREATED == socket.getCurrentState()) {
+        if( socket!=null && socket.isconnected()   &&(WebSocketState.OPEN == socket.getCurrentState() || WebSocketState.CREATED == socket.getCurrentState())) {
 
         } else {
             finish();
