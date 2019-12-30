@@ -3,6 +3,7 @@ package app.findbest.vip.project.adapter
 import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Color
+import android.graphics.Typeface
 import android.text.TextUtils
 import android.view.Gravity
 import android.view.View
@@ -139,6 +140,7 @@ class ProjectMainListAdapter(
                                 maxPrice = textView {
                                     textSize = 18f
                                     textColor = Color.parseColor("#FFFF7C00")
+                                    typeface = Typeface.DEFAULT_BOLD
                                 }.lparams {
                                     leftMargin = dip(5)
                                 }
