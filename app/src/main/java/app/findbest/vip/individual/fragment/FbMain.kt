@@ -28,15 +28,21 @@ import kotlinx.coroutines.rx2.awaitSingle
 import okhttp3.MediaType
 import okhttp3.RequestBody
 import org.jetbrains.anko.*
+import org.jetbrains.anko.sdk27.coroutines.onClick
 import org.jetbrains.anko.support.v4.UI
 import retrofit2.HttpException
 import withTrigger
+import android.R.attr.password
+import android.annotation.SuppressLint
+import android.view.inputmethod.InputMethodManager
+import org.jetbrains.anko.support.v4.toast
 
-class FbMain:FragmentParent() {
+
+class FbMain : FragmentParent() {
     private var mContext: Context? = null
     var activityInstance: Context? = this!!.context
-    lateinit var myEdit:EditText
-    lateinit var myText:TextView
+    lateinit var myEdit: EditText
+    lateinit var myText: TextView
     lateinit var sharedPreferences: SharedPreferences
     var json: MediaType? = MediaType.parse("application/json; charset=utf-8")
 
@@ -51,9 +57,9 @@ class FbMain:FragmentParent() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        if(parentFragment==null){
+        if (parentFragment == null) {
             mContext = activity
-        }else{
+        } else {
             mContext = parentFragment?.context
         }
 
@@ -68,20 +74,33 @@ class FbMain:FragmentParent() {
         return createView()
     }
 
-    private fun createView():View {
+    private fun createView(): View {
         val view = View.inflate(mContext, R.layout.edit_number, null)
         myEdit = view.findViewById(R.id.et_word)
         myText = view.findViewById(R.id.tv_word_count)
         return UI {
             verticalLayout {
+                setOnClickListener {
+                    closeFocusjianpan()
+                }
                 linearLayout {
                     addView(view)
                     myEdit.addTextChangedListener(object : TextWatcher {
-                        override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {
+                        override fun beforeTextChanged(
+                            s: CharSequence,
+                            start: Int,
+                            count: Int,
+                            after: Int
+                        ) {
 
                         }
 
-                        override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
+                        override fun onTextChanged(
+                            s: CharSequence,
+                            start: Int,
+                            before: Int,
+                            count: Int
+                        ) {
                             myText.text = s.length.toString()
                         }
 
@@ -89,7 +108,7 @@ class FbMain:FragmentParent() {
 
                         }
                     })
-                }.lparams(width = matchParent,height = wrapContent){
+                }.lparams(width = matchParent, height = wrapContent) {
                     topMargin = dip(15)
                     bottomMargin = dip(30)
                 }
@@ -100,10 +119,10 @@ class FbMain:FragmentParent() {
                     textColor = Color.WHITE
                     textSize = 15f
 
-//                    this.withTrigger().click {
-//                      submit()
-//                    }
-                }.lparams(width = matchParent,height = dip(47)){
+                    this.withTrigger().click {
+                        submit()
+                    }
+                }.lparams(width = matchParent, height = dip(47)) {
                     leftMargin = dip(15)
                     rightMargin = dip(15)
                 }
@@ -112,35 +131,42 @@ class FbMain:FragmentParent() {
         }.view
     }
 
-//    private fun submit(){
-//        val userId = sharedPreferences.getString("userId","")?.trim()
-//        val condition = myEdit.text
-//        println(condition)
-//        val conditionParams = mapOf(
-//            "type" to 3,
-//            "content" to condition,
-//            "userId" to userId
-//        )
-//        val conditonJson = JSON.toJSONString(conditionParams)
-//        val conditionBody = RequestBody.create(json, conditonJson)
-//
-////        try {
-//            val retrofitUils = RetrofitUtils(activityInstance, this.getString(R.string.developmentUrl))
-//            val it = retrofitUils.create(individual::class.java)
-//                .feedback(conditionBody)
-//                .subscribeOn(Schedulers.io())
-////                .awaitSingle()
-//                .subscribe({
-//                    println(it)
-//                },{})
-////            println(it)
-////            println(it.code())
-////        }catch (throwable: Throwable) {
-////            if (throwable is HttpException) {
-////                println(throwable.code())
-////            }
-////        }
-//    }
+    @SuppressLint("CheckResult")
+    private fun submit() {
+        val userId = sharedPreferences.getString("userId", "")?.trim()
+        val condition = myEdit.text
+        println(condition)
+        val conditionParams = mapOf(
+            "type" to 3,
+            "content" to condition,
+            "userId" to userId
+        )
+        val conditionJson = JSON.toJSONString(conditionParams)
+        val conditionBody = RequestBody.create(json, conditionJson)
 
+        val retrofitUils = RetrofitUtils(activity!!, this.getString(R.string.developmentUrl))
+
+        retrofitUils.create(individual::class.java)
+            .feedback(conditionBody)
+            .subscribeOn(Schedulers.io())
+            .subscribe({
+                if (it.code() in 200..299) {
+                    activity!!.finish()
+                    activity!!.overridePendingTransition(R.anim.left_in, R.anim.right_out)
+                }
+            }, {
+                toast(R.string.liNetError)
+            })
+    }
+
+    private fun closeFocusjianpan() {
+        //关闭ｅｄｉｔ光标
+        myEdit.clearFocus()
+        myText.clearFocus()
+        //关闭键盘事件
+        val phone = activity?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        phone.hideSoftInputFromWindow(myEdit.windowToken, 0)
+        phone.hideSoftInputFromWindow(myText.windowToken, 0)
+    }
 
 }
