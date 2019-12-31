@@ -24,12 +24,7 @@ class GuideView: BaseActivity() {
         super.onCreate(savedInstanceState)
 
         frameLayout {
-            backgroundColor = Color.WHITE
-            imageView {
-                imageResource = R.mipmap.launchimage
-            }.lparams{
-                gravity = Gravity.CENTER
-            }
+            backgroundColor = Color.TRANSPARENT
         }
     }
 
