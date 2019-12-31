@@ -2,7 +2,6 @@ package app.findbest.vip.login.view
 
 import android.annotation.SuppressLint
 import android.content.Context
-import android.content.SharedPreferences
 import android.graphics.Color
 import android.os.Bundle
 import android.os.CountDownTimer
@@ -12,20 +11,16 @@ import android.text.method.PasswordTransformationMethod
 import android.view.Gravity
 import android.view.inputmethod.InputMethodManager
 import android.widget.*
-import androidx.appcompat.app.AppCompatActivity
-import androidx.preference.PreferenceManager
 import app.findbest.vip.R
 import app.findbest.vip.commonfrgmant.BackgroundFragment
 import app.findbest.vip.commonfrgmant.ChooseCountry
 import app.findbest.vip.login.api.LoginApi
 import app.findbest.vip.register.api.RegisterApi
-import app.findbest.vip.register.view.RegisterCountry
 import app.findbest.vip.utils.BaseActivity
 import app.findbest.vip.utils.MimeType
 import app.findbest.vip.utils.RetrofitUtils
 import click
 import com.alibaba.fastjson.JSON
-import com.gyf.immersionbar.ImmersionBar
 import io.reactivex.schedulers.Schedulers
 import kotlinx.coroutines.CoroutineStart
 import kotlinx.coroutines.Dispatchers
@@ -34,10 +29,8 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.rx2.awaitSingle
 import okhttp3.RequestBody
 import org.jetbrains.anko.*
-import org.jetbrains.anko.sdk27.coroutines.onClick
 import retrofit2.HttpException
 import withTrigger
-import java.io.Serializable
 import java.util.regex.Pattern
 
 class ResetPassword: BaseActivity(), BackgroundFragment.ClickBack, ChooseCountry.DialogSelect {

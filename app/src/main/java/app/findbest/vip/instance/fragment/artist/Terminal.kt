@@ -1,6 +1,5 @@
 package app.findbest.vip.instance.fragment.artist
 
-import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
@@ -598,6 +597,7 @@ class Terminal:FragmentParent() {
                 val finish= result?.get("finish").toString().trim().replace("\"","")
                 val role = sharedPreferences.getString("role","")?.trim()
 
+                // 公司方
                 if(role == "consumer"){
                     if(auditState!!){
                         stateImage.imageResource =  R.mipmap.certified_enterprise

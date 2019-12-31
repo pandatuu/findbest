@@ -12,7 +12,6 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import app.findbest.vip.R
-import app.findbest.vip.individual.adapter.ProjectSideApplicantsAdapter
 import app.findbest.vip.individual.adapter.ProjectSideInviteAdapter
 import app.findbest.vip.individual.api.IndividualApi
 import app.findbest.vip.painter.fragment.BigImage2

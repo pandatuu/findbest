@@ -28,7 +28,6 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.rx2.awaitSingle
 import org.jetbrains.anko.*
 import org.jetbrains.anko.support.v4.UI
-import org.jetbrains.anko.support.v4.dip
 import retrofit2.HttpException
 
 class ProjectApplicants : Fragment(), ProjectApplicantsAdapter.PrintedCrad,

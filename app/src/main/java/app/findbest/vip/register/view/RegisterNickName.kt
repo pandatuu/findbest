@@ -3,13 +3,11 @@ package app.findbest.vip.register.view
 import android.content.Context
 import android.content.SharedPreferences
 import android.graphics.Color
-import android.os.Build
 import android.os.Bundle
 import android.view.Gravity
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import android.widget.LinearLayout
-import androidx.appcompat.app.AppCompatActivity
 import androidx.preference.PreferenceManager
 import com.alibaba.fastjson.JSON
 import app.findbest.vip.R
@@ -20,10 +18,7 @@ import app.findbest.vip.register.model.RegisterModel
 import app.findbest.vip.utils.BaseActivity
 import app.findbest.vip.utils.MimeType
 import app.findbest.vip.utils.RetrofitUtils
-import com.gyf.immersionbar.ImmersionBar
 import io.reactivex.schedulers.Schedulers
-import kotlinx.coroutines.CoroutineStart
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.rx2.awaitSingle

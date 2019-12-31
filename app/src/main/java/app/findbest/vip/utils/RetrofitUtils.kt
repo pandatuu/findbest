@@ -14,7 +14,7 @@ import retrofit2.converter.scalars.ScalarsConverterFactory
 import java.util.concurrent.TimeUnit
 
 class RetrofitUtils(
-    context: Context, //    private String baseUrl = "https://auth.sk.cgland.top/";
+    context: Context?, //    private String baseUrl = "https://auth.sk.cgland.top/";
     baseUrl: String
 ) {
 

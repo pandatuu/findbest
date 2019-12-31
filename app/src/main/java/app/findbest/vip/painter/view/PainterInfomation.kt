@@ -1,21 +1,17 @@
 package app.findbest.vip.painter.view
 
 import android.graphics.Color
-import android.graphics.Point
 import android.graphics.Typeface
 import android.os.Bundle
 import android.view.Gravity
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
-import androidx.core.view.ViewCompat.getDisplay
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import app.findbest.vip.R
 import app.findbest.vip.painter.adapter.PainterInfoPictureAdapter
 import app.findbest.vip.painter.api.PainterApi
-import app.findbest.vip.painter.fragment.PainterInfoPicture
-import app.findbest.vip.project.api.ProjectApi
 import app.findbest.vip.utils.BaseActivity
 import app.findbest.vip.utils.RetrofitUtils
 import app.findbest.vip.utils.recyclerView
@@ -27,7 +23,6 @@ import com.scwang.smart.refresh.footer.BallPulseFooter
 import com.scwang.smart.refresh.header.MaterialHeader
 import com.scwang.smart.refresh.layout.SmartRefreshLayout
 import com.scwang.smart.refresh.layout.constant.SpinnerStyle
-import com.scwang.smart.refresh.layout.util.SmartUtil.px2dp
 import io.reactivex.schedulers.Schedulers
 import kotlinx.coroutines.CoroutineStart
 import kotlinx.coroutines.Dispatchers
@@ -36,9 +31,6 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.rx2.awaitSingle
 import org.jetbrains.anko.*
 import retrofit2.HttpException
-import android.opengl.ETC1.getWidth
-import androidx.core.content.ContextCompat.getSystemService
-import androidx.core.content.ContextCompat.getSystemService
 import app.findbest.vip.painter.fragment.BigImage2
 import app.findbest.vip.painter.model.PainterInfo
 
