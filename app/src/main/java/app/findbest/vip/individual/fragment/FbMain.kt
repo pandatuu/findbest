@@ -100,9 +100,9 @@ class FbMain:FragmentParent() {
                     textColor = Color.WHITE
                     textSize = 15f
 
-                    this.withTrigger().click {
-                      submit()
-                    }
+//                    this.withTrigger().click {
+//                      submit()
+//                    }
                 }.lparams(width = matchParent,height = dip(47)){
                     leftMargin = dip(15)
                     rightMargin = dip(15)
@@ -112,35 +112,35 @@ class FbMain:FragmentParent() {
         }.view
     }
 
-    private fun submit(){
-        val userId = sharedPreferences.getString("userId","")?.trim()
-        val condition = myEdit.text
-        println(condition)
-        val conditionParams = mapOf(
-            "type" to 3,
-            "content" to condition,
-            "userId" to userId
-        )
-        val conditonJson = JSON.toJSONString(conditionParams)
-        val conditionBody = RequestBody.create(json, conditonJson)
-
-//        try {
-            val retrofitUils = RetrofitUtils(activityInstance, this.getString(R.string.developmentUrl))
-            val it = retrofitUils.create(individual::class.java)
-                .feedback(conditionBody)
-                .subscribeOn(Schedulers.io())
-//                .awaitSingle()
-                .subscribe({
-                    println(it)
-                },{})
-//            println(it)
-//            println(it.code())
-//        }catch (throwable: Throwable) {
-//            if (throwable is HttpException) {
-//                println(throwable.code())
-//            }
-//        }
-    }
+//    private fun submit(){
+//        val userId = sharedPreferences.getString("userId","")?.trim()
+//        val condition = myEdit.text
+//        println(condition)
+//        val conditionParams = mapOf(
+//            "type" to 3,
+//            "content" to condition,
+//            "userId" to userId
+//        )
+//        val conditonJson = JSON.toJSONString(conditionParams)
+//        val conditionBody = RequestBody.create(json, conditonJson)
+//
+////        try {
+//            val retrofitUils = RetrofitUtils(activityInstance, this.getString(R.string.developmentUrl))
+//            val it = retrofitUils.create(individual::class.java)
+//                .feedback(conditionBody)
+//                .subscribeOn(Schedulers.io())
+////                .awaitSingle()
+//                .subscribe({
+//                    println(it)
+//                },{})
+////            println(it)
+////            println(it.code())
+////        }catch (throwable: Throwable) {
+////            if (throwable is HttpException) {
+////                println(throwable.code())
+////            }
+////        }
+//    }
 
 
 }
