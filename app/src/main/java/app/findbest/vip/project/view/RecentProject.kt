@@ -4,16 +4,12 @@ import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
 import android.graphics.Color
-import android.net.Uri
 import android.os.Bundle
-import android.provider.MediaStore
 import android.view.Gravity
-import android.view.ViewGroup
 import android.widget.*
 import app.findbest.vip.R
 import app.findbest.vip.project.api.ProjectApi
 import app.findbest.vip.utils.*
-import com.alibaba.fastjson.JSON
 import com.bumptech.glide.Glide
 import io.reactivex.schedulers.Schedulers
 import kotlinx.coroutines.CoroutineStart
@@ -21,7 +17,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.rx2.awaitSingle
-import okhttp3.RequestBody
 import org.jetbrains.anko.*
 import retrofit2.HttpException
 

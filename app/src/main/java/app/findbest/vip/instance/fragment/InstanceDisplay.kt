@@ -13,27 +13,20 @@ import android.graphics.Color
 import android.view.*
 import org.jetbrains.anko.*
 import android.graphics.Typeface
-import android.view.inputmethod.InputMethodManager
 import app.findbest.vip.R
 import app.findbest.vip.commonfrgmant.FragmentParent
 
-import android.os.Handler
-import android.os.Looper
 import android.widget.*
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import app.findbest.vip.instance.activity.InstanceActivity
 import app.findbest.vip.instance.activity.InstanceSearchActivity
-import app.findbest.vip.instance.activity.InvitationActivity
 import app.findbest.vip.instance.adapter.InstanceListAdapter
 import app.findbest.vip.instance.api.InstanceApi
 import app.findbest.vip.instance.model.Instance
 import app.findbest.vip.utils.RetrofitUtils
 import app.findbest.vip.utils.recyclerView
 import app.findbest.vip.utils.smartRefreshLayout
-import com.biao.pulltorefresh.OnRefreshListener
-import com.biao.pulltorefresh.PtrHandler
-import com.biao.pulltorefresh.PtrLayout
 import com.scwang.smart.refresh.footer.BallPulseFooter
 import com.scwang.smart.refresh.header.MaterialHeader
 import com.scwang.smart.refresh.layout.SmartRefreshLayout
@@ -42,9 +35,7 @@ import com.scwang.smart.refresh.layout.constant.SpinnerStyle
 import io.reactivex.schedulers.Schedulers
 import kotlinx.coroutines.*
 import kotlinx.coroutines.rx2.awaitSingle
-import org.jetbrains.anko.support.v4.toast
 import org.json.JSONObject
-import java.lang.Runnable
 
 
 class InstanceDisplay : FragmentParent() {

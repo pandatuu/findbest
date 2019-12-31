@@ -1,7 +1,6 @@
 package app.findbest.vip.instance.fragment
 
 import android.content.Context
-import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -13,28 +12,17 @@ import android.graphics.Color
 import android.view.*
 import org.jetbrains.anko.*
 import android.graphics.Typeface
-import android.view.inputmethod.InputMethodManager
 import app.findbest.vip.R
 import app.findbest.vip.commonfrgmant.FragmentParent
 
-import android.os.Handler
-import android.os.Looper
 import android.widget.*
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import app.findbest.vip.instance.activity.InstanceActivity
-import app.findbest.vip.instance.adapter.InstanceListAdapter
 import app.findbest.vip.instance.adapter.MyProjectListAdapter
 import app.findbest.vip.instance.api.InstanceApi
-import app.findbest.vip.instance.model.Instance
 import app.findbest.vip.instance.model.ProjectItem
 import app.findbest.vip.utils.*
 import click
-import cn.jiguang.imui.view.ShapeImageView
-import com.biao.pulltorefresh.OnRefreshListener
-import com.biao.pulltorefresh.PtrHandler
-import com.biao.pulltorefresh.PtrLayout
-import com.bumptech.glide.Glide
 import com.scwang.smart.refresh.footer.BallPulseFooter
 import com.scwang.smart.refresh.header.MaterialHeader
 import com.scwang.smart.refresh.layout.SmartRefreshLayout
@@ -44,14 +32,11 @@ import io.reactivex.schedulers.Schedulers
 import kotlinx.coroutines.*
 import kotlinx.coroutines.rx2.awaitSingle
 import okhttp3.RequestBody
-import org.jetbrains.anko.support.v4.toast
 import org.json.JSONArray
 import org.json.JSONObject
 import withTrigger
-import java.lang.Runnable
 import java.text.SimpleDateFormat
 import java.util.*
-import kotlin.collections.HashSet
 
 
 class InvitationList : FragmentParent() {

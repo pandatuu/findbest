@@ -9,7 +9,6 @@ import android.view.ViewGroup
 import android.widget.LinearLayout
 import androidx.fragment.app.Fragment
 import app.findbest.vip.R
-import app.findbest.vip.painter.fragment.PainterScreenStyle
 import app.findbest.vip.project.api.ProjectApi
 import app.findbest.vip.project.model.StyleModel
 import app.findbest.vip.project.model.TypeModel

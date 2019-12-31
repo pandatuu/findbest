@@ -31,10 +31,12 @@ class CheckToken(val mContext: Context) {
 
             if(!jwt.subject.isNullOrBlank()){
                 val role = jwt.getClaim("roles").asList(String::class.java)[0]
+                val id = jwt.getClaim("sub").asString()
                 val mPerferences: SharedPreferences =
                     PreferenceManager.getDefaultSharedPreferences(mContext)
                 val mEditor = mPerferences.edit()
                 mEditor.putString("role", role)
+                mEditor.putString("userId", id)
                 mEditor.commit()
 
                 return jwt.getClaim("accountStatus").asString() ?: ""

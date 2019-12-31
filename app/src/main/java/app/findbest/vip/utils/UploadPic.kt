@@ -2,7 +2,6 @@ package cgland.job.sk_android.utils
 
 import android.content.Context
 import android.graphics.*
-import android.widget.ImageView
 import app.findbest.vip.R
 import app.findbest.vip.utils.MimeType
 import app.findbest.vip.utils.RetrofitUtils

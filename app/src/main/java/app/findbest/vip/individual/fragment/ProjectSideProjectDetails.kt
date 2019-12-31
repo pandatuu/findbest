@@ -10,8 +10,6 @@ import android.widget.LinearLayout
 import androidx.fragment.app.Fragment
 import app.findbest.vip.R
 import app.findbest.vip.individual.api.IndividualApi
-import app.findbest.vip.project.api.ProjectApi
-import app.findbest.vip.project.fragment.ProjectApplicants
 import app.findbest.vip.utils.RetrofitUtils
 import io.reactivex.schedulers.Schedulers
 import kotlinx.coroutines.CoroutineStart
