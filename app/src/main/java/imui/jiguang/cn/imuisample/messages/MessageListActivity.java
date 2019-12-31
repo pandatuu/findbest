@@ -1318,7 +1318,7 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
 
 
     /**
-     * 发送系统消息给自己
+     * 发送系统消息给
      */
     private void sendSystemMessageToOther(String mes) {
         reconnectSocket();
@@ -1850,6 +1850,10 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
                 Intent intent = new Intent(MessageListActivity.this, videoRequestActivity.class);
                 startActivity(intent);
                 overridePendingTransition(R.anim.fade_in_out, R.anim.fade_in_out);
+
+
+
+
 
 
 

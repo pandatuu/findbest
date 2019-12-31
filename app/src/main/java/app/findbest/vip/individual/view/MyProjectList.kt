@@ -46,6 +46,9 @@ class MyProjectList : BaseActivity(), MyProjectListAdapter.ListAdapter{
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        val role = intent.getStringExtra("role")
+        isPainter = role == "consumer"
+
         frameLayout {
             id = mainId
             verticalLayout {

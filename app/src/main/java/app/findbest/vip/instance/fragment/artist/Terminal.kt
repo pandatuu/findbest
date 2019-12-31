@@ -36,6 +36,7 @@ import withTrigger
 
 
 class Terminal:FragmentParent() {
+
     var toolbar1: Toolbar? = null
     private var mContext: Context? = null
     lateinit var activityInstance: Context
@@ -47,6 +48,7 @@ class Terminal:FragmentParent() {
     lateinit var vipImage:ImageView
     lateinit var stateImage:ImageView
     lateinit var sharedPreferences: SharedPreferences
+    var role = ""
 
     companion object {
         fun newInstance(context: Context): Terminal {
@@ -71,6 +73,7 @@ class Terminal:FragmentParent() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        role = sharedPreferences.getString("role","").toString()
        return createView()
     }
 
@@ -405,7 +408,7 @@ class Terminal:FragmentParent() {
                             }.lparams(width = dip(6),height = dip(11)){
                             }
                             setOnClickListener {
-                                activity!!.startActivity<MyProjectList>()
+                                activity!!.startActivity<MyProjectList>("role" to role)
                             }
                         }.lparams(width = matchParent,height = wrapContent){
                             topMargin = dip(25)
@@ -419,38 +422,38 @@ class Terminal:FragmentParent() {
                             topMargin = dip(16)
                         }
 
-                        linearLayout {
-                            gravity = Gravity.CENTER
-                            imageView {
-                                imageResource = R.mipmap.ico_update_nor
-                            }.lparams(width = dip(19),height = dip(18))
-
-                            textView {
-                                textResource = R.string.tl_version_update
-                                textSize = 13f
-                                textColor = Color.parseColor("#333333")
-                            }.lparams(width = wrapContent,height = matchParent){
-                                leftMargin = dip(10)
-                                rightMargin = dip(15)
-                                weight = 1f
-                            }
-
-                            textView {
-                                text = "V1.1.22"
-                                textSize = 15f
-                                textColor = Color.parseColor("#333333")
-                            }
-
-                            imageView {
-                                imageResource = R.mipmap.btn_slect_nor
-                            }.lparams(width = dip(6),height = dip(11)){
-                                leftMargin = dip(12)
-                            }
-                        }.lparams(width = matchParent,height = wrapContent){
-                            topMargin = dip(16)
-                            leftMargin = dip(20)
-                            rightMargin = dip(20)
-                        }
+//                        linearLayout {
+//                            gravity = Gravity.CENTER
+//                            imageView {
+//                                imageResource = R.mipmap.ico_update_nor
+//                            }.lparams(width = dip(19),height = dip(18))
+//
+//                            textView {
+//                                textResource = R.string.tl_version_update
+//                                textSize = 13f
+//                                textColor = Color.parseColor("#333333")
+//                            }.lparams(width = wrapContent,height = matchParent){
+//                                leftMargin = dip(10)
+//                                rightMargin = dip(15)
+//                                weight = 1f
+//                            }
+//
+//                            textView {
+//                                text = "V1.1.22"
+//                                textSize = 15f
+//                                textColor = Color.parseColor("#333333")
+//                            }
+//
+//                            imageView {
+//                                imageResource = R.mipmap.btn_slect_nor
+//                            }.lparams(width = dip(6),height = dip(11)){
+//                                leftMargin = dip(12)
+//                            }
+//                        }.lparams(width = matchParent,height = wrapContent){
+//                            topMargin = dip(16)
+//                            leftMargin = dip(20)
+//                            rightMargin = dip(20)
+//                        }
 
                         view {
                             backgroundColor = Color.parseColor("#E3E3E3")
@@ -595,21 +598,17 @@ class Terminal:FragmentParent() {
                 val before= result?.get("before").toString().trim().replace("\"","")
                 val making= result?.get("making").toString().trim().replace("\"","")
                 val finish= result?.get("finish").toString().trim().replace("\"","")
-                val role = sharedPreferences.getString("role","")?.trim()
 
                 // 公司方
-                if(role == "consumer"){
-                    if(auditState!!){
-                        stateImage.imageResource =  R.mipmap.certified_enterprise
-                    }else{
-                        stateImage.imageResource = R.mipmap.not_certified
-                    }
+                if(auditState!!){
+                    stateImage.imageResource =  R.mipmap.certified_enterprise
                 }else{
-                    if(auditState!!){
-                        stateImage.imageResource =  R.mipmap.retist
-                    }else{
-                        stateImage.imageResource = R.mipmap.not_certified
-                    }
+                    stateImage.imageResource = R.mipmap.not_certified
+                }
+                if(auditState!!){
+                    stateImage.imageResource =  R.mipmap.retist
+                }else{
+                    stateImage.imageResource = R.mipmap.not_certified
                 }
 
                 // 金额数据
