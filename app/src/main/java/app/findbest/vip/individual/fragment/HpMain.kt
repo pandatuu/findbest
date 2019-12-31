@@ -13,6 +13,7 @@ import android.webkit.WebResourceRequest
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import android.widget.Toast
+import app.findbest.vip.R
 import app.findbest.vip.commonfrgmant.FragmentParent
 import app.findbest.vip.utils.DialogUtils
 import app.findbest.vip.utils.MyDialog
@@ -82,7 +83,7 @@ class HpMain:FragmentParent() {
                                 DialogUtils.hideLoading(thisDialog)
                             }
                         }
-                        this.loadUrl("https://www.huanqiu.com/")
+                        this.loadUrl(activity?.getString(R.string.helpUrl))
                     }.lparams(width = matchParent,height = matchParent){}
                 }.lparams(width = matchParent,height = wrapContent){
                     weight = 1f

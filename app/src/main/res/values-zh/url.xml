@@ -15,5 +15,7 @@
 
     <string name="storageUrl" translatable="false">http://192.168.2.200:3300/</string>
 
+    <!--制作方使用帮助链接-->
+    <string name="helpUrl">https://www.huanqiu.com/</string>
 
 </resources>

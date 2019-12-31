@@ -7,5 +7,7 @@
     <string name="imUrl" translatable="false">https://im.skjob.jp/</string>
     <string name="jitsiUrl" translatable="false">https://meet.skjob.jp/</string> <!-- https://jitsi.skjob.jp/-->
     <string name="storageUrl" translatable="false">https://storage.skjob.jp/</string>
+    <!--制作方使用帮助链接-->
+    <string name="helpUrl">https://www.huanqiu.com/</string>
 
 </resources>
