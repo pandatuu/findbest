@@ -58,6 +58,14 @@
     <string name="project_xiangmu">项目</string>
 
     <!--消息-->
+    <!--消息 搜索-->
+    <string name="chat_sreach">搜索</string>
+    <string name="chat_cancel">取消</string>
+    <!--消息 首页-->
+    <string name="system_msg">系统消息</string>
+    <string name="isRead">已读</string>
+    <string name="notRead">未读</string>
+    <!--消息 聊天-->
     <string name="use_translate">启用翻译</string>
     <string name="use_disTranslate">停用翻译</string>
 

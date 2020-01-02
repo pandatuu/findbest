@@ -1,4 +1,4 @@
-package app.findbest.vip.message.fragment
+package app.findbest.vip.message.frament
 
 import android.os.Bundle
 import android.view.*
@@ -11,17 +11,13 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import app.findbest.vip.R
 import app.findbest.vip.message.adapter.MessageChatRecordListAdapter
+import app.findbest.vip.message.fragment.MessageChatRecordFragment
 import app.findbest.vip.message.model.ChatRecordModel
 import app.findbest.vip.utils.recyclerView
-
-
 import com.facebook.react.bridge.UiThreadUtil.runOnUiThread
 import imui.jiguang.cn.imuisample.messages.MessageListActivity
-import org.json.JSONArray
-
 
 class MessageChatRecordListFragment : Fragment(){
-
 
     private var mContext: Context? = null
     lateinit var recycler : RecyclerView
@@ -29,22 +25,18 @@ class MessageChatRecordListFragment : Fragment(){
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        if(parentFragment==null){
-            mContext = activity
+        mContext = if(parentFragment==null){
+            activity
         }else{
-            mContext = parentFragment?.context
+            parentFragment?.context
         }
     }
 
     companion object {
-
-
         fun newInstance(): MessageChatRecordListFragment {
-            val fragment = MessageChatRecordListFragment()
-            return fragment
+            return MessageChatRecordListFragment()
         }
     }
-
 
     override fun onStart() {
         super.onStart()
@@ -52,9 +44,7 @@ class MessageChatRecordListFragment : Fragment(){
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        var fragmentView=createView()
-
-        return fragmentView
+        return createView()
     }
 
     fun createView(): View {
@@ -65,8 +55,8 @@ class MessageChatRecordListFragment : Fragment(){
 
                     recycler= recyclerView{
                         overScrollMode = View.OVER_SCROLL_NEVER
-                        var manager= LinearLayoutManager(this.getContext())
-                        setLayoutManager(manager)
+                        val manager= LinearLayoutManager(this.context)
+                        layoutManager = manager
                         //manager.setStackFromEnd(true);
 
                     }.lparams {
@@ -81,49 +71,33 @@ class MessageChatRecordListFragment : Fragment(){
         }.view
 
         adapter = MessageChatRecordListAdapter(recycler, mutableListOf()) { item ->
-            var intent =Intent(mContext, MessageListActivity::class.java)
+            val intent =Intent(mContext, MessageListActivity::class.java)
             intent.putExtra("hisId",item.uid)
             intent.putExtra("companyName",item.companyName)
             intent.putExtra("hisName",item.userName)
-
             intent.putExtra("hislogo",item.avatar)
 
-
-
-
-            if(item.lastPositionId==null || "".equals(item.lastPositionId)){
-
+            if(item.lastPositionId==null || "" == item.lastPositionId){
                 println("跳转到聊天界面之前,数据异常:缺少lastPositionId")
             }else{
                 println("跳转到聊天界面之前position_id"+item.lastPositionId)
             }
-
             intent.putExtra("position_id",item.lastPositionId)
-
-  
-
             startActivity(intent)
             activity!!.overridePendingTransition(R.anim.right_in, R.anim.left_out)
         }
-        recycler.setAdapter(adapter)
+        recycler.adapter = adapter
 
         setRecyclerAdapter(
             MessageChatRecordFragment.chatRecordList
         )
-
-
-
-
         return view
     }
 
-
     fun setRecyclerAdapter(chatRecordList: MutableList<ChatRecordModel>){
-        runOnUiThread(Runnable {
+        runOnUiThread {
             adapter.setChatRecords(chatRecordList)
-        })
+        }
     }
-
-
 }
 

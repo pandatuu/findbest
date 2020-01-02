@@ -41,6 +41,7 @@ android {
     }
     lintOptions {
         abortOnError false
+        disable 'ExtraTranslation' //"xxx" is translated here but not found in default locale
     }
 
     packagingOptions {

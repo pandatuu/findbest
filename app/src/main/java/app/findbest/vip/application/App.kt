@@ -10,7 +10,7 @@ import androidx.preference.PreferenceManager
 import app.findbest.vip.R
 import app.findbest.vip.message.fragment.MessageChatRecordFragment
 
-import app.findbest.vip.message.fragment.MessageChatRecordListFragment
+import app.findbest.vip.message.frament.MessageChatRecordListFragment
 import app.findbest.vip.message.listener.ChatRecord
 import app.findbest.vip.message.listener.RecieveMessageListener
 import app.findbest.vip.message.model.ChatRecordModel
@@ -271,24 +271,22 @@ class App : Application() {
     //解析联系人列表数据
     fun getContactList(s: String) {
         try {
-            println("sssssssssssssssssssssssssssssssssssssssss")
-
             var chatRecordList: MutableList<ChatRecordModel> = mutableListOf()
-            var map: MutableMap<String, Int> = mutableMapOf()
-            var json: JSONObject = JSONObject(s)
+            val map: MutableMap<String, Int> = mutableMapOf()
+            val json: JSONObject = JSONObject(s)
 
 
-            var members: JSONArray =
+            val members: JSONArray =
                 json.getJSONObject("content").getJSONArray("members")
 
             chatRecordList = mutableListOf()
-            for (i in 0..members.length() - 1) {
-                var item = members.getJSONObject(i)
+            for (i in 0 until members.length()) {
+                val item = members.getJSONObject(i)
                 println(item)
                 //未读条数
-                var unreads = item.getInt("unreads").toString()
+                val unreads = item.getInt("unreads")
                 //对方名
-                var name = item["name"].toString()
+                val name = item["name"].toString()
                 //最后一条消息
                 var lastMsg: JSONObject? = null
                 if (item.has("lastMsg") && !item.getString("lastMsg").equals("") && !item.getString(
@@ -302,25 +300,25 @@ class App : Application() {
 
                 var msg = ""
                 //对方ID
-                var uid = item["uid"].toString()
+                val uid = item["uid"].toString()
 
                 //对方头像
                 var avatar = item["avatar"].toString()
                 if (avatar != null) {
-                    var arra = avatar.split(";")
+                    val arra = avatar.split(";")
                     if (arra != null && arra.size > 0) {
                         avatar = arra[0]
                     }
                 }
 
                 //公司
-                var companyName = item["companyName"].toString()
+                val companyName = item["companyName"].toString()
 
                 var createdTime=""
                 if (lastMsg == null) {
                 } else {
-                    var content = lastMsg.getJSONObject("content")
-                    var contentType = content.getString("type")
+                    val content = lastMsg.getJSONObject("content")
+                    val contentType = content.getString("type")
                     if (contentType.equals("image")) {
                         msg = "[图片]"
                     } else if (contentType.equals("voice")) {
@@ -339,18 +337,19 @@ class App : Application() {
                 }
 
 
-                var ChatRecordModel = ChatRecordModel(
+                val chatRecordModel = ChatRecordModel(
                     uid,
                     name,
                     "",
                     avatar,
                     msg,
                     unreads,
+                    item.getJSONObject("lastMsg"),
                     companyName,
                     "",
                     createdTime
                 )
-                chatRecordList.add(ChatRecordModel)
+                chatRecordList.add(chatRecordModel)
             }
 
 

@@ -1,5 +1,6 @@
 package app.findbest.vip.commonactivity
 
+import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.view.KeyEvent
@@ -14,6 +15,7 @@ import app.findbest.vip.instance.fragment.InstanceDisplay
 import app.findbest.vip.painter.fragment.PainterFragment
 import app.findbest.vip.individual.fragment.Terminal
 import app.findbest.vip.message.fragment.MessageChatRecordFragment
+import app.findbest.vip.message.model.ChatRecordModel
 import app.findbest.vip.project.fragment.ProjectFragment
 import app.findbest.vip.utils.BaseActivity
 

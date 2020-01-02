@@ -1,4 +1,4 @@
-package app.findbest.vip.message.adapter;
+package app.findbest.vip.message.adapter
 
 import android.annotation.SuppressLint
 import android.graphics.Color
@@ -40,10 +40,11 @@ class MessageChatRecordListAdapter(
         var userName: TextView? = null
         var message: TextView? = null
         var number: TextView? = null
+        var isRead: TextView? = null
         var position: TextView? = null
         var time: TextView? = null
 
-        var view = with(parent.context) {
+        val view = with(parent.context) {
             relativeLayout {
                 linearLayout {
                     backgroundResource = R.drawable.text_view_bottom_border
@@ -89,7 +90,7 @@ class MessageChatRecordListAdapter(
 
                             linearLayout {
                                 gravity = Gravity.CENTER_VERTICAL
-                                textView {
+                                isRead = textView {
                                     //  visibility=View.GONE
                                     backgroundResource=R.drawable.raduis_tag
                                     text = "已读"
@@ -208,7 +209,7 @@ class MessageChatRecordListAdapter(
             }
 
         }
-        return ViewHolder(view, userName, message, number, imageV, position, time)
+        return ViewHolder(view, userName, message, number,isRead, imageV, position, time)
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
@@ -227,25 +228,19 @@ class MessageChatRecordListAdapter(
         holder.position?.text =
             chatRecord[position].companyName + "  " + chatRecord[position].position
         holder.userName?.text = chatRecord[position].userName
-        holder.number?.text = chatRecord[position].number
+        holder.number?.text = chatRecord[position].number.toString()
         holder.time?.text = chatRecord[position].time
+        //已读
+        if(chatRecord[position].number>0){
+            holder.isRead?.text = context.resources.getText(R.string.notRead)
+        }else{
+            holder.isRead?.text = context.resources.getText(R.string.isRead)
+            holder.isRead?.backgroundResource = R.drawable.raduis_tag_notread
+            holder.isRead?.textColor = Color.parseColor("#FF666666")
+        }
 
-        //imageUri="https://static.dingtalk.com/media/lALPDgQ9qdWUaQfMyMzI_200_200.png_200x200q100.jpg"
         imageUri = chatRecord[position].avatar
-        println("加载图片")
-        println(imageUri)
-
-//        var option= ImageOptions.Builder()
-//            .setCrossFade(false)
-//            .setPriority(ImageOptions.LoadPriority.IMMEDIATE)
-//            .setDiskCacheStrategy(ImageOptions.DiskCache.ALL)
-//            .setSkipMemoryCache(false)
-//            .setRoundedCorners(true)
-//            .setRoundRadius(100)
-//            .build()
-
-        if (imageUri != null && !"".equals(imageUri) && imageUri.contains("http")) {
-
+        if (imageUri != null && "" != imageUri && imageUri.contains("http")) {
             Glide.with(context)
                 .load(imageUri)
                 .centerCrop()
@@ -253,34 +248,15 @@ class MessageChatRecordListAdapter(
                 .dontAnimate()
                 .placeholder(R.mipmap.default_avatar)
                 .into(holder.imageView)
-
-//
-//
-//            loadImage(imageUri,holder.imageView,object : OnImageListener{
-//                /**
-//                 * 图片加载失败
-//                 * @param msg 加载失败的原因
-//                 */
-//                override fun onFail(msg: String?) {
-//                    holder.imageView!!.setImageResource(R.mipmap.default_avatar)
-//                    chatRecord[position].avatar=""
-//                    println("失败")
-//
-//                }
-//
-//                /**
-//                 * 图片加载成功
-//                 * @param bitmap 加载成功生成的bitmap对象
-//                 */
-//                override fun onSuccess(bitmap: Bitmap?) {
-//                    println("成功")
-//
-//                }
-//
-//            },R.mipmap.default_avatar,R.mipmap.default_avatar,option)
-        } else {
-//            imageUri =
-//                "https://findbest-test-1258431445.cos.ap-chengdu.myqcloud.com/61967e90-b4b5-478b-94db-19b4ab338261.jpg"
+        } else if(imageUri == "0") {
+            Glide.with(context)
+                .load(R.mipmap.message_ico_message_nor)
+                .centerCrop()
+                .skipMemoryCache(false)
+                .dontAnimate()
+                .placeholder(R.mipmap.message_ico_message_nor)
+                .into(holder.imageView)
+        }else{
             Glide.with(context)
                 .load(imageUri)
                 .centerCrop()
@@ -292,7 +268,7 @@ class MessageChatRecordListAdapter(
 
 
         holder.bindItem(chatRecord[position], position, listener, context)
-        holder.setIsRecyclable(false);
+        holder.setIsRecyclable(false)
 
     }
 
@@ -304,6 +280,7 @@ class MessageChatRecordListAdapter(
         val userName: TextView?,
         val message: TextView?,
         val number: TextView?,
+        val isRead: TextView?,
         val imageView: ImageView,
         val position: TextView?,
         val time: TextView?

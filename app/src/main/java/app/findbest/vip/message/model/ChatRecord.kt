@@ -1,7 +1,5 @@
 package app.findbest.vip.message.model
-import android.os.Parcel
-import android.os.Parcelable
-import kotlinx.android.parcel.Parcelize
+import org.json.JSONObject
 import java.io.Serializable
 
 
@@ -11,7 +9,8 @@ data class ChatRecordModel(
     val position:String,
     var avatar:String,
     val massage:String,
-    val number:String,
+    val number:Int,
+    val lastMsg: JSONObject,
     val companyName:String,
     val lastPositionId:String,
     val time:String

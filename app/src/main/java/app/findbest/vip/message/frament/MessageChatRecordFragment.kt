@@ -1,5 +1,6 @@
 package app.findbest.vip.message.fragment
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.graphics.Color
@@ -16,6 +17,7 @@ import androidx.fragment.app.Fragment
 import app.findbest.vip.R
 import app.findbest.vip.application.App
 import app.findbest.vip.instance.activity.InstanceSearchActivity
+import app.findbest.vip.message.frament.MessageChatRecordListFragment
 import app.findbest.vip.message.listener.ChatRecord
 import app.findbest.vip.message.model.ChatRecordModel
 
@@ -35,10 +37,8 @@ import java.util.*
 
 class MessageChatRecordFragment : Fragment(),
     MessageChatRecordFilterMenuFragment.FilterMenu {
-
     var mHandler = Handler()
     private lateinit var mContext: Context
-
 
     //筛选菜单
     override fun getFilterMenuselect(index: Int) {
@@ -47,50 +47,6 @@ class MessageChatRecordFragment : Fragment(),
         val message = Message()
         Listhandler.sendMessage(message)
     }
-
-    //取消 搜索框
-//    override fun cancle() {
-//
-//        messageChatRecordListFragment.setRecyclerAdapter(chatRecordList, groupArray)
-//
-//
-//        var mTransaction = childFragmentManager.beginTransaction()
-//        messageChatRecordActionBarFragment = MessageChatRecordActionBarFragment.newInstance();
-//        mTransaction.replace(actionBar.id, messageChatRecordActionBarFragment!!)
-//        mTransaction.commit()
-//    }
-
-    //搜索框输入的文字
-//    override fun sendMessage(msg: String) {
-//
-//
-//        var NewList: MutableList<ChatRecordModel> = mutableListOf()
-//        for (item in chatRecordList) {
-//            if (item.userName.contains(msg)) {
-//                NewList.add(item)
-//            }
-//        }
-//
-//        messageChatRecordListFragment.setRecyclerAdapter(NewList, groupArray)
-//
-//    }
-
-
-    //打开搜索框
-//    override fun searchGotClick() {
-//
-//
-//        var NewList: MutableList<ChatRecordModel> = mutableListOf()
-//        messageChatRecordListFragment.setRecyclerAdapter(NewList, groupArray)
-//
-//
-//        var mTransaction = childFragmentManager.beginTransaction()
-//        messageChatRecordSearchActionBarFragment =
-//            MessageChatRecordSearchActionBarFragment.newInstance();
-//        mTransaction.replace(actionBar.id, messageChatRecordSearchActionBarFragment!!)
-//        mTransaction.commit()
-//    }
-
 
     lateinit var mainContainer: FrameLayout
     lateinit var middleMenu: FrameLayout
@@ -105,77 +61,35 @@ class MessageChatRecordFragment : Fragment(),
 
     var messageChatRecordSearchActionBarFragment: MessageChatRecordSearchActionBarFragment? = null
 
-
     var isFirstGotGroup: Boolean = true
-    var sdf=SimpleDateFormat("yyyy年MM月dd日")
+    @SuppressLint("SimpleDateFormat")
+    var sdf = SimpleDateFormat("yyyy-MM-dd")
     var year = sdf.format(Date()).substring(0,4)
-    private val Listhandler = object : Handler() {
+    private val Listhandler = @SuppressLint("HandlerLeak")
+    object : Handler() {
         override fun handleMessage(msg: Message) {
             println("+++++++++++++++++++++++")
             println(json)
             println("+++++++++++++++++++++++")
-            var type = json.getString("type")
-            if (type != null && type.equals("contactList")) {
-
-
-//                var array: JSONArray = json.getJSONObject("content").getJSONArray("groups")
-
-                var members: JSONArray = json.getJSONObject("content").getJSONArray("members")
-//                if (isFirstGotGroup) {
-//                    groupArray = JSONArray()
-//                }
-//                for (i in 0..array.length() - 1) {
-//                    var item = array.getJSONObject(i)
-//
-//                    var id = item.getInt("id")
-//                    var name = item.getString("name")
-//                    if (name == "全部") {
-//                        name = "全て"
-//                    }
-//                    if (name != null && !name.equals("約束済み")) {
-//                        map.put(name, id.toInt())
-//                    }
-//
-//                    if (id == groupId) {
-//
-//                        println("现在groupId")
-//                        println(groupId)
-//
-//                        members = item.getJSONArray("members")
-//                    }
-//                    if (isFirstGotGroup) {
-//                        if (id == 4) {
-//                            var group1 = item.getJSONArray("members")
-//                            groupArray.put(group1)
-//                        }
-//                        if (id == 5) {
-//                            var group2 = item.getJSONArray("members")
-//                            groupArray.put(group2)
-//                        }
-//                        if (id == 6) {
-//                            var group3 = item.getJSONArray("members")
-//                            groupArray.put(group3)
-//                        }
-//
-//
-//                    }
-//                }
+            val type = json.getString("type")
+            if (type != null && type == "contactList") {
+                val members: JSONArray = json.getJSONObject("content").getJSONArray("members")
                 isFirstGotGroup = true
                 chatRecordList = mutableListOf()
-                for (i in 0..members.length() - 1) {
-                    var item = members.getJSONObject(i)
+                for (i in 0 until members.length()) {
+                    val item = members.getJSONObject(i)
                     println(item)
                     //未读条数
-                    var unreads = item.getInt("unreads").toString()
+                    val unreads = item.getInt("unreads")
                     //对方名
-                    var name = item["name"].toString()
+                    val name = item["name"].toString()
 
                     var lastMsg: JSONObject? = null
-                    if (item.has("lastMsg") && item.getString("lastMsg") != null && !item.getString(
+                    if (item.has("lastMsg") && item.getString("lastMsg") != null && item.getString(
                             "lastMsg"
-                        ).equals("") && !item.getString(
+                        ) != "" && item.getString(
                             "lastMsg"
-                        ).equals("null")
+                        ) != "null"
                     ) {
                         lastMsg = (item.getJSONObject("lastMsg"))
                     }
@@ -184,63 +98,54 @@ class MessageChatRecordFragment : Fragment(),
 
                     var msg = ""
                     //对方ID
-                    var uid = item["uid"].toString()
+                    val uid = item["uid"].toString()
 
                     //对方头像
                     var avatar = item["avatar"].toString()
                     if (avatar != null) {
-                        var arra = avatar.split(";")
+                        val arra = avatar.split(";")
                         if (arra.size > 0) {
                             avatar = arra[0]
                         }
                     }
 
                     //公司
-                    var companyName = item["companyName"].toString()
+                    val companyName = item["companyName"].toString()
                     var  createdTime=""
-                    if (lastMsg == null) {
-                    } else {
-                        var content = lastMsg.getJSONObject("content")
-                        var contentType = content.getString("type")
-                        if (contentType.equals("image")) {
-                            msg = "[图片]"
-                        } else if (contentType.equals("voice")) {
-                            msg = "[语音]"
+                    if (lastMsg != null) {
+                        val content = lastMsg.getJSONObject("content")
+                        val contentType = content.getString("type")
+                        msg = if (contentType == "image") {
+                            "[图片]"
+                        } else if (contentType == "voice") {
+                            "[语音]"
                         } else {
-                            msg = content.getString("msg")
+                            content.getString("msg")
                         }
                         createdTime =sdf.format(Date(lastMsg!!.get("created").toString().toLong()))
-                        if(year  !=  createdTime.substring(0,4)){
-
-                        }else{
-                            createdTime=createdTime.substring(5,11)
+                        if (year == createdTime.substring(0,4)) {
+                            createdTime=createdTime.substring(5,createdTime.length)
                         }
 
                     }
 
-
-
-
-                    var ChatRecordModel = ChatRecordModel(
-                        uid,
-                        name,
-                        "",
-                        avatar,
-                        msg,
-                        unreads,
-                        companyName,
-                        "",
-                        createdTime
-                    )
-                    chatRecordList.add(ChatRecordModel)
+                    val chatRecordModel =
+                        ChatRecordModel(
+                            uid,
+                            if(item["uid"].toString() == "000000000000000000000000") mContext.resources.getString(R.string.system_msg) else name,
+                            "",
+                            if(item["uid"].toString() == "000000000000000000000000") "0" else avatar,
+                            msg,
+                            unreads,
+                            item.getJSONObject("lastMsg"),
+                            companyName,
+                            "",
+                            createdTime
+                        )
+                    chatRecordList.add(chatRecordModel)
                 }
 
             }
-            println("xxxxxxxxxxxxxxx")
-            println(chatRecordList)
-
-
-
             messageChatRecordListFragment.setRecyclerAdapter(chatRecordList)
 
         }
@@ -264,11 +169,9 @@ class MessageChatRecordFragment : Fragment(),
 
         isFirstGotGroup = true
 
-
         // DialogUtils.showLoading(this)
 
         if( socket!=null && socket?.isconnected()!!   &&(WebSocketState.OPEN == socket?.currentState || WebSocketState.CREATED == socket?.currentState)) {
-
 
             println("socket有效!!!")
             Handler().postDelayed({
@@ -277,13 +180,10 @@ class MessageChatRecordFragment : Fragment(),
                         override fun call(name: String?, error: Any?, data: Any?) {
                             println("Got message for :" + name + " error is :" + error + " data is :" + data)
                         }
-
                     })
             }, 200)
         } else {
             println("socket失效，重连中！！！！！！！+")
-
-
             application?.closeMessage()
         }
         // DialogUtils.hideLoading()
@@ -305,7 +205,6 @@ class MessageChatRecordFragment : Fragment(),
         }
     }
 
-
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -315,7 +214,7 @@ class MessageChatRecordFragment : Fragment(),
     }
 
     private fun createView(): View {
-        var mainContainerId = 1
+        val mainContainerId = 1
         //接受
         application = App.getInstance()
         socket = application?.socket
@@ -324,16 +223,13 @@ class MessageChatRecordFragment : Fragment(),
         application?.setChatRecord(object : ChatRecord {
             override fun requestContactList() {
             }
-
             override fun getContactList(str: String) {
                 json = JSONObject(str)
                 val message = Message()
                 Listhandler.sendMessage(message)
-
                 //(activity as PagesActivity).recruitInfoBottomMenuFragment.showData(str)
             }
         })
-
 
         val view = UI {
             mainContainer = frameLayout {
@@ -341,15 +237,13 @@ class MessageChatRecordFragment : Fragment(),
                 backgroundColorResource = R.color.white
                 verticalLayout {
                     //ActionBar
-                    var actionBarId = 2
+                    val actionBarId = 2
                     actionBar = frameLayout {
                         id = actionBarId
                         messageChatRecordActionBarFragment =
-                            MessageChatRecordActionBarFragment.newInstance();
+                            MessageChatRecordActionBarFragment.newInstance()
                         childFragmentManager.beginTransaction()
                             .replace(id, messageChatRecordActionBarFragment!!).commit()
-
-
                     }.lparams {
                         height = wrapContent
                         width = matchParent
@@ -357,49 +251,42 @@ class MessageChatRecordFragment : Fragment(),
 
                     //search
                     linearLayout {
-                            gravity=Gravity.CENTER
+                        gravity = Gravity.CENTER
                         //搜索框
                         linearLayout {
-
                             //去搜索
                             setOnClickListener {
-
-                                var intent = Intent(activity, InstanceSearchActivity::class.java)
-                                activity!!.startActivityForResult(intent,101)
-                                activity!!.overridePendingTransition(R.anim.right_in, R.anim.left_out)
-
+                                val intent = Intent(activity, InstanceSearchActivity::class.java)
+                                activity!!.startActivityForResult(intent, 101)
+                                activity!!.overridePendingTransition(
+                                    R.anim.right_in,
+                                    R.anim.left_out
+                                )
                             }
 
                             gravity = Gravity.CENTER_VERTICAL
-
                             backgroundResource = R.drawable.edit_text_background
-                            imageView() {
-
+                            imageView {
                                 setImageResource(R.mipmap.icon_search_nor)
-
-                            }.lparams() {
+                            }.lparams {
                                 width = dip(17)
                                 height = dip(17)
                                 leftMargin = dip(10)
 
                             }
-
                             isFocusable
-
                             searchEditText = editText {
-
-
                                 //去搜索
                                 setOnClickListener {
-
-                                    var intent = Intent(activity, InstanceSearchActivity::class.java)
-                                    activity!!.startActivityForResult(intent,22)
-                                    activity!!.overridePendingTransition(R.anim.right_in, R.anim.left_out)
-
+                                    val intent =
+                                        Intent(activity, InstanceSearchActivity::class.java)
+                                    activity!!.startActivityForResult(intent, 22)
+                                    activity!!.overridePendingTransition(
+                                        R.anim.right_in,
+                                        R.anim.left_out
+                                    )
                                 }
-
-
-                                setFocusable(false)
+                                isFocusable = false
                                 hint = "搜索"
                                 hintTextColor = Color.parseColor("#ff666666")
                                 backgroundColor = Color.TRANSPARENT
@@ -416,23 +303,19 @@ class MessageChatRecordFragment : Fragment(),
                                 width = matchParent
                                 height = matchParent
                             }
-
-
-                        }.lparams() {
+                        }.lparams {
                             width = matchParent
                             height = dip(30)
-                            leftMargin=dip(10)
-                            rightMargin=dip(10)
+                            leftMargin = dip(10)
+                            rightMargin = dip(10)
                         }
-
-
                     }.lparams {
                         height = dip(40)
                         width = matchParent
                     }
 
                     //middle
-                    var middleMenuId = 4
+                    val middleMenuId = 4
                     middleMenu = frameLayout {
                         id = middleMenuId
                         backgroundResource = R.color.originColor
@@ -442,71 +325,41 @@ class MessageChatRecordFragment : Fragment(),
                             height = dip(1)
                             width = matchParent
                         }
-
-
                     }.lparams {
                         height = wrapContent
                         width = matchParent
                     }
 
                     //list
-                    var listId = 5
+                    val listId = 5
                     recordList = frameLayout {
                         id = listId
-                        messageChatRecordListFragment = MessageChatRecordListFragment.newInstance();
+                        messageChatRecordListFragment = MessageChatRecordListFragment.newInstance()
                         childFragmentManager.beginTransaction()
                             .replace(id, messageChatRecordListFragment).commit()
 
-
-
-
-
-
-                        setOnClickListener(object : View.OnClickListener {
-
-                            override fun onClick(v: View?) {
-
-                                if (messageChatRecordSearchActionBarFragment != null) {
-                                    EmoticonsKeyboardUtils.closeSoftKeyboard(
-                                        messageChatRecordSearchActionBarFragment!!.editText
-                                    )
-                                }
-
-
+                        setOnClickListener {
+                            if (messageChatRecordSearchActionBarFragment != null) {
+                                EmoticonsKeyboardUtils.closeSoftKeyboard(
+                                    messageChatRecordSearchActionBarFragment!!.editText
+                                )
                             }
-
-                        })
-
+                        }
                     }.lparams {
                         height = 0
                         weight = 1f
                         width = matchParent
                     }
-//                    // bottom menu
-//                    var bottomMenuId = 6
-//                    bottomMenu = frameLayout {
-//                        id = bottomMenuId
-//                        bottomMenuFragment = BottomMenuFragment.newInstance(2, true);
-//                        childFragmentManager.beginTransaction().replace(id, bottomMenuFragment!!)
-//                            .commit()
-//                    }.lparams {
-//                        height = wrapContent
-//                        width = matchParent
-//                    }
-
-                }.lparams() {
+                }.lparams {
                     width = matchParent
                     height = matchParent
                 }
-
             }
         }.view
-
         application!!.setMessageChatRecordListFragment(messageChatRecordListFragment)
 
         return view
     }
-
 
     fun initRequest() {
         //发送消息请求,获取联系人列表
@@ -519,8 +372,5 @@ class MessageChatRecordFragment : Fragment(),
     override fun onDestroy() {
         super.onDestroy()
         application!!.setMessageChatRecordListFragment(null)
-
-
     }
-
 }
