@@ -656,6 +656,16 @@ public class MsgListAdapter<MESSAGE extends IMessage> extends RecyclerView.Adapt
         }
     }
 
+    public void updateMessage(String oldId) {
+        MESSAGE newMessage = getMessageById(oldId);
+        int position = getMessagePositionById(oldId);
+        if (position >= 0) {
+            Wrapper<MESSAGE> element = new Wrapper<>(newMessage);
+            mItems.set(position, element);
+            notifyItemChanged(position);
+        }
+    }
+
 
     public MESSAGE getMessageById(String oldId) {
         int position = getMessagePositionById(oldId);

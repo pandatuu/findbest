@@ -58,6 +58,7 @@
     <string name="project_xiangmu">项目</string>
     <!--消息-->
     <string name="use_translate">启用翻译</string>
+    <string name="use_disTranslate">停用翻译</string>
     <!--邀请画师-->
     <string name="invite_painter">邀请画师</string>
     <string name="send_invitation">发送邀请</string>
