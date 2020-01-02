@@ -1,6 +1,8 @@
 package app.findbest.vip.individual.fragment
 
 import android.annotation.SuppressLint
+import android.content.Context
+import android.content.SharedPreferences
 import android.graphics.Color
 import android.os.Bundle
 import android.view.Gravity
@@ -10,22 +12,25 @@ import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.fragment.app.Fragment
+import androidx.preference.PreferenceManager
 import app.findbest.vip.R
 import app.findbest.vip.project.model.ProjectInfoModel
 import org.jetbrains.anko.*
 import org.jetbrains.anko.support.v4.UI
 import java.text.SimpleDateFormat
 import java.util.*
-import kotlin.collections.ArrayList
 
 class ProjectDetailsDetails: Fragment() {
 
     companion object{
-        fun newInstance(): ProjectDetailsDetails{
-            return ProjectDetailsDetails()
+        fun newInstance(context: Context): ProjectDetailsDetails{
+            val fragment =  ProjectDetailsDetails()
+            fragment.mContext = context
+            return fragment
         }
     }
 
+    private lateinit var mContext: Context
     private lateinit var projectName: TextView //项目名称
     private lateinit var commitAtDate: TextView //截稿日期
     private lateinit var userBounty: TextView //个人单价
@@ -227,6 +232,8 @@ class ProjectDetailsDetails: Fragment() {
 
     @SuppressLint("SetTextI18n")
     private fun createV(): View {
+        val mPerferences: SharedPreferences =
+            PreferenceManager.getDefaultSharedPreferences(mContext)
         return UI {
             linearLayout {
                 scrollView {
@@ -282,7 +289,12 @@ class ProjectDetailsDetails: Fragment() {
                                             topMargin = dip(15)
                                         }
                                         textView {
-                                            text = "个人单价"
+                                            val type = mPerferences.getInt("userType", 0)
+                                            text = if(type == 1){
+                                                "个人单价"
+                                            }else{
+                                                "公司单价"
+                                            }
                                             textSize = 14f
                                             textColor = Color.parseColor("#FF999999")
                                         }.lparams {

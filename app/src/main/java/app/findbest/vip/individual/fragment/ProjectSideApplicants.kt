@@ -1,6 +1,7 @@
 package app.findbest.vip.individual.fragment
 
 import android.content.Context
+import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
 import android.view.Gravity
@@ -25,6 +26,7 @@ import com.scwang.smart.refresh.footer.BallPulseFooter
 import com.scwang.smart.refresh.header.MaterialHeader
 import com.scwang.smart.refresh.layout.SmartRefreshLayout
 import com.scwang.smart.refresh.layout.constant.SpinnerStyle
+import imui.jiguang.cn.imuisample.messages.MessageListActivity
 import io.reactivex.schedulers.Schedulers
 import kotlinx.coroutines.CoroutineStart
 import kotlinx.coroutines.Dispatchers
@@ -90,8 +92,20 @@ class ProjectSideApplicants : Fragment(), ProjectSideApplicantsAdapter.PrintedCr
         closeDialog()
     }
     //聊一聊
-    override fun chat(commitId: String) {
+    override fun chat(model: JsonObject) {
+        val provider = model["provider"].asJsonObject
+        val intent = Intent(mContext, MessageListActivity::class.java)
+        val id = if(!provider["id"].isJsonNull) provider["id"].asString else ""
+        val name = if(!provider["name"].isJsonNull) provider["name"].asString else ""
+        val avatar = if(!provider["avatar"].isJsonNull) provider["avatar"].asString else ""
+        intent.putExtra("hisId",id)
+        intent.putExtra("companyName","")
+        intent.putExtra("hisName",name)
+        intent.putExtra("hislogo",avatar)
+        intent.putExtra("position_id","")
 
+        startActivity(intent)
+        activity!!.overridePendingTransition(R.anim.right_in, R.anim.left_out)
     }
     //发送委托
     override fun send(commitId: String) {

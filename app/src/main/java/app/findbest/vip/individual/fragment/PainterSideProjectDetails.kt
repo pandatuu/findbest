@@ -64,7 +64,7 @@ class PainterSideProjectDetails : Fragment() {
                 val details = 2
                 frameLayout {
                     id = details
-                    demand = ProjectDetailsDetails.newInstance()
+                    demand = ProjectDetailsDetails.newInstance(mContext)
                     childFragmentManager.beginTransaction().add(details, demand!!).commit()
                 }.lparams(matchParent, dip(0)) {
                     weight = 1f

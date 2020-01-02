@@ -9,7 +9,7 @@ import retrofit2.http.POST
 
 interface UpLoadApi {
 
-    @POST("/api/v1/storage")
+    @POST("/api/v1/storage/chat-file")
     fun upLoadPic(@Body array : RequestBody): Observable<JsonObject>
 
     @POST("/api/v1/storage")

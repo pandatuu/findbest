@@ -24,23 +24,48 @@
             android:layout_height="wrap_content"
             android:layout_toRightOf="@id/aurora_iv_msgitem_avatar" />
 
-        <TextView
-            android:id="@+id/aurora_tv_msgitem_message"
-            style="@style/aurora_msgitem_msg_txt_style"
+        <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@id/aurora_tv_msgitem_receiver_display_name"
-            android:layout_centerVertical="true"
-            android:lineSpacingExtra="5dp"
-            android:layout_marginLeft="1dp"
-            android:paddingLeft="10dp"
-            android:paddingRight="10dp"
-            android:paddingTop="6dp"
-            android:paddingBottom="6dp"
-            android:gravity="left"
-            android:textSize="14sp"
-            android:textColor="#333333"
             android:layout_toRightOf="@id/aurora_iv_msgitem_avatar"
-            android:background="@drawable/radius_button_white" />
+            android:layout_centerVertical="true"
+            android:orientation="vertical">
+            <TextView
+                android:id="@+id/aurora_tv_msgitem_message"
+                style="@style/aurora_msgitem_msg_txt_style"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:lineSpacingExtra="5dp"
+                android:layout_marginLeft="1dp"
+                android:paddingLeft="10dp"
+                android:paddingRight="10dp"
+                android:paddingTop="6dp"
+                android:paddingBottom="6dp"
+                android:gravity="left"
+                android:textSize="14sp"
+                android:textColor="#333333"
+                android:background="@drawable/radius_button_white" />
+
+            <TextView
+                android:id="@+id/aurora_tv_msgitem_translate_message"
+                style="@style/aurora_msgitem_msg_txt_style"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/aurora_tv_msgitem_receiver_display_name"
+                android:layout_centerVertical="true"
+                android:lineSpacingExtra="5dp"
+                android:layout_marginLeft="1dp"
+                android:paddingLeft="10dp"
+                android:paddingRight="10dp"
+                android:paddingTop="6dp"
+                android:paddingBottom="6dp"
+                android:gravity="left"
+                android:textSize="14sp"
+                android:textColor="#333333"
+                android:layout_toRightOf="@id/aurora_iv_msgitem_avatar"
+                android:layout_marginTop="5dp"
+                android:background="@drawable/radius_button_white" />
+        </LinearLayout>
     </RelativeLayout>
 </LinearLayout>

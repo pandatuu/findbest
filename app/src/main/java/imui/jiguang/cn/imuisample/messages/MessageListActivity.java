@@ -147,6 +147,7 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
     String topBlankMessageId = null;
     private ArrayList<String> mPathList = new ArrayList<>();
     private ArrayList<String> mMsgIdList = new ArrayList<>();
+    private ArrayList<String> mUUIDlist = new ArrayList<>();
 
     ShadowFragment fragmentShadow = null;
 //    DropMenuFragment dropMenuFragment = null;
@@ -255,12 +256,14 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
                         return false;
                     }
                 });
-        mChatView.getSelectAlbumBtn().
-                setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                    }
-                });
+        ImageButton imageButton = mChatView.getSelectAlbumBtn();
+        if(imageButton!=null){
+            imageButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                }
+            });
+        }
 
         setGreeting();
 
@@ -281,13 +284,27 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
         translateText.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
-
                 Toast toast = Toast.makeText(getApplicationContext(), "这里是翻译", Toast.LENGTH_SHORT);
                 toast.setGravity(Gravity.CENTER, 0, 0);
                 toast.show();
+                if(translateText.getText().toString() == getResources().getText(R.string.use_translate)){
+                    new  MyMessage().isTrans = true;
 
+                    for(String id : mUUIDlist){
+                        mAdapter.updateMessage(id);
+                    }
+                    mAdapter.notifyDataSetChanged();
 
+                    translateText.setText(getResources().getText(R.string.use_disTranslate));
+                }else{
+                    new  MyMessage().isTrans = false;
+                    for(String id : mUUIDlist){
+                        mAdapter.updateMessage(id);
+                    }
+                    mAdapter.notifyDataSetChanged();
+
+                    translateText.setText(getResources().getText(R.string.use_translate));
+                }
             }
         });
 
@@ -1318,7 +1335,7 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
 
 
     /**
-     * 发送系统消息给自己
+     * 发送系统消息给
      */
     private void sendSystemMessageToOther(String mes) {
         reconnectSocket();
@@ -1854,6 +1871,10 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
 
 
 
+
+
+
+
             }
 
             //发送文字消息
@@ -2074,6 +2095,11 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
             message.setMessageStatus(IMessage.MessageStatus.SEND_GOING);
             mAdapter.addToStart(message, true);
 
+
+            //todo
+            mUUIDlist.add(message.getMsgId());
+
+
             final String thisMessageId = message.getMsgId();
 
             if (channelSend == null && HIS_ID != null && !HIS_ID.trim().equals("")) {
@@ -2225,12 +2251,17 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
                 if (type != null && type.equals("p2p")) {
                     MyMessage message = null;
                     String contentMsg = content.get("msg").toString();
+                    String transMsg = content.get("msg").toString();
+
+
+
                     String msgType = content.get("type").toString();
                     if (msgType != null && msgType.equals("text")) {
                         //文字消息
 //                      String path=getEmotion(contentMsg);
 //                      if(path==null){
                         message = new MyMessage(contentMsg, IMessage.MessageType.RECEIVE_TEXT.ordinal());
+                        message.setTransMsg(transMsg);
 //                        }
 //                        else{
 //                            message = new MyMessage(contentMsg, IMessage.MessageType.RECEIVE_EMOTICON.ordinal());
@@ -2238,6 +2269,14 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
 //                            mPathList.add(path+"");
 //                            mMsgIdList.add(message.getMsgId());
 //                        }
+
+
+                        //todo
+                        mUUIDlist.add(message.getMsgId());
+
+
+
+
                     } else if (msgType != null && msgType.equals("image")) {
                         //图片消息
                         message = new MyMessage(null, IMessage.MessageType.RECEIVE_IMAGE.ordinal());
@@ -3153,6 +3192,18 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
                                 latestVideoMessage.add(message);
 
                             }
+
+
+
+
+                            //todo
+                            mUUIDlist.add(message.getMsgId());
+
+
+
+
+
+
 
                             list.add(message);
                         }
@@ -4378,15 +4429,15 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
 
 
     private void sendTimeBar(){
-        Date now = new Date();
-        //大于5分钟,显示时间定位消息
-
-
-
-
-        if (latestMessageTime == null || now.getTime() - latestMessageTime > 1000 * 60 * 5) {
-            sendSystemMessageToMyself("TIME" + now.getTime() + "");
-        }
+//        Date now = new Date();
+//        //大于5分钟,显示时间定位消息
+//
+//
+//
+//
+//        if (latestMessageTime == null || now.getTime() - latestMessageTime > 1000 * 60 * 5) {
+//            sendSystemMessageToMyself("TIME" + now.getTime() + "");
+//        }
     }
 
     //销毁时

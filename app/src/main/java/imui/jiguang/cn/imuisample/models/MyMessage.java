@@ -12,6 +12,7 @@ public class MyMessage implements IMessage {
 
     private long id;
     private String text;
+    private String translateText;
     private String timeString;
     private int type;
     private IUser user;
@@ -19,6 +20,7 @@ public class MyMessage implements IMessage {
     private long duration;
     private String progress;
     private MessageStatus mMsgStatus = MessageStatus.CREATED;
+    public static Boolean isTrans = false;
 
 
     //消息通道中接收到的消息的id
@@ -36,7 +38,10 @@ public class MyMessage implements IMessage {
     //交换信息id / 面试状态信息id
     private String interviewId;
 
-
+    @Override
+    public   boolean getEnable(){
+        return isTrans;
+    }
 
     private JobInfoModel jsobInfo=null;
 
@@ -63,6 +68,9 @@ public class MyMessage implements IMessage {
         this.interviewId = interviewId;
     }
 
+    public void setTransMsg(String msg){
+        this.translateText = msg;
+    }
 
     public String getInterviewId() {
         return interviewId;

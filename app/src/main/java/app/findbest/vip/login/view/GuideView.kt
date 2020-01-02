@@ -4,11 +4,11 @@ import android.content.SharedPreferences
 import android.graphics.Color
 import android.os.Bundle
 import android.view.Gravity
-import androidx.appcompat.app.AppCompatActivity
 import androidx.preference.PreferenceManager
 import app.findbest.vip.R
 import app.findbest.vip.commonactivity.MainActivity
 import app.findbest.vip.login.api.LoginApi
+import app.findbest.vip.utils.BaseActivity
 import app.findbest.vip.utils.RetrofitUtils
 import io.reactivex.schedulers.Schedulers
 import kotlinx.coroutines.CoroutineStart
@@ -18,18 +18,13 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.rx2.awaitSingle
 import org.jetbrains.anko.*
 
-class GuideView: AppCompatActivity() {
+class GuideView: BaseActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         frameLayout {
-            backgroundColor = Color.WHITE
-            imageView {
-                imageResource = R.mipmap.launchimage
-            }.lparams{
-                gravity = Gravity.CENTER
-            }
+            backgroundColor = Color.TRANSPARENT
         }
     }
 

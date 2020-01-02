@@ -16,13 +16,15 @@
     <string name="tl_transaction_complete">交易完成</string>
     <string name="tl_account_balance">账户余额</string>
     <string name="tl_rmb">人民币</string>
-    <string name="tl_frozen_amount">冻结金额</string>
+    <string name="tl_usd">美元</string>
     <string name="tl_jpy">日元</string>
     <string name="tl_won">韩元</string>
+    <string name="tl_frozen_amount">冻结金额</string>
     <string name="tl_my_project">我的项目</string>
     <string name="tl_version_update">版本更新</string>
     <string name="tl_use_help">使用帮助</string>
     <string name="tl_feedback">意见反馈</string>
+    <string name="tl_loginout">账户退出</string>
     <string name="tl_about_us">关于我们</string>
 
     <!--UsActionbar-->
@@ -59,6 +61,7 @@
 
     <!--消息-->
     <string name="use_translate">启用翻译</string>
+    <string name="use_disTranslate">停用翻译</string>
     <!--邀请画师-->
     <string name="invite_painter">邀请画师</string>
     <string name="send_invitation">发送邀请</string>

@@ -383,7 +383,7 @@ public class ChatInputView extends LinearLayout
         mSwitchCameraBtn = (ImageButton) findViewById(R.id.aurora_ib_camera_switch);
 
         mSelectPhotoView = (SelectPhotoView) findViewById(R.id.aurora_view_selectphoto);
-        mSelectAlbumIb = (ImageButton) findViewById(R.id.aurora_imagebtn_selectphoto_album);
+//        mSelectAlbumIb = (ImageButton) findViewById(R.id.aurora_imagebtn_selectphoto_album);
         mSelectPhotoView.setOnFileSelectedListener(this);
         mSelectPhotoView.setOnPhotoSendListener(this);
         mSelectPhotoView.initData();

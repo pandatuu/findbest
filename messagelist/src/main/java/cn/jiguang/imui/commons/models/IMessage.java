@@ -127,8 +127,11 @@ public interface IMessage {
         SEND_DRAFT,
         RECEIVE_GOING,
         RECEIVE_SUCCEED,
-        RECEIVE_FAILED;
+        RECEIVE_FAILED,
     }
+
+
+   boolean getEnable();
 
     MessageStatus getMessageStatus();
 

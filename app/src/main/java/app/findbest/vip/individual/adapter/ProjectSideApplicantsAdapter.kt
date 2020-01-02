@@ -27,7 +27,7 @@ class ProjectSideApplicantsAdapter(
 
     interface PrintedCrad {
         fun oneClick(str: String)
-        fun chat(commitId: String)
+        fun chat(model: JsonObject)
         fun send(commitId: String)
         fun refuse(commitId: String)
     }
@@ -36,6 +36,7 @@ class ProjectSideApplicantsAdapter(
     private lateinit var headPic: ImageView
     private lateinit var name: TextView
     private lateinit var stars: LinearLayout
+    private lateinit var commitButton: LinearLayout
     private lateinit var commit: TextView
     private lateinit var imageList: HorizontalScrollView
     private lateinit var isRefuse: LinearLayout
@@ -71,7 +72,7 @@ class ProjectSideApplicantsAdapter(
                             }.lparams(wrapContent, dip(8)) {
                                 centerVertically()
                             }
-                            linearLayout {
+                            commitButton = linearLayout {
                                 gravity = Gravity.CENTER_VERTICAL
                                 imageView {
                                     imageResource = R.mipmap.ico_leave_message_nor
@@ -82,14 +83,6 @@ class ProjectSideApplicantsAdapter(
                                     textColor = Color.parseColor("#FF666666")
                                 }.lparams {
                                     leftMargin = dip(5)
-                                }
-                                setOnClickListener {
-                                    if (isCommit) {
-                                        commit.visibility = LinearLayout.GONE
-                                    } else {
-                                        commit.visibility = LinearLayout.VISIBLE
-                                    }
-                                    isCommit = !isCommit
                                 }
                             }.lparams(wrapContent, matchParent) {
                                 alignParentRight()
@@ -223,6 +216,15 @@ class ProjectSideApplicantsAdapter(
 
         if (!mData[position]["comment"].isJsonNull) {
             commit.text = mData[position]["comment"].asString
+            commitButton.setOnClickListener {
+                if(mData[position]["comment"].asString!=""){
+                    if (commit.visibility != LinearLayout.GONE) {
+                        commit.visibility = LinearLayout.GONE
+                    } else {
+                        commit.visibility = LinearLayout.VISIBLE
+                    }
+                }
+            }
         }
 
         val view = with(mContext) {
@@ -259,7 +261,7 @@ class ProjectSideApplicantsAdapter(
         }
 
         chat.setOnClickListener {
-            printedCrad.chat(mData[position]["id"].asString)
+            printedCrad.chat(mData[position])
         }
         send.setOnClickListener {
             printedCrad.send(mData[position]["id"].asString)
