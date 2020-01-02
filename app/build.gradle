@@ -128,7 +128,7 @@ dependencies {
     //actionBar沉底
     implementation 'com.jaeger.statusbarutil:library:1.5.1'
     //视频
-    implementation('org.jitsi.react:jitsi-meet-sdk:+') { transitive = true }
+    implementation('org.jitsi.react:jitsi-meet-sdk:2.2.2') { transitive = true }
     //socket
     implementation('io.github.sac:SocketclusterClientJava:1.7.5') {
         exclude group: 'org.json', module: 'json'

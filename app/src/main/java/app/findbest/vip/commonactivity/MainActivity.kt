@@ -12,13 +12,12 @@ import androidx.fragment.app.Fragment
 import app.findbest.vip.commonfrgmant.BottomButton
 import app.findbest.vip.instance.fragment.InstanceDisplay
 import app.findbest.vip.painter.fragment.PainterFragment
-import app.findbest.vip.instance.fragment.artist.Terminal
+import app.findbest.vip.individual.fragment.Terminal
 import app.findbest.vip.message.fragment.MessageChatRecordFragment
 import app.findbest.vip.project.fragment.ProjectFragment
 import app.findbest.vip.utils.BaseActivity
 
 import org.jetbrains.anko.*
-import org.jetbrains.anko.support.v4.toast
 
 class MainActivity : BaseActivity() {
 

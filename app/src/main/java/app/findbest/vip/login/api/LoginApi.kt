@@ -23,4 +23,9 @@ interface LoginApi {
     @Headers("Content-Type: application/json")
     @PATCH("/api/v1/users/reset-password")
     fun resetPwd(@Body array: RequestBody): Observable<Response<JsonObject>>
+
+    //登出
+    @Headers("Content-Type: application/json")
+    @PATCH("/api/v1/users/logout")
+    fun logout(): Observable<Response<JsonObject>>
 }

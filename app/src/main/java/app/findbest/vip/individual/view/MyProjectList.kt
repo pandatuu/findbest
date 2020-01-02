@@ -37,6 +37,7 @@ class MyProjectList : BaseActivity(), MyProjectListAdapter.ListAdapter{
     private lateinit var smart: SmartRefreshLayout
     private var projectSideList: MyProjectListAdapter? = null
     private lateinit var status: TextView
+    private var popup: PopupWindow? = null
 
     var nowPage = 0
     val mainId = 1
@@ -58,8 +59,16 @@ class MyProjectList : BaseActivity(), MyProjectListAdapter.ListAdapter{
                         gravity = Gravity.CENTER
                         toolbar {
                             navigationIconResource = R.mipmap.icon_back
+                            setOnClickListener {
+                                finish()
+                                overridePendingTransition(R.anim.left_in, R.anim.right_out)
+                            }
                         }.lparams(dip(10), dip(18))
-                    }.lparams(dip(20), dip(20)) {
+                        setOnClickListener {
+                            finish()
+                            overridePendingTransition(R.anim.left_in, R.anim.right_out)
+                        }
+                    }.lparams(dip(30), dip(25)) {
                         alignParentBottom()
                         alignParentLeft()
                         leftMargin = dip(15)
@@ -98,33 +107,51 @@ class MyProjectList : BaseActivity(), MyProjectListAdapter.ListAdapter{
                             val second = la.findViewById<LinearLayout>(R.id.secondNum)
                             val third = la.findViewById<LinearLayout>(R.id.thirdNum)
                             val forth = la.findViewById<LinearLayout>(R.id.forthNum)
-                            val popup = PopupWindow(la, wrapContent, wrapContent)
-                            popup.isTouchable = true
-                            popup.showAsDropDown(it)
-                            popup.isFocusable = true
+                            if(popup==null){
+                                popup = PopupWindow(la, wrapContent, wrapContent)
+                                popup?.isTouchable = true
+                                popup?.showAsDropDown(it)
+                                popup?.isFocusable = true
+                            }else{
+                                popup?.dismiss()
+                                popup = null
+                            }
+
                             first.setOnClickListener {
-                                status.text = "全部"
-                                screenStatus = 3
-                                popup.dismiss()
-                                smart.autoRefresh()
+                                if(popup!=null){
+                                    status.text = "全部"
+                                    screenStatus = 3
+                                    popup?.dismiss()
+                                    popup = null
+                                    smart.autoRefresh()
+                                }
                             }
                             second.setOnClickListener {
-                                status.text = "发布阶段"
-                                screenStatus = 0
-                                popup.dismiss()
-                                smart.autoRefresh()
+                                if(popup!=null){
+                                    status.text = "发布阶段"
+                                    screenStatus = 0
+                                    popup?.dismiss()
+                                    popup = null
+                                    smart.autoRefresh()
+                                }
                             }
                             third.setOnClickListener {
-                                status.text = "制作阶段"
-                                screenStatus = 1
-                                popup.dismiss()
-                                smart.autoRefresh()
+                                if(popup!=null){
+                                    status.text = "制作阶段"
+                                    screenStatus = 1
+                                    popup?.dismiss()
+                                    popup = null
+                                    smart.autoRefresh()
+                                }
                             }
                             forth.setOnClickListener {
-                                status.text = "交易完成"
-                                screenStatus = 2
-                                popup.dismiss()
-                                smart.autoRefresh()
+                                if(popup!=null){
+                                    status.text = "交易完成"
+                                    screenStatus = 2
+                                    popup?.dismiss()
+                                    popup = null
+                                    smart.autoRefresh()
+                                }
                             }
                         }
                     }.lparams {
@@ -234,6 +261,9 @@ class MyProjectList : BaseActivity(), MyProjectListAdapter.ListAdapter{
                 }
                 projectSideList?.resetItems(list)
             }
+            if(it.code() == 403){
+                toast("forbidden")
+            }
         } catch (throwable: Throwable) {
             if (throwable is HttpException) {
                 println(throwable.message())
@@ -327,6 +357,9 @@ class MyProjectList : BaseActivity(), MyProjectListAdapter.ListAdapter{
                     list.add(it.asJsonObject)
                 }
                 projectSideList?.resetItems(list)
+            }
+            if(it.code() == 403){
+                toast("forbidden")
             }
         } catch (throwable: Throwable) {
             if (throwable is HttpException) {
