@@ -48,7 +48,7 @@ class MyProjectList : BaseActivity(), MyProjectListAdapter.ListAdapter{
         super.onCreate(savedInstanceState)
 
         val role = intent.getStringExtra("role")
-        isPainter = role == "consumer"
+        isPainter = role != "consumer"
 
         frameLayout {
             id = mainId
