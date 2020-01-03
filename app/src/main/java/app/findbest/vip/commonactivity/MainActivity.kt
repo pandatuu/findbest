@@ -123,13 +123,13 @@ class MainActivity : BaseActivity() {
                     .commit()
             }
             4 -> {
-                topFragment = MessageChatRecordFragment.newInstance();
+                topFragment = MessageChatRecordFragment.newInstance(this@MainActivity)
                 supportFragmentManager.beginTransaction()
                     .replace(mainFrameLayout.id, topFragment)
                     .commit()
             }
             5 -> {
-                topFragment = Terminal.newInstance(this@MainActivity);
+                topFragment = Terminal.newInstance(this@MainActivity)
                 supportFragmentManager.beginTransaction()
                     .replace(mainFrameLayout.id, topFragment)
                     .commit()

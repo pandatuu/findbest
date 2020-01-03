@@ -84,7 +84,7 @@
 
 
         <!-- 注册-选择昵称页 -->
-        <activity android:name=".instance.activity.InvitationActivity"
+        <activity android:name=".instance.view.InvitationActivity"
             android:windowSoftInputMode="adjustPan"
             android:theme="@style/AppTheme.NoActionBar">
         </activity>
@@ -96,7 +96,7 @@
         </activity>
 
 
-        <activity android:name=".instance.activity.InstanceSearchActivity"
+        <activity android:name=".instance.view.InstanceSearchActivity"
             android:windowSoftInputMode="stateVisible"
             android:theme="@style/AppTheme.NoActionBar">
         </activity>
@@ -157,7 +157,7 @@
         </activity>
 
 
-        <activity android:name=".instance.activity.InstanceActivity"
+        <activity android:name=".instance.view.InstanceActivity"
             android:windowSoftInputMode="adjustPan"
             android:launchMode="standard"
             android:theme="@style/AppTheme.NoActionBar">

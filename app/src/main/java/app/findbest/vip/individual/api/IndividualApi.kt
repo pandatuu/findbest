@@ -35,8 +35,6 @@ interface IndividualApi {
     @PATCH("/api/v1/applies/reject/{commitId}")
     fun refuseApplies(@Path("commitId") commitId :String): Observable<Response<JsonObject>>
 
-
-
     //项目方取消邀请
     @Headers("Content-Type: application/json")
     @PATCH("/api/v1/invites/cancel/{inviteId}")
@@ -56,4 +54,15 @@ interface IndividualApi {
     @Headers("Content-Type: application/json")
     @PATCH("/api/v1/invites/reject/{inviteId}")
     fun painterRefuseInvite(@Path("inviteId") inviteId :String, @Body body : RequestBody): Observable<Response<JsonObject>>
+
+
+    //获取个人信息
+    @Headers("Content-Type: application/json")
+    @GET("api/v1/user/information/detail")
+    fun personInformation(): Observable<Response<JsonObject>>
+
+    //意见反馈
+    @Headers("Content-Type: application/json")
+    @POST("api/v1/feedback")
+    fun feedback(@Body array: RequestBody): Observable<Response<JsonObject>>
 }

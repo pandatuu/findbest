@@ -1,13 +1,13 @@
-package app.findbest.vip.instance.activity
+package app.findbest.vip.instance.view
 
 import android.os.Bundle
-import app.findbest.vip.instance.fragment.InstanceSearch
+import app.findbest.vip.instance.fragment.ChatSearch
 import app.findbest.vip.utils.BaseActivity
 import org.jetbrains.anko.frameLayout
 import org.jetbrains.anko.matchParent
 import org.jetbrains.anko.verticalLayout
 
-class InstanceSearchActivity : BaseActivity() {
+class ChatSearchActivity : BaseActivity() {
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -22,7 +22,7 @@ class InstanceSearchActivity : BaseActivity() {
             frameLayout {
                 id = topPartId
 
-                val instanceSearch = InstanceSearch.newInstance(this@InstanceSearchActivity)
+                val instanceSearch = ChatSearch.newInstance(this@ChatSearchActivity)
                 supportFragmentManager.beginTransaction().add(id, instanceSearch).commit()
 
             }.lparams {

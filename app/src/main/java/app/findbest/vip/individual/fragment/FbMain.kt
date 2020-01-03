@@ -15,26 +15,18 @@ import android.widget.TextView
 import anet.channel.util.Utils.context
 import app.findbest.vip.R
 import app.findbest.vip.commonfrgmant.FragmentParent
-import app.findbest.vip.individual.api.individual
 import app.findbest.vip.utils.RetrofitUtils
 import click
 import com.alibaba.fastjson.JSON
 import io.reactivex.schedulers.Schedulers
-import kotlinx.coroutines.CoroutineStart
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.rx2.awaitSingle
 import okhttp3.MediaType
 import okhttp3.RequestBody
 import org.jetbrains.anko.*
-import org.jetbrains.anko.sdk27.coroutines.onClick
 import org.jetbrains.anko.support.v4.UI
-import retrofit2.HttpException
 import withTrigger
-import android.R.attr.password
 import android.annotation.SuppressLint
 import android.view.inputmethod.InputMethodManager
+import app.findbest.vip.individual.api.IndividualApi
 import org.jetbrains.anko.support.v4.toast
 
 
@@ -146,7 +138,7 @@ class FbMain : FragmentParent() {
 
         val retrofitUils = RetrofitUtils(activity!!, this.getString(R.string.developmentUrl))
 
-        retrofitUils.create(individual::class.java)
+        retrofitUils.create(IndividualApi::class.java)
             .feedback(conditionBody)
             .subscribeOn(Schedulers.io())
             .subscribe({

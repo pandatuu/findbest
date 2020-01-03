@@ -13,39 +13,16 @@ import android.graphics.Color
 import android.view.*
 import org.jetbrains.anko.*
 import android.graphics.Typeface
-import android.view.inputmethod.InputMethodManager
 import app.findbest.vip.R
 import app.findbest.vip.commonfrgmant.FragmentParent
 
-import android.os.Handler
-import android.os.Looper
 import android.widget.*
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
-import app.findbest.vip.instance.activity.InstanceActivity
-import app.findbest.vip.instance.activity.InvitationActivity
-import app.findbest.vip.instance.adapter.InstanceListAdapter
-import app.findbest.vip.instance.api.InstanceApi
-import app.findbest.vip.instance.model.Instance
+import app.findbest.vip.instance.view.InvitationActivity
 import app.findbest.vip.utils.*
 import click
-import cn.jiguang.imui.view.ShapeImageView
-import com.biao.pulltorefresh.OnRefreshListener
-import com.biao.pulltorefresh.PtrHandler
-import com.biao.pulltorefresh.PtrLayout
 import com.bumptech.glide.Glide
-import com.scwang.smart.refresh.footer.BallPulseFooter
-import com.scwang.smart.refresh.header.MaterialHeader
-import com.scwang.smart.refresh.layout.SmartRefreshLayout
-import com.scwang.smart.refresh.layout.constant.SpinnerStyle
 
-import io.reactivex.schedulers.Schedulers
-import kotlinx.coroutines.*
-import kotlinx.coroutines.rx2.awaitSingle
-import org.jetbrains.anko.support.v4.toast
-import org.json.JSONObject
 import withTrigger
-import java.lang.Runnable
 
 
 class InstanceDetail : FragmentParent() {
@@ -64,16 +41,12 @@ class InstanceDetail : FragmentParent() {
         } else {
             mContext = activity
         }
-
-
     }
 
     companion object {
         fun newInstance(context: Context): InstanceDetail {
-            var f = InstanceDetail()
+            val f = InstanceDetail()
             f.activityInstance = context
-
-
             return f
         }
     }
@@ -83,8 +56,7 @@ class InstanceDetail : FragmentParent() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        var fragmentView = createView()
-        return fragmentView
+        return createView()
     }
 
 

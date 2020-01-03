@@ -37,11 +37,11 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 
-class InstanceSearch : FragmentParent() {
+class ChatSearch : FragmentParent() {
 
     companion object {
-        fun newInstance( activity: FragmentActivity): InstanceSearch {
-            val f = InstanceSearch()
+        fun newInstance( activity: FragmentActivity): ChatSearch {
+            val f = ChatSearch()
             f.outActivity = activity
             return f
         }

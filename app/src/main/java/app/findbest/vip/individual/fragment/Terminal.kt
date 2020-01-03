@@ -20,7 +20,7 @@ import androidx.recyclerview.widget.RecyclerView
 import app.findbest.vip.R
 import app.findbest.vip.commonfrgmant.FragmentParent
 import app.findbest.vip.individual.adapter.PersonAccountAdapter
-import app.findbest.vip.individual.api.individual
+import app.findbest.vip.individual.api.IndividualApi
 import app.findbest.vip.individual.view.*
 import app.findbest.vip.login.api.LoginApi
 import app.findbest.vip.login.view.LoginActivity
@@ -569,7 +569,7 @@ class Terminal : FragmentParent() {
         try {
             val retrofitUils =
                 RetrofitUtils(activityInstance, this.getString(R.string.developmentUrl))
-            val it = retrofitUils.create(individual::class.java)
+            val it = retrofitUils.create(IndividualApi::class.java)
                 .personInformation()
                 .subscribeOn(Schedulers.io())
                 .awaitSingle()
