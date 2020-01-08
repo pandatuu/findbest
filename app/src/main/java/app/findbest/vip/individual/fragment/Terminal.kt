@@ -204,8 +204,12 @@ class Terminal : FragmentParent() {
                         //应征项目那一排
                         linearLayout {
                             verticalLayout {
+                                setOnClickListener {
+                                    activity!!.startActivity<MyProjectList>("status" to "beforeNumber")
+                                    activity!!.overridePendingTransition(R.anim.right_in, R.anim.left_out)
+                                }
                                 beforeNumber = textView {
-                                    text = "0 "
+                                    text = "0"
                                     textSize = 25f
                                     textColor = Color.WHITE
                                 }.lparams {
@@ -223,6 +227,10 @@ class Terminal : FragmentParent() {
                                 weight = 1f
                             }
                             verticalLayout {
+                                setOnClickListener {
+                                    activity!!.startActivity<MyProjectList>("status" to "makingNumber")
+                                    activity!!.overridePendingTransition(R.anim.right_in, R.anim.left_out)
+                                }
                                 makingNumber = textView {
                                     text = "0"
                                     textSize = 25f
@@ -243,6 +251,10 @@ class Terminal : FragmentParent() {
                             }
 
                             verticalLayout {
+                                setOnClickListener {
+                                    activity!!.startActivity<MyProjectList>("status" to "finishNumber")
+                                    activity!!.overridePendingTransition(R.anim.right_in, R.anim.left_out)
+                                }
                                 finishNumber = textView {
                                     text = "0"
                                     textSize = 25f

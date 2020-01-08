@@ -5,10 +5,7 @@ import android.graphics.Typeface
 import android.os.Bundle
 import android.view.Gravity
 import android.view.View
-import android.widget.FrameLayout
-import android.widget.LinearLayout
-import android.widget.PopupWindow
-import android.widget.TextView
+import android.widget.*
 import androidx.recyclerview.widget.RecyclerView
 import app.findbest.vip.R
 import app.findbest.vip.commonfrgmant.NullDataPageFragment
@@ -32,11 +29,9 @@ import kotlinx.coroutines.rx2.awaitSingle
 import org.jetbrains.anko.*
 import retrofit2.HttpException
 
-class MyProjectList : BaseActivity(), MyProjectListAdapter.ListAdapter{
+class MyProjectList : BaseActivity(){
 
-    private lateinit var recycle: RecyclerView
     private lateinit var smart: SmartRefreshLayout
-    private var projectSideList: MyProjectListAdapter? = null
     private var listFragment: MyProjectListFragment? = null
     private lateinit var status: TextView
     private lateinit var listFram: FrameLayout
@@ -48,9 +43,19 @@ class MyProjectList : BaseActivity(), MyProjectListAdapter.ListAdapter{
     var screenStatus = 3
     val nullId = 4
     var isNullData = false
+    //弹窗是否可以点击
+    var isDialogClick = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        val statusText = intent.getStringExtra("status") ?: ""
+        screenStatus = when(statusText){
+            "beforeNumber" -> 0
+            "makingNumber" -> 1
+            "finishNumber" -> 2
+            else -> 3
+        }
 
         val role = intent.getStringExtra("role")
         isPainter = role != "consumer"
@@ -94,7 +99,12 @@ class MyProjectList : BaseActivity(), MyProjectListAdapter.ListAdapter{
                         gravity = Gravity.BOTTOM
                         status = textView {
                             gravity = Gravity.BOTTOM
-                            text = "全部"
+                            text = when(statusText){
+                                "beforeNumber" -> "发布阶段"
+                                "makingNumber" -> "制作阶段"
+                                "finishNumber" -> "交易完成"
+                                else -> "全部"
+                            }
                             textSize = 15f
                             textColor = Color.parseColor("#FF333333")
                         }.lparams {
@@ -107,6 +117,13 @@ class MyProjectList : BaseActivity(), MyProjectListAdapter.ListAdapter{
                             gravity = Gravity.CENTER
                         }
                         setOnClickListener {
+                            if(!isDialogClick){
+                                val toast =
+                                    Toast.makeText(applicationContext, "正在加载中...", Toast.LENGTH_SHORT)
+                                toast.setGravity(Gravity.CENTER, 0, 0)
+                                toast.show()
+                                return@setOnClickListener
+                            }
                             val la = View.inflate(this@MyProjectList, R.layout.screen_status, null)
                             val first = la.findViewById<LinearLayout>(R.id.firstNum)
                             val second = la.findViewById<LinearLayout>(R.id.secondNum)
@@ -171,12 +188,14 @@ class MyProjectList : BaseActivity(), MyProjectListAdapter.ListAdapter{
                         setEnableAutoLoadMore(false)
                         setRefreshHeader(MaterialHeader(this@MyProjectList))
                         setOnRefreshListener {
+                            isDialogClick = false
                             GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
                                 if (isPainter)
                                     getPainterSideList()
                                 else
                                     getProjectSideList()
                                 it.finishRefresh(1000)
+                                isDialogClick = true
                             }
                         }
                         setRefreshFooter(
@@ -185,12 +204,14 @@ class MyProjectList : BaseActivity(), MyProjectListAdapter.ListAdapter{
                             )
                         )
                         setOnLoadMoreListener {
+                            isDialogClick = false
                             GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
                                 if (isPainter)
                                     getPainterSideList(nowPage + 1)
                                 else
                                     getProjectSideList(nowPage + 1)
                                 it.finishLoadMore(1000)
+                                isDialogClick = true
                             }
                         }
                         listFram = frameLayout {
@@ -209,17 +230,6 @@ class MyProjectList : BaseActivity(), MyProjectListAdapter.ListAdapter{
             }
         }
         smart.autoRefresh()
-    }
-
-    //点击某一项目
-    override fun oneClick(id: String, status: Int) {
-        if (isPainter) {
-            startActivity<PainterSideProjectInfo>("projectId" to id, "status" to status)
-            overridePendingTransition(R.anim.right_in, R.anim.left_out)
-        } else {
-            startActivity<ProjectSideProjectInfo>("projectId" to id, "status" to status)
-            overridePendingTransition(R.anim.right_in, R.anim.left_out)
-        }
     }
 
     //画师方接口

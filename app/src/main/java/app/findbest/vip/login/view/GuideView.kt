@@ -41,6 +41,7 @@ class GuideView: BaseActivity() {
         }else{
             //没登录过，都去登录页面
             startActivity<LoginActivity>()
+            overridePendingTransition(R.anim.right_in, R.anim.left_out)
         }
     }
 
