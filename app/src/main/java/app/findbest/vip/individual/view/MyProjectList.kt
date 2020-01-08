@@ -5,17 +5,18 @@ import android.graphics.Typeface
 import android.os.Bundle
 import android.view.Gravity
 import android.view.View
+import android.widget.FrameLayout
 import android.widget.LinearLayout
 import android.widget.PopupWindow
 import android.widget.TextView
-import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import app.findbest.vip.R
+import app.findbest.vip.commonfrgmant.NullDataPageFragment
 import app.findbest.vip.individual.adapter.MyProjectListAdapter
 import app.findbest.vip.individual.api.IndividualApi
+import app.findbest.vip.individual.fragment.MyProjectListFragment
 import app.findbest.vip.utils.BaseActivity
 import app.findbest.vip.utils.RetrofitUtils
-import app.findbest.vip.utils.recyclerView
 import app.findbest.vip.utils.smartRefreshLayout
 import com.google.gson.JsonObject
 import com.scwang.smart.refresh.footer.BallPulseFooter
@@ -36,19 +37,23 @@ class MyProjectList : BaseActivity(), MyProjectListAdapter.ListAdapter{
     private lateinit var recycle: RecyclerView
     private lateinit var smart: SmartRefreshLayout
     private var projectSideList: MyProjectListAdapter? = null
+    private var listFragment: MyProjectListFragment? = null
     private lateinit var status: TextView
+    private lateinit var listFram: FrameLayout
     private var popup: PopupWindow? = null
 
     var nowPage = 0
     val mainId = 1
     var isPainter = false
     var screenStatus = 3
+    val nullId = 4
+    var isNullData = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         val role = intent.getStringExtra("role")
-        isPainter = role == "consumer"
+        isPainter = role != "consumer"
 
         frameLayout {
             id = mainId
@@ -188,24 +193,21 @@ class MyProjectList : BaseActivity(), MyProjectListAdapter.ListAdapter{
                                 it.finishLoadMore(1000)
                             }
                         }
-                        recycle = recyclerView {
-                            layoutManager = LinearLayoutManager(this@MyProjectList)
-                            projectSideList = MyProjectListAdapter(
-                                this@MyProjectList, this@MyProjectList,
-                                arrayListOf()
-                            )
-                            adapter = projectSideList
+                        listFram = frameLayout {
+                            id = nullId
+                            listFragment = MyProjectListFragment.newInstance(this@MyProjectList,isPainter)
+                            supportFragmentManager.beginTransaction().add(nullId,listFragment!!).commit()
                         }
-                        val lp = recycle.layoutParams
-                        lp.width = LinearLayout.LayoutParams.MATCH_PARENT
-                        lp.height = LinearLayout.LayoutParams.MATCH_PARENT
+                        val listFramlp = listFram.layoutParams
+                        listFramlp.width = LinearLayout.LayoutParams.MATCH_PARENT
+                        listFramlp.height = LinearLayout.LayoutParams.MATCH_PARENT
+
                     }.lparams(matchParent, matchParent) {
                         setMargins(dip(10), 0, dip(10), 0)
                     }
                 }.lparams(matchParent, matchParent)
             }
         }
-
         smart.autoRefresh()
     }
 
@@ -253,13 +255,19 @@ class MyProjectList : BaseActivity(), MyProjectListAdapter.ListAdapter{
             }
             if (it.code() in 200..299) {
                 val model = it.body()!!.data
-                nowPage = 1
-
-                val list = mutableListOf<JsonObject>()
-                model.forEach {
-                    list.add(it.asJsonObject)
+                if(model.size() > 0){
+                    isNullData = false
+                    nowPage = 1
+                    val list = mutableListOf<JsonObject>()
+                    model.forEach {
+                        list.add(it.asJsonObject)
+                    }
+                    listFragment?.resetItems(list)
+                }else{
+                    isNullData = true
+                    val nullData = NullDataPageFragment.newInstance()
+                    supportFragmentManager.beginTransaction().add(nullId,nullData).commit()
                 }
-                projectSideList?.resetItems(list)
             }
             if(it.code() == 403){
                 toast("forbidden")
@@ -302,13 +310,15 @@ class MyProjectList : BaseActivity(), MyProjectListAdapter.ListAdapter{
             }
             if (it.code() in 200..299) {
                 val model = it.body()!!.data
-                nowPage = page
+                if(!isNullData){
+                    nowPage = page
 
-                val list = mutableListOf<JsonObject>()
-                model.forEach {
-                    list.add(it.asJsonObject)
+                    val list = mutableListOf<JsonObject>()
+                    model.forEach {
+                        list.add(it.asJsonObject)
+                    }
+                    listFragment?.addItems(list)
                 }
-                projectSideList?.addItems(list)
             }
         } catch (throwable: Throwable) {
             if (throwable is HttpException) {
@@ -350,13 +360,20 @@ class MyProjectList : BaseActivity(), MyProjectListAdapter.ListAdapter{
             }
             if (it.code() in 200..299) {
                 val model = it.body()!!.data
-                nowPage = 1
+                if(model.size() > 0){
+                    isNullData = false
+                    nowPage = 1
 
-                val list = mutableListOf<JsonObject>()
-                model.forEach {
-                    list.add(it.asJsonObject)
+                    val list = mutableListOf<JsonObject>()
+                    model.forEach {
+                        list.add(it.asJsonObject)
+                    }
+                    listFragment?.resetItems(list)
+                }else{
+                    isNullData = true
+                    val nullData = NullDataPageFragment.newInstance()
+                    supportFragmentManager.beginTransaction().add(nullId,nullData).commit()
                 }
-                projectSideList?.resetItems(list)
             }
             if(it.code() == 403){
                 toast("forbidden")
@@ -399,13 +416,14 @@ class MyProjectList : BaseActivity(), MyProjectListAdapter.ListAdapter{
             }
             if (it.code() in 200..299) {
                 val model = it.body()!!.data
-                nowPage = page
-
-                val list = mutableListOf<JsonObject>()
-                model.forEach {
-                    list.add(it.asJsonObject)
+                if(!isNullData){
+                    nowPage = page
+                    val list = mutableListOf<JsonObject>()
+                    model.forEach {
+                        list.add(it.asJsonObject)
+                    }
+                    listFragment?.addItems(list)
                 }
-                projectSideList?.addItems(list)
             }
         } catch (throwable: Throwable) {
             if (throwable is HttpException) {

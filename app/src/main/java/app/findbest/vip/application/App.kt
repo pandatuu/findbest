@@ -344,7 +344,7 @@ class App : Application() {
                     avatar,
                     msg,
                     unreads,
-                    item.getJSONObject("lastMsg"),
+                    if(!item.isNull("lastMsg"))item.getJSONObject("lastMsg") else null,
                     companyName,
                     "",
                     createdTime
