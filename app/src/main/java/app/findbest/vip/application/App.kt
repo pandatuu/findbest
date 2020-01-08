@@ -1,20 +1,31 @@
 package app.findbest.vip.application
 
+import android.annotation.SuppressLint
 import android.app.Application
+import android.app.Notification
+import android.app.NotificationChannel
+import android.app.NotificationManager
+import android.content.Context
 import android.content.SharedPreferences
+import android.graphics.BitmapFactory
 import android.util.Log
+import android.widget.RemoteViews
 import androidx.constraintlayout.widget.Constraints.TAG
+import androidx.core.app.NotificationCompat
 import com.umeng.commonsdk.UMConfigure
 import com.umeng.message.PushAgent
 import androidx.preference.PreferenceManager
 import app.findbest.vip.R
+import app.findbest.vip.login.view.GuideView
 import app.findbest.vip.message.fragment.MessageChatRecordFragment
 
 import app.findbest.vip.message.frament.MessageChatRecordListFragment
 import app.findbest.vip.message.listener.ChatRecord
 import app.findbest.vip.message.listener.RecieveMessageListener
+import app.findbest.vip.message.listener.VideoListener
 import app.findbest.vip.message.model.ChatRecordModel
 import com.alibaba.fastjson.JSON
+import com.jeremyliao.liveeventbus.LiveEventBus
 import com.neovisionaries.ws.client.WebSocketException
 import com.neovisionaries.ws.client.WebSocketFrame
 import com.umeng.message.IUmengRegisterCallback
@@ -23,6 +34,10 @@ import org.json.JSONArray
 import org.json.JSONObject
 import java.text.SimpleDateFormat
 import java.util.*
+import com.umeng.message.entity.UMessage
+import com.umeng.message.UmengMessageHandler
+import com.umeng.message.UmengNotificationClickHandler
+import org.jetbrains.anko.startActivity
 
 
 class App : Application() {
@@ -31,27 +46,33 @@ class App : Application() {
     private val appSecret = "245e0ab8fa4cada8d858591b214a2d21"
 
 
+    var inviteVideo = false
 
 
     companion object {
-        private var instance: App? = null
+        private var instance: App? = App()
         fun getInstance(): App? {
             return instance
         }
 
 
     }
+
     private var chatRecord: ChatRecord? = null
 
 
     lateinit var socket: Socket
 
     var mRecieveMessageListener: RecieveMessageListener? = null
+    var mVideoListener: VideoListener? = null
     private var messageChatRecordListFragment: MessageChatRecordListFragment? = null
 
-    var sdf= SimpleDateFormat("yyyy年MM月dd日")
-    var year = sdf.format(Date()).substring(0,4)
+    var sdf = SimpleDateFormat("yyyy年MM月dd日")
+    var year = sdf.format(Date()).substring(0, 4)
     private var myId = ""
+    private var videoHisName = ""
+    private var videoHisAvatar = ""
+    var isVideo = true
 
     private val defaultPreferences: SharedPreferences
         get() = PreferenceManager.getDefaultSharedPreferences(this)
@@ -63,9 +84,12 @@ class App : Application() {
         super.onCreate()
 
         instance = this
-
+        LiveEventBus
+            .config()
+            .supportBroadcast(this)
+            .lifecycleObserverAlwaysActive(true)
+            .autoClear(true)
         UMConfigure.init(this, appKey, "Umeng", UMConfigure.DEVICE_TYPE_PHONE, appSecret)
-
         //获取消息推送代理示例
         val mPushAgent = PushAgent.getInstance(this)
         //注册推送服务，每次调用register方法都会回调该接口
@@ -83,6 +107,70 @@ class App : Application() {
                 Log.e(TAG, "注册失败：-------->  p0:$p0,p1:$p1")
             }
         })
+
+        mPushAgent.messageHandler = object : UmengMessageHandler() {
+            @SuppressLint("WrongConstant")
+            override fun getNotification(context: Context, msg: UMessage): Notification {
+                return when (msg.builder_id) {
+                    1 -> {
+                        println("自定义通知栏-----${msg.text}")
+                        //1.获取系统通知的管理者
+                        val mNotificationManager = getSystemService (NOTIFICATION_SERVICE) as NotificationManager
+                        //2.初始化一个notification的对象
+                        val mBuilder = Notification.Builder(this@App)
+                        //android 8.0 适配     需要配置 通知渠道NotificationChannel
+                        mBuilder.setPriority(NotificationCompat.PRIORITY_HIGH)
+                        val b: NotificationChannel
+                        // API28以上
+                        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+                            mBuilder.setPriority(NotificationManager.IMPORTANCE_HIGH)
+                            b =
+                                NotificationChannel ("1", resources.getString(R.string.notification_text), NotificationManager.IMPORTANCE_HIGH)
+                            mNotificationManager.createNotificationChannel(b)
+                            mBuilder.setChannelId("1")
+                        }
+                        //添加自定义视图  activity_notification
+                        val mRemoteViews = RemoteViews(
+                            packageName,
+                            R.layout.notification_view
+                        )
+                        mRemoteViews.setTextViewText(R.id.notification_text, resources.getString(R.string.notification_text))
+                        //主要设置setContent参数  其他参数 按需设置
+                        mBuilder.setContent(mRemoteViews)
+                        mBuilder.setSmallIcon(R.mipmap.message_ico_message_nor)
+//                        mBuilder.setContentText(msg.text)
+                        mBuilder.setAutoCancel(true)
+                        mBuilder.setVisibility(Notification.VISIBILITY_PUBLIC)
+                        //更新Notification
+                        mBuilder.build()
+//
+//
+//                        println("自定义通知栏")
+//                        val builder = NotificationCompat.Builder(context)
+//                            .setSmallIcon(R.mipmap.message_ico_message_nor)
+//                        val myNotificationView = RemoteViews(
+//                            context.packageName,
+//                            R.layout.notification_view
+//                        )
+//                        myNotificationView.setTextViewText(R.id.notification_text, msg.text)
+//                        builder.setContent(myNotificationView)
+//                        val mNotification = builder.build()
+//                        //由于Android v4包的bug，在2.3及以下系统，Builder创建出来的Notification，并没有设置RemoteView，故需要添加此代码
+//                        mNotification.contentView = myNotificationView
+//                        mNotification
+                    }
+                    else ->
+                        //默认为0，若填写的builder_id并不存在，也使用默认。
+                        super.getNotification(context, msg)
+                }
+            }
+        }
+//        mPushAgent.notificationClickHandler = object: UmengNotificationClickHandler(){
+//            override fun dealWithCustomAction(p0: Context?, p1: UMessage?) {
+//                startActivity<GuideView>()
+//            }
+//        }
+
         initMessage()
     }
 
@@ -97,13 +185,10 @@ class App : Application() {
         println("初始化消息系统")
 
 
-
-
         val token = getMyToken()
 
 
-        if(token=="")
-        {
+        if (token == "") {
             return
         }
 
@@ -126,11 +211,11 @@ class App : Application() {
                     //订阅通道
 
 
-                    var json=JSONObject(data.toString())
-                    myId=json.getString("uid")
+                    var json = JSONObject(data.toString())
+                    myId = json.getString("uid")
                     val uId = getMyId()
 
-                    messageLoginState=true
+                    messageLoginState = true
 
                     println("用户id:$uId")
                     println("用户id:$token")
@@ -153,13 +238,11 @@ class App : Application() {
                     }
 
 
-
                     //接受
                     channelRecieve.onMessage { _, obj ->
                         println("app收到消息内容")
                         println(obj)
                         println("app收到消息")
-
                         val json = JSON.parseObject(obj.toString())
                         val type = json.getString("type")
                         try {
@@ -171,21 +254,31 @@ class App : Application() {
                                 getContactList(obj.toString())
                                 chatRecord?.getContactList(obj.toString())
                                 println("发送contactList完毕")
-                            } else if (type != null && type == "setStatus") {
-
-
+                            } else if (type != null && type == "video") {
                             } else if (type != null && type == "historyMsg") {
                                 mRecieveMessageListener?.getHistoryMessage(obj.toString())
                             } else {
+//                                if(json.getJSONObject("content").getString("type") == "video"){
+////                                    val list = mutableListOf<String>()
+////                                    list.add(json.getJSONObject("sender").getString("name"))
+////                                    list.add(json.getJSONObject("sender").getString("avator"))
+////                                    LiveEventBus
+////                                        .get("isVideo")
+////                                        .broadcast(list)
+////                                    videoHisName = json.getJSONObject("sender").getString("name")
+////                                    videoHisAvatar = json.getJSONObject("sender").getString("avator")
+//
+//                                    inviteVideo = true
+//                                    mVideoListener?.awaitVideo(json)
+//                                }else{
                                 mRecieveMessageListener?.getNormalMessage(obj.toString())
                                 socket.emit("queryContactList", token)
-
+//                                }
                             }
                         } catch (e: UninitializedPropertyAccessException) {
                             //e.printStackTrace()
                             println("请求联系人列表")
                             chatRecord?.requestContactList()
-
                         }
                     }
 
@@ -195,8 +288,6 @@ class App : Application() {
 
 
                 }
-
-
 
 
             }
@@ -266,8 +357,6 @@ class App : Application() {
     }
 
 
-
-
     //解析联系人列表数据
     fun getContactList(s: String) {
         try {
@@ -314,7 +403,7 @@ class App : Application() {
                 //公司
                 val companyName = item["companyName"].toString()
 
-                var createdTime=""
+                var createdTime = ""
                 if (lastMsg == null) {
                 } else {
                     val content = lastMsg.getJSONObject("content")
@@ -326,11 +415,11 @@ class App : Application() {
                     } else {
                         msg = content.getString("msg")
                     }
-                    createdTime =sdf.format(Date(lastMsg!!.get("created").toString().toLong()))
-                    if(year  !=  createdTime.substring(0,4)){
+                    createdTime = sdf.format(Date(lastMsg!!.get("created").toString().toLong()))
+                    if (year != createdTime.substring(0, 4)) {
 
-                    }else{
-                        createdTime=createdTime.substring(5,11)
+                    } else {
+                        createdTime = createdTime.substring(5, 11)
                     }
 
 
@@ -344,7 +433,8 @@ class App : Application() {
                     avatar,
                     msg,
                     unreads,
-                    if(!item.isNull("lastMsg"))item.getJSONObject("lastMsg") else null,
+                    if (!item.isNull("lastMsg")) item.getJSONObject("lastMsg") else null,
+                    json.getJSONObject("content").getBoolean("isTranslate"),
                     companyName,
                     "",
                     createdTime
@@ -366,7 +456,7 @@ class App : Application() {
             }
 
             println("sssssssssssssssssssssssssssssssssssssssss")
-        }catch (e:Exception){
+        } catch (e: Exception) {
             e.printStackTrace()
         }
     }
@@ -382,6 +472,10 @@ class App : Application() {
 
     fun setRecieveMessageListener(listener: RecieveMessageListener) {
         mRecieveMessageListener = listener
+    }
+
+    fun setVideoListener(listener: VideoListener) {
+        mVideoListener = listener
     }
 
     fun getMyToken(): String {
@@ -400,7 +494,7 @@ class App : Application() {
 //            }).start()
         }
 
-      return token.replace("\"", "")
+        return token.replace("\"", "")
     }
 
 
@@ -410,10 +504,18 @@ class App : Application() {
         //return defaultPreferences.getString("id", "") ?: ""
     }
 
+    fun setInviteVideoBool(bool: Boolean) {
+        inviteVideo = bool
+    }
 
-    fun closeMessage(){
+    fun getInviteVideoBool(): Boolean {
+        return inviteVideo
+    }
 
-       // socket.disconnect()
+
+    fun closeMessage() {
+
+        // socket.disconnect()
         initMessage()
     }
 
@@ -429,6 +531,13 @@ class App : Application() {
 
     fun getMessageLoginState(): Boolean {
         return messageLoginState
+    }
+
+    fun getVideoOther(): MutableList<String> {
+        val list = mutableListOf<String>()
+        list.add(videoHisName)
+        list.add(videoHisAvatar)
+        return list
     }
 
 

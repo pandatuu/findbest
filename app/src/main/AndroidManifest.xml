@@ -4,6 +4,9 @@
     package="app.findbest.vip">
 
     <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.CAMERA" />
+
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
     <application
         android:name=".application.App"
@@ -13,10 +16,9 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme.NoActionBar"
+        android:usesCleartextTraffic="true"
         android:networkSecurityConfig="@xml/network_security_config"
         tools:ignore="GoogleAppIndexingWarning">
-
-
 
         <activity android:name=".login.view.GuideView"
             android:theme="@style/AppTheme.mainPageActionBar"
@@ -40,7 +42,6 @@
 
 
         <!--登录页-->
-
         <activity android:name=".login.view.LoginActivity"
             android:windowSoftInputMode="adjustPan"
             android:theme="@style/AppTheme.NoActionBar">
@@ -54,6 +55,12 @@
 
         <!-- 注册页 -->
         <activity android:name=".register.view.RegisterActivity"
+            android:windowSoftInputMode="adjustPan"
+            android:theme="@style/AppTheme.NoActionBar">
+        </activity>
+
+        <!-- 注册-隐私服务协议 -->
+        <activity android:name=".register.view.AgreementWeb"
             android:windowSoftInputMode="adjustPan"
             android:theme="@style/AppTheme.NoActionBar">
         </activity>
@@ -95,12 +102,11 @@
             android:theme="@style/AppTheme.NoActionBar">
         </activity>
 
-
+        <!-- 案例搜索 -->
         <activity android:name=".instance.view.InstanceSearchActivity"
             android:windowSoftInputMode="stateVisible"
             android:theme="@style/AppTheme.NoActionBar">
         </activity>
-
 
         <!-- 项目-项目需求和画师应聘页 -->
         <activity android:name=".project.view.ProjectInformation"
@@ -156,13 +162,14 @@
             android:theme="@style/AppTheme.NoActionBar">
         </activity>
 
-
+        <!-- 案例详情 -->
         <activity android:name=".instance.view.InstanceActivity"
             android:windowSoftInputMode="adjustPan"
             android:launchMode="standard"
             android:theme="@style/AppTheme.NoActionBar">
         </activity>
 
+        <!-- 聊天-列表 -->
         <activity android:name="imui.jiguang.cn.imuisample.messages.MessageListActivity"
             android:windowSoftInputMode="adjustPan"
             android:launchMode="standard"
@@ -182,13 +189,27 @@
             android:launchMode="standard"
             android:theme="@style/AppTheme.NoActionBar">
         </activity>
-        <activity android:name=".message.activity.videoRequestActivity"
 
+        <!-- 聊天-视频邀请方中间页 -->
+        <activity android:name=".message.activity.VideoRequestActivity"
+            android:windowSoftInputMode="adjustPan"
+            android:launchMode="standard"
             android:theme="@style/AppTheme.NoActionBar">
         </activity>
 
+        <!-- 聊天-视频接受方中间页 -->
+        <activity android:name=".message.activity.VideoResultActivity"
+            android:windowSoftInputMode="adjustPan"
+            android:launchMode="standard"
+            android:theme="@style/AppTheme.NoActionBar">
+        </activity>
 
-
+        <!-- 聊天-视频页面 -->
+        <activity android:name="imui.jiguang.cn.imuisample.messages.JitsiMeetActivitySon"
+            android:windowSoftInputMode="adjustPan"
+            android:launchMode="standard"
+            android:theme="@style/AppTheme.NoActionBar">
+        </activity>
 
         <!-- 我的-项目方项目详情 -->
         <activity android:name=".individual.view.ProjectSideProjectInfo"
@@ -197,6 +218,12 @@
             android:theme="@style/AppTheme.NoActionBar">
         </activity>
 
+        <!-- 我的-公司官网 -->
+        <activity android:name=".individual.view.CompanyWeb"
+            android:windowSoftInputMode="adjustPan"
+            android:launchMode="standard"
+            android:theme="@style/AppTheme.NoActionBar">
+        </activity>
     </application>
 
 </manifest>

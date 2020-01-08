@@ -244,24 +244,25 @@ class RegisterIdentity : BaseActivity() {
                         textColor = Color.parseColor("#FFFFFFFF")
                         setOnClickListener {
                             val user = intent.getSerializableExtra("user") as RegisterModel
+                            val refreshToken = if(intent.getStringExtra("refreshToken")!=null) intent.getStringExtra("refreshToken") else ""
                             when (true) {
                                 isProject -> {
                                     when (true) {
                                         isTeam -> {
-                                            toast("isProject && isTeam")
                                             startActivity<RegisterEmail>(
                                                 "role" to "consumer",
                                                 "identity" to 2,
-                                                "user" to user as Serializable
+                                                "user" to user as Serializable,
+                                                "refreshToken" to refreshToken
                                             )
                                             overridePendingTransition(R.anim.right_in, R.anim.left_out)
                                         }
                                         isPerson -> {
-                                            toast("isProject && isPerson")
                                             startActivity<RegisterEmail>(
                                                 "role" to "consumer",
                                                 "identity" to 1,
-                                                "user" to user as Serializable
+                                                "user" to user as Serializable,
+                                                "refreshToken" to refreshToken
                                             )
                                             overridePendingTransition(R.anim.right_in, R.anim.left_out)
                                         }
@@ -270,22 +271,22 @@ class RegisterIdentity : BaseActivity() {
                                 isProducer -> {
                                     when (true) {
                                         isTeam -> {
-                                            toast("isProducer && isTeam")
 //                                            mEditor.putString("identity","team")
                                             startActivity<RegisterEmail>(
                                                 "role" to "provider",
                                                 "identity" to 2,
-                                                "user" to user as Serializable
+                                                "user" to user as Serializable,
+                                                "refreshToken" to refreshToken
                                             )
                                             overridePendingTransition(R.anim.right_in, R.anim.left_out)
                                         }
                                         isPerson -> {
-                                            toast("isProducer && isPerson")
 //                                            mEditor.putString("identity","person")
                                             startActivity<RegisterEmail>(
                                                 "role" to "provider",
                                                 "identity" to 1,
-                                                "user" to user as Serializable
+                                                "user" to user as Serializable,
+                                                "refreshToken" to refreshToken
                                             )
                                             overridePendingTransition(R.anim.right_in, R.anim.left_out)
                                         }

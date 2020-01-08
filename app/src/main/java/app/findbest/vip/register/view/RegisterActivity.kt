@@ -21,6 +21,7 @@ import app.findbest.vip.utils.MimeType
 import app.findbest.vip.utils.RetrofitUtils
 import click
 import com.alibaba.fastjson.JSON
+import imui.jiguang.cn.imuisample.utils.Http
 import io.reactivex.schedulers.Schedulers
 import kotlinx.coroutines.CoroutineStart
 import kotlinx.coroutines.Dispatchers
@@ -28,8 +29,11 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.rx2.awaitSingle
 import okhttp3.RequestBody
+import org.apache.http.HttpResponse
 import org.jetbrains.anko.*
 import org.jetbrains.anko.sdk27.coroutines.onCheckedChange
+import org.json.JSONObject
+import retrofit2.HttpException
 import withTrigger
 import java.io.Serializable
 import java.util.regex.Pattern
@@ -227,12 +231,18 @@ class RegisterActivity: BaseActivity(), BackgroundFragment.ClickBack, ChooseCoun
                                 setOnClickListener {
                                     val phoneNum = phoneNumber.text.toString()
                                     if(phoneNum.isNullOrBlank()){
-                                        toast("请填写手机号")
+                                        val toast =
+                                            Toast.makeText(applicationContext, "请填写手机号", Toast.LENGTH_SHORT)
+                                        toast.setGravity(Gravity.CENTER, 0, 0)
+                                        toast.show()
                                         return@setOnClickListener
                                     }
 
                                     if(phoneNum.length !in 10..11){
-                                        toast("请填写正确手机号")
+                                        val toast =
+                                            Toast.makeText(applicationContext, "请输入10~11位手机号", Toast.LENGTH_SHORT)
+                                        toast.setGravity(Gravity.CENTER, 0, 0)
+                                        toast.show()
                                         return@setOnClickListener
                                     }
 
@@ -351,56 +361,80 @@ class RegisterActivity: BaseActivity(), BackgroundFragment.ClickBack, ChooseCoun
                             val nPwd = newPwd.text.toString()
                             val aPwd = againPwd.text.toString()
                             if(phoneNum.isNullOrBlank()){
-                                toast("请填写手机号")
+                                val toast =
+                                    Toast.makeText(applicationContext, "请填写手机号", Toast.LENGTH_SHORT)
+                                toast.setGravity(Gravity.CENTER, 0, 0)
+                                toast.show()
                                 return@setOnClickListener
                             }
 
                             if(phoneNum.length !in 10..11){
-                                toast("请填写正确手机号")
+                                val toast =
+                                    Toast.makeText(applicationContext, "请输入10~11位手机号", Toast.LENGTH_SHORT)
+                                toast.setGravity(Gravity.CENTER, 0, 0)
+                                toast.show()
                                 return@setOnClickListener
                             }
 
                             if(code.isNullOrBlank()){
-                                toast("请填写验证码")
+                                val toast =
+                                    Toast.makeText(applicationContext, "请填写验证码", Toast.LENGTH_SHORT)
+                                toast.setGravity(Gravity.CENTER, 0, 0)
+                                toast.show()
                                 return@setOnClickListener
                             }
 
                             if(nPwd.isNullOrBlank()){
-                                toast("请填写密码")
+                                val toast =
+                                    Toast.makeText(applicationContext, "请填写密码", Toast.LENGTH_SHORT)
+                                toast.setGravity(Gravity.CENTER, 0, 0)
+                                toast.show()
                                 return@setOnClickListener
                             }
 
                             if(!pwdMatch(nPwd)){
-                                toast("密码格式不正确")
+                                val toast =
+                                    Toast.makeText(applicationContext, "请输入8~16位数字、大小写字母、符号中的任意两种以上（含）", Toast.LENGTH_SHORT)
+                                toast.setGravity(Gravity.CENTER, 0, 0)
+                                toast.show()
                                 return@setOnClickListener
                             }
 
                             if(aPwd.isNullOrBlank()){
-                                toast("请再次填写密码")
+                                val toast =
+                                    Toast.makeText(applicationContext, "请再次填写密码", Toast.LENGTH_SHORT)
+                                toast.setGravity(Gravity.CENTER, 0, 0)
+                                toast.show()
                                 return@setOnClickListener
                             }
 
                             if(nPwd != aPwd){
-                                toast("二次输入密码不一致")
+                                val toast =
+                                    Toast.makeText(applicationContext, "两次输入密码不一致", Toast.LENGTH_SHORT)
+                                toast.setGravity(Gravity.CENTER, 0, 0)
+                                toast.show()
                                 return@setOnClickListener
                             }
 
                             if(!checkBox.isChecked){
-                                toast("请勾选协议")
+                                val toast =
+                                    Toast.makeText(applicationContext, "请勾选协议", Toast.LENGTH_SHORT)
+                                toast.setGravity(Gravity.CENTER, 0, 0)
+                                toast.show()
                                 return@setOnClickListener
                             }
 
                             val user = RegisterModel(
                                 phoneNum,
-                                country.text.toString(),
+                                country.text.substring(1),
                                 code,
                                 nPwd,
                                 "",
                                 false
                             )
-
-                            startActivity<RegisterCountry>("user" to user as Serializable)
-                            overridePendingTransition(R.anim.right_in, R.anim.left_out)
+                            GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
+                                register(user)
+                            }
                         }
                     }.lparams(matchParent,dip(47)){
                         topMargin = dip(24)
@@ -438,6 +472,10 @@ class RegisterActivity: BaseActivity(), BackgroundFragment.ClickBack, ChooseCoun
                             text = "隐私协议 "
                             textSize = 13f
                             textColor = Color.parseColor("#FFFF7900")
+                            setOnClickListener {
+                                startActivity<AgreementWeb>("webUrl" to "https://findbest.vip/deal?l=zh&t=p")
+                                overridePendingTransition(R.anim.right_in, R.anim.left_out)
+                            }
                         }.lparams(wrapContent, wrapContent){
                             leftMargin = dip(5)
                         }
@@ -451,7 +489,11 @@ class RegisterActivity: BaseActivity(), BackgroundFragment.ClickBack, ChooseCoun
                         textView {
                             text = "服务申明"
                             textSize = 13f
-                            textColor = Color.parseColor("#FF202020")
+                            textColor = Color.parseColor("#FFFF7900")
+                            setOnClickListener {
+                                startActivity<AgreementWeb>("webUrl" to "https://findbest.vip/deal?l=zh&t=s")
+                                overridePendingTransition(R.anim.right_in, R.anim.left_out)
+                            }
                         }.lparams(wrapContent, wrapContent){
                             leftMargin = dip(5)
                         }
@@ -506,6 +548,44 @@ class RegisterActivity: BaseActivity(), BackgroundFragment.ClickBack, ChooseCoun
             return false
         }catch (throwable: Throwable){
             return false
+        }
+    }
+
+
+    private suspend fun register(user: RegisterModel){
+        try {
+            val params = mapOf(
+                "country" to user.country,
+                "phone" to user.phone,
+                "password" to user.pwd,
+                "code" to user.vCode
+            )
+            val userJson = JSON.toJSONString(params)
+            val body = RequestBody.create(MimeType.APPLICATION_JSON, userJson)
+
+            val retrofitUils =
+                RetrofitUtils(this@RegisterActivity, resources.getString(R.string.developmentUrl))
+            val it = retrofitUils.create(RegisterApi::class.java)
+                .registerUser(body)
+                .subscribeOn(Schedulers.io())
+                .awaitSingle()
+            if (it.code() in 200..299) {
+                //注册成功
+                startActivity<RegisterCountry>("user" to user as Serializable)
+                overridePendingTransition(R.anim.right_in, R.anim.left_out)
+            }else{
+                val errorJson = JSONObject(it.errorBody()!!.string())
+                val errorMsg = errorJson.getJSONArray("validtions").getJSONObject(0).getJSONArray("messages")[0].toString()
+                if(errorMsg == "invalid code"){
+                    toast("验证码错误")
+                }else if(errorMsg == "phone exist"){
+                    toast("账号已存在")
+                }
+            }
+        } catch (throwable: Throwable) {
+            if(throwable is HttpException){
+                println(throwable.code())
+            }
         }
     }
 

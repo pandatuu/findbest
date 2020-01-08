@@ -234,12 +234,18 @@ class ResetPassword: BaseActivity(), BackgroundFragment.ClickBack, ChooseCountry
                                 setOnClickListener {
                                     val phoneNum = phoneNumber.text.toString()
                                     if(phoneNum.isNullOrBlank()){
-                                        toast("请填写手机号")
+                                        val toast =
+                                            Toast.makeText(applicationContext, "请填写手机号", Toast.LENGTH_SHORT)
+                                        toast.setGravity(Gravity.CENTER, 0, 0)
+                                        toast.show()
                                         return@setOnClickListener
                                     }
 
                                     if(phoneNum.length !in 10..11){
-                                        toast("请填写正确手机号")
+                                        val toast =
+                                            Toast.makeText(applicationContext, "请输入10~11位手机号", Toast.LENGTH_SHORT)
+                                        toast.setGravity(Gravity.CENTER, 0, 0)
+                                        toast.show()
                                         return@setOnClickListener
                                     }
 
@@ -356,37 +362,58 @@ class ResetPassword: BaseActivity(), BackgroundFragment.ClickBack, ChooseCountry
                             val nPwd = newPwd.text.toString()
                             val aPwd = againPwd.text.toString()
                             if(phoneNum.isNullOrBlank()){
-                                toast("请填写手机号")
+                                val toast =
+                                    Toast.makeText(applicationContext, "请填写手机号", Toast.LENGTH_SHORT)
+                                toast.setGravity(Gravity.CENTER, 0, 0)
+                                toast.show()
                                 return@setOnClickListener
                             }
 
                             if(phoneNum.length !in 10..11){
-                                toast("请填写正确手机号")
+                                val toast =
+                                    Toast.makeText(applicationContext, "请输入10~11位手机号", Toast.LENGTH_SHORT)
+                                toast.setGravity(Gravity.CENTER, 0, 0)
+                                toast.show()
                                 return@setOnClickListener
                             }
 
                             if(vCode.isNullOrBlank()){
-                                toast("请填写验证码")
+                                val toast =
+                                    Toast.makeText(applicationContext, "请填写验证码", Toast.LENGTH_SHORT)
+                                toast.setGravity(Gravity.CENTER, 0, 0)
+                                toast.show()
                                 return@setOnClickListener
                             }
 
                             if(nPwd.isNullOrBlank()){
-                                toast("请填写密码")
+                                val toast =
+                                    Toast.makeText(applicationContext, "请填写密码", Toast.LENGTH_SHORT)
+                                toast.setGravity(Gravity.CENTER, 0, 0)
+                                toast.show()
                                 return@setOnClickListener
                             }
 
                             if(!pwdMatch(nPwd)){
-                                toast("密码格式不正确")
+                                val toast =
+                                    Toast.makeText(applicationContext, "请输入8~16位数字、大小写字母、符号中的任意两种以上（含）", Toast.LENGTH_SHORT)
+                                toast.setGravity(Gravity.CENTER, 0, 0)
+                                toast.show()
                                 return@setOnClickListener
                             }
 
                             if(aPwd.isNullOrBlank()){
-                                toast("请再次填写密码")
+                                val toast =
+                                    Toast.makeText(applicationContext, "请再次填写密码", Toast.LENGTH_SHORT)
+                                toast.setGravity(Gravity.CENTER, 0, 0)
+                                toast.show()
                                 return@setOnClickListener
                             }
 
                             if(nPwd != aPwd){
-                                toast("二次输入密码不一致")
+                                val toast =
+                                    Toast.makeText(applicationContext, "两次输入密码不一致", Toast.LENGTH_SHORT)
+                                toast.setGravity(Gravity.CENTER, 0, 0)
+                                toast.show()
                                 return@setOnClickListener
                             }
 

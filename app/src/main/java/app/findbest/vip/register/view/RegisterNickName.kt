@@ -16,9 +16,12 @@ import app.findbest.vip.login.api.LoginApi
 import app.findbest.vip.register.api.RegisterApi
 import app.findbest.vip.register.model.RegisterModel
 import app.findbest.vip.utils.BaseActivity
+import app.findbest.vip.utils.CheckToken
 import app.findbest.vip.utils.MimeType
 import app.findbest.vip.utils.RetrofitUtils
 import io.reactivex.schedulers.Schedulers
+import kotlinx.coroutines.CoroutineStart
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.rx2.awaitSingle
@@ -29,7 +32,7 @@ import java.util.regex.Pattern
 
 /**
  * 注册流程
- * 1.先注册用户
+ * 1.先注册用户 -- 注册第一页的
  * 2.登录用户Apass账号
  * 3.完善用户的findbest信息
  */
@@ -139,11 +142,13 @@ class RegisterNickName : BaseActivity() {
                                 toast("昵称格式不正确")
                                 return@setOnClickListener
                             }
-                            GlobalScope.launch() {
+
+                            val refreshToken = if(intent.getStringExtra("refreshToken")!=null) intent.getStringExtra("refreshToken") else ""
+                            GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
                                 if(user.onlyCompleted){
-                                    setInformation()
+                                    setInformation(refreshToken)
                                 }else{
-                                    register()
+                                    login()
                                 }
                             }
                         }
@@ -159,32 +164,32 @@ class RegisterNickName : BaseActivity() {
             }
         }
     }
-
-    private suspend fun register(){
-        try {
-            val params = mapOf(
-                "country" to user.country,
-                "phone" to user.phone,
-                "password" to user.pwd,
-                "code" to user.vCode
-            )
-            val userJson = JSON.toJSONString(params)
-            val body = RequestBody.create(MimeType.APPLICATION_JSON, userJson)
-
-            val retrofitUils =
-                RetrofitUtils(this@RegisterNickName, resources.getString(R.string.developmentUrl))
-            val it = retrofitUils.create(RegisterApi::class.java)
-                .registerUser(body)
-                .subscribeOn(Schedulers.io())
-                .awaitSingle()
-            if (it.code() in 200..299) {
-                //注册成功
-                login()
-            }
-        } catch (throwable: Throwable) {
-
-        }
-    }
+//
+//    private suspend fun register(){
+//        try {
+//            val params = mapOf(
+//                "country" to user.country,
+//                "phone" to user.phone,
+//                "password" to user.pwd,
+//                "code" to user.vCode
+//            )
+//            val userJson = JSON.toJSONString(params)
+//            val body = RequestBody.create(MimeType.APPLICATION_JSON, userJson)
+//
+//            val retrofitUils =
+//                RetrofitUtils(this@RegisterNickName, resources.getString(R.string.developmentUrl))
+//            val it = retrofitUils.create(RegisterApi::class.java)
+//                .registerUser(body)
+//                .subscribeOn(Schedulers.io())
+//                .awaitSingle()
+//            if (it.code() in 200..299) {
+//                //注册成功
+//                login()
+//            }
+//        } catch (throwable: Throwable) {
+//
+//        }
+//    }
 
     private suspend fun login(){
         try {
@@ -216,7 +221,8 @@ class RegisterNickName : BaseActivity() {
                 mEditor.putString("token", token)
                 mEditor.commit()
 
-                setInformation()
+                val refreshToken = it.body()!!["refreshToken"].asString
+                setInformation(refreshToken)
             }
         } catch (throwable: Throwable) {
             if(throwable is HttpException){
@@ -225,7 +231,7 @@ class RegisterNickName : BaseActivity() {
         }
     }
 
-    private suspend fun setInformation() {
+    private suspend fun setInformation(refreshToken: String) {
         try {
             val params = mapOf(
                 "roleName" to role,
@@ -247,13 +253,46 @@ class RegisterNickName : BaseActivity() {
                 .awaitSingle()
             if (it.code() in 200..299) {
                 //完善信息成功
-                startActivity<MainActivity>()
-                overridePendingTransition(R.anim.right_in, R.anim.left_out)
+                refreshToken(refreshToken)
             }
         } catch (throwable: Throwable) {
 
         }
     }
+
+    private suspend fun refreshToken(refreshToken: String) {
+        try {
+            val params = mapOf(
+                "refreshToken" to refreshToken
+            )
+            val userJson = JSON.toJSONString(params)
+            val body = RequestBody.create(MimeType.APPLICATION_JSON, userJson)
+
+            val retrofitUils =
+                RetrofitUtils(this@RegisterNickName, resources.getString(R.string.developmentUrl))
+            val it = retrofitUils.create(RegisterApi::class.java)
+                .refreshToken(body)
+                .subscribeOn(Schedulers.io())
+                .awaitSingle()
+            if (it.code() in 200..299) {
+                val mPerferences: SharedPreferences = PreferenceManager.getDefaultSharedPreferences(this@RegisterNickName)
+                val token = it.body()!!["accessToken"].asString
+                val mEditor = mPerferences.edit()
+                mEditor.putString("token", token)
+                mEditor.commit()
+
+                val account = CheckToken(this@RegisterNickName).jwtParse(token)
+                if(account != ""){
+                    startActivity<MainActivity>()
+                    overridePendingTransition(R.anim.right_in, R.anim.left_out)
+                }
+                //token验证失败
+            }
+        } catch (throwable: Throwable) {
+
+        }
+    }
+
 
     private fun nickeNameMatch(text: String): Boolean {
         val patter =

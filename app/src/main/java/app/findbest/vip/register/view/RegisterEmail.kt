@@ -115,10 +115,12 @@ class RegisterEmail: BaseActivity() {
                             if(intent.getSerializableExtra("role") != null){
                                 role = intent.getStringExtra("role") as String
                             }
+                            val refreshToken = if(intent.getStringExtra("refreshToken")!=null) intent.getStringExtra("refreshToken") else ""
                             startActivity<RegisterNickName>(
                                 "role" to role,
                                 "identity" to identity,
-                                "user" to user as Serializable
+                                "user" to user as Serializable,
+                                "refreshToken" to refreshToken
                             )
                             overridePendingTransition(R.anim.right_in, R.anim.left_out)
                         }

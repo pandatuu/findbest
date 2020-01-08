@@ -10,10 +10,7 @@ import android.text.TextWatcher
 import android.text.method.PasswordTransformationMethod
 import android.view.Gravity
 import android.view.inputmethod.InputMethodManager
-import android.widget.Button
-import android.widget.EditText
-import android.widget.LinearLayout
-import android.widget.TextView
+import android.widget.*
 import androidx.preference.PreferenceManager
 import app.findbest.vip.R
 import app.findbest.vip.commonactivity.MainActivity
@@ -35,6 +32,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.rx2.awaitSingle
 import okhttp3.RequestBody
 import org.jetbrains.anko.*
+import org.json.JSONObject
 import retrofit2.HttpException
 
 class LoginActivity : BaseActivity(), BackgroundFragment.ClickBack, ChooseCountry.DialogSelect {
@@ -239,15 +237,17 @@ class LoginActivity : BaseActivity(), BackgroundFragment.ClickBack, ChooseCountr
                             val phoneNum = phoneNumber.text.toString()
                             val pwd = pwd.text.toString()
                             if (phoneNum.isNullOrBlank()) {
-                                toast("请输入手机号")
-                                return@setOnClickListener
-                            }
-                            if (phoneNum.length !in 10..11) {
-                                toast("手机号格式不对")
+                                val toast =
+                                    Toast.makeText(applicationContext, "请输入手机号", Toast.LENGTH_SHORT)
+                                toast.setGravity(Gravity.CENTER, 0, 0)
+                                toast.show()
                                 return@setOnClickListener
                             }
                             if (pwd.isNullOrBlank()) {
-                                toast("请输入验证码")
+                                val toast =
+                                    Toast.makeText(applicationContext, "请输入密码", Toast.LENGTH_SHORT)
+                                toast.setGravity(Gravity.CENTER, 0, 0)
+                                toast.show()
                                 return@setOnClickListener
                             }
 
@@ -302,15 +302,15 @@ class LoginActivity : BaseActivity(), BackgroundFragment.ClickBack, ChooseCountr
                 mEditor.putString("token", token)
                 mEditor.commit()
 
-                isAccount(token)
+                val refresh = it.body()!!["refreshToken"].asString
+                isAccount(token,refresh)
+            }else if(it.code() == 400){
+                toast("账号或密码错误")
+            }else{
+                val errorJson = JSONObject(it.errorBody()!!.string())
+                val errorMsg = errorJson.getString("error")
+                toast(errorMsg)
             }
-            if (it.code() == 400) {
-                toast("账户名或密码错误")
-            }
-            if (it.code() == 500) {
-                toast("")
-            }
-
         } catch (throwable: Throwable) {
             if (throwable is HttpException) {
                 println(throwable.message())
@@ -318,7 +318,7 @@ class LoginActivity : BaseActivity(), BackgroundFragment.ClickBack, ChooseCountr
         }
     }
 
-    private fun isAccount(token: String){
+    private fun isAccount(token: String, refreshToken: String){
         val account = CheckToken(this@LoginActivity).jwtParse(token)
         if(account == ""){
             //token验证失败
@@ -333,7 +333,7 @@ class LoginActivity : BaseActivity(), BackgroundFragment.ClickBack, ChooseCountr
             }
             AccountStatus.UNCOMPLETED.arg -> {
                 //未完善信息
-                startActivity<RegisterCountry>("onlyCompleted" to true)
+                startActivity<RegisterCountry>("onlyCompleted" to true, "refreshToken" to refreshToken)
                 overridePendingTransition(R.anim.right_in, R.anim.left_out)
             }
             AccountStatus.PENDING.arg -> {

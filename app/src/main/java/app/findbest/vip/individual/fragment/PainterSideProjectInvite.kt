@@ -1,6 +1,7 @@
 package app.findbest.vip.individual.fragment
 
 import android.content.Context
+import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
 import android.view.Gravity
@@ -117,6 +118,15 @@ class PainterSideProjectInvite : Fragment(), PainterSideInvite.ChooseStatus, Bac
         }
         return view
     }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if(data!=null){
+            if(resultCode==1001){
+                painterSideInvite?.updateSatuts(true)
+            }
+        }
+    }
     //获取收到的邀请
     private suspend fun getPainterSideInviteById(id: String) {
         try {
@@ -157,7 +167,9 @@ class PainterSideProjectInvite : Fragment(), PainterSideInvite.ChooseStatus, Bac
             if (it.code() in 200..299) {
                 val status = it.body()!!["status"].asInt
                 if (status == 0) {
-                    activity!!.startActivity<EnlistProject>("projectId" to id)
+                    val intent = Intent(mContext, EnlistProject::class.java)
+                    intent.putExtra("projectId", id)
+                    activity!!.startActivityForResult(intent, 1001)
                     activity!!.overridePendingTransition(R.anim.right_in, R.anim.left_out)
                 } else {
                     openTipsDialog(status)
@@ -200,7 +212,7 @@ class PainterSideProjectInvite : Fragment(), PainterSideInvite.ChooseStatus, Bac
                 .awaitSingle()
             if (it.code() in 200..299) {
                 val model = it.body()!!
-                painterSideInvite?.updateSatuts()
+                painterSideInvite?.updateSatuts(false)
             }
         } catch (throwable: Throwable) {
             if (throwable is HttpException) {

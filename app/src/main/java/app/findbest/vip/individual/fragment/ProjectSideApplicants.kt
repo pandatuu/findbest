@@ -103,6 +103,7 @@ class ProjectSideApplicants : Fragment(), ProjectSideApplicantsAdapter.PrintedCr
         intent.putExtra("hisName",name)
         intent.putExtra("hislogo",avatar)
         intent.putExtra("position_id","")
+        intent.putExtra("isTranslate",false)
 
         startActivity(intent)
         activity!!.overridePendingTransition(R.anim.right_in, R.anim.left_out)

@@ -233,15 +233,16 @@ class PainterSideInvite : Fragment() {
 
     }
     //拒绝项目，修改状态
-    fun updateSatuts() {
+    fun updateSatuts(boolean: Boolean) {
         statusLayout.removeAllViews()
+        val statusText = if(boolean) "已加入该项目" else "已拒绝加入该项目"
         val view = UI {
             relativeLayout {
                 linearLayout {
                     backgroundResource = R.drawable.grey_around_button
                     gravity = Gravity.CENTER
                     textView {
-                        text = "已拒绝加入该项目"
+                        text = statusText
                         textSize = 15f
                         textColor = Color.parseColor("#FF666660")
                     }

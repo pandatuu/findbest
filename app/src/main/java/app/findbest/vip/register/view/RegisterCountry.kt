@@ -189,7 +189,6 @@ class RegisterCountry : BaseActivity() {
                             onlyCompleted = intent.getBooleanExtra("onlyCompleted", false)
                             when (true) {
                                 isChina -> {
-                                    toast("china")
                                     var user: RegisterModel? = null
                                     if(onlyCompleted){
                                         user = RegisterModel(
@@ -206,11 +205,12 @@ class RegisterCountry : BaseActivity() {
                                             user.country = "86"
                                         }
                                     }
-                                    startActivity<RegisterIdentity>("user" to user as Serializable)
+                                    val refreshToken = if(intent.getStringExtra("refreshToken")!=null) intent.getStringExtra("refreshToken") else ""
+
+                                    startActivity<RegisterIdentity>("user" to user as Serializable, "refreshToken" to refreshToken)
                                     overridePendingTransition(R.anim.right_in, R.anim.left_out)
                                 }
                                 isJapan -> {
-                                    toast("japan")
                                     var user: RegisterModel? = null
                                     if(onlyCompleted){
                                         user = RegisterModel(
@@ -227,11 +227,12 @@ class RegisterCountry : BaseActivity() {
                                             user.country = "81"
                                         }
                                     }
-                                    startActivity<RegisterIdentity>("user" to user as Serializable)
+                                    val refreshToken = if(intent.getStringExtra("refreshToken")!=null) intent.getStringExtra("refreshToken") else ""
+
+                                    startActivity<RegisterIdentity>("user" to user as Serializable, "refreshToken" to refreshToken)
                                     overridePendingTransition(R.anim.right_in, R.anim.left_out)
                                 }
                                 isKorea -> {
-                                    toast("korea")
                                     var user: RegisterModel? = null
                                     if(onlyCompleted){
                                         user = RegisterModel(
@@ -248,7 +249,9 @@ class RegisterCountry : BaseActivity() {
                                             user.country = "82"
                                         }
                                     }
-                                    startActivity<RegisterIdentity>("user" to user as Serializable)
+                                    val refreshToken = if(intent.getStringExtra("refreshToken")!=null) intent.getStringExtra("refreshToken") else ""
+
+                                    startActivity<RegisterIdentity>("user" to user as Serializable, "refreshToken" to refreshToken)
                                     overridePendingTransition(R.anim.right_in, R.anim.left_out)
                                 }
                                 else -> toast("未选择")
