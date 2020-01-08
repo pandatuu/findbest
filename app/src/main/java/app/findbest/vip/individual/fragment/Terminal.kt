@@ -7,6 +7,7 @@ import android.content.SharedPreferences
 import android.graphics.Color
 import android.os.Bundle
 import android.preference.PreferenceManager
+import android.text.TextUtils
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
@@ -18,12 +19,14 @@ import android.widget.Toolbar
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import app.findbest.vip.R
+import app.findbest.vip.application.App
 import app.findbest.vip.commonfrgmant.FragmentParent
 import app.findbest.vip.individual.adapter.PersonAccountAdapter
 import app.findbest.vip.individual.api.IndividualApi
 import app.findbest.vip.individual.view.*
 import app.findbest.vip.login.api.LoginApi
 import app.findbest.vip.login.view.LoginActivity
+import app.findbest.vip.message.activity.VideoResultActivity
 import app.findbest.vip.utils.RetrofitUtils
 import app.findbest.vip.utils.recyclerView
 import click
@@ -40,6 +43,7 @@ import kotlinx.coroutines.rx2.awaitSingle
 import org.jetbrains.anko.*
 import org.jetbrains.anko.sdk27.coroutines.onClick
 import org.jetbrains.anko.support.v4.UI
+import org.jetbrains.anko.support.v4.startActivity
 import org.jetbrains.anko.support.v4.toast
 import retrofit2.HttpException
 import withTrigger
@@ -78,6 +82,15 @@ class Terminal : FragmentParent() {
             activity
         }
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(mContext)
+    }
+
+    override fun onResume() {
+        super.onResume()
+//        val bool = App.getInstance()?.getInviteVideoBool()
+//        if(bool!!){
+//            startActivity<VideoResultActivity>()
+//            activity!!.overridePendingTransition(R.anim.right_in, R.anim.left_out)
+//        }
     }
 
     override fun onCreateView(
@@ -145,9 +158,11 @@ class Terminal : FragmentParent() {
                                 personName = textView {
                                     textSize = 30f
                                     textColor = Color.WHITE
-                                }.lparams(dip(209), dip(42)) {
+                                    ellipsize = TextUtils.TruncateAt.END
+                                }.lparams(matchParent, dip(42)) {
                                     bottomMargin = dip(3)
                                     leftMargin = dip(2)
+                                    rightMargin = dip(5)
                                 }
 
                                 linearLayout {
@@ -162,7 +177,7 @@ class Terminal : FragmentParent() {
 
                                     }.lparams(dip(65), dip(21))
                                 }
-                            }.lparams(wrapContent, wrapContent) {
+                            }.lparams(dip(0), wrapContent) {
                                 weight = 1f
                                 leftMargin = dip(22)
                             }
@@ -377,43 +392,43 @@ class Terminal : FragmentParent() {
 //                        }
 
                         //使用帮助
-                        relativeLayout {
-                            backgroundResource = R.drawable.ffe3e3e3_bottom_line
-                            this.withTrigger().click {
-                                val intent = Intent(context, Help::class.java)
-                                startActivity(intent)
-                                activity?.overridePendingTransition(
-                                    R.anim.right_in,
-                                    R.anim.left_out
-                                )
-                            }
-                            linearLayout {
-                                orientation = LinearLayout.HORIZONTAL
-                                imageView {
-                                    imageResource = R.mipmap.ico_help_nor
-                                }.lparams(dip(19), dip(18))
-
-                                textView {
-                                    textResource = R.string.tl_use_help
-                                    textSize = 13f
-                                    textColor = Color.parseColor("#333333")
-                                }.lparams(wrapContent, wrapContent) {
-                                    leftMargin = dip(10)
-                                }
-                            }.lparams{
-                                centerVertically()
-                            }
-
-                            imageView {
-                                imageResource = R.mipmap.btn_slect_nor
-                            }.lparams(dip(6), dip(11)) {
-                                alignParentRight()
-                                centerVertically()
-                            }
-                        }.lparams(matchParent, dip(62)) {
-                            leftMargin = dip(20)
-                            rightMargin = dip(20)
-                        }
+//                        relativeLayout {
+//                            backgroundResource = R.drawable.ffe3e3e3_bottom_line
+//                            this.withTrigger().click {
+//                                val intent = Intent(context, Help::class.java)
+//                                startActivity(intent)
+//                                activity?.overridePendingTransition(
+//                                    R.anim.right_in,
+//                                    R.anim.left_out
+//                                )
+//                            }
+//                            linearLayout {
+//                                orientation = LinearLayout.HORIZONTAL
+//                                imageView {
+//                                    imageResource = R.mipmap.ico_help_nor
+//                                }.lparams(dip(19), dip(18))
+//
+//                                textView {
+//                                    textResource = R.string.tl_use_help
+//                                    textSize = 13f
+//                                    textColor = Color.parseColor("#333333")
+//                                }.lparams(wrapContent, wrapContent) {
+//                                    leftMargin = dip(10)
+//                                }
+//                            }.lparams{
+//                                centerVertically()
+//                            }
+//
+//                            imageView {
+//                                imageResource = R.mipmap.btn_slect_nor
+//                            }.lparams(dip(6), dip(11)) {
+//                                alignParentRight()
+//                                centerVertically()
+//                            }
+//                        }.lparams(matchParent, dip(62)) {
+//                            leftMargin = dip(20)
+//                            rightMargin = dip(20)
+//                        }
 
 
                         //意见反馈
@@ -586,12 +601,7 @@ class Terminal : FragmentParent() {
 
                 // 公司方
                 if (auditState!!) {
-                    stateImage.imageResource = R.mipmap.certified_enterprise
-                } else {
-                    stateImage.imageResource = R.mipmap.not_certified
-                }
-                if (auditState) {
-                    stateImage.imageResource = R.mipmap.retist
+                    stateImage.imageResource = R.mipmap.authen
                 } else {
                     stateImage.imageResource = R.mipmap.not_certified
                 }

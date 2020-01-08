@@ -28,7 +28,7 @@ class Us:AppCompatActivity() {
             linearLayout{
                 orientation = LinearLayout.VERTICAL
                 //ActionBar
-                var actionBarId = 2
+                val actionBarId = 2
                 frameLayout {
                     id = actionBarId
                     usActionbar = UsActionbar.newInstance()
@@ -38,7 +38,7 @@ class Us:AppCompatActivity() {
                     height = wrapContent
                 }
 
-                var newFragmentId = 3
+                val newFragmentId = 3
                 frameLayout {
                     id = newFragmentId
                     usMain = UsMain.newInstance()

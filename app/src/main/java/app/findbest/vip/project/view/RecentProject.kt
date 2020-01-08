@@ -88,6 +88,7 @@ class RecentProject : BaseActivity() {
                             intent.putExtra("imageList", imageList)
                             setResult(Activity.RESULT_OK ,intent)
                             finish()
+                            overridePendingTransition(R.anim.left_in, R.anim.right_out)
                         }
                     }.lparams(dip(100),dip(35)) {
                         alignParentRight()

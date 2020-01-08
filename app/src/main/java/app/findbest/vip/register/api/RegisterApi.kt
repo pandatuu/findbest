@@ -25,4 +25,8 @@ interface RegisterApi {
     @POST("/api/v1/sms")
     fun sendvCode(@Body array: RequestBody): Observable<Response<String>>
 
+    //发送验证码
+    @Headers("Content-Type: application/json")
+    @POST("/api/v1/users/refresh-token")
+    fun refreshToken(@Body array: RequestBody): Observable<Response<JsonObject>>
 }

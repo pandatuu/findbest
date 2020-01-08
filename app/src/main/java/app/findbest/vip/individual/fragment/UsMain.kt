@@ -14,6 +14,7 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import app.findbest.vip.R
 import app.findbest.vip.commonfrgmant.FragmentParent
+import app.findbest.vip.individual.view.CompanyWeb
 import click
 import org.jetbrains.anko.*
 import org.jetbrains.anko.support.v4.UI
@@ -118,6 +119,10 @@ class UsMain:FragmentParent() {
                                 text = "www.findbest.vip"
                                 textSize = 15f
                                 textColor = Color.parseColor("#202020")
+                                setOnClickListener {
+                                    startActivity<CompanyWeb>()
+                                    activity!!.overridePendingTransition(R.anim.right_in, R.anim.left_out)
+                                }
                             }
 
                             // 预留，不确定是否开放

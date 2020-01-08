@@ -155,6 +155,7 @@ class EnlistProject : BaseActivity(), EnlistSuccessTipsDialog.ButtomClick, Backg
 
     override fun click() {
         closeAlertDialog()
+        setResult(1002)
         finish()
         overridePendingTransition(R.anim.left_in, R.anim.right_out)
     }
