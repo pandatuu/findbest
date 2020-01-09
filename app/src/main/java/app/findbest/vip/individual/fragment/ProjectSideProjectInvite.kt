@@ -7,11 +7,13 @@ import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.FrameLayout
 import android.widget.LinearLayout
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import app.findbest.vip.R
+import app.findbest.vip.commonfrgmant.NullDataPageFragment
 import app.findbest.vip.individual.adapter.ProjectSideInviteAdapter
 import app.findbest.vip.individual.api.IndividualApi
 import app.findbest.vip.painter.fragment.BigImage2
@@ -31,9 +33,10 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.rx2.awaitSingle
 import org.jetbrains.anko.*
 import org.jetbrains.anko.support.v4.UI
+import org.jetbrains.anko.support.v4.toast
 import retrofit2.HttpException
 
-class ProjectSideProjectInvite : Fragment(),ProjectSideInviteAdapter.PrintedCrad, BigImage2.ImageClick{
+class ProjectSideProjectInvite : Fragment(), ProjectSideProjectInviteList.ProjectSideList{
 
     companion object {
         fun newInstance(context: Context, id: String): ProjectSideProjectInvite {
@@ -47,11 +50,15 @@ class ProjectSideProjectInvite : Fragment(),ProjectSideInviteAdapter.PrintedCrad
     private lateinit var mContext: Context
     private var name = ""
     private var bigImage: BigImage2? = null
+    private var recycle: RecyclerView? = null
     private lateinit var smart: SmartRefreshLayout
     var projectId = ""
     val mainId = 1
     private var nowPage = 0
-    private var recycle: RecyclerView? = null
+    private lateinit var listFram: FrameLayout
+    private lateinit var listFragment: ProjectSideProjectInviteList
+    private var nullData: NullDataPageFragment? = null
+    private val nullId = 4
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -61,15 +68,7 @@ class ProjectSideProjectInvite : Fragment(),ProjectSideInviteAdapter.PrintedCrad
         return createV()
     }
 
-    override fun oneClick(str: String) {
-        openDialog(str)
-    }
-
-    override fun clickclose() {
-        closeAlertDialog()
-    }
-    //取消邀请
-    override fun cacel(id: String) {
+    override fun cancel(id: String) {
         GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
             cancelInvite(id)
         }
@@ -113,10 +112,12 @@ class ProjectSideProjectInvite : Fragment(),ProjectSideInviteAdapter.PrintedCrad
                                 it.finishLoadMore(1000)
                             }
                         }
-                        recycle = recyclerView {
-                            layoutManager = LinearLayoutManager(mContext)
-                            backgroundColor = Color.parseColor("#FFF6F6F6")
+                        listFram = frameLayout {
+                            id = nullId
                         }
+                        val listFramlp = listFram.layoutParams
+                        listFramlp.width = LinearLayout.LayoutParams.MATCH_PARENT
+                        listFramlp.height = LinearLayout.LayoutParams.MATCH_PARENT
                     }.lparams(matchParent, matchParent) {
                         leftMargin = dip(5)
                         rightMargin = dip(5)
@@ -124,6 +125,9 @@ class ProjectSideProjectInvite : Fragment(),ProjectSideInviteAdapter.PrintedCrad
                 }.lparams(matchParent, matchParent)
             }
         }.view
+
+        listFragment = ProjectSideProjectInviteList.newInstance(mContext,this@ProjectSideProjectInvite)
+        childFragmentManager.beginTransaction().replace(nullId, listFragment).commit()
         smart.autoRefresh()
         return view
     }
@@ -138,14 +142,17 @@ class ProjectSideProjectInvite : Fragment(),ProjectSideInviteAdapter.PrintedCrad
                 .awaitSingle()
             if (it.code() in 200..299) {
                 val array = it.body()!!["invites"].asJsonObject["data"].asJsonArray
-                val mutableList = mutableListOf<JsonObject>()
-                array.forEach {
-                    mutableList.add(it.asJsonObject)
+                if(array.size()>0){
+                    nowPage = 1
+                    val mutableList = mutableListOf<JsonObject>()
+                    array.forEach {
+                        mutableList.add(it.asJsonObject)
+                    }
+                    listFragment.resetView(mutableList)
+                }else{
+                    nullData = NullDataPageFragment.newInstance()
+                    childFragmentManager.beginTransaction().replace(nullId,nullData!!).commit()
                 }
-                val applicants =
-                    ProjectSideInviteAdapter(this@ProjectSideProjectInvite.context!!, this@ProjectSideProjectInvite, mutableList)
-                recycle?.adapter = applicants
-                nowPage = 1
             }
         } catch (throwable: Throwable) {
             if (throwable is HttpException) {
@@ -163,9 +170,17 @@ class ProjectSideProjectInvite : Fragment(),ProjectSideInviteAdapter.PrintedCrad
                 .subscribeOn(Schedulers.io())
                 .awaitSingle()
             if (it.code() in 200..299) {
-                val model = it.body()!!
-
+                val array = it.body()!!["invites"].asJsonObject["data"].asJsonArray
+                if(array.size() ==0){
+                    toast("没有数据了。。。")
+                    return
+                }
                 nowPage = page
+                val mutableList = mutableListOf<JsonObject>()
+                array.forEach {
+                    mutableList.add(it.asJsonObject)
+                }
+                listFragment.addView(mutableList)
             }
         } catch (throwable: Throwable) {
             if (throwable is HttpException) {
@@ -184,6 +199,9 @@ class ProjectSideProjectInvite : Fragment(),ProjectSideInviteAdapter.PrintedCrad
                 .subscribeOn(Schedulers.io())
                 .awaitSingle()
             if (it.code() in 200..299) {
+
+                listFragment = ProjectSideProjectInviteList.newInstance(mContext,this@ProjectSideProjectInvite)
+                childFragmentManager.beginTransaction().replace(nullId, listFragment).commit()
                 smart.autoRefresh()
             }
         } catch (throwable: Throwable) {
@@ -194,29 +212,5 @@ class ProjectSideProjectInvite : Fragment(),ProjectSideInviteAdapter.PrintedCrad
     }
     fun setProjectName(str: String) {
         name = str
-    }
-
-
-    private fun openDialog(pic: String) {
-        val mTransaction = activity!!.supportFragmentManager.beginTransaction()
-        mTransaction.setCustomAnimations(R.anim.right_in, R.anim.right_in)
-
-        bigImage = BigImage2.newInstance(pic,this@ProjectSideProjectInvite)
-        mTransaction.add(mainId, bigImage!!)
-
-        mTransaction.commit()
-    }
-
-    private fun closeAlertDialog() {
-
-        val mTransaction = activity!!.supportFragmentManager.beginTransaction()
-        if (bigImage != null) {
-            mTransaction.setCustomAnimations(R.anim.fade_in_out, R.anim.fade_in_out)
-
-            mTransaction.remove(bigImage!!)
-            bigImage = null
-        }
-
-        mTransaction.commit()
     }
 }

@@ -12,6 +12,7 @@ import android.widget.LinearLayout
 import androidx.fragment.app.Fragment
 import app.findbest.vip.R
 import app.findbest.vip.commonfrgmant.BackgroundFragment
+import app.findbest.vip.commonfrgmant.NullDataPageFragment
 import app.findbest.vip.individual.api.IndividualApi
 import app.findbest.vip.project.api.ProjectApi
 import app.findbest.vip.project.fragment.EnlistCheckTipsDialog
@@ -45,6 +46,7 @@ class PainterSideProjectInvite : Fragment(), PainterSideInvite.ChooseStatus, Bac
     private lateinit var mContext: Context
     private var name = ""
     private var painterSideInvite: PainterSideInvite? = null
+    private var nullData: NullDataPageFragment? = null
     private var tipsDialog: EnlistCheckTipsDialog? = null
     private var backgroundFragment: BackgroundFragment? = null
     private var chooseRefuse: ChooseRefuse? = null
@@ -105,11 +107,7 @@ class PainterSideProjectInvite : Fragment(), PainterSideInvite.ChooseStatus, Bac
                     }.lparams(matchParent, dip(70))
                     frameLayout {
                         id = inviteId
-                    }.lparams(matchParent, matchParent) {
-                        topMargin = dip(15)
-                        leftMargin = dip(15)
-                        rightMargin = dip(15)
-                    }
+                    }.lparams(matchParent, matchParent)
                 }.lparams(matchParent, matchParent)
             }
         }.view
@@ -142,6 +140,9 @@ class PainterSideProjectInvite : Fragment(), PainterSideInvite.ChooseStatus, Bac
                     painterInviterId = model["id"].asString
                     painterSideInvite = PainterSideInvite.newInstance(mContext,this@PainterSideProjectInvite,model)
                     childFragmentManager.beginTransaction().add(inviteId,painterSideInvite!!).commit()
+                }else{
+                    nullData = NullDataPageFragment.newInstance()
+                    childFragmentManager.beginTransaction().replace(inviteId,nullData!!).commit()
                 }
             }
         } catch (throwable: Throwable) {

@@ -53,7 +53,7 @@ class PainterSideProjectInfo : BaseActivity() {
                             finish()
                             overridePendingTransition(R.anim.left_in, R.anim.right_out)
                         }
-                    }.lparams(dip(20), dip(20)) {
+                    }.lparams(dip(30), dip(25)) {
                         alignParentBottom()
                         alignParentLeft()
                         leftMargin = dip(15)

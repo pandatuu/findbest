@@ -6,10 +6,8 @@ import android.os.Bundle
 import android.view.Gravity
 import android.view.View
 import android.widget.*
-import androidx.recyclerview.widget.RecyclerView
 import app.findbest.vip.R
 import app.findbest.vip.commonfrgmant.NullDataPageFragment
-import app.findbest.vip.individual.adapter.MyProjectListAdapter
 import app.findbest.vip.individual.api.IndividualApi
 import app.findbest.vip.individual.fragment.MyProjectListFragment
 import app.findbest.vip.utils.BaseActivity
@@ -39,12 +37,12 @@ class MyProjectList : BaseActivity(){
 
     var nowPage = 0
     val mainId = 1
-    var isPainter = false
-    var screenStatus = 3
+    private var isPainter = false
+    private var screenStatus = 3
     val nullId = 4
-    var isNullData = false
+    private var isNullData = false
     //弹窗是否可以点击
-    var isDialogClick = false
+    private var isDialogClick = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

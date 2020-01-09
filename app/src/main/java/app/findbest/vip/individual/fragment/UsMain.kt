@@ -119,7 +119,7 @@ class UsMain:FragmentParent() {
                                 text = "www.findbest.vip"
                                 textSize = 15f
                                 textColor = Color.parseColor("#202020")
-                                setOnClickListener {
+                                withTrigger().click {
                                     startActivity<CompanyWeb>()
                                     activity!!.overridePendingTransition(R.anim.right_in, R.anim.left_out)
                                 }
@@ -148,6 +148,7 @@ class UsMain:FragmentParent() {
                                 text = "$phoneNum"
                                 textSize = 15f
                                 textColor = Color.parseColor("#202020")
+                                setTextIsSelectable(true)
                             }
 
                             // 预留，不确定是否开放

@@ -126,29 +126,6 @@ class Terminal : FragmentParent() {
                         }.lparams(matchParent,dip(54 - getStatusBarHeight(this@Terminal.context!!))) {
                             alignParentBottom()
                         }
-
-                        linearLayout {
-                            gravity = Gravity.CENTER_VERTICAL
-
-                            onClick {
-                                toast("分享")
-                            }
-                            imageView {
-                                imageResource = R.mipmap.ico_share_nor
-                            }.lparams(dip(16), dip(16)) {
-                                rightMargin = dip(7)
-                            }
-                            textView {
-                                textResource = R.string.tl_share
-                                textSize = 15f
-                                textColor = Color.WHITE
-                            }.lparams(dip(31), dip(21))
-                        }.lparams {
-                            dip(54 - getStatusBarHeight(this@Terminal.context!!))
-                            rightMargin = dip(17)
-                            alignParentRight()
-                            alignParentBottom()
-                        }
                     }.lparams(matchParent,dip(54))
 
                     verticalLayout {
@@ -185,14 +162,14 @@ class Terminal : FragmentParent() {
                             headImage = imageView {
                                 imageResource = R.mipmap.default_avatar
 
-                                this.withTrigger().click {
-                                    val intent = Intent(context, Head::class.java)
-                                    startActivity(intent)
-                                    activity?.overridePendingTransition(
-                                        R.anim.right_in,
-                                        R.anim.left_out
-                                    )
-                                }
+//                                this.withTrigger().click {
+//                                    val intent = Intent(context, Head::class.java)
+//                                    startActivity(intent)
+//                                    activity?.overridePendingTransition(
+//                                        R.anim.right_in,
+//                                        R.anim.left_out
+//                                    )
+//                                }
                             }.lparams(dip(64), dip(64)) {
 
                                 rightMargin = dip(20)

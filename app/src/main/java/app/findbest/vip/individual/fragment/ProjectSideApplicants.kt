@@ -1,32 +1,29 @@
 package app.findbest.vip.individual.fragment
 
 import android.content.Context
-import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.FrameLayout
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.fragment.app.Fragment
-import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import app.findbest.vip.R
 import app.findbest.vip.commonfrgmant.BackgroundFragment
-import app.findbest.vip.individual.adapter.ProjectSideApplicantsAdapter
+import app.findbest.vip.commonfrgmant.NullDataPageFragment
 import app.findbest.vip.individual.api.IndividualApi
 import app.findbest.vip.painter.fragment.BigImage2
 import app.findbest.vip.utils.RetrofitUtils
-import app.findbest.vip.utils.recyclerView
 import app.findbest.vip.utils.smartRefreshLayout
 import com.google.gson.JsonObject
 import com.scwang.smart.refresh.footer.BallPulseFooter
 import com.scwang.smart.refresh.header.MaterialHeader
 import com.scwang.smart.refresh.layout.SmartRefreshLayout
 import com.scwang.smart.refresh.layout.constant.SpinnerStyle
-import imui.jiguang.cn.imuisample.messages.MessageListActivity
 import io.reactivex.schedulers.Schedulers
 import kotlinx.coroutines.CoroutineStart
 import kotlinx.coroutines.Dispatchers
@@ -38,8 +35,7 @@ import org.jetbrains.anko.support.v4.UI
 import org.jetbrains.anko.support.v4.toast
 import retrofit2.HttpException
 
-class ProjectSideApplicants : Fragment(), ProjectSideApplicantsAdapter.PrintedCrad,
-    BackgroundFragment.ClickBack, BigImage2.ImageClick {
+class ProjectSideApplicants : Fragment(), ProjectSideApplicantList.ProjectSideList{
 
     companion object {
         fun newInstance(context: Context, id: String): ProjectSideApplicants {
@@ -53,10 +49,10 @@ class ProjectSideApplicants : Fragment(), ProjectSideApplicantsAdapter.PrintedCr
     private lateinit var mContext: Context
     private lateinit var name: TextView
     private lateinit var smart: SmartRefreshLayout
-    private var bigImage: BigImage2? = null
-    private var backgroundFragment: BackgroundFragment? = null
-    private var recycle: RecyclerView? = null
-
+    private lateinit var listFram: FrameLayout
+    private lateinit var listFragment: ProjectSideApplicantList
+    private var nullData: NullDataPageFragment? = null
+    private val nullId = 4
     private var nowPage = 0
     var projectId = ""
 
@@ -68,53 +64,7 @@ class ProjectSideApplicants : Fragment(), ProjectSideApplicantsAdapter.PrintedCr
         return createV()
     }
 
-    //单独点击某一张画
-    override fun oneClick(str: String) {
-        val mainId = 1
-        if (backgroundFragment == null) {
-            backgroundFragment = BackgroundFragment.newInstance(this@ProjectSideApplicants)
-            activity!!.supportFragmentManager.beginTransaction().add(mainId, backgroundFragment!!)
-                .commit()
-        }
-        if (bigImage == null) {
-            bigImage = BigImage2.newInstance(str, this@ProjectSideApplicants)
-            activity!!.supportFragmentManager.beginTransaction().add(mainId, bigImage!!).commit()
-        }
-    }
-
-    //点击黑色背景
-    override fun clickAll() {
-        closeDialog()
-    }
-
-    //点击放大的图片
-    override fun clickclose() {
-        closeDialog()
-    }
-    //聊一聊
-    override fun chat(model: JsonObject) {
-        val provider = model["provider"].asJsonObject
-        val intent = Intent(mContext, MessageListActivity::class.java)
-        val id = if(!provider["id"].isJsonNull) provider["id"].asString else ""
-        val name = if(!provider["name"].isJsonNull) provider["name"].asString else ""
-        val avatar = if(!provider["avatar"].isJsonNull) provider["avatar"].asString else ""
-        intent.putExtra("hisId",id)
-        intent.putExtra("companyName","")
-        intent.putExtra("hisName",name)
-        intent.putExtra("hislogo",avatar)
-        intent.putExtra("position_id","")
-        intent.putExtra("isTranslate",false)
-
-        startActivity(intent)
-        activity!!.overridePendingTransition(R.anim.right_in, R.anim.left_out)
-    }
-    //发送委托
-    override fun send(commitId: String) {
-        toast("请前往web端发布委托")
-    }
-    //拒绝应征
     override fun refuse(commitId: String) {
-        toast("拒绝")
         GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
             refusePerson(commitId)
         }
@@ -155,10 +105,12 @@ class ProjectSideApplicants : Fragment(), ProjectSideApplicantsAdapter.PrintedCr
                                 it.finishLoadMore(1000)
                             }
                         }
-                        recycle = recyclerView {
-                            layoutManager = LinearLayoutManager(mContext)
-                            backgroundColor = Color.parseColor("#FFF6F6F6")
+                        listFram = frameLayout {
+                            id = nullId
                         }
+                        val listFramlp = listFram.layoutParams
+                        listFramlp.width = LinearLayout.LayoutParams.MATCH_PARENT
+                        listFramlp.height = LinearLayout.LayoutParams.MATCH_PARENT
                     }.lparams(matchParent, matchParent) {
                         leftMargin = dip(5)
                         rightMargin = dip(5)
@@ -166,6 +118,9 @@ class ProjectSideApplicants : Fragment(), ProjectSideApplicantsAdapter.PrintedCr
                 }
             }
         }.view
+
+        listFragment = ProjectSideApplicantList.newInstance(mContext,this@ProjectSideApplicants)
+        childFragmentManager.beginTransaction().replace(nullId, listFragment).commit()
         smart.autoRefresh()
         return view
     }
@@ -180,14 +135,17 @@ class ProjectSideApplicants : Fragment(), ProjectSideApplicantsAdapter.PrintedCr
                 .awaitSingle()
             if (it.code() in 200..299) {
                 val array = it.body()!!.data
-                val mutableList = mutableListOf<JsonObject>()
-                array.forEach {
-                    mutableList.add(it.asJsonObject)
+                if(array.size()>0){
+                    nowPage = 1
+                    val mutableList = mutableListOf<JsonObject>()
+                    array.forEach {
+                        mutableList.add(it.asJsonObject)
+                    }
+                    listFragment.resetView(mutableList)
+                }else{
+                    nullData = NullDataPageFragment.newInstance()
+                    childFragmentManager.beginTransaction().replace(nullId,nullData!!).commit()
                 }
-                val applicants =
-                    ProjectSideApplicantsAdapter(this@ProjectSideApplicants.context!!, this@ProjectSideApplicants, mutableList)
-                recycle?.adapter = applicants
-                nowPage = 1
             }
         } catch (throwable: Throwable) {
             if (throwable is HttpException) {
@@ -205,14 +163,16 @@ class ProjectSideApplicants : Fragment(), ProjectSideApplicantsAdapter.PrintedCr
                 .awaitSingle()
             if (it.code() in 200..299) {
                 val array = it.body()!!.data
+                if(array.size() ==0){
+                    toast("没有数据了。。。")
+                    return
+                }
+                nowPage = page
                 val mutableList = mutableListOf<JsonObject>()
                 array.forEach {
                     mutableList.add(it.asJsonObject)
                 }
-                val applicants =
-                    ProjectSideApplicantsAdapter(this@ProjectSideApplicants.context!!, this@ProjectSideApplicants, mutableList)
-                recycle?.adapter = applicants
-                nowPage = page
+                listFragment.addView(mutableList)
             }
         } catch (throwable: Throwable) {
             if (throwable is HttpException) {
@@ -230,7 +190,8 @@ class ProjectSideApplicants : Fragment(), ProjectSideApplicantsAdapter.PrintedCr
                 .subscribeOn(Schedulers.io())
                 .awaitSingle()
             if (it.code() in 200..299) {
-
+                listFragment = ProjectSideApplicantList.newInstance(mContext,this@ProjectSideApplicants)
+                childFragmentManager.beginTransaction().replace(nullId, listFragment).commit()
                 smart.autoRefresh()
             }
         } catch (throwable: Throwable) {
@@ -238,19 +199,6 @@ class ProjectSideApplicants : Fragment(), ProjectSideApplicantsAdapter.PrintedCr
                 println(throwable.code())
             }
         }
-    }
-    private fun closeDialog() {
-        val mTransaction = activity!!.supportFragmentManager.beginTransaction()
-        if (backgroundFragment != null) {
-            mTransaction.remove(backgroundFragment!!)
-            backgroundFragment = null
-        }
-
-        if (bigImage != null) {
-            mTransaction.remove(bigImage!!)
-            bigImage = null
-        }
-        mTransaction.commit()
     }
 
     fun setProjectName(str: String) {

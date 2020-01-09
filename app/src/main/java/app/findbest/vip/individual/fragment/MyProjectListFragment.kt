@@ -20,15 +20,6 @@ import org.jetbrains.anko.*
 import org.jetbrains.anko.support.v4.UI
 
 class MyProjectListFragment: Fragment(), MyProjectListAdapter.ListAdapter {
-    override fun oneClick(id: String, status: Int) {
-        if (isPainter) {
-            activity!!.startActivity<PainterSideProjectInfo>("projectId" to id, "status" to status)
-            activity!!.overridePendingTransition(R.anim.right_in, R.anim.left_out)
-        } else {
-            activity!!.startActivity<ProjectSideProjectInfo>("projectId" to id, "status" to status)
-            activity!!.overridePendingTransition(R.anim.right_in, R.anim.left_out)
-        }
-    }
 
     companion object{
         fun newInstance(context: Context, isPainter: Boolean): MyProjectListFragment{
@@ -50,6 +41,16 @@ class MyProjectListFragment: Fragment(), MyProjectListAdapter.ListAdapter {
         savedInstanceState: Bundle?
     ): View? {
         return createV()
+    }
+    //点击某一行跳转我的-项目详情
+    override fun oneClick(id: String, status: Int) {
+        if (isPainter) {
+            activity!!.startActivity<PainterSideProjectInfo>("projectId" to id, "status" to status)
+            activity!!.overridePendingTransition(R.anim.right_in, R.anim.left_out)
+        } else {
+            activity!!.startActivity<ProjectSideProjectInfo>("projectId" to id, "status" to status)
+            activity!!.overridePendingTransition(R.anim.right_in, R.anim.left_out)
+        }
     }
 
     private fun createV(): View {

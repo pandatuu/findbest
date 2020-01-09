@@ -13,12 +13,14 @@ import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import app.findbest.vip.R
+import click
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.CircleCrop
 import com.bumptech.glide.request.RequestOptions
 import com.google.gson.JsonObject
 import org.jetbrains.anko.*
 import org.jetbrains.anko.support.v4.UI
+import withTrigger
 
 class PainterSideInvite : Fragment() {
 
@@ -83,6 +85,10 @@ class PainterSideInvite : Fragment() {
                         rightMargin = dip(15)
                     }
                     statusLayout = linearLayout { }.lparams(matchParent, wrapContent)
+                }.lparams{
+                    topMargin = dip(15)
+                    leftMargin = dip(15)
+                    rightMargin = dip(15)
                 }
             }
         }.view
@@ -143,7 +149,7 @@ class PainterSideInvite : Fragment() {
                                         textSize = 15f
                                         textColor = Color.parseColor("#FFFFFFFF")
                                         backgroundResource = R.drawable.enable_around_button
-                                        setOnClickListener {
+                                        withTrigger().click {
                                             chooseStatus.agree()
                                         }
                                     }.lparams(dip(0), dip(47)) {
@@ -154,7 +160,7 @@ class PainterSideInvite : Fragment() {
                                         textSize = 15f
                                         textColor = Color.parseColor("#FFFFFFFF")
                                         backgroundResource = R.drawable.black_around_button
-                                        setOnClickListener {
+                                        withTrigger().click {
                                             chooseStatus.refuse()
                                         }
                                     }.lparams(dip(0), dip(47)) {

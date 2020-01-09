@@ -8,11 +8,13 @@ import android.view.ViewGroup
 import android.widget.*
 import androidx.recyclerview.widget.RecyclerView
 import app.findbest.vip.R
+import click
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.CircleCrop
 import com.bumptech.glide.request.RequestOptions
 import com.google.gson.JsonObject
 import org.jetbrains.anko.*
+import withTrigger
 
 
 class ProjectSideInviteAdapter(
@@ -37,8 +39,8 @@ class ProjectSideInviteAdapter(
     private var printedCrad: PrintedCrad = printedCrad
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
-        val view = with(mContext) {
-            verticalLayout {
+        val view = mContext.UI {
+            val linea = verticalLayout {
                 backgroundResource = R.drawable.around_input_5
                 linearLayout {
                     backgroundResource = R.drawable.ffe3e3e3_bottom_line
@@ -81,7 +83,7 @@ class ProjectSideInviteAdapter(
                 }
                 imageList = horizontalScrollView {
                     isHorizontalScrollBarEnabled = false
-                }.lparams(dip(500), dip(85)) {
+                }.lparams(matchParent, dip(85)) {
                     topMargin = dip(15)
                     bottomMargin = dip(20)
                 }
@@ -102,7 +104,9 @@ class ProjectSideInviteAdapter(
                     bottomMargin = dip(23)
                 }
             }
-        }
+            val lp = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,LinearLayout.LayoutParams.WRAP_CONTENT)
+            linea.layoutParams = lp
+        }.view
         return ViewHolder(view)
     }
 
@@ -168,7 +172,7 @@ class ProjectSideInviteAdapter(
                 images.forEach {
                     val imageObject = it.asJsonObject
                     val image = imageView {
-                        setOnClickListener {
+                        withTrigger().click {
                             printedCrad.oneClick(imageObject["url"].asString)
                         }
                     }.lparams(wrapContent, matchParent){
@@ -184,9 +188,12 @@ class ProjectSideInviteAdapter(
         }
         imageList.addView(view)
 
-        inviteButton.setOnClickListener {
+        inviteButton.withTrigger().click {
             printedCrad.cacel(model["id"].asString)
         }
+
+        //防止RecycleView数据刷新错乱
+        h.setIsRecyclable(false)
     }
 
     override fun getItemCount(): Int {
@@ -196,4 +203,14 @@ class ProjectSideInviteAdapter(
 
     private inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
 
+    fun resetView(data: MutableList<JsonObject>){
+        mData.clear()
+        mData.addAll(data)
+        notifyDataSetChanged()
+    }
+
+    fun addData(data: MutableList<JsonObject>){
+        mData.addAll(data)
+        notifyDataSetChanged()
+    }
 }

@@ -11,12 +11,14 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import app.findbest.vip.R
+import click
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.CircleCrop
 import com.bumptech.glide.request.RequestOptions
 import com.google.gson.JsonArray
 import com.google.gson.JsonObject
 import org.jetbrains.anko.*
+import withTrigger
 
 
 class ProjectSideApplicantsAdapter(
@@ -47,11 +49,9 @@ class ProjectSideApplicantsAdapter(
     private lateinit var refuse: LinearLayout
     private var printedCrad: PrintedCrad = printedCrad
 
-    var isCommit = false
-
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
-        val view = with(mContext) {
-            verticalLayout {
+        val view = mContext.UI {
+            val linea = verticalLayout {
                 backgroundResource = R.drawable.around_input_5
                 linearLayout {
                     backgroundResource = R.drawable.ffe3e3e3_bottom_line
@@ -96,7 +96,6 @@ class ProjectSideApplicantsAdapter(
                 }.lparams(matchParent, dip(75)) {
                     setMargins(dip(10), dip(5), dip(10), 0)
                 }
-
                 commit = textView {
                     textSize = 14f
                     textColor = Color.parseColor("#FF333333")
@@ -108,7 +107,7 @@ class ProjectSideApplicantsAdapter(
                 }
                 imageList = horizontalScrollView {
                     isHorizontalScrollBarEnabled = false
-                }.lparams(dip(500), dip(85)) {
+                }.lparams(matchParent, dip(85)) {
                     topMargin = dip(15)
                 }
                 isRefuse = linearLayout {
@@ -171,7 +170,9 @@ class ProjectSideApplicantsAdapter(
                     setMargins(dip(10), dip(12), dip(10), dip(12))
                 }
             }
-        }
+            val lp = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,LinearLayout.LayoutParams.WRAP_CONTENT)
+            linea.layoutParams = lp
+        }.view
         return ViewHolder(view)
     }
 
@@ -180,18 +181,23 @@ class ProjectSideApplicantsAdapter(
         val model = mData[position].get("provider").asJsonObject
         //应征作品
         var images: JsonArray? = null
-        if (!mData[position].get("applyWorks").isJsonNull)
+        if (mData[position].has("applyWorks")) {
             images = mData[position].get("applyWorks").asJsonArray
-
-        if (!model["avatar"].isJsonNull) {
-            Glide.with(mContext)
-                .load(model["avatar"].asString)
-                .apply(RequestOptions.bitmapTransform(CircleCrop()))
-                .into(headPic)
         }
 
-        if (!model["name"].isJsonNull) {
-            name.text = model["name"].asString
+        if (model.has("avatar")) {
+            if (!model["avatar"].isJsonNull) {
+                Glide.with(mContext)
+                    .load(model["avatar"].asString)
+                    .apply(RequestOptions.bitmapTransform(CircleCrop()))
+                    .into(headPic)
+            }
+        }
+
+        if (model.has("name")) {
+            if (!model["name"].isJsonNull) {
+                name.text = model["name"].asString
+            }
         }
 
         val star = model["star"].asInt
@@ -214,14 +220,16 @@ class ProjectSideApplicantsAdapter(
             stars.addView(view)
         }
 
-        if (!mData[position]["comment"].isJsonNull) {
-            commit.text = mData[position]["comment"].asString
-            commitButton.setOnClickListener {
-                if(mData[position]["comment"].asString!=""){
-                    if (commit.visibility != LinearLayout.GONE) {
-                        commit.visibility = LinearLayout.GONE
-                    } else {
-                        commit.visibility = LinearLayout.VISIBLE
+        if (mData[position].has("comment")) {
+            if (!mData[position]["comment"].isJsonNull) {
+                commit.text = mData[position]["comment"].asString
+                commitButton.setOnClickListener {
+                    if (mData[position]["comment"].asString != "") {
+                        if (commit.visibility != LinearLayout.GONE) {
+                            commit.visibility = LinearLayout.GONE
+                        } else {
+                            commit.visibility = LinearLayout.VISIBLE
+                        }
                     }
                 }
             }
@@ -249,33 +257,46 @@ class ProjectSideApplicantsAdapter(
         }
         imageList.addView(view)
 
-
         //0待接收，100已同意，25,50拒绝
-        if (!mData[position]["status"].isJsonNull) {
-            if (mData[position]["status"].asInt != 0) {
-                send.visibility = LinearLayout.GONE
-                refuse.visibility = LinearLayout.GONE
-                leftLine.visibility = LinearLayout.GONE
-                rightLine.visibility = LinearLayout.GONE
+        if (!mData[position].has("status")) {
+            if (!mData[position]["status"].isJsonNull) {
+                if (mData[position]["status"].asInt != 0) {
+                    send.visibility = LinearLayout.GONE
+                    refuse.visibility = LinearLayout.GONE
+                    leftLine.visibility = LinearLayout.GONE
+                    rightLine.visibility = LinearLayout.GONE
+                }
             }
         }
 
-        chat.setOnClickListener {
+        chat.withTrigger().click {
             printedCrad.chat(mData[position])
         }
-        send.setOnClickListener {
+        send.withTrigger().click {
             printedCrad.send(mData[position]["id"].asString)
         }
-        refuse.setOnClickListener {
+        refuse.withTrigger().click {
             printedCrad.refuse(mData[position]["id"].asString)
         }
+
+        //防止RecycleView数据刷新错乱
+        h.setIsRecyclable(false)
     }
 
     override fun getItemCount(): Int {
         return mData.size
     }
 
-
     private inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
 
+    fun resetView(data: MutableList<JsonObject>){
+        mData.clear()
+        mData.addAll(data)
+        notifyDataSetChanged()
+    }
+
+    fun addData(data: MutableList<JsonObject>){
+        mData.addAll(data)
+        notifyDataSetChanged()
+    }
 }

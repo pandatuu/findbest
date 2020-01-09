@@ -13,8 +13,10 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import app.findbest.vip.R
+import click
 import com.google.gson.JsonObject
 import org.jetbrains.anko.*
+import withTrigger
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -235,9 +237,9 @@ class MyProjectListAdapter(
                                 textSize = 11f
                                 textColor = Color.parseColor("#FF555555")
                             }.lparams {
-                                centerInParent()
+                                setMargins(dip(7),dip(2.5f),dip(7),dip(2.5f))
                             }
-                        }.lparams(dip(55), dip(20)){
+                        }.lparams(wrapContent, wrapContent){
                             leftMargin = dip(10)
                         }
                     }
@@ -248,10 +250,9 @@ class MyProjectListAdapter(
 
         maxPrice.text = model["margin"].asString
 
-        linea.setOnClickListener {
+        linea.withTrigger().click {
             listAdapter.oneClick(model["id"].asString,model["status"].asInt)
         }
-
 
         //防止RecycleView数据刷新错乱
         h.setIsRecyclable(false)
