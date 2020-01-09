@@ -6,10 +6,13 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.FrameLayout
+import android.widget.LinearLayout
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import app.findbest.vip.R
+import app.findbest.vip.commonfrgmant.NullDataPageFragment
 import app.findbest.vip.project.adapter.ProjectMainListAdapter
 import app.findbest.vip.project.api.ProjectApi
 import app.findbest.vip.project.model.ProjectListModel
@@ -35,7 +38,7 @@ import retrofit2.HttpException
 
 class MainSearchList : Fragment(), ProjectMainListAdapter.ListAdapter {
 
-    interface ClickBack{
+    interface ClickBack {
         fun clickback()
     }
 
@@ -52,9 +55,12 @@ class MainSearchList : Fragment(), ProjectMainListAdapter.ListAdapter {
     lateinit var mContext: Context
     lateinit var smart: SmartRefreshLayout
     lateinit var recycle: RecyclerView
-    lateinit var projectMain: ProjectMainListAdapter
+    private lateinit var listFram: FrameLayout
+    private lateinit var listFragment: MyProjectListFragment
+    private var nullData: NullDataPageFragment? = null
     var nowPage = 0
     var searchText = ""
+    private val nullId = 4
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -70,13 +76,12 @@ class MainSearchList : Fragment(), ProjectMainListAdapter.ListAdapter {
         activity?.overridePendingTransition(R.anim.right_in, R.anim.left_out)
     }
 
-    fun setText(s: String){
+    fun setText(s: String) {
         searchText = s
         smart.autoRefresh()
     }
 
     private fun createV(): View {
-        projectMain = ProjectMainListAdapter(mContext, this@MainSearchList)
         return UI {
             linearLayout {
                 backgroundColor = Color.parseColor("#FFF6F6F6")
@@ -84,7 +89,6 @@ class MainSearchList : Fragment(), ProjectMainListAdapter.ListAdapter {
                     setEnableAutoLoadMore(false)
                     setRefreshHeader(MaterialHeader(activity))
                     setOnRefreshListener {
-                        toast("刷新....")
                         GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
                             getProjectList()
                             it.finishRefresh(1000)
@@ -93,21 +97,23 @@ class MainSearchList : Fragment(), ProjectMainListAdapter.ListAdapter {
                     }
                     setRefreshFooter(BallPulseFooter(mContext).setSpinnerStyle(SpinnerStyle.Scale))
                     setOnLoadMoreListener {
-                        toast("刷新....")
                         GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
                             getProjectList(nowPage + 1)
                             it.finishLoadMore(1000)
                         }
                     }
-                    recycle = recyclerView {
-                        layoutManager = LinearLayoutManager(mContext)
-                        adapter = projectMain
-                        setOnScrollChangeListener { v, scrollX, scrollY, oldScrollX, oldScrollY ->
+                    listFram = frameLayout {
+                        id = nullId
+                        listFragment = MyProjectListFragment.newInstance(mContext)
+                        childFragmentManager.beginTransaction().add(nullId, listFragment).commit()
+                        setOnScrollChangeListener { _, _, _, _, _ ->
                             clickback.clickback()
                         }
-
                     }
-                    setOnScrollChangeListener { v, scrollX, scrollY, oldScrollX, oldScrollY ->
+                    val listFramlp = listFram.layoutParams
+                    listFramlp.width = LinearLayout.LayoutParams.MATCH_PARENT
+                    listFramlp.height = LinearLayout.LayoutParams.MATCH_PARENT
+                    setOnScrollChangeListener { _, _, _, _, _ ->
                         clickback.clickback()
                     }
                 }.lparams(matchParent, matchParent) {
@@ -126,30 +132,38 @@ class MainSearchList : Fragment(), ProjectMainListAdapter.ListAdapter {
                 .subscribeOn(Schedulers.io())
                 .awaitSingle()
 
-
             if (it.code() in 200..299) {
                 //完善信息成功
                 val list = it.body()!!.data
                 println(list)
-                val projectList = arrayListOf<ProjectListModel>()
-                list.forEach {
-                    val model = it.asJsonObject
-                    val projectListModel = ProjectListModel(
-                        model["id"].asString,
-                        model["name"].asString,
-                        model["guaranteeType"].asInt == 6,
-                        model["size"].asString,
-                        model["format"].asString,
-                        model["commitAt"].asLong,
-                        model["consumer"].asJsonObject["country"].asString,
-                        model["styles"].asJsonArray,
-                        model["minBonus"].asFloat,
-                        model["maxBonus"].asFloat
-                    )
-                    projectList.add(projectListModel)
+                if (list.size() > 0) {
+                    if(nullData!=null){
+                        childFragmentManager.beginTransaction().remove(nullData!!).commit()
+                        nullData = null
+                    }
+                    nowPage = 1
+                    val projectList = arrayListOf<ProjectListModel>()
+                    list.forEach {
+                        val model = it.asJsonObject
+                        val projectListModel = ProjectListModel(
+                            model["id"].asString,
+                            model["name"].asString,
+                            model["guaranteeType"].asInt == 6,
+                            model["size"].asString,
+                            model["format"].asString,
+                            model["commitAt"].asLong,
+                            model["consumer"].asJsonObject["country"].asString,
+                            model["styles"].asJsonArray,
+                            model["minBonus"].asFloat,
+                            model["maxBonus"].asFloat
+                        )
+                        projectList.add(projectListModel)
+                    }
+                    listFragment.resetItems(projectList)
+                }else{
+                    nullData = NullDataPageFragment.newInstance()
+                    childFragmentManager.beginTransaction().replace(nullId,nullData!!).commit()
                 }
-                nowPage = 1
-                projectMain.resetItems(projectList)
             }
         } catch (throwable: Throwable) {
             if (throwable is HttpException) {
@@ -175,7 +189,10 @@ class MainSearchList : Fragment(), ProjectMainListAdapter.ListAdapter {
                     toast("没有数据啦...")
                     return
                 }
-                println(list)
+                if(nullData!=null){
+                    childFragmentManager.beginTransaction().remove(nullData!!).commit()
+                    nullData = null
+                }
                 val projectList = arrayListOf<ProjectListModel>()
                 list.forEach {
                     //                    val it = Gson().fromJson<ProjectListModel>(it, ProjectListModel::class.java)
@@ -195,7 +212,7 @@ class MainSearchList : Fragment(), ProjectMainListAdapter.ListAdapter {
                     projectList.add(projectListModel)
                 }
                 nowPage = page
-                projectMain.addItems(projectList)
+                listFragment.addItems(projectList)
             }
         } catch (throwable: Throwable) {
             if (throwable is HttpException) {

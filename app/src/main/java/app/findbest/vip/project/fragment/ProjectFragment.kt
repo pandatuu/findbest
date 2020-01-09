@@ -56,44 +56,6 @@ class ProjectFragment : Fragment(), ProjectMainTitle.ChildrenClick, BackgroundFr
         return createV()
     }
 
-    override fun onResume() {
-        super.onResume()
-//        stacktime()
-//        LiveEventBus
-//            .get("isVideo", MutableList::class.java)
-//            .observe(this, Observer<MutableList<*>> {
-//                toast("11111")
-//                app.isVideo = false
-//                startActivity<VideoResultActivity>(
-//                    "otherName" to it[0].toString(),
-//                    "otherAvatar" to it[1].toString()
-//                )
-//                activity!!.overridePendingTransition(R.anim.right_in, R.anim.left_out)
-//            })
-    }
-//    fun stacktime(){
-//        val timer = Timer()
-//        val timerTask = object: TimerTask() {
-//            override fun run() {
-//                if(app.isVideo){
-//                    app.isVideo = false
-//                    val list = app.getVideoOther()
-//                    startActivity<VideoResultActivity>(
-//                        "otherName" to list[0],
-//                        "otherAvatar" to list[1]
-//                    )
-//                    activity!!.overridePendingTransition(R.anim.right_in, R.anim.left_out)
-//                }
-//            }
-//        }
-//        /**
-//         *  参数一  表示当前要执行的任务
-//         *  参数二  表示用户第一次启动渐变的时间
-//         *  参数三  表示下次任务执行的时间
-//         */
-//        timer.schedule(timerTask,0,1000)
-//    }
-
     //点击筛选按钮
     override fun clickFragment() {
         openDialog()

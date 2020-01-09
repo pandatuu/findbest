@@ -10,8 +10,10 @@ import android.widget.LinearLayout
 import androidx.fragment.app.Fragment
 import app.findbest.vip.R
 import app.findbest.vip.project.view.MainSearchActivity
+import click
 import org.jetbrains.anko.*
 import org.jetbrains.anko.support.v4.UI
+import withTrigger
 
 class ProjectMainTitle: Fragment() {
 
@@ -69,7 +71,7 @@ class ProjectMainTitle: Fragment() {
                             leftMargin = dip(10)
                             gravity = Gravity.CENTER_VERTICAL
                         }
-                        setOnClickListener {
+                        this.withTrigger().click {
                             startActivity<MainSearchActivity>()
                             activity?.overridePendingTransition(R.anim.right_in, R.anim.left_out)
                         }

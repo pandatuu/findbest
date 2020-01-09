@@ -15,6 +15,7 @@ import app.findbest.vip.project.api.ProjectApi
 import app.findbest.vip.project.view.EnlistProject
 import app.findbest.vip.utils.MimeType
 import app.findbest.vip.utils.RetrofitUtils
+import click
 import com.alibaba.fastjson.JSON
 import io.reactivex.schedulers.Schedulers
 import kotlinx.coroutines.CoroutineStart
@@ -26,6 +27,7 @@ import okhttp3.RequestBody
 import org.jetbrains.anko.*
 import org.jetbrains.anko.support.v4.UI
 import retrofit2.HttpException
+import withTrigger
 
 class ProjectDemand : Fragment(), EnlistCheckTipsDialog.ButtomClick, BackgroundFragment.ClickBack {
 
@@ -88,7 +90,7 @@ class ProjectDemand : Fragment(), EnlistCheckTipsDialog.ButtomClick, BackgroundF
                     text = "我要应征"
                     textSize = 16f
                     textColor = Color.parseColor("#FFFFFFFF")
-                    setOnClickListener {
+                    this.withTrigger().click {
                         GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
                             getAppliesValidation(projectId)
                         }

@@ -222,7 +222,6 @@ class MyProjectList : BaseActivity(){
                         val listFramlp = listFram.layoutParams
                         listFramlp.width = LinearLayout.LayoutParams.MATCH_PARENT
                         listFramlp.height = LinearLayout.LayoutParams.MATCH_PARENT
-
                     }.lparams(matchParent, matchParent) {
                         setMargins(dip(10), 0, dip(10), 0)
                     }

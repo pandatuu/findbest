@@ -30,16 +30,20 @@ class CheckToken(val mContext: Context) {
 
 
             if(!jwt.subject.isNullOrBlank()){
-                val role = jwt.getClaim("roles").asList(String::class.java)[0]
-                val userType = jwt.getClaim("userType").asInt()
-                val id = jwt.getClaim("sub").asString()
                 val mPerferences: SharedPreferences =
                     PreferenceManager.getDefaultSharedPreferences(mContext)
                 val mEditor = mPerferences.edit()
-                mEditor.putString("role", role)
-                mEditor.putInt("userType", userType!!)
-                mEditor.putString("userId", id)
-                mEditor.commit()
+                if(jwt.getClaim("accountStatus").asString() == "UNCOMPLETED"){
+
+                }else{
+                    val role = jwt.getClaim("roles").asList(String::class.java)[0]
+                    mEditor.putString("role", role)
+                    val userType = jwt.getClaim("userType").asInt()
+                    mEditor.putInt("userType", userType!!)
+                    val id = jwt.getClaim("sub").asString()
+                    mEditor.putString("userId", id)
+                    mEditor.commit()
+                }
 
                 return jwt.getClaim("accountStatus").asString() ?: ""
             }

@@ -61,11 +61,11 @@ class EnlistCheckTipsDialog : Fragment() {
             }
             6 -> {
                 // 6为个人用户只允许接两个项目
-                tipText = "参考原型"
+                tipText = "个人画师只能同时进行2个任务，请先将正在进行的任务提交并验收后才可以接更多的任务喔！"
             }
             7 -> {
                 // 7为用户不存在或者不是接包方
-                tipText = "参考3"
+                tipText = "您当前帐号为项目方，无法应征该项目！"
             }
             8 -> {
                 // 8用户未认证
@@ -73,10 +73,7 @@ class EnlistCheckTipsDialog : Fragment() {
             }
             9 -> {
                 // 9用户无vip
-                tipText = "本平台仅限VIP用户应征，您当前还不是VIP用户，是否现在就成为VIP呢？\n"
-            }
-            else -> {
-
+                tipText = "本平台仅限VIP用户应征，您当前还不是VIP用户，是否现在就成为VIP呢？"
             }
         }
         return UI {

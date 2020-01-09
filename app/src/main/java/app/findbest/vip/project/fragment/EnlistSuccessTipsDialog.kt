@@ -1,6 +1,7 @@
 package app.findbest.vip.project.fragment
 
 import android.graphics.Color
+import android.graphics.Typeface
 import android.os.Bundle
 import android.view.Gravity
 import android.view.LayoutInflater
@@ -40,35 +41,36 @@ class EnlistSuccessTipsDialog : Fragment() {
                 verticalLayout {
                     gravity = Gravity.CENTER_HORIZONTAL
                     backgroundResource = R.mipmap.iamge_submitted_successfully
-                    textView {
-                        text = "提交成功"
-                        textSize = 17f
-                        textColor = Color.parseColor("#ffffff")
-                    }.lparams{
-                        topMargin = dip(76)
-                    }
-                    textView {
-                        text = "请等候项目方筛选！如果应征\n" +
-                                "成功平台将会给您发送系统消息\n" +
-                                "请注意查看！"
-                        textSize = 17f
-                        textColor = Color.parseColor("#FFFFFF")
-                    }.lparams(matchParent, wrapContent){
-                        leftMargin = dip(40)
-                        rightMargin = dip(40)
-                        topMargin = dip(34)
-                    }
+                    verticalLayout {
+                        textView {
+                            text = "提交成功"
+                            textSize = 17f
+                            textColor = Color.parseColor("#ffffff")
+                        }.lparams{
+                            topMargin = dip(76)
+                        }
+                        textView {
+                            text = "请等候项目方筛选！如果应征\n" +
+                                    "成功平台将会给您发送系统消息\n" +
+                                    "请注意查看！"
+                            textSize = 17f
+                            textColor = Color.parseColor("#FF666666")
+                        }.lparams(matchParent, wrapContent){
+                            leftMargin = dip(40)
+                            rightMargin = dip(40)
+                            bottomMargin = dip(12.5f)
+                        }
+                    }.lparams(matchParent,dip(200))
                     linearLayout {
                         backgroundColor = Color.parseColor("#FFE3E3E3")
-                    }.lparams(matchParent,dip(1)){
-                        topMargin = dip(13)
-                    }
+                    }.lparams(matchParent,dip(1))
                     linearLayout {
                         gravity = Gravity.CENTER
                         textView {
                             text = "确定"
                             textSize = 14f
                             textColor = Color.parseColor("#FF333333")
+                            typeface = Typeface.DEFAULT_BOLD
                         }
                         setOnClickListener {
                             buttomClick.click()

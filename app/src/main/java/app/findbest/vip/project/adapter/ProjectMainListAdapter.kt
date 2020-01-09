@@ -15,7 +15,9 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import app.findbest.vip.R
 import app.findbest.vip.project.model.ProjectListModel
+import click
 import org.jetbrains.anko.*
+import withTrigger
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -64,6 +66,7 @@ class ProjectMainListAdapter(
                             leftMargin = dip(11)
                         }
                         linearLayout {
+                            orientation = LinearLayout.HORIZONTAL
                             linearLayout {
                                 orientation = LinearLayout.HORIZONTAL
                                 imageView {
@@ -72,9 +75,13 @@ class ProjectMainListAdapter(
                                 pixel = textView {
                                     textSize = 12f
                                     textColor = Color.parseColor("#FF666666")
+                                    singleLine = true
+                                    ellipsize = TextUtils.TruncateAt.END
                                 }.lparams {
                                     leftMargin = dip(8)
                                 }
+                            }.lparams(dip(0), wrapContent){
+                                weight = 1f
                             }
                             linearLayout {
                                 orientation = LinearLayout.HORIZONTAL
@@ -84,11 +91,13 @@ class ProjectMainListAdapter(
                                 format = textView {
                                     textSize = 12f
                                     textColor = Color.parseColor("#FF666666")
+                                    singleLine = true
+                                    ellipsize = TextUtils.TruncateAt.END
                                 }.lparams {
                                     leftMargin = dip(8)
                                 }
-                            }.lparams {
-                                leftMargin = dip(48)
+                            }.lparams(dip(0), wrapContent){
+                                weight = 1f
                             }
                             linearLayout {
                                 orientation = LinearLayout.HORIZONTAL
@@ -98,11 +107,13 @@ class ProjectMainListAdapter(
                                 date = textView {
                                     textSize = 12f
                                     textColor = Color.parseColor("#FF666666")
+                                    singleLine = true
+                                    ellipsize = TextUtils.TruncateAt.END
                                 }.lparams {
                                     leftMargin = dip(8)
                                 }
-                            }.lparams {
-                                leftMargin = dip(48)
+                            }.lparams(dip(0), wrapContent){
+                                weight = 1f
                             }
                         }.lparams(matchParent, wrapContent) {
                             topMargin = dip(15)
@@ -204,9 +215,9 @@ class ProjectMainListAdapter(
                                 textSize = 11f
                                 textColor = Color.parseColor("#FF555555")
                             }.lparams {
-                                centerInParent()
+                                setMargins(dip(7),dip(2.5f),dip(7),dip(2.5f))
                             }
-                        }.lparams(dip(55), dip(20)){
+                        }.lparams(wrapContent, wrapContent){
                             leftMargin = dip(10)
                         }
                     }
@@ -215,7 +226,7 @@ class ProjectMainListAdapter(
             }
         }
         maxPrice.text = mDataSet[position].maxPrice.toString()
-        rela.setOnClickListener {
+        rela.withTrigger().click {
             listAdapter.oneClick(mDataSet[position].id)
         }
         //防止RecycleView数据刷新错乱

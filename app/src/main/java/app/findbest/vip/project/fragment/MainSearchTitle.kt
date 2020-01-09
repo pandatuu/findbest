@@ -5,26 +5,24 @@ import android.graphics.Color
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
-import android.view.Gravity
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
+import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import android.widget.LinearLayout
-import androidx.core.content.ContextCompat.getSystemService
+import android.widget.TextView
 import androidx.fragment.app.Fragment
 import app.findbest.vip.R
 import org.jetbrains.anko.*
 import org.jetbrains.anko.support.v4.UI
 
-class MainSearchTitle: Fragment() {
+class MainSearchTitle : Fragment() {
 
-    interface ChildrenClick{
+    interface ChildrenClick {
         fun inputText(toString: String)
     }
 
-    companion object{
+    companion object {
         fun newInstance(context: Context, child: ChildrenClick): MainSearchTitle {
             val fragment = MainSearchTitle()
             fragment.child = child
@@ -55,12 +53,12 @@ class MainSearchTitle: Fragment() {
                         text = "项目"
                         textSize = 17f
                         textColor = Color.parseColor("#FF222222")
-                    }.lparams(wrapContent, wrapContent){
+                    }.lparams(wrapContent, wrapContent) {
                         alignParentBottom()
                         centerHorizontally()
                         bottomMargin = dip(8)
                     }
-                }.lparams(matchParent,dip(65))
+                }.lparams(matchParent, dip(65))
                 linearLayout {
                     linearLayout {
                         orientation = LinearLayout.HORIZONTAL
@@ -76,20 +74,23 @@ class MainSearchTitle: Fragment() {
                                 hint = "搜索"
                                 textSize = 15f
                                 hintTextColor = Color.parseColor("#FF666666")
-                                addTextChangedListener(object: TextWatcher{
-                                    override fun afterTextChanged(s: Editable?) {}
-
-                                    override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
-
-                                    override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                                        child.inputText(s.toString())
+                                singleLine = true
+                                imeOptions = EditorInfo.IME_ACTION_SEARCH
+                                setOnEditorActionListener { v, actionId, _ ->
+                                    if (actionId == EditorInfo.IME_ACTION_SEARCH) {
+                                        //点击搜索的时候隐藏软键盘
+                                        closeFocusjianpan()
+                                        // 在这里写搜索的操作,一般都是网络请求数据
+                                        child.inputText(v.text.toString())
+                                        true
                                     }
-                                })
+                                    false
+                                }
                             }.lparams(matchParent, matchParent)
-                        }.lparams(matchParent, matchParent){
+                        }.lparams(matchParent, matchParent) {
                             leftMargin = dip(10)
                         }
-                    }.lparams(dip(0), dip(30)){
+                    }.lparams(dip(0), dip(30)) {
                         weight = 1f
                         gravity = Gravity.CENTER_VERTICAL
                     }
@@ -98,23 +99,26 @@ class MainSearchTitle: Fragment() {
                         textView {
                             text = "取消"
                             textSize = 15f
-                            textColor= Color.parseColor("#FF333333")
+                            textColor = Color.parseColor("#FF333333")
                         }
                         setOnClickListener {
                             val text = input.text.toString().trim()
-                            if(text.isNotBlank()){
+                            if (text.isNotBlank()) {
                                 input.setText("")
-                            }else{
+                            } else {
                                 closeFocusjianpan()
                                 activity?.finish()
-                                activity?.overridePendingTransition(R.anim.left_in, R.anim.right_out)
+                                activity?.overridePendingTransition(
+                                    R.anim.left_in,
+                                    R.anim.right_out
+                                )
                             }
                         }
-                    }.lparams(wrapContent, matchParent){
+                    }.lparams(wrapContent, matchParent) {
                         leftMargin = dip(20)
                     }
-                }.lparams(matchParent,dip(40)){
-                    setMargins(dip(10),0,dip(10),0)
+                }.lparams(matchParent, dip(40)) {
+                    setMargins(dip(10), 0, dip(10), 0)
                 }
             }
         }.view
@@ -122,7 +126,7 @@ class MainSearchTitle: Fragment() {
         return view
     }
 
-    private fun addKey(){
+    private fun addKey() {
         input.isFocusable = true
         input.requestFocus()
 

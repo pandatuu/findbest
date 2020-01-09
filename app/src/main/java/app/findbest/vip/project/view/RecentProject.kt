@@ -8,9 +8,10 @@ import android.os.Bundle
 import android.view.Gravity
 import android.widget.*
 import app.findbest.vip.R
+import app.findbest.vip.commonfrgmant.NullDataPageFragment
 import app.findbest.vip.project.api.ProjectApi
+import app.findbest.vip.project.fragment.RecentProjectImageList
 import app.findbest.vip.utils.*
-import com.bumptech.glide.Glide
 import io.reactivex.schedulers.Schedulers
 import kotlinx.coroutines.CoroutineStart
 import kotlinx.coroutines.Dispatchers
@@ -20,13 +21,16 @@ import kotlinx.coroutines.rx2.awaitSingle
 import org.jetbrains.anko.*
 import retrofit2.HttpException
 
-class RecentProject : BaseActivity() {
+class RecentProject : BaseActivity(), RecentProjectImageList.ClickImage {
 
-    private var imageList = arrayListOf<String>()
     private lateinit var listText: TextView
     private var projectId = ""
 
-    private var flow: FlowLayout? = null
+    private var imageList = arrayListOf<String>()
+    private lateinit var listFram: FrameLayout
+    private lateinit var listFragment: RecentProjectImageList
+    private var nullData: NullDataPageFragment? = null
+    private val nullId = 2
 
     @SuppressLint("SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -39,6 +43,7 @@ class RecentProject : BaseActivity() {
             imageList.addAll(intent.getStringArrayListExtra("imageList")!!)
         }
         frameLayout {
+            backgroundColor = Color.WHITE
             verticalLayout {
                 relativeLayout {
                     backgroundResource = R.drawable.ffe3e3e3_bottom_line
@@ -68,9 +73,14 @@ class RecentProject : BaseActivity() {
                 }.lparams(matchParent, dip(65))
                 linearLayout {
                     backgroundResource = R.drawable.ffe3e3e3_bottom_line
-                    flow = flowLayout {}.lparams{
-                        setMargins(dip(15),dip(15),dip(15),dip(15))
+                    listFram = frameLayout {
+                        id = nullId
+                        listFragment = RecentProjectImageList.newInstance(this@RecentProject,imageList, this@RecentProject)
+                        supportFragmentManager.beginTransaction().add(nullId,listFragment).commit()
                     }
+                    val listFramlp = listFram.layoutParams
+                    listFramlp.width = LinearLayout.LayoutParams.MATCH_PARENT
+                    listFramlp.height = LinearLayout.LayoutParams.MATCH_PARENT
                 }.lparams(matchParent,dip(0)){
                     weight = 1f
                 }
@@ -104,6 +114,10 @@ class RecentProject : BaseActivity() {
         }
     }
 
+    @SuppressLint("SetTextI18n")
+    override fun clickImage(size: Int) {
+        listText.text = "完成（${imageList.size}）"
+    }
     private suspend fun getMyPics() {
         try {
             val retrofitUils =
@@ -114,62 +128,15 @@ class RecentProject : BaseActivity() {
                 .awaitSingle()
             if(it.code() in 200..299){
                 val model = it.body()!!.data
-                for (index in 0..model.size()){
-                    val imageUrl = model[index].asJsonObject["url"].asString
-                    var isClick = false
-                    val imageViews = UI {
-                        frameLayout {
-                            frameLayout {
-                                backgroundResource = R.drawable.around_rectangle_2
-                                val image = imageView {}.lparams(matchParent, matchParent){
-                                    setMargins(dip(1),dip(1),dip(1),dip(1))
-                                }
-                                Glide.with(this.context)
-                                    .load(imageUrl)
-                                    .into(image)
-                                imageView {
-                                    if(imageList.size>0){
-                                        for (i in 0 until imageList.size) {
-                                            if (imageList[i] == imageUrl) {
-                                                imageResource = R.mipmap.login_ico_checkbox_pre
-                                                isClick = true
-                                                break
-                                            }else{
-                                                imageResource = R.mipmap.login_ico_checkbox_nor
-                                            }
-                                        }
-                                    }else{
-                                        imageResource = R.mipmap.login_ico_checkbox_nor
-                                    }
-                                    setOnClickListener {
-                                        if(isClick){
-                                            imageResource = R.mipmap.login_ico_checkbox_nor
-                                            imageList.remove(imageUrl)
-                                            listText.text = "完成（${imageList.size}）"
-                                            isClick = false
-                                        }else{
-                                            if(imageList.size<4){
-                                                imageResource = R.mipmap.login_ico_checkbox_pre
-                                                imageList.add(imageUrl)
-                                                listText.text = "完成（${imageList.size}）"
-                                                isClick = true
-                                            }else{
-                                                toast("最多选择4张图片")
-                                            }
-                                        }
-                                    }
-                                }.lparams(dip(20), dip(20)) {
-                                    gravity = Gravity.RIGHT
-                                    rightMargin = dip(5)
-                                    topMargin = dip(5)
-                                }
-                            }.lparams(dip(83),dip(83)){
-                                leftMargin = dip(5)
-                                topMargin = dip(5)
-                            }
-                        }
-                    }.view
-                    flow?.addView(imageViews)
+                if(model.size()>0){
+                    if(nullData!=null){
+                        supportFragmentManager.beginTransaction().remove(nullData!!).commit()
+                        nullData = null
+                    }
+                    listFragment.addItems(model)
+                }else{
+                    nullData = NullDataPageFragment.newInstance()
+                    supportFragmentManager.beginTransaction().add(nullId,nullData!!).commit()
                 }
             }
         } catch (throwable: Throwable) {

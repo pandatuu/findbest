@@ -16,6 +16,7 @@ import app.findbest.vip.project.fragment.EnlistSuccessTipsDialog
 import app.findbest.vip.utils.BaseActivity
 import app.findbest.vip.utils.MimeType
 import app.findbest.vip.utils.RetrofitUtils
+import click
 import com.alibaba.fastjson.JSON
 import com.bumptech.glide.Glide
 import io.reactivex.schedulers.Schedulers
@@ -27,6 +28,7 @@ import kotlinx.coroutines.rx2.awaitSingle
 import okhttp3.RequestBody
 import org.jetbrains.anko.*
 import retrofit2.HttpException
+import withTrigger
 
 class EnlistProject : BaseActivity(), EnlistSuccessTipsDialog.ButtomClick, BackgroundFragment.ClickBack {
 
@@ -106,7 +108,7 @@ class EnlistProject : BaseActivity(), EnlistSuccessTipsDialog.ButtomClick, Backg
                                 imageView {
                                     imageResource = R.mipmap.ico_add_nor
                                 }.lparams(dip(25),dip(25))
-                                setOnClickListener {
+                                this.withTrigger().click {
                                     val intent = Intent(this@EnlistProject, RecentProject::class.java)
                                     startActivityForResult(intent, SYSTEM_PICTRUES)
                                     overridePendingTransition(R.anim.right_in, R.anim.left_out)
@@ -208,7 +210,7 @@ class EnlistProject : BaseActivity(), EnlistSuccessTipsDialog.ButtomClick, Backg
                     imageView {
                         imageResource = R.mipmap.ico_add_nor
                     }.lparams(dip(25),dip(25))
-                    setOnClickListener {
+                    this.withTrigger().click {
                         val intent = Intent(this@EnlistProject, RecentProject::class.java)
                         intent.putExtra("imageList", imageList)
                         startActivityForResult(intent, SYSTEM_PICTRUES)

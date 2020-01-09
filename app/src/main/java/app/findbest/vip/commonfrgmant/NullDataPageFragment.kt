@@ -32,6 +32,7 @@ class NullDataPageFragment: Fragment() {
         return UI{
             linearLayout {
                 gravity = Gravity.CENTER
+                backgroundColor = Color.WHITE
                 verticalLayout {
                     imageView {
                         imageResource = R.mipmap.null_data

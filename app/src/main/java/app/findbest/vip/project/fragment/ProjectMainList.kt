@@ -6,16 +6,15 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.FrameLayout
+import android.widget.LinearLayout
 import androidx.fragment.app.Fragment
-import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import app.findbest.vip.R
-import app.findbest.vip.project.adapter.ProjectMainListAdapter
+import app.findbest.vip.commonfrgmant.NullDataPageFragment
 import app.findbest.vip.project.api.ProjectApi
 import app.findbest.vip.project.model.ProjectListModel
-import app.findbest.vip.project.view.ProjectInformation
 import app.findbest.vip.utils.RetrofitUtils
-import app.findbest.vip.utils.recyclerView
 import app.findbest.vip.utils.smartRefreshLayout
 import com.scwang.smart.refresh.footer.BallPulseFooter
 import com.scwang.smart.refresh.header.MaterialHeader
@@ -29,11 +28,10 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.rx2.awaitSingle
 import org.jetbrains.anko.*
 import org.jetbrains.anko.support.v4.UI
-import org.jetbrains.anko.support.v4.startActivity
 import org.jetbrains.anko.support.v4.toast
 import retrofit2.HttpException
 
-class ProjectMainList : Fragment(), ProjectMainListAdapter.ListAdapter {
+class ProjectMainList : Fragment() {
 
     companion object {
         fun newInstance(context: Context): ProjectMainList {
@@ -46,10 +44,13 @@ class ProjectMainList : Fragment(), ProjectMainListAdapter.ListAdapter {
     lateinit var mContext: Context
     lateinit var smart: SmartRefreshLayout
     lateinit var recycle: RecyclerView
-    lateinit var projectMain: ProjectMainListAdapter
+    private lateinit var listFram: FrameLayout
+    private lateinit var listFragment: MyProjectListFragment
+    private var nullData: NullDataPageFragment? = null
     var nowPage = 0
-    var mCategory = 0
-    var mStyle = 0
+    private var mCategory = 0
+    private var mStyle = 0
+    private val nullId = 4
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -59,12 +60,6 @@ class ProjectMainList : Fragment(), ProjectMainListAdapter.ListAdapter {
         return createV()
     }
 
-    //选择recycle里的单个card
-    override fun oneClick(id: String) {
-        startActivity<ProjectInformation>("projectId" to id)
-        activity?.overridePendingTransition(R.anim.right_in, R.anim.left_out)
-    }
-
     fun setCategoryList(category: Int, style: Int) {
         mCategory = category
         mStyle = style
@@ -72,7 +67,6 @@ class ProjectMainList : Fragment(), ProjectMainListAdapter.ListAdapter {
     }
 
     private fun createV(): View {
-        projectMain = ProjectMainListAdapter(mContext, this@ProjectMainList)
         val view = UI {
             linearLayout {
                 backgroundColor = Color.parseColor("#FFF6F6F6")
@@ -92,11 +86,14 @@ class ProjectMainList : Fragment(), ProjectMainListAdapter.ListAdapter {
                             it.finishLoadMore(1000)
                         }
                     }
-                    recycle = recyclerView {
-                        layoutManager = LinearLayoutManager(mContext)
-
-                        adapter = projectMain
+                    listFram = frameLayout {
+                        id = nullId
+                        listFragment = MyProjectListFragment.newInstance(mContext)
+                        childFragmentManager.beginTransaction().add(nullId,listFragment).commit()
                     }
+                    val listFramlp = listFram.layoutParams
+                    listFramlp.width = LinearLayout.LayoutParams.MATCH_PARENT
+                    listFramlp.height = LinearLayout.LayoutParams.MATCH_PARENT
                 }.lparams(matchParent, matchParent) {
                     setMargins(dip(10), 0, dip(10), 0)
                 }
@@ -126,26 +123,34 @@ class ProjectMainList : Fragment(), ProjectMainListAdapter.ListAdapter {
                 //完善信息成功
                 val list = it.body()!!.data
                 println(list)
-                val projectList = arrayListOf<ProjectListModel>()
-                list.forEach {
-                    //                    val it = Gson().fromJson<ProjectListModel>(it, ProjectListModel::class.java)
-                    val model = it.asJsonObject
-                    val projectListModel = ProjectListModel(
-                        model["id"].asString,
-                        model["name"].asString,
-                        model["guaranteeType"].asInt == 6,
-                        model["size"].asString,
-                        model["format"].asString,
-                        model["commitAt"].asLong,
-                        model["consumer"].asJsonObject["country"].asString,
-                        model["styles"].asJsonArray,
-                        model["minBonus"].asFloat,
-                        model["maxBonus"].asFloat
-                    )
-                    projectList.add(projectListModel)
+                if(list.size()>0){
+                    if(nullData!=null){
+                        childFragmentManager.beginTransaction().remove(nullData!!).commit()
+                        nullData = null
+                    }
+                    nowPage = 1
+                    val projectList = arrayListOf<ProjectListModel>()
+                    list.forEach {
+                        val model = it.asJsonObject
+                        val projectListModel = ProjectListModel(
+                            model["id"].asString,
+                            model["name"].asString,
+                            model["guaranteeType"].asInt == 6,
+                            model["size"].asString,
+                            model["format"].asString,
+                            model["commitAt"].asLong,
+                            model["consumer"].asJsonObject["country"].asString,
+                            model["styles"].asJsonArray,
+                            model["minBonus"].asFloat,
+                            model["maxBonus"].asFloat
+                        )
+                        projectList.add(projectListModel)
+                    }
+                    listFragment.resetItems(projectList)
+                }else{
+                    nullData = NullDataPageFragment.newInstance()
+                    childFragmentManager.beginTransaction().add(nullId,nullData!!).commit()
                 }
-                nowPage = 1
-                projectMain.resetItems(projectList)
             }
         } catch (throwable: Throwable) {
             if (throwable is HttpException) {
@@ -153,7 +158,6 @@ class ProjectMainList : Fragment(), ProjectMainListAdapter.ListAdapter {
             }
         }
     }
-
 
     private suspend fun getProjectList(page: Int) {
         try {
@@ -177,7 +181,10 @@ class ProjectMainList : Fragment(), ProjectMainListAdapter.ListAdapter {
                     toast("没有数据啦...")
                     return
                 }
-                println(list)
+                if(nullData!=null){
+                    childFragmentManager.beginTransaction().remove(nullData!!).commit()
+                    nullData = null
+                }
                 val projectList = arrayListOf<ProjectListModel>()
                 list.forEach {
                     //                    val it = Gson().fromJson<ProjectListModel>(it, ProjectListModel::class.java)
@@ -197,7 +204,7 @@ class ProjectMainList : Fragment(), ProjectMainListAdapter.ListAdapter {
                     projectList.add(projectListModel)
                 }
                 nowPage = page
-                projectMain.addItems(projectList)
+                listFragment.addItems(projectList)
             }
         } catch (throwable: Throwable) {
             if (throwable is HttpException) {
