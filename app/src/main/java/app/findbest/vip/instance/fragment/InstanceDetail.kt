@@ -26,28 +26,30 @@ import withTrigger
 
 
 class InstanceDetail : FragmentParent() {
-    var toolbar1: Toolbar? = null
-    private var mContext: Context? = null
-    lateinit var activityInstance: Context
-
-
-    var screenWidth = 0
-    var picWidth = 0
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        if (parentFragment != null) {
-            mContext = parentFragment?.context
-        } else {
-            mContext = activity
-        }
-    }
 
     companion object {
         fun newInstance(context: Context): InstanceDetail {
             val f = InstanceDetail()
             f.activityInstance = context
             return f
+        }
+    }
+
+    lateinit var image: ImageView
+    var toolbar1: Toolbar? = null
+    private var mContext: Context? = null
+    lateinit var activityInstance: Context
+
+
+    private var screenWidth = 0
+    private var picWidth = 0
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        mContext = if (parentFragment != null) {
+            parentFragment?.context
+        } else {
+            activity
         }
     }
 
@@ -59,91 +61,66 @@ class InstanceDetail : FragmentParent() {
         return createView()
     }
 
-
     private fun createView(): View {
-
         screenWidth = px2dp(getDisplay(mContext!!)!!.width.toFloat())
         picWidth = (screenWidth - 18) / 2
-        if (picWidth < 180) {
-        } else {
+        if (picWidth >= 180) {
             picWidth = 180
         }
 
-
-        lateinit var image: ImageView
-
-        var view = UI {
+        val view = UI {
             verticalLayout {
-
-                relativeLayout() {
-
-                    textView() {
+                relativeLayout {
+                    textView {
                         backgroundColor = Color.parseColor("#FFE3E3E3")
-                    }.lparams() {
+                    }.lparams {
                         width = matchParent
                         height = dip(1)
                         alignParentBottom()
-
                     }
-                    relativeLayout() {
-
-
+                    relativeLayout {
                         toolbar1 = toolbar {
                             backgroundResource = R.color.transparent
                             isEnabled = true
                             navigationIconResource = R.mipmap.nav_ico_return
-
                             title = ""
                             this.withTrigger().click {
-
                                 activity!!.finish()
                                 activity!!.overridePendingTransition(
                                     R.anim.left_in,
                                     R.anim.right_out
                                 )
-
                             }
-                        }.lparams() {
+                        }.lparams {
                             width = matchParent
                             height = dip(65)
                             alignParentBottom()
                             height = dip(65 - getStatusBarHeight(this@InstanceDetail.context!!))
                         }
-
-
-
                         textView {
                             text = ""
                             backgroundColor = Color.TRANSPARENT
                             gravity = Gravity.CENTER
                             textColor = Color.parseColor("#FF222222")
                             textSize = 16f
-                            setTypeface(Typeface.defaultFromStyle(Typeface.BOLD))
-
-                        }.lparams() {
+                            typeface = Typeface.defaultFromStyle(Typeface.BOLD)
+                        }.lparams {
                             width = matchParent
                             height = wrapContent
                             height = dip(65 - getStatusBarHeight(this@InstanceDetail.context!!))
                             alignParentBottom()
                         }
-
-                    }.lparams() {
+                    }.lparams {
                         width = matchParent
                         height = dip(65)
                     }
-                }.lparams() {
+                }.lparams {
                     width = matchParent
                     height = dip(65)
                 }
-
-                //////////////////////////////////////////////////////////////////
-                /////////////////////////////////////////////////////////////////
-
                 linearLayout {
-
                     gravity = Gravity.CENTER_VERTICAL
                     roundImageView {
-
                         Glide.with(this@InstanceDetail)
                             .load(activity!!.intent.getStringExtra("logo"))
                             .skipMemoryCache(false)
@@ -151,119 +128,68 @@ class InstanceDetail : FragmentParent() {
                             .centerCrop()
                             .placeholder(R.mipmap.no_pic_show)
                             .into(this)
-
-
-                    }.lparams() {
+                    }.lparams {
                         width = dip(45)
                         height = dip(45)
                     }
-
-
                     textView {
-
                         text = activity!!.intent.getStringExtra("name")
                         textSize = 17f
                         textColor = Color.parseColor("#FF444444")
-
-                    }.lparams() {
-
+                    }.lparams {
                         leftMargin = dip(8)
                     }
-
-                }.lparams() {
+                }.lparams {
                     width = matchParent
                     height = dip(80)
                     leftMargin = dip(15)
                     rightMargin = dip(15)
                 }
-
-                textView() {
+                textView {
                     backgroundColor = Color.parseColor("#FFE3E3E3")
-                }.lparams() {
+                }.lparams {
                     width = matchParent
                     height = dip(1)
-
                 }
-
-                //////////////////////////////////////////////////////////////////////
-                //////////////////////////////////////////////////////////////////////
-
-
                 linearLayout {
                     gravity=Gravity.CENTER
-
-
-                    image= imageView {
-                        //setImageResource(R.drawable.pic2)
-                      //  setTheWidth(screenWidth)
-
-                    }.lparams() {
+                    image= imageView {}.lparams {
                         width = matchParent
                         height=matchParent
                         margin = dip(5)
                         rightMargin=dip(10)
                         leftMargin=dip(10)
                     }
-
-
-
-
-                }.lparams() {
+                }.lparams {
                     height = dip(0)
                     weight = 1f
                     width = matchParent
                 }
-
-
-
                 textView {
-
                     gravity=Gravity.CENTER
                     text=activity!!.getString(R.string.invite_painter)
                     textSize=16f
                     textColor=Color.WHITE
                     backgroundResource=R.drawable.enable_rectangle_button
-
-
-
                     this.withTrigger().click {
-
-
-
-                        lateinit var intent: Intent
+                        val intent = Intent(activityInstance, InvitationActivity::class.java)
                         //跳转详情
-                        intent = Intent(activityInstance, InvitationActivity::class.java)
                         //画师/团队的id
                         intent.putExtra("id", activity!!.intent.getStringExtra("id"))
-
                         startActivity(intent)
                         activity!!.overridePendingTransition(R.anim.right_in, R.anim.left_out)
-
-
                     }
-
-
-                }.lparams() {
+                }.lparams {
                     height = dip(50)
                     width = matchParent
                 }
-
-
             }
         }.view
-
         Glide.with(image.context)
             .load(activity!!.intent.getStringExtra("url"))
             .centerCrop()
             .placeholder(R.mipmap.no_pic_show)
             .into(image)
-
-
-
-
         return view
-
     }
-
-
 }

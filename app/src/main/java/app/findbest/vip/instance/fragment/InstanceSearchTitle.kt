@@ -76,24 +76,15 @@ class InstanceSearchTitle: Fragment() {
                                 hint = "搜索"
                                 textSize = 15f
                                 hintTextColor = Color.parseColor("#FF666666")
-                                addTextChangedListener(object: TextWatcher{
-                                    override fun afterTextChanged(s: Editable?) {}
-
-                                    override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
-
-                                    override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                                        child.inputText(s.toString())
-                                    }
-                                })
+                                singleLine = true
                                 imeOptions = EditorInfo.IME_ACTION_SEARCH
-
-                                setOnEditorActionListener { _, actionId, event ->
-                                    //以下方法防止两次发送请求
-                                    if (actionId === EditorInfo.IME_ACTION_SEARCH || event != null && event.keyCode === KeyEvent.KEYCODE_ENTER) {
-                                        if(event!=null){
-                                            val result = text.toString().trim()
-                                            child.inputText(result)
-                                        }
+                                setOnEditorActionListener { v, actionId, _ ->
+                                    if (actionId == EditorInfo.IME_ACTION_SEARCH) {
+                                        //点击搜索的时候隐藏软键盘
+                                        closeFocusjianpan()
+                                        // 在这里写搜索的操作,一般都是网络请求数据
+                                        child.inputText(v.text.toString())
+                                        true
                                     }
                                     false
                                 }

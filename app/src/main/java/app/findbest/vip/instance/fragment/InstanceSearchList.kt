@@ -7,13 +7,17 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.FrameLayout
+import android.widget.LinearLayout
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import app.findbest.vip.R
+import app.findbest.vip.commonfrgmant.NullDataPageFragment
 import app.findbest.vip.instance.api.InstanceApi
 import app.findbest.vip.instance.view.InstanceActivity
 import app.findbest.vip.painter.adapter.PainterInfoPictureAdapter
+import app.findbest.vip.painter.fragment.PainterListFragment
 import app.findbest.vip.project.adapter.ProjectMainListAdapter
 import app.findbest.vip.project.api.ProjectApi
 import app.findbest.vip.project.model.ProjectListModel
@@ -38,8 +42,7 @@ import org.jetbrains.anko.support.v4.startActivity
 import org.jetbrains.anko.support.v4.toast
 import retrofit2.HttpException
 
-class InstanceSearchList : Fragment(), PainterInfoPictureAdapter.ImageClick {
-
+class InstanceSearchList : Fragment() {
     interface ClickBack{
         fun clickback()
     }
@@ -56,12 +59,13 @@ class InstanceSearchList : Fragment(), PainterInfoPictureAdapter.ImageClick {
     lateinit var clickback: ClickBack
     lateinit var mContext: Context
     lateinit var smart: SmartRefreshLayout
-    lateinit var recycle: RecyclerView
-    lateinit var projectMain: ProjectMainListAdapter
+    private lateinit var listFram: FrameLayout
+    private var listFragment: InstanceMainListFragment? = null
+    private var nullData: NullDataPageFragment? = null
     private var painterInfoPic: PainterInfoPictureAdapter? = null
-    var imageList = mutableListOf<JsonObject>()
     var nowPage = 0
     var searchText = ""
+    private val nullId = 4
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -71,23 +75,11 @@ class InstanceSearchList : Fragment(), PainterInfoPictureAdapter.ImageClick {
         return createV()
     }
 
-    override fun click(str: String) {
-        imageList.forEach {
-            if(str == it["url"].asString){
-                val intent = Intent(mContext, InstanceActivity::class.java)
-                //跳转详情
-                intent.putExtra("url", if(!it["url"].isJsonNull) it["url"].asString else "")
-                intent.putExtra("logo", if(!it["logo"].isJsonNull) it["logo"].asString else "")
-                intent.putExtra("name", if(!it["name"].isJsonNull) it["name"].asString else "")
-                intent.putExtra("id", if(!it["id"].isJsonNull) it["id"].asString else "")
-                startActivity(intent)
-                activity!!.overridePendingTransition(R.anim.right_in, R.anim.left_out)
-            }
-        }
-    }
-
     fun setText(s: String){
         searchText = s
+
+        listFragment = InstanceMainListFragment.newInstance(mContext)
+        childFragmentManager.beginTransaction().replace(nullId, listFragment!!).commit()
         smart.autoRefresh()
     }
 
@@ -99,7 +91,6 @@ class InstanceSearchList : Fragment(), PainterInfoPictureAdapter.ImageClick {
                     setEnableAutoLoadMore(false)
                     setRefreshHeader(MaterialHeader(activity))
                     setOnRefreshListener {
-                        toast("刷新....")
                         GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
                             getProjectList()
                             it.finishRefresh(1000)
@@ -108,20 +99,20 @@ class InstanceSearchList : Fragment(), PainterInfoPictureAdapter.ImageClick {
                     }
                     setRefreshFooter(BallPulseFooter(mContext).setSpinnerStyle(SpinnerStyle.Scale))
                     setOnLoadMoreListener {
-                        toast("刷新....")
                         GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
                             getProjectList(nowPage + 1)
                             it.finishLoadMore(1000)
                         }
                     }
-                    recycle = recyclerView {
-                        layoutManager = LinearLayoutManager(mContext)
-                        painterInfoPic = PainterInfoPictureAdapter(
-                            mContext!!,
-                            arrayListOf(),this@InstanceSearchList)
-                        adapter = painterInfoPic
-
+                    listFram = frameLayout {
+                        id = nullId
+                        setOnScrollChangeListener { _, _, _, _, _ ->
+                            clickback.clickback()
+                        }
                     }
+                    val listFramlp = listFram.layoutParams
+                    listFramlp.width = LinearLayout.LayoutParams.MATCH_PARENT
+                    listFramlp.height = LinearLayout.LayoutParams.MATCH_PARENT
                     setOnScrollChangeListener { v, scrollX, scrollY, oldScrollX, oldScrollY ->
                         clickback.clickback()
                     }
@@ -145,14 +136,13 @@ class InstanceSearchList : Fragment(), PainterInfoPictureAdapter.ImageClick {
             if (it.code() in 200..299) {
                 //完善信息成功
                 val item = it.body()!!.data
-                val list1 = arrayListOf<String>()
-                imageList.clear()
-                item.forEach {
-                    imageList.add(it.asJsonObject)
-                    list1.add(it.asJsonObject["url"].asString)
+                if(item.size()>0){
+                    nowPage = 1
+                    listFragment?.resetData(item)
+                }else{
+                    nullData = NullDataPageFragment.newInstance()
+                    childFragmentManager.beginTransaction().replace(nullId,nullData!!).commit()
                 }
-                painterInfoPic?.resetData(arrayListOf(list1))
-                nowPage = 1
             }
         } catch (throwable: Throwable) {
             if (throwable is HttpException) {
@@ -173,13 +163,13 @@ class InstanceSearchList : Fragment(), PainterInfoPictureAdapter.ImageClick {
 
             if (it.code() in 200..299) {
                 val item = it.body()!!.data
-                val list1 = arrayListOf<String>()
-                item.forEach {
-                    imageList.add(it.asJsonObject)
-                    list1.add(it.asJsonObject["url"].asString)
+                if (item.size() == 0) {
+                    toast("没有数据啦...")
+                    return
                 }
-                painterInfoPic?.addData(arrayListOf(list1))
+
                 nowPage = page
+                listFragment?.addData(item)
             }
         } catch (throwable: Throwable) {
             if (throwable is HttpException) {

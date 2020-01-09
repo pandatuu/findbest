@@ -8,40 +8,18 @@ import org.jetbrains.anko.*
 
 class InvitationActivity : BaseActivity() {
 
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-
-
-
         verticalLayout {
-
-
-            var topPartId = 10
+            val topPartId = 10
             frameLayout {
                 id = topPartId
-
                 val invitationList = InvitationList.newInstance()
                 supportFragmentManager.beginTransaction().add(id, invitationList).commit()
-
             }.lparams {
                 height = matchParent
                 width = matchParent
             }
-
-
-
-
         }
-
-
     }
-
-
-
-
-
-
-
 }

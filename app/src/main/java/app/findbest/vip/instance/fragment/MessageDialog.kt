@@ -1,55 +1,24 @@
 package app.findbest.vip.instance.fragment
 
 import android.content.Context
-import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 
-import org.jetbrains.anko.linearLayout
 import org.jetbrains.anko.support.v4.UI
 import android.graphics.Color
 import android.view.*
 import org.jetbrains.anko.*
 import android.graphics.Typeface
-import android.view.inputmethod.InputMethodManager
 import app.findbest.vip.R
 import app.findbest.vip.commonfrgmant.FragmentParent
 
-import android.os.Handler
-import android.os.Looper
-import android.text.style.BackgroundColorSpan
-import android.widget.*
 import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.FragmentTransaction
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
-import app.findbest.vip.instance.activity.InstanceActivity
-import app.findbest.vip.instance.adapter.InstanceListAdapter
-import app.findbest.vip.instance.adapter.MyProjectListAdapter
-import app.findbest.vip.instance.api.InstanceApi
-import app.findbest.vip.instance.model.Instance
-import app.findbest.vip.instance.model.ProjectItem
-import app.findbest.vip.utils.*
 import click
-import cn.jiguang.imui.view.ShapeImageView
-import com.biao.pulltorefresh.OnRefreshListener
-import com.biao.pulltorefresh.PtrHandler
-import com.biao.pulltorefresh.PtrLayout
-import com.bumptech.glide.Glide
-import com.scwang.smart.refresh.footer.BallPulseFooter
-import com.scwang.smart.refresh.header.MaterialHeader
-import com.scwang.smart.refresh.layout.SmartRefreshLayout
-import com.scwang.smart.refresh.layout.constant.SpinnerStyle
 
-import io.reactivex.schedulers.Schedulers
-import kotlinx.coroutines.*
-import kotlinx.coroutines.rx2.awaitSingle
-import org.jetbrains.anko.support.v4.toast
-import org.json.JSONObject
 import withTrigger
-import java.lang.Runnable
 
 
 class MessageDialog : FragmentParent() {

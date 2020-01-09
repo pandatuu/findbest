@@ -1,5 +1,6 @@
 package app.findbest.vip.instance.fragment
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -16,9 +17,7 @@ import app.findbest.vip.R
 import app.findbest.vip.commonfrgmant.FragmentParent
 
 import android.widget.*
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
-import app.findbest.vip.instance.adapter.MyProjectListAdapter
+import app.findbest.vip.commonfrgmant.NullDataPageFragment
 import app.findbest.vip.instance.api.InstanceApi
 import app.findbest.vip.instance.model.ProjectItem
 import app.findbest.vip.utils.*
@@ -35,52 +34,48 @@ import okhttp3.RequestBody
 import org.json.JSONArray
 import org.json.JSONObject
 import withTrigger
-import java.text.SimpleDateFormat
-import java.util.*
 
 
-class InvitationList : FragmentParent() {
-    var toolbar1: Toolbar? = null
-    private var mContext: Context? = null
-
-    var pageNum = 1
-    var pageSize = 20
-
-    var screenWidth = 0
-    var picWidth = 0
-    lateinit var smart: SmartRefreshLayout
-
-
-    var adapter: MyProjectListAdapter? = null
-
-    lateinit var recycler: RecyclerView
-
-    var sdf = SimpleDateFormat("yyyy-MM-dd")
-
-    private lateinit var instanceApi: InstanceApi
-
-    var selectedItem = mutableListOf<String>()
-    var outId = 111
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        if (parentFragment != null) {
-            mContext = parentFragment?.context
+class InvitationList : FragmentParent(), InstanceListFragment.InstanceList {
+    override fun clickInvite(f: Boolean, item: ProjectItem) {
+        if (f) {
+            selectedItem.add(item.id)
         } else {
-            mContext = activity
+            selectedItem.remove(item.id)
         }
-
-        instanceApi = RetrofitUtils(context!!, this.getString(R.string.developmentUrl))
-            .create(InstanceApi::class.java)
     }
 
     companion object {
         fun newInstance(): InvitationList {
-            var f = InvitationList()
-
-
-            return f
+            return InvitationList()
         }
+    }
+
+    var toolbar1: Toolbar? = null
+    private var mContext: Context? = null
+
+    private var pageNum = 1
+    private var pageSize = 20
+    lateinit var smart: SmartRefreshLayout
+    @SuppressLint("SimpleDateFormat")
+    private lateinit var instanceApi: InstanceApi
+    private var selectedItem = mutableListOf<String>()
+    private var outId = 111
+    private lateinit var listFram: FrameLayout
+    private lateinit var listFragment: InstanceListFragment
+    private var nullData: NullDataPageFragment? = null
+    private val nullId = 4
+
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        mContext = if (parentFragment != null) {
+            parentFragment?.context
+        } else {
+            activity
+        }
+        instanceApi = RetrofitUtils(context!!, this.getString(R.string.developmentUrl))
+            .create(InstanceApi::class.java)
     }
 
     override fun onCreateView(
@@ -88,65 +83,44 @@ class InvitationList : FragmentParent() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        var fragmentView = createView()
+        val fragmentView = createView()
         smart.autoRefresh()
-
         return fragmentView
     }
 
 
     private fun createView(): View {
-
-        screenWidth = px2dp(getDisplay(mContext!!)!!.width.toFloat())
-        picWidth = (screenWidth - 18) / 2
-        if (picWidth < 180) {
-        } else {
-            picWidth = 180
-        }
-
-
-        var view = UI {
-
+        return UI {
             frameLayout {
                 id = outId
                 verticalLayout {
-
-                    relativeLayout() {
-
-                        textView() {
+                    relativeLayout {
+                        textView {
                             backgroundColor = Color.parseColor("#FFE3E3E3")
-                        }.lparams() {
+                        }.lparams {
                             width = matchParent
                             height = dip(1)
                             alignParentBottom()
-
                         }
-                        relativeLayout() {
-
-
+                        relativeLayout {
                             toolbar1 = toolbar {
                                 backgroundResource = R.color.transparent
                                 isEnabled = true
                                 navigationIconResource = R.mipmap.nav_ico_return
-
                                 title = ""
-                                this.withTrigger().click {
-
+                                withTrigger().click {
                                     activity!!.finish()
                                     activity!!.overridePendingTransition(
                                         R.anim.left_in,
                                         R.anim.right_out
                                     )
-
                                 }
-                            }.lparams() {
+                            }.lparams {
                                 width = matchParent
                                 height = dip(65)
                                 alignParentBottom()
                                 height = dip(65 - getStatusBarHeight(this@InvitationList.context!!))
                             }
-
-
 
                             textView {
                                 text = activity!!.getString(R.string.chose_project)
@@ -154,138 +128,101 @@ class InvitationList : FragmentParent() {
                                 gravity = Gravity.CENTER
                                 textColor = Color.parseColor("#FF222222")
                                 textSize = 17f
-                                setTypeface(Typeface.defaultFromStyle(Typeface.BOLD))
-
-                            }.lparams() {
+                                typeface = Typeface.defaultFromStyle(Typeface.BOLD)
+                            }.lparams {
                                 width = matchParent
                                 height = wrapContent
                                 height = dip(65 - getStatusBarHeight(this@InvitationList.context!!))
                                 alignParentBottom()
                             }
-
-                        }.lparams() {
+                        }.lparams {
                             width = matchParent
                             height = dip(65)
                         }
-                    }.lparams() {
+                    }.lparams {
                         width = matchParent
                         height = dip(65)
                     }
 
-                    //////////////////////////////////////////////////////////////////
-                    /////////////////////////////////////////////////////////////////
-
-
-                    textView() {
+                    textView {
                         backgroundColor = Color.parseColor("#FFE3E3E3")
-                    }.lparams() {
+                    }.lparams {
                         width = matchParent
                         height = dip(1)
-
                     }
 
-                    //////////////////////////////////////////////////////////////////////
-                    //////////////////////////////////////////////////////////////////////
-
-
                     linearLayout {
-
                         backgroundColor = Color.parseColor("#FFF6F6F6")
-
                         gravity = Gravity.CENTER
-
-
-
-
                         smart = smartRefreshLayout {
                             setEnableAutoLoadMore(false)
                             setRefreshHeader(MaterialHeader(activity))
                             setOnRefreshListener {
                                 GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
-                                    Refresh()
+                                    refresh()
                                     it.finishRefresh(300)
                                 }
                             }
                             setOnLoadMoreListener {
-                                LoadMore()
+                                loadMore()
                                 it.finishLoadMore(300)
                             }
                             setRefreshFooter(BallPulseFooter(mContext).setSpinnerStyle(SpinnerStyle.Scale))
 
-                            recycler = recyclerView {
-                                layoutManager = LinearLayoutManager(mContext)
-                                overScrollMode = View.OVER_SCROLL_NEVER
 
+                            listFram = frameLayout {
+                                id = nullId
+                                listFragment = InstanceListFragment.newInstance(mContext!!,this@InvitationList)
+                                childFragmentManager.beginTransaction().add(nullId, listFragment).commit()
                             }
-
-                        }.lparams(matchParent, matchParent) {
-                        }
-
-
-                    }.lparams() {
+                            val listFramlp = listFram.layoutParams
+                            listFramlp.width = LinearLayout.LayoutParams.MATCH_PARENT
+                            listFramlp.height = LinearLayout.LayoutParams.MATCH_PARENT
+                        }.lparams(matchParent, matchParent)
+                    }.lparams {
                         height = dip(0)
                         weight = 1f
                         width = matchParent
                     }
 
-
-
                     textView {
-
                         gravity = Gravity.CENTER
-                        text=activity!!.getString(R.string.send_invitation)
+                        text = activity!!.getString(R.string.send_invitation)
                         textSize = 16f
                         textColor = Color.WHITE
                         backgroundResource = R.drawable.enable_rectangle_button
-
-
-
-                        this.withTrigger().click {
+                        withTrigger().click {
                             if (selectedItem.size > 0) {
                                 invite()
                             }
-
-
                         }
-
-
-                    }.lparams() {
+                    }.lparams {
                         height = dip(50)
                         width = matchParent
                     }
-
-
-                }.lparams() {
+                }.lparams {
                     width = matchParent
                     height = matchParent
                 }
             }
         }.view
-
-
-
-        return view
-
     }
 
-
-    fun Refresh() {
+    fun refresh() {
         pageNum = 1
-        adapter?.clear()
-        requestTheList()
-
-    }
-
-    fun LoadMore() {
-        pageNum = pageNum + 1
+        listFragment.refresh()
         requestTheList()
     }
 
+    private fun loadMore() {
+        pageNum += 1
+        requestTheList()
+    }
 
-    fun requestTheList() {
 
+    private fun requestTheList() {
         GlobalScope.launch {
-            var response = instanceApi.getInviteProjectList(
+            val response = instanceApi.getInviteProjectList(
                 pageNum,
                 pageSize,
                 activity!!.intent.getStringExtra("id")
@@ -297,57 +234,39 @@ class InvitationList : FragmentParent() {
                 println("得到的数据")
                 println(response.body())
 
-                var jsonObject = JSONObject(response.body().toString())
-                var array = jsonObject.getJSONArray("data")
-                if (array.length() == 0 && pageNum > 1) {
-                    pageNum = pageNum - 1
+                val jsonObject = JSONObject(response.body().toString())
+                val array = jsonObject.getJSONArray("data")
+                if(array.length()>0){
+                    if (array.length() == 0 && pageNum > 1) {
+                        pageNum -= 1
+                    }
+                    listFragment.addView(array)
+                }else{
+                    nullData = NullDataPageFragment.newInstance()
+                    childFragmentManager.beginTransaction().replace(nullId,nullData!!).commit()
                 }
-                var dataList = mutableListOf<ProjectItem>()
-
-                for (i in 0 until array.length()) {
-                    var ob = array.getJSONObject(i)
-
-                    dataList.add(
-                        ProjectItem(
-                            DataDictionary.getFormat(ob.getString("format").toInt()),
-                            ob.getString("size"),
-                            ob.getString("name"),
-                            ob.getString("id"),
-                            sdf.format(Date(ob.getString("createAt").toLong()))
-                        )
-                    )
-                }
-
-                withContext(Dispatchers.Main) {
-                    appendRecyclerData(dataList, screenWidth, picWidth)
-                }
-
-            } else {
-
             }
         }
-
-
     }
 
 
-    fun invite() {
+    private fun invite() {
         GlobalScope.launch {
 
-            var json = JSONObject()
+            val json = JSONObject()
             json.put("providerId", activity!!.intent.getStringExtra("id"))
 
             val projectIds = JSONArray()
 
             for (i in 0 until selectedItem.size) {
-                projectIds.put(selectedItem.get(i))
+                projectIds.put(selectedItem[i])
             }
             json.put("projectIds", projectIds)
 
 
             val body = RequestBody.create(MimeType.APPLICATION_JSON, json.toString())
 
-            var response = instanceApi.invitePainterAndGroup(
+            val response = instanceApi.invitePainterAndGroup(
                 body
             )
                 .subscribeOn(Schedulers.io()) //被观察者 开子线程请求网络
@@ -359,43 +278,13 @@ class InvitationList : FragmentParent() {
                 println("得到的数据")
                 println(response.body())
 
-                var manager = childFragmentManager.beginTransaction()
+                val manager = childFragmentManager.beginTransaction()
                 val messageDialog = MessageDialog.newInstance(manager, activity!!)
                 childFragmentManager.beginTransaction().add(outId, messageDialog).commit()
-
-            } else {
-
             }
         }
 
 
     }
-
-    fun appendRecyclerData(
-        list: MutableList<ProjectItem>,
-        screenWidth: Int,
-        picWidth: Int
-    ) {
-        if (adapter == null) {
-            //适配器
-            adapter = MyProjectListAdapter(recycler, screenWidth, picWidth, list, { item, f ->
-
-                if (f) {
-                    selectedItem.add(item.id)
-                } else {
-                    selectedItem.remove(item.id)
-                }
-            })
-            //设置适配器
-            recycler.setAdapter(adapter)
-        } else {
-
-            adapter!!.addDataList(list)
-
-        }
-
-
-    }
-
 
 }

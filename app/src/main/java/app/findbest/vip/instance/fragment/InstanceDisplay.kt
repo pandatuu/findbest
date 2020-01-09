@@ -19,12 +19,14 @@ import app.findbest.vip.commonfrgmant.FragmentParent
 import android.widget.*
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import app.findbest.vip.application.App
 import app.findbest.vip.commonfrgmant.BackgroundFragment
 import app.findbest.vip.instance.adapter.InstanceListAdapter
 import app.findbest.vip.instance.api.InstanceApi
 import app.findbest.vip.instance.model.Instance
 import app.findbest.vip.instance.view.InstanceActivity
 import app.findbest.vip.instance.view.InstanceSearchActivity
+import app.findbest.vip.message.activity.VideoResultActivity
 import app.findbest.vip.painter.adapter.PainterInfoPictureAdapter
 import app.findbest.vip.utils.RetrofitUtils
 import app.findbest.vip.utils.recyclerView
@@ -38,6 +40,7 @@ import com.scwang.smart.refresh.layout.constant.SpinnerStyle
 import io.reactivex.schedulers.Schedulers
 import kotlinx.coroutines.*
 import kotlinx.coroutines.rx2.awaitSingle
+import org.jetbrains.anko.support.v4.startActivity
 import retrofit2.HttpException
 
 
@@ -81,6 +84,14 @@ class InstanceDisplay : FragmentParent(),PainterInfoPictureAdapter.ImageClick, B
             f.mContext = context
             return f
         }
+    }
+    override fun onResume() {
+        super.onResume()
+//        val bool = App.getInstance()?.getInviteVideoBool()
+//        if(bool!!){
+//            startActivity<VideoResultActivity>()
+//            activity!!.overridePendingTransition(R.anim.right_in, R.anim.left_out)
+//        }
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {

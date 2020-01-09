@@ -2,35 +2,30 @@ package app.findbest.vip.instance.fragment
 
 import android.annotation.SuppressLint
 import android.content.Context
-import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
-
-import org.jetbrains.anko.linearLayout
-import org.jetbrains.anko.support.v4.UI
 import android.graphics.Color
-import android.view.*
-import org.jetbrains.anko.*
 import android.graphics.Typeface
+import android.os.Bundle
 import android.os.Handler
 import android.os.Message
-import app.findbest.vip.R
-import app.findbest.vip.commonfrgmant.FragmentParent
-
+import android.view.*
 import android.view.inputmethod.EditorInfo
-import android.widget.*
+import android.widget.EditText
+import android.widget.FrameLayout
+import android.widget.TextView
 import androidx.fragment.app.FragmentActivity
+import app.findbest.vip.R
 import app.findbest.vip.application.App
-import app.findbest.vip.message.fragment.MessageChatRecordFragment
-import app.findbest.vip.message.frament.MessageChatRecordListFragment
+import app.findbest.vip.commonfrgmant.FragmentParent
 import app.findbest.vip.message.fragment.MessageChatRecordSearchActionBarFragment
+import app.findbest.vip.message.frament.MessageChatRecordListFragment
 import app.findbest.vip.message.listener.ChatRecord
 import app.findbest.vip.message.model.ChatRecordModel
 import cn.jiguang.imui.chatinput.emoji.EmoticonsKeyboardUtils
 import com.neovisionaries.ws.client.WebSocketState
 import io.github.sac.Ack
 import io.github.sac.Socket
+import org.jetbrains.anko.*
+import org.jetbrains.anko.support.v4.UI
 import org.json.JSONArray
 import org.json.JSONObject
 import java.text.SimpleDateFormat
@@ -40,6 +35,7 @@ import java.util.*
 class ChatSearch : FragmentParent() {
 
     companion object {
+        lateinit var json: JSONObject
         fun newInstance( activity: FragmentActivity): ChatSearch {
             val f = ChatSearch()
             f.outActivity = activity
@@ -61,13 +57,13 @@ class ChatSearch : FragmentParent() {
     object : Handler() {
         override fun handleMessage(msg: Message) {
             println("+++++++++++++++++++++++")
-            println(MessageChatRecordFragment.json)
+            println(json)
             println("+++++++++++++++++++++++")
-            val type = MessageChatRecordFragment.json.getString("type")
+            val type = json.getString("type")
             if (type != null && type == "contactList") {
-                val members: JSONArray = MessageChatRecordFragment.json.getJSONObject("content").getJSONArray("members")
+                val members: JSONArray = json.getJSONObject("content").getJSONArray("members")
                 val isFirstGotGroup = true
-                MessageChatRecordFragment.chatRecordList = mutableListOf()
+                chatRecordList = mutableListOf()
                 for (i in 0 until members.length()) {
                     val item = members.getJSONObject(i)
                     println(item)
@@ -131,6 +127,7 @@ class ChatSearch : FragmentParent() {
                             msg,
                             unreads,
                             item.getJSONObject("lastMsg"),
+                            json.getJSONObject("content").getBoolean("isTranslate"),
                             companyName,
                             "",
                             createdTime
@@ -182,7 +179,7 @@ class ChatSearch : FragmentParent() {
             override fun requestContactList() {
             }
             override fun getContactList(str: String) {
-                MessageChatRecordFragment.json = JSONObject(str)
+                json = JSONObject(str)
                 val message = Message()
                 listhandler.sendMessage(message)
                 //(activity as PagesActivity).recruitInfoBottomMenuFragment.showData(str)
