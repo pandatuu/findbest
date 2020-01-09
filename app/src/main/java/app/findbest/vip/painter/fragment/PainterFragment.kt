@@ -8,10 +8,13 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import app.findbest.vip.R
+import app.findbest.vip.application.App
 import app.findbest.vip.commonfrgmant.BackgroundFragment
+import app.findbest.vip.message.activity.VideoResultActivity
 import app.findbest.vip.painter.view.PainterSearchActivity
 import org.jetbrains.anko.*
 import org.jetbrains.anko.support.v4.UI
+import org.jetbrains.anko.support.v4.startActivity
 
 class PainterFragment: Fragment(), PainterMainTitle.ChildrenClick, BackgroundFragment.ClickBack,
     PainterSort.SortClick, PainterMainScreen.PainterScreen{
@@ -40,12 +43,22 @@ class PainterFragment: Fragment(), PainterMainTitle.ChildrenClick, BackgroundFra
     ): View? {
         return createV()
     }
+    override fun onResume() {
+        super.onResume()
+//        val bool = App.getInstance()?.getInviteVideoBool()
+//        if(bool!!){
+//            startActivity<VideoResultActivity>()
+//            activity!!.overridePendingTransition(R.anim.right_in, R.anim.left_out)
+//        }
+    }
     // 点击排序
     override fun clickSort() {
+        closeScreenDialog()
         openSortDialog()
     }
     // 点击筛选
     override fun clickScreen() {
+        closeSortDialog()
         openScreenDialog()
     }
     // 点击搜索

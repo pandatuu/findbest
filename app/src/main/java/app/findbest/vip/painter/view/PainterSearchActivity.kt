@@ -4,7 +4,7 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Color
 import android.os.Bundle
-import app.findbest.vip.project.fragment.PainterSearchList
+import app.findbest.vip.painter.fragment.PainterSearchList
 import app.findbest.vip.painter.fragment.PainterSearchTitle
 import app.findbest.vip.utils.BaseActivity
 import org.jetbrains.anko.backgroundColor

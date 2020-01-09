@@ -11,11 +11,13 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import app.findbest.vip.R
+import click
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.CircleCrop
 import com.bumptech.glide.request.RequestOptions
 import com.google.gson.JsonObject
 import org.jetbrains.anko.*
+import withTrigger
 
 
 class PainterMainListAdapter(
@@ -40,10 +42,10 @@ class PainterMainListAdapter(
 
     @SuppressLint("WrongConstant")
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
-        val view = with(mContext) {
-            linearLayout {
-                mainLinea = verticalLayout {
+        val view = mContext.UI {
+            mainLinea = verticalLayout {
                     linearLayout {
+                        orientation = LinearLayout.HORIZONTAL
                         headPic = imageView {
                         }.lparams(dip(45), dip(45)) {
                             setMargins(dip(5), dip(5), 0, dip(10))
@@ -55,6 +57,7 @@ class PainterMainListAdapter(
                                     textSize = 17f
                                     textColor = Color.parseColor("#FF444444")
                                 }.lparams(wrapContent, wrapContent) {
+                                    alignParentLeft()
                                     topMargin = dip(8)
                                 }
                                 country = imageView {
@@ -78,7 +81,7 @@ class PainterMainListAdapter(
 
                     imageList = horizontalScrollView {
                         isHorizontalScrollBarEnabled = false
-                    }.lparams(dip(500), dip(85)) {
+                    }.lparams(matchParent, dip(85)) {
                         bottomMargin = dip(15)
                     }
                     linearLayout {
@@ -87,8 +90,9 @@ class PainterMainListAdapter(
                         rightMargin = dip(15)
                     }
                 }
-            }
-        }
+            val lp = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,LinearLayout.LayoutParams.WRAP_CONTENT)
+            mainLinea.layoutParams = lp
+        }.view
         return ViewHolder(view)
     }
 
@@ -97,7 +101,7 @@ class PainterMainListAdapter(
         val images =
             if (!model["works"].isJsonNull) model.get("works").asJsonArray else arrayListOf<JsonObject>()
 
-        mainLinea.setOnClickListener {
+        mainLinea.withTrigger().click {
             imageClick.jumpToInfo(model["id"].asString)
         }
 
@@ -152,7 +156,7 @@ class PainterMainListAdapter(
                 images.forEach {
                     val imageObject = it.asJsonObject
                     val image = imageView {
-                        setOnClickListener {
+                        withTrigger().click {
                             imageClick.click(imageObject["url"].asString)
                         }
                     }.lparams(wrapContent, matchParent) {

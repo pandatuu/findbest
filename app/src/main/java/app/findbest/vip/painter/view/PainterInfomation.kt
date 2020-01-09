@@ -70,7 +70,7 @@ class PainterInfomation : BaseActivity(), PainterInfoPictureAdapter.ImageClick, 
                             finish()
                             overridePendingTransition(R.anim.left_in, R.anim.right_out)
                         }
-                    }.lparams(dip(20), dip(20)) {
+                    }.lparams(dip(30), dip(25)) {
                         gravity = Gravity.BOTTOM
                         leftMargin = dip(15)
                         bottomMargin = dip(10)
@@ -267,9 +267,9 @@ class PainterInfomation : BaseActivity(), PainterInfoPictureAdapter.ImageClick, 
                             textSize = 11f
                             textColor = Color.parseColor("#FF555555")
                         }.lparams {
-                            centerInParent()
+                            setMargins(dip(7),dip(2.5f),dip(7),dip(2.5f))
                         }
-                    }.lparams(dip(55), dip(20)) {
+                    }.lparams(wrapContent, wrapContent) {
                         if (index > 0)
                             leftMargin = dip(10)
                     }
@@ -284,7 +284,7 @@ class PainterInfomation : BaseActivity(), PainterInfoPictureAdapter.ImageClick, 
             "82" -> country.imageResource = R.mipmap.image_korea
         }
 
-        commit.text = model.introduction
+        commit.text = if(model.introduction!="") "无" else model.introduction
 
     }
 

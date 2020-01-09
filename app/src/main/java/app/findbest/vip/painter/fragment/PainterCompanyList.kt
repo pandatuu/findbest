@@ -5,16 +5,14 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.FrameLayout
+import android.widget.LinearLayout
 import androidx.fragment.app.Fragment
 import androidx.preference.PreferenceManager
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import app.findbest.vip.R
-import app.findbest.vip.painter.adapter.PainterMainListAdapter
+import app.findbest.vip.commonfrgmant.NullDataPageFragment
 import app.findbest.vip.painter.api.PainterApi
-import app.findbest.vip.painter.view.PainterInfomation
 import app.findbest.vip.utils.RetrofitUtils
-import app.findbest.vip.utils.recyclerView
 import app.findbest.vip.utils.smartRefreshLayout
 import com.google.gson.JsonObject
 import com.scwang.smart.refresh.footer.BallPulseFooter
@@ -29,9 +27,10 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.rx2.awaitSingle
 import org.jetbrains.anko.*
 import org.jetbrains.anko.support.v4.UI
+import org.jetbrains.anko.support.v4.toast
 import retrofit2.HttpException
 
-class PainterCompanyList : Fragment(), PainterMainListAdapter.ImageClick, BigImage2.ImageClick {
+class PainterCompanyList : Fragment() {
 
     companion object {
         fun newInstance(context: Context): PainterCompanyList {
@@ -43,14 +42,15 @@ class PainterCompanyList : Fragment(), PainterMainListAdapter.ImageClick, BigIma
 
     private lateinit var mContext: Context
     private var bigImage: BigImage2? = null
-    val mainId = 1
-    private var recycle: RecyclerView? = null
-    lateinit var painterMain: PainterMainListAdapter
     lateinit var smart: SmartRefreshLayout
+    private lateinit var listFram: FrameLayout
+    private lateinit var listFragment: PainterListFragment
+    private var nullData: NullDataPageFragment? = null
     var nowPage = 0
     var mWeight = 1
     var mCategory = 0
     var mStyle = 0
+    private val nullId = 4
 
 
     override fun onCreateView(
@@ -64,21 +64,7 @@ class PainterCompanyList : Fragment(), PainterMainListAdapter.ImageClick, BigIma
         return createV()
     }
 
-    override fun jumpToInfo(id: String) {
-        activity!!.startActivity<PainterInfomation>("userId" to id)
-        activity!!.overridePendingTransition(R.anim.right_in, R.anim.left_out)
-    }
-
-    override fun click(str: String) {
-        openDialog(str)
-    }
-
-    override fun clickclose() {
-        closeAlertDialog()
-    }
-
     private fun createV(): View {
-        painterMain = PainterMainListAdapter(mContext,this@PainterCompanyList)
         val view = UI {
             linearLayout {
                 smart = smartRefreshLayout {
@@ -97,10 +83,14 @@ class PainterCompanyList : Fragment(), PainterMainListAdapter.ImageClick, BigIma
                             it.finishLoadMore(1000)
                         }
                     }
-                    recycle = recyclerView {
-                        layoutManager = LinearLayoutManager(mContext)
-                        adapter = painterMain
+                    listFram = frameLayout {
+                        id = nullId
+                        listFragment = PainterListFragment.newInstance(mContext)
+                        childFragmentManager.beginTransaction().add(nullId, listFragment).commit()
                     }
+                    val listFramlp = listFram.layoutParams
+                    listFramlp.width = LinearLayout.LayoutParams.MATCH_PARENT
+                    listFramlp.height = LinearLayout.LayoutParams.MATCH_PARENT
                 }.lparams(matchParent, matchParent) {
                     leftMargin = dip(10)
                 }
@@ -184,12 +174,21 @@ class PainterCompanyList : Fragment(), PainterMainListAdapter.ImageClick, BigIma
             }
             if (it.code() in 200..299) {
                 val array = it.body()!!.data
-                val mutableList = mutableListOf<JsonObject>()
-                array.forEach {
-                    mutableList.add(it.asJsonObject)
+                if(array.size()>0){
+                    if(nullData!=null){
+                        childFragmentManager.beginTransaction().remove(nullData!!).commit()
+                        nullData = null
+                    }
+                    val mutableList = mutableListOf<JsonObject>()
+                    array.forEach {
+                        mutableList.add(it.asJsonObject)
+                    }
+                    nowPage = 1
+                    listFragment.resetItems(mutableList)
+                }else{
+                    nullData = NullDataPageFragment.newInstance()
+                    childFragmentManager.beginTransaction().replace(nullId,nullData!!).commit()
                 }
-                nowPage = 1
-                painterMain.resetItems(mutableList)
             }
         } catch (throwable: Throwable) {
             if (throwable is HttpException) {
@@ -272,12 +271,20 @@ class PainterCompanyList : Fragment(), PainterMainListAdapter.ImageClick, BigIma
             }
             if (it.code() in 200..299) {
                 val array = it.body()!!.data
+                if (array.size() == 0) {
+                    toast("没有数据啦...")
+                    return
+                }
+                if(nullData!=null){
+                    childFragmentManager.beginTransaction().remove(nullData!!).commit()
+                    nullData = null
+                }
                 val mutableList = mutableListOf<JsonObject>()
                 array.forEach {
                     mutableList.add(it.asJsonObject)
                 }
                 nowPage = page
-                painterMain.addItems(mutableList)
+                listFragment.addItems(mutableList)
             }
         } catch (throwable: Throwable) {
             if (throwable is HttpException) {
@@ -295,29 +302,5 @@ class PainterCompanyList : Fragment(), PainterMainListAdapter.ImageClick, BigIma
     fun setSortList(index: Int) {
         mWeight += index
         smart.autoRefresh()
-    }
-
-    private fun openDialog(url: String) {
-        val mTransaction = activity!!.supportFragmentManager.beginTransaction()
-
-        mTransaction.setCustomAnimations(R.anim.right_in, R.anim.right_in)
-
-        bigImage = BigImage2.newInstance(url,this@PainterCompanyList)
-        mTransaction.add(mainId, bigImage!!)
-
-        mTransaction.commit()
-    }
-
-    private fun closeAlertDialog() {
-
-        val mTransaction = activity!!.supportFragmentManager.beginTransaction()
-        if (bigImage != null) {
-            mTransaction.setCustomAnimations(R.anim.fade_in_out, R.anim.fade_in_out)
-
-            mTransaction.remove(bigImage!!)
-            bigImage = null
-        }
-
-        mTransaction.commit()
     }
 }

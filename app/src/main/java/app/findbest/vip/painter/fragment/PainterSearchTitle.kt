@@ -10,6 +10,7 @@ import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import android.widget.LinearLayout
@@ -77,15 +78,18 @@ class PainterSearchTitle: Fragment() {
                                 hint = "搜索"
                                 textSize = 15f
                                 hintTextColor = Color.parseColor("#FF666666")
-                                addTextChangedListener(object: TextWatcher{
-                                    override fun afterTextChanged(s: Editable?) {}
-
-                                    override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
-
-                                    override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                                        child.inputText(s.toString())
+                                singleLine = true
+                                imeOptions = EditorInfo.IME_ACTION_SEARCH
+                                setOnEditorActionListener { v, actionId, _ ->
+                                    if (actionId == EditorInfo.IME_ACTION_SEARCH) {
+                                        //点击搜索的时候隐藏软键盘
+                                        closeFocusjianpan()
+                                        // 在这里写搜索的操作,一般都是网络请求数据
+                                        child.inputText(v.text.toString())
+                                        true
                                     }
-                                })
+                                    false
+                                }
                             }.lparams(matchParent, matchParent)
                         }.lparams(matchParent, matchParent){
                             leftMargin = dip(10)

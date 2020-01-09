@@ -9,8 +9,10 @@ import android.view.ViewGroup
 import android.widget.LinearLayout
 import androidx.fragment.app.Fragment
 import app.findbest.vip.R
+import click
 import org.jetbrains.anko.*
 import org.jetbrains.anko.support.v4.UI
+import withTrigger
 
 class PainterMainTitle: Fragment() {
 
@@ -70,7 +72,7 @@ class PainterMainTitle: Fragment() {
                             leftMargin = dip(10)
                             gravity = Gravity.CENTER_VERTICAL
                         }
-                        setOnClickListener {
+                        this.withTrigger().click {
                             child.clickSearch()
                         }
                     }.lparams(dip(0), dip(30)){

@@ -1,4 +1,4 @@
-package app.findbest.vip.project.fragment
+package app.findbest.vip.painter.fragment
 
 import android.content.Context
 import android.graphics.Color
@@ -6,16 +6,13 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.FrameLayout
+import android.widget.LinearLayout
 import androidx.fragment.app.Fragment
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import app.findbest.vip.R
-import app.findbest.vip.painter.adapter.PainterMainListAdapter
+import app.findbest.vip.commonfrgmant.NullDataPageFragment
 import app.findbest.vip.painter.api.PainterApi
-import app.findbest.vip.painter.fragment.BigImage2
-import app.findbest.vip.painter.view.PainterInfomation
 import app.findbest.vip.utils.RetrofitUtils
-import app.findbest.vip.utils.recyclerView
 import app.findbest.vip.utils.smartRefreshLayout
 import com.google.gson.JsonObject
 import com.scwang.smart.refresh.footer.BallPulseFooter
@@ -30,9 +27,10 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.rx2.awaitSingle
 import org.jetbrains.anko.*
 import org.jetbrains.anko.support.v4.UI
+import org.jetbrains.anko.support.v4.toast
 import retrofit2.HttpException
 
-class PainterSearchList : Fragment(), PainterMainListAdapter.ImageClick, BigImage2.ImageClick {
+class PainterSearchList : Fragment(){
 
     interface ClickBack{
         fun clickback()
@@ -49,12 +47,13 @@ class PainterSearchList : Fragment(), PainterMainListAdapter.ImageClick, BigImag
     lateinit var clickback: ClickBack
     lateinit var mContext: Context
     lateinit var smart: SmartRefreshLayout
-    lateinit var recycle: RecyclerView
-    lateinit var painterMain: PainterMainListAdapter
+    private lateinit var listFram: FrameLayout
+    private var listFragment: PainterListFragment? = null
+    private var nullData: NullDataPageFragment? = null
     var nowPage = 0
     val mainId = 1
-    var searchText = ""
-    private var bigImage: BigImage2? = null
+    private var searchText = ""
+    private val nullId = 4
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -64,26 +63,15 @@ class PainterSearchList : Fragment(), PainterMainListAdapter.ImageClick, BigImag
         return createV()
     }
 
-    override fun jumpToInfo(id: String) {
-        activity!!.startActivity<PainterInfomation>("userId" to id)
-        activity!!.overridePendingTransition(R.anim.right_in, R.anim.left_out)
-    }
-    // 点击关闭图片
-    override fun clickclose() {
-        closeAlertDialog()
-    }
-    // 点击放大图片
-    override fun click(str: String) {
-        openDialog(str)
-    }
-
     fun setText(s: String){
         searchText = s
+
+        listFragment = PainterListFragment.newInstance(mContext)
+        childFragmentManager.beginTransaction().replace(nullId, listFragment!!).commit()
         smart.autoRefresh()
     }
 
     private fun createV(): View {
-        painterMain = PainterMainListAdapter(mContext, this@PainterSearchList)
         return UI {
             linearLayout {
                 backgroundColor = Color.parseColor("#FFF6F6F6")
@@ -103,14 +91,16 @@ class PainterSearchList : Fragment(), PainterMainListAdapter.ImageClick, BigImag
                             it.finishLoadMore(1000)
                         }
                     }
-                    recycle = recyclerView {
-                        layoutManager = LinearLayoutManager(mContext)
-                        adapter = painterMain
-                        setOnScrollChangeListener { v, scrollX, scrollY, oldScrollX, oldScrollY ->
+                    listFram = frameLayout {
+                        id = nullId
+                        setOnScrollChangeListener { _, _, _, _, _ ->
                             clickback.clickback()
                         }
                     }
-                    setOnScrollChangeListener { v, scrollX, scrollY, oldScrollX, oldScrollY ->
+                    val listFramlp = listFram.layoutParams
+                    listFramlp.width = LinearLayout.LayoutParams.MATCH_PARENT
+                    listFramlp.height = LinearLayout.LayoutParams.MATCH_PARENT
+                    setOnScrollChangeListener { _, _, _, _, _ ->
                         clickback.clickback()
                     }
                 }.lparams(matchParent, matchParent) {
@@ -129,15 +119,19 @@ class PainterSearchList : Fragment(), PainterMainListAdapter.ImageClick, BigImag
                 .subscribeOn(Schedulers.io())
                 .awaitSingle()
 
-
             if (it.code() in 200..299) {
                 val array = it.body()!!.data
-                val mutableList = mutableListOf<JsonObject>()
-                array.forEach {
-                    mutableList.add(it.asJsonObject)
+                if(array.size()>0){
+                    val mutableList = mutableListOf<JsonObject>()
+                    nowPage = 1
+                    array.forEach {
+                        mutableList.add(it.asJsonObject)
+                    }
+                    listFragment?.resetItems(mutableList)
+                }else{
+                    nullData = NullDataPageFragment.newInstance()
+                    childFragmentManager.beginTransaction().replace(nullId,nullData!!).commit()
                 }
-                nowPage = 1
-                painterMain.resetItems(mutableList)
             }
         } catch (throwable: Throwable) {
             if (throwable is HttpException) {
@@ -145,7 +139,6 @@ class PainterSearchList : Fragment(), PainterMainListAdapter.ImageClick, BigImag
             }
         }
     }
-
 
     private suspend fun getProjectList(page: Int) {
         try {
@@ -158,41 +151,21 @@ class PainterSearchList : Fragment(), PainterMainListAdapter.ImageClick, BigImag
 
             if (it.code() in 200..299) {
                 val array = it.body()!!.data
+                if (array.size() == 0) {
+                    toast("没有数据啦...")
+                    return
+                }
+                nowPage = page
                 val mutableList = mutableListOf<JsonObject>()
                 array.forEach {
                     mutableList.add(it.asJsonObject)
                 }
-                nowPage = page
-                painterMain.addItems(mutableList)
+                listFragment?.addItems(mutableList)
             }
         } catch (throwable: Throwable) {
             if (throwable is HttpException) {
                 println(throwable.code())
             }
         }
-    }
-
-    private fun openDialog(pic: String) {
-        val mTransaction = activity!!.supportFragmentManager.beginTransaction()
-
-        mTransaction.setCustomAnimations(R.anim.right_in, R.anim.right_in)
-
-        bigImage = BigImage2.newInstance(pic,this@PainterSearchList)
-        mTransaction.add(mainId, bigImage!!)
-
-        mTransaction.commit()
-    }
-
-    private fun closeAlertDialog() {
-
-        val mTransaction = activity!!.supportFragmentManager.beginTransaction()
-        if (bigImage != null) {
-            mTransaction.setCustomAnimations(R.anim.fade_in_out, R.anim.fade_in_out)
-
-            mTransaction.remove(bigImage!!)
-            bigImage = null
-        }
-
-        mTransaction.commit()
     }
 }

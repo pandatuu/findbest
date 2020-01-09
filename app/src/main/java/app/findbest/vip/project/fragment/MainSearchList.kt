@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import app.findbest.vip.R
 import app.findbest.vip.commonfrgmant.NullDataPageFragment
+import app.findbest.vip.painter.fragment.PainterListFragment
 import app.findbest.vip.project.adapter.ProjectMainListAdapter
 import app.findbest.vip.project.api.ProjectApi
 import app.findbest.vip.project.model.ProjectListModel
@@ -78,6 +79,9 @@ class MainSearchList : Fragment(), ProjectMainListAdapter.ListAdapter {
 
     fun setText(s: String) {
         searchText = s
+
+        listFragment = MyProjectListFragment.newInstance(mContext)
+        childFragmentManager.beginTransaction().replace(nullId, listFragment).commit()
         smart.autoRefresh()
     }
 
@@ -104,8 +108,6 @@ class MainSearchList : Fragment(), ProjectMainListAdapter.ListAdapter {
                     }
                     listFram = frameLayout {
                         id = nullId
-                        listFragment = MyProjectListFragment.newInstance(mContext)
-                        childFragmentManager.beginTransaction().add(nullId, listFragment).commit()
                         setOnScrollChangeListener { _, _, _, _, _ ->
                             clickback.clickback()
                         }
@@ -137,10 +139,6 @@ class MainSearchList : Fragment(), ProjectMainListAdapter.ListAdapter {
                 val list = it.body()!!.data
                 println(list)
                 if (list.size() > 0) {
-                    if(nullData!=null){
-                        childFragmentManager.beginTransaction().remove(nullData!!).commit()
-                        nullData = null
-                    }
                     nowPage = 1
                     val projectList = arrayListOf<ProjectListModel>()
                     list.forEach {
@@ -188,10 +186,6 @@ class MainSearchList : Fragment(), ProjectMainListAdapter.ListAdapter {
                 if (list.size() == 0) {
                     toast("没有数据啦...")
                     return
-                }
-                if(nullData!=null){
-                    childFragmentManager.beginTransaction().remove(nullData!!).commit()
-                    nullData = null
                 }
                 val projectList = arrayListOf<ProjectListModel>()
                 list.forEach {
