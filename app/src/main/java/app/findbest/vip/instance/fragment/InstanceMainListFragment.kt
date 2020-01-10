@@ -102,7 +102,6 @@ class InstanceMainListFragment : Fragment(), PainterInfoPictureAdapter.ImageClic
     }
 
     fun addData(items: JsonArray) {
-        imageList.clear()
         val list1 = arrayListOf<String>()
         items.forEach {
             imageList.add(it.asJsonObject)

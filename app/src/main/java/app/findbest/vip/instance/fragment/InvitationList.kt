@@ -123,7 +123,7 @@ class InvitationList : FragmentParent(), InstanceListFragment.InstanceList {
                             }
 
                             textView {
-                                text = activity!!.getString(R.string.chose_project)
+                                text = activity!!.getString(R.string.instance_chose_project)
                                 backgroundColor = Color.TRANSPARENT
                                 gravity = Gravity.CENTER
                                 textColor = Color.parseColor("#FF222222")
@@ -187,7 +187,7 @@ class InvitationList : FragmentParent(), InstanceListFragment.InstanceList {
 
                     textView {
                         gravity = Gravity.CENTER
-                        text = activity!!.getString(R.string.send_invitation)
+                        text = activity!!.getString(R.string.instance_send_invitation)
                         textSize = 16f
                         textColor = Color.WHITE
                         backgroundResource = R.drawable.enable_rectangle_button

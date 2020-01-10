@@ -134,7 +134,6 @@ class InstanceSearchList : Fragment() {
 
 
             if (it.code() in 200..299) {
-                //完善信息成功
                 val item = it.body()!!.data
                 if(item.size()>0){
                     nowPage = 1
@@ -156,15 +155,15 @@ class InstanceSearchList : Fragment() {
         try {
             val retrofitUils =
                 RetrofitUtils(mContext, resources.getString(R.string.developmentUrl))
-            val it = retrofitUils.create(ProjectApi::class.java)
-                .getProjectListBySearch(page, 5, searchText)
+            val it = retrofitUils.create(InstanceApi::class.java)
+                .instanceListSearch(page, 5, searchText)
                 .subscribeOn(Schedulers.io())
                 .awaitSingle()
 
             if (it.code() in 200..299) {
                 val item = it.body()!!.data
                 if (item.size() == 0) {
-                    toast("没有数据啦...")
+                    toast(resources.getString(R.string.common_no_list_data))
                     return
                 }
 

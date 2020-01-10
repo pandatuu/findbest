@@ -46,6 +46,13 @@ import retrofit2.HttpException
 
 class InstanceDisplay : FragmentParent(),PainterInfoPictureAdapter.ImageClick, BackgroundFragment.ClickBack,InstanceScreen.ProjectScreen {
 
+    companion object {
+        fun newInstance(context: Context): InstanceDisplay {
+            val f = InstanceDisplay()
+            f.mContext = context
+            return f
+        }
+    }
     var toolbar1: Toolbar? = null
     private var mContext: Context? = null
     lateinit var smart: SmartRefreshLayout
@@ -78,13 +85,6 @@ class InstanceDisplay : FragmentParent(),PainterInfoPictureAdapter.ImageClick, B
             .create(InstanceApi::class.java)
     }
 
-    companion object {
-        fun newInstance(context: Context): InstanceDisplay {
-            val f = InstanceDisplay()
-            f.mContext = context
-            return f
-        }
-    }
     override fun onResume() {
         super.onResume()
 //        val bool = App.getInstance()?.getInviteVideoBool()
@@ -165,7 +165,7 @@ class InstanceDisplay : FragmentParent(),PainterInfoPictureAdapter.ImageClick, B
                             alignParentBottom()
                         }
                         textView {
-                            text = activity!!.getString(R.string.sample)
+                            text = activity!!.getString(R.string.instance_title)
                             backgroundColor = Color.TRANSPARENT
                             gravity = Gravity.CENTER
                             textColor = Color.parseColor("#FF222222")
@@ -217,7 +217,7 @@ class InstanceDisplay : FragmentParent(),PainterInfoPictureAdapter.ImageClick, B
                                 )
                             }
                             isFocusable = false
-                            hint = "搜索"
+                            hint = resources.getString(R.string.common_search)
                             hintTextColor = Color.parseColor("#ff666666")
                             backgroundColor = Color.TRANSPARENT
                             textColor = Color.BLACK
@@ -239,7 +239,7 @@ class InstanceDisplay : FragmentParent(),PainterInfoPictureAdapter.ImageClick, B
                     linearLayout {
                         gravity = Gravity.CENTER_VERTICAL or Gravity.RIGHT
                         textView {
-                            text = "筛选"
+                            text = resources.getString(R.string.common_srceen)
                             textSize = 15f
                             textColor = Color.parseColor("#FF333333")
                         }.lparams {
@@ -274,18 +274,22 @@ class InstanceDisplay : FragmentParent(),PainterInfoPictureAdapter.ImageClick, B
                         backgroundColor = Color.parseColor("#FFF6F6F6")
                         smart = smartRefreshLayout {
                             setEnableAutoLoadMore(false)
-                            setRefreshHeader(MaterialHeader(activity))
+                            setRefreshHeader(MaterialHeader(mContext))
                             setOnRefreshListener {
                                 GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
                                     getList()
-                                    it.finishRefresh(300)
+                                    it.finishRefresh(1000)
                                 }
                             }
-                            setRefreshFooter(BallPulseFooter(mContext).setSpinnerStyle(SpinnerStyle.Scale))
+                            setRefreshFooter(
+                                BallPulseFooter(mContext).setSpinnerStyle(
+                                    SpinnerStyle.Scale
+                                )
+                            )
                             setOnLoadMoreListener {
                                 GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
                                     getList(nowPage + 1)
-                                    it.finishRefresh(300)
+                                    it.finishLoadMore(1000)
                                 }
                             }
 
@@ -296,6 +300,9 @@ class InstanceDisplay : FragmentParent(),PainterInfoPictureAdapter.ImageClick, B
                                     arrayListOf(),this@InstanceDisplay)
                                 adapter = painterInfoPic
                             }
+                            val lp = recycler.layoutParams
+                            lp.width = LinearLayout.LayoutParams.MATCH_PARENT
+                            lp.height = LinearLayout.LayoutParams.MATCH_PARENT
                         }.lparams(matchParent, matchParent)
                     }.lparams {
                         width = matchParent
@@ -330,6 +337,7 @@ class InstanceDisplay : FragmentParent(),PainterInfoPictureAdapter.ImageClick, B
 
             if (it.code() in 200..299) {
                 val item = it.body()!!.data
+                nowPage = 1
                 val list1 = arrayListOf<String>()
                 imageList.clear()
                 item.forEach {
@@ -337,8 +345,6 @@ class InstanceDisplay : FragmentParent(),PainterInfoPictureAdapter.ImageClick, B
                     list1.add(it.asJsonObject["url"].asString)
                 }
                 painterInfoPic?.resetData(arrayListOf(list1))
-
-                nowPage = 1
             }
         } catch (throwable: Throwable) {
             if (throwable is HttpException) {
@@ -366,13 +372,13 @@ class InstanceDisplay : FragmentParent(),PainterInfoPictureAdapter.ImageClick, B
 
             if (it.code() in 200..299) {
                 val item = it.body()!!.data
+                nowPage = page
                 val list1 = arrayListOf<String>()
                 item.forEach {
                     imageList.add(it.asJsonObject)
                     list1.add(it.asJsonObject["url"].asString)
                 }
                 painterInfoPic?.addData(arrayListOf(list1))
-                nowPage = page
             }
         } catch (throwable: Throwable) {
             if (throwable is HttpException) {

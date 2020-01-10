@@ -98,7 +98,7 @@ class MessageDialog : FragmentParent() {
 
 
                         textView {
-                            text = "发送邀请成功"
+                            text = resources.getString(R.string.instance_invite_success)
                             textColor = Color.parseColor("#FF333333")
                             textSize = 18f
                             setTypeface(Typeface.defaultFromStyle(Typeface.BOLD))
@@ -108,7 +108,7 @@ class MessageDialog : FragmentParent() {
                         }
 
                         textView {
-                            text = "请等候对方同意"
+                            text = resources.getString(R.string.instance_invite_wait)
                             textColor = Color.parseColor("#FF666666")
                             textSize = 15f
                             setTypeface(Typeface.defaultFromStyle(Typeface.BOLD))

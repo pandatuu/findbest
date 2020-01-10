@@ -56,7 +56,7 @@ class InstanceScreenStyle : Fragment() {
                 linearLayout {
                     styleText = textView {
                         visibility = LinearLayout.GONE
-                        text = "风格"
+                        text = resources.getString(R.string.srceen_style)
                         textSize = 17f
                         textColor = Color.parseColor("#FF222222")
                     }.lparams {
@@ -127,7 +127,7 @@ class InstanceScreenStyle : Fragment() {
                                     id = index
                                     backgroundColor = Color.parseColor("#FFFF7C00")
                                     textView {
-                                        text = "全部"
+                                        text = resources.getString(R.string.srceen_all)
                                         textSize = 12f
                                         textColor = Color.parseColor("#FF555555")
                                     }.lparams {
@@ -166,7 +166,7 @@ class InstanceScreenStyle : Fragment() {
                                     id = index + 2
                                     backgroundColor = Color.parseColor("#FFF8F8F8")
                                     textView {
-                                        text = "更多"
+                                        text = resources.getString(R.string.srceen_more)
                                         textSize = 12f
                                         textColor = Color.parseColor("#FF555555")
                                     }.lparams {
