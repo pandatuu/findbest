@@ -33,8 +33,8 @@ class ProjectInformation: BaseActivity() {
 
 
         val listTitle = ArrayList<String>()
-        listTitle.add("项目需求")
-        listTitle.add("应征画师")
+        listTitle.add(resources.getString(R.string.project_fragment_first))
+        listTitle.add(resources.getString(R.string.project_fragment_second))
         val applicants = ProjectApplicants.newInstance(this@ProjectInformation,projectId)
         val datas = ArrayList<Fragment>()
         datas.add(ProjectDemand.newInstance(this@ProjectInformation,projectId, applicants))
@@ -53,7 +53,7 @@ class ProjectInformation: BaseActivity() {
                             setMargins(dip(5),dip(5),0,dip(8))
                         }
                         textView {
-                            text = "返回"
+                            text = resources.getString(R.string.common_toolbar_back)
                             textSize = 17f
                             textColor = Color.parseColor("#FF222222")
                         }.lparams{

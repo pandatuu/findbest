@@ -50,7 +50,7 @@ class MainSearchTitle : Fragment() {
                 relativeLayout {
                     backgroundResource = R.drawable.ffe3e3e3_bottom_line
                     textView {
-                        text = "项目"
+                        text = resources.getString(R.string.project_title)
                         textSize = 17f
                         textColor = Color.parseColor("#FF222222")
                     }.lparams(wrapContent, wrapContent) {
@@ -71,7 +71,7 @@ class MainSearchTitle : Fragment() {
                             input = editText {
                                 padding = dip(0)
                                 background = null
-                                hint = "搜索"
+                                hint = resources.getString(R.string.common_search)
                                 textSize = 15f
                                 hintTextColor = Color.parseColor("#FF666666")
                                 singleLine = true
@@ -97,7 +97,7 @@ class MainSearchTitle : Fragment() {
                     linearLayout {
                         gravity = Gravity.CENTER_VERTICAL
                         textView {
-                            text = "取消"
+                            text = resources.getString(R.string.common_cancel)
                             textSize = 15f
                             textColor = Color.parseColor("#FF333333")
                         }

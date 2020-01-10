@@ -70,7 +70,7 @@ class EnlistProject : BaseActivity(), EnlistSuccessTipsDialog.ButtomClick, Backg
                         alignParentLeft()
                     }
                     textView {
-                        text = "编辑"
+                        text = resources.getString(R.string.enlist_edit)
                         textSize = 17f
                         textColor = Color.parseColor("#FF222222")
                     }.lparams {
@@ -83,7 +83,7 @@ class EnlistProject : BaseActivity(), EnlistSuccessTipsDialog.ButtomClick, Backg
                 commitText = editText {
                     padding = dip(15)
                     backgroundColor = Color.parseColor("#FFF6F6F6")
-                    hint = "请输入项目说明与备注"
+                    hint = resources.getString(R.string.enlist_edittext_hint)
                     hintTextColor = Color.parseColor("#FFB5B5B5")
                     textSize = 15f
                     gravity = Gravity.START
@@ -124,7 +124,7 @@ class EnlistProject : BaseActivity(), EnlistSuccessTipsDialog.ButtomClick, Backg
                     rightMargin = dip(15)
                 }
                 button {
-                    text = "提交应征作品"
+                    text = resources.getString(R.string.enlist_submit_button)
                     textColor = Color.parseColor("#FFFFFFFF")
                     textSize = 16f
                     backgroundResource = R.drawable.enable_rectangle_button
@@ -253,7 +253,7 @@ class EnlistProject : BaseActivity(), EnlistSuccessTipsDialog.ButtomClick, Backg
                 }
             }
             if(it.code() == 400){
-                toast("至少上传一个作品")
+                toast(resources.getString(R.string.enlist_least_one))
             }
         } catch (throwable: Throwable) {
             if (throwable is HttpException) {

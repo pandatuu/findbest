@@ -135,7 +135,6 @@ class MainSearchList : Fragment(), ProjectMainListAdapter.ListAdapter {
                 .awaitSingle()
 
             if (it.code() in 200..299) {
-                //完善信息成功
                 val list = it.body()!!.data
                 println(list)
                 if (list.size() > 0) {
@@ -181,10 +180,9 @@ class MainSearchList : Fragment(), ProjectMainListAdapter.ListAdapter {
                 .awaitSingle()
 
             if (it.code() in 200..299) {
-                //完善信息成功
                 val list = it.body()!!.data
                 if (list.size() == 0) {
-                    toast("没有数据啦...")
+                    toast(resources.getString(R.string.common_no_list_data))
                     return
                 }
                 val projectList = arrayListOf<ProjectListModel>()

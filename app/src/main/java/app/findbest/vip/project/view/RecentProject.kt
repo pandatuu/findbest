@@ -62,7 +62,7 @@ class RecentProject : BaseActivity(), RecentProjectImageList.ClickImage {
                         alignParentLeft()
                     }
                     textView {
-                        text = "编辑"
+                        text = resources.getString(R.string.enlist_edit)
                         textSize = 17f
                         textColor = Color.parseColor("#FF222222")
                     }.lparams {
@@ -89,7 +89,7 @@ class RecentProject : BaseActivity(), RecentProjectImageList.ClickImage {
                         backgroundResource = R.drawable.enable_rectangle_button_3
                         gravity = Gravity.CENTER
                         listText = textView {
-                            text = "完成（${imageList.size}）"
+                            text = "${resources.getString(R.string.enlist_done)}（${imageList.size}）"
                             textSize = 16f
                             textColor = Color.parseColor("#FFFFFFFF")
                         }
@@ -116,7 +116,7 @@ class RecentProject : BaseActivity(), RecentProjectImageList.ClickImage {
 
     @SuppressLint("SetTextI18n")
     override fun clickImage(size: Int) {
-        listText.text = "完成（${imageList.size}）"
+        listText.text = "${resources.getString(R.string.enlist_done)}（${imageList.size}）"
     }
     private suspend fun getMyPics() {
         try {

@@ -43,16 +43,14 @@ class EnlistSuccessTipsDialog : Fragment() {
                     backgroundResource = R.mipmap.iamge_submitted_successfully
                     verticalLayout {
                         textView {
-                            text = "提交成功"
+                            text = resources.getString(R.string.determine_submit)
                             textSize = 17f
                             textColor = Color.parseColor("#ffffff")
                         }.lparams{
                             topMargin = dip(76)
                         }
                         textView {
-                            text = "请等候项目方筛选！如果应征\n" +
-                                    "成功平台将会给您发送系统消息\n" +
-                                    "请注意查看！"
+                            text = resources.getString(R.string.enlist_success)
                             textSize = 17f
                             textColor = Color.parseColor("#FF666666")
                         }.lparams(matchParent, wrapContent){
@@ -67,7 +65,7 @@ class EnlistSuccessTipsDialog : Fragment() {
                     linearLayout {
                         gravity = Gravity.CENTER
                         textView {
-                            text = "确定"
+                            text = resources.getString(R.string.common_determine)
                             textSize = 14f
                             textColor = Color.parseColor("#FF333333")
                             typeface = Typeface.DEFAULT_BOLD

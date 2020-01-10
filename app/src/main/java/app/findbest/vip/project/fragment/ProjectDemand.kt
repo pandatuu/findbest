@@ -53,6 +53,7 @@ class ProjectDemand : Fragment(), EnlistCheckTipsDialog.ButtomClick, BackgroundF
     private lateinit var applicants: ProjectApplicants
     private var backgroundFragment: BackgroundFragment? = null
     private var tipsDialog: EnlistCheckTipsDialog? = null
+    private var countrylist = mutableListOf<String>()
 
 
     override fun onCreateView(
@@ -87,7 +88,7 @@ class ProjectDemand : Fragment(), EnlistCheckTipsDialog.ButtomClick, BackgroundF
                 }
                 button {
                     backgroundResource = R.drawable.enable_around_button
-                    text = "我要应征"
+                    text = resources.getString(R.string.project_info_button)
                     textSize = 16f
                     textColor = Color.parseColor("#FFFFFFFF")
                     this.withTrigger().click {
@@ -110,15 +111,18 @@ class ProjectDemand : Fragment(), EnlistCheckTipsDialog.ButtomClick, BackgroundF
 
     private suspend fun getInfo(id: String) {
         try {
+            val mPerferences: SharedPreferences = PreferenceManager.getDefaultSharedPreferences(this@GuideView)
+            val systemCountry = mPerferences.getString("systemCountry", "")
             val retrofitUils =
                 RetrofitUtils(mContext, resources.getString(R.string.developmentUrl))
             val it = retrofitUils.create(ProjectApi::class.java)
-                .getProjectInfoById(id, "zh")
+                .getProjectInfoById(id, systemCountry)
                 .subscribeOn(Schedulers.io())
                 .awaitSingle()
             if (it.code() in 200..299) {
                 val model = it.body()!!
                 applicants.setProjectName(model.name)
+                countrylist = model.allowedCountries
                 demand?.setInfomation(model)
             }
         } catch (throwable: Throwable) {
@@ -168,7 +172,7 @@ class ProjectDemand : Fragment(), EnlistCheckTipsDialog.ButtomClick, BackgroundF
 
         mTransaction.setCustomAnimations(R.anim.right_in, R.anim.right_in)
 
-        tipsDialog = EnlistCheckTipsDialog.newInstance(this@ProjectDemand, status)
+        tipsDialog = EnlistCheckTipsDialog.newInstance(this@ProjectDemand, status,countrylist)
         mTransaction.add(mainId, tipsDialog!!)
 
         mTransaction.commit()

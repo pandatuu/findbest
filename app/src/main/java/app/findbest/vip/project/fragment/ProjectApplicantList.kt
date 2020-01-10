@@ -21,6 +21,7 @@ import org.jetbrains.anko.dip
 import org.jetbrains.anko.linearLayout
 import org.jetbrains.anko.matchParent
 import org.jetbrains.anko.support.v4.UI
+import org.jetbrains.anko.support.v4.nestedScrollView
 import org.jetbrains.anko.support.v4.startActivity
 
 class ProjectApplicantList: Fragment(), ProjectApplicantsAdapter.PrintedCrad,
@@ -73,8 +74,9 @@ class ProjectApplicantList: Fragment(), ProjectApplicantsAdapter.PrintedCrad,
 
     private fun createV(): View {
         return UI{
-            linearLayout {
+            nestedScrollView {
                 recycle = recyclerView {
+                    isHorizontalScrollBarEnabled = false
                     layoutManager = LinearLayoutManager(mContext)
                 }.lparams(matchParent, matchParent) {
                     leftMargin = dip(10)

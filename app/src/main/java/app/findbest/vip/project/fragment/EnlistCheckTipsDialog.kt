@@ -14,10 +14,11 @@ import org.jetbrains.anko.support.v4.UI
 class EnlistCheckTipsDialog : Fragment() {
 
     companion object {
-        fun newInstance(buttomClick: ButtomClick, status: Int): EnlistCheckTipsDialog {
+        fun newInstance(buttomClick: ButtomClick, status: Int, country: MutableList<String>): EnlistCheckTipsDialog {
             val fragment = EnlistCheckTipsDialog()
             fragment.buttomClick = buttomClick
             fragment.status = status
+            fragment.countryList = country
             return fragment
         }
     }
@@ -26,6 +27,7 @@ class EnlistCheckTipsDialog : Fragment() {
         fun click()
     }
 
+    private var countryList: MutableList<String> = mutableListOf()
     private lateinit var buttomClick: ButtomClick
     private var status = 0
     override fun onCreateView(
@@ -41,39 +43,43 @@ class EnlistCheckTipsDialog : Fragment() {
         when (status) {
             1 -> {
                 // 1为项目不存在
-                tipText = "您应征的项目已被删除或不存在，请刷新页面后再试！"
+                tipText = resources.getString(R.string.enlist_status_one)
             }
             2 -> {
                 // 2为项目并非发布阶段
-                tipText = "您应征的项目已被委托或取消，请刷新页面后再试！"
+                tipText = resources.getString(R.string.enlist_status_two)
             }
             3 -> {
                 // 3为身份类型不匹配
-                tipText = "您当前帐号为项目方，无法应征该项目！"
+                tipText = resources.getString(R.string.enlist_status_three)
             }
             4 -> {
                 // 4为国家不匹配
-                tipText = "当前项目限制应征画师国家为XXX，您无法应征此项目！"
+                var country = ""
+                countryList.forEach {
+                     country += "$it."
+                }
+                tipText = resources.getString(R.string.enlist_status_four, country)
             }
             5 -> {
                 // 5为已经应征过
-                tipText = "您已应征过该项目，请勿重复应征！"
+                tipText = resources.getString(R.string.enlist_status_five)
             }
             6 -> {
                 // 6为个人用户只允许接两个项目
-                tipText = "个人画师只能同时进行2个任务，请先将正在进行的任务提交并验收后才可以接更多的任务喔！"
+                tipText = resources.getString(R.string.enlist_status_six)
             }
             7 -> {
                 // 7为用户不存在或者不是接包方
-                tipText = "您当前帐号为项目方，无法应征该项目！"
+                tipText = resources.getString(R.string.enlist_status_seven)
             }
             8 -> {
                 // 8用户未认证
-                tipText = "为了保证画稿质量及双方权益，平台需要您先进行画师认证，是否现在去认证？"
+                tipText = resources.getString(R.string.enlist_status_eight)
             }
             9 -> {
                 // 9用户无vip
-                tipText = "本平台仅限VIP用户应征，您当前还不是VIP用户，是否现在就成为VIP呢？"
+                tipText = resources.getString(R.string.enlist_status_nine)
             }
         }
         return UI {
@@ -98,7 +104,7 @@ class EnlistCheckTipsDialog : Fragment() {
                         }
                         button {
                             backgroundResource = R.drawable.enable_around_button
-                            text = "知道了"
+                            text = resources.getString(R.string.enlist_know)
                             textSize = 18f
                             textColor = Color.parseColor("#FFFFFFFF")
                             setOnClickListener {
@@ -112,7 +118,7 @@ class EnlistCheckTipsDialog : Fragment() {
                     verticalLayout {
                         gravity = Gravity.CENTER_HORIZONTAL
                         textView {
-                            text = "提示"
+                            text = resources.getString(R.string.enlist_tip)
                             textSize = 22f
                             textColor = Color.parseColor("#FFFFFFFF")
                         }.lparams(wrapContent, wrapContent) {

@@ -65,7 +65,7 @@ class ProjectMainScreen : Fragment(), ProjectScreenType.ScreenAll, ProjectScreen
     }
     //点击type
     override fun clickType(name: String) {
-        if (name != "全部" && name != "更多") {
+        if (name != resources.getString(R.string.srceen_all) && name != resources.getString(R.string.srceen_more)) {
             typeModelList.forEach {
                 if (it.lang == name) {
                     GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
@@ -73,7 +73,7 @@ class ProjectMainScreen : Fragment(), ProjectScreenType.ScreenAll, ProjectScreen
                     }
                 }
             }
-        }else if(name == "全部"){
+        }else if(name == resources.getString(R.string.srceen_all)){
             screenStyle!!.setTextGone()
         }else{
             screenType!!.setMore()
@@ -117,7 +117,7 @@ class ProjectMainScreen : Fragment(), ProjectScreenType.ScreenAll, ProjectScreen
                     }
                     linearLayout {
                         button {
-                            text = "重置"
+                            text = resources.getString(R.string.common_reset)
                             textSize = 14f
                             textColor = Color.parseColor("#FFFFFFFF")
                             backgroundColor = Color.parseColor("#FFFF7C00")
@@ -129,7 +129,7 @@ class ProjectMainScreen : Fragment(), ProjectScreenType.ScreenAll, ProjectScreen
                             weight = 1f
                         }
                         button {
-                            text = "确定"
+                            text = resources.getString(R.string.common_determine)
                             textSize = 14f
                             textColor = Color.parseColor("#FFFFFFFF")
                             backgroundColor = Color.parseColor("#FF1D1D1D")
@@ -137,7 +137,7 @@ class ProjectMainScreen : Fragment(), ProjectScreenType.ScreenAll, ProjectScreen
                                 val array = arrayListOf<Int>()
                                 val type = screenType?.getTypeItem()
                                 val style = screenStyle?.getStyleItem()
-                                if(type == "全部"){
+                                if(type == resources.getString(R.string.srceen_all)){
                                     array.add(0)
                                     array.add(0)
                                     projectScreen.confirmClick(array)
@@ -178,7 +178,6 @@ class ProjectMainScreen : Fragment(), ProjectScreenType.ScreenAll, ProjectScreen
                 .awaitSingle()
 
             if (it.code() in 200..299) {
-                //完善信息成功
                 val data = it.body()!!
                 data.forEach {
                     val item = it.asJsonObject
@@ -212,7 +211,6 @@ class ProjectMainScreen : Fragment(), ProjectScreenType.ScreenAll, ProjectScreen
                 .awaitSingle()
 
             if (it.code() in 200..299) {
-                //完善信息成功
                 val data = it.body()!!
                 val list = arrayListOf<StyleModel>()
                 val styleList = arrayListOf<String>()

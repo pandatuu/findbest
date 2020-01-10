@@ -14,17 +14,14 @@ import app.findbest.vip.R
 import app.findbest.vip.project.model.ProjectInfoModel
 import org.jetbrains.anko.*
 import org.jetbrains.anko.support.v4.UI
-import org.jetbrains.anko.support.v4.dip
 import java.text.SimpleDateFormat
 import java.util.*
-import kotlin.collections.ArrayList
 
 class ProjectDemandDetails: Fragment() {
 
     companion object{
         fun newInstance(): ProjectDemandDetails{
-            val fragment = ProjectDemandDetails()
-            return fragment
+            return ProjectDemandDetails()
         }
     }
 
@@ -50,9 +47,7 @@ class ProjectDemandDetails: Fragment() {
     private lateinit var supplementParent	: LinearLayout
     private lateinit var supplement	: TextView //补充内容
     private lateinit var samplesParent: LinearLayout
-    private lateinit var samples: ArrayList<String> //参考图例
     private lateinit var stages: LinearLayout// 项目阶段
-    private lateinit var isLast	: LinearLayout //是否是最后阶段，是-隐藏，否-显示
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -117,18 +112,18 @@ class ProjectDemandDetails: Fragment() {
 
         //试稿要求
         testing.text = when(model.testing){
-            3 -> "无需试稿"
-            6 -> "有偿试稿"
-            9 -> "无偿试稿"
+            3 -> resources.getString(R.string.project_info_not_test)
+            6 -> resources.getString(R.string.project_info_paid_test)
+            9 -> resources.getString(R.string.project_info_not_paid_test)
             else -> "获取错误"
         }
 
         //公开权限
         publicity.text = when(model.publicity){
-            0 -> "不公开"
-            1 -> "只允许个人"
-            2 -> "只允许公司"
-            3 -> "允许个人和公司"
+            0 -> resources.getString(R.string.project_info_open_not_authority)
+            1 -> resources.getString(R.string.project_info_open_only_person)
+            2 -> resources.getString(R.string.project_info_open_only_company)
+            3 -> resources.getString(R.string.project_info_open_authority_all)
             else -> "获取错误"
         }
 
@@ -136,7 +131,7 @@ class ProjectDemandDetails: Fragment() {
         color.text = when(model.color){
             3 -> "RGB"
             6 -> "CMYK"
-            12 -> "不限"
+            12 -> resources.getString(R.string.project_info_no_color_mode)
             else -> "获取错误"
         }
 
@@ -145,7 +140,7 @@ class ProjectDemandDetails: Fragment() {
             3 -> "PSD"
             6 -> "JPEG"
             9 -> "PNG"
-            12 -> "其他格式"
+            12 -> resources.getString(R.string.project_info_other_format)
             else -> "获取错误"
         }
 
@@ -173,8 +168,8 @@ class ProjectDemandDetails: Fragment() {
             samplesParent.visibility = LinearLayout.GONE
         }
 
-        val stepList = arrayListOf("2 草稿验收","3 线稿验收","4 上色验收")
-        val stepPercent = arrayListOf("草稿","线稿","上色")
+        val stepList = arrayListOf(resources.getString(R.string.project_info_draft_acceptance),resources.getString(R.string.project_info_acceptance_line),resources.getString(R.string.project_info_acceptance_coloring))
+        val stepPercent = arrayListOf(resources.getString(R.string.project_info_draft),resources.getString(R.string.project_info_line),resources.getString(R.string.project_info_coloring))
         for(index in 0 until model.stages.size()){
             val item = model.stages[index].asJsonObject
 
@@ -215,6 +210,8 @@ class ProjectDemandDetails: Fragment() {
                             leftMargin = dip(10)
                         }
                     }.lparams(wrapContent, dip(20))
+                    //是否是最后阶段，是-隐藏，否-显示
+                    //isLast
                     if(!item["last"].asBoolean){
                         linearLayout {
                             backgroundResource = R.mipmap.dotted_line
@@ -225,11 +222,7 @@ class ProjectDemandDetails: Fragment() {
                 }
             }.view
             stages.addView(view)
-
         }
-//        //是否是最后阶段，是-隐藏，否-显示
-//        isLast
-
     }
 
     @SuppressLint("SetTextI18n")
@@ -266,7 +259,7 @@ class ProjectDemandDetails: Fragment() {
                             linearLayout {
                                 backgroundResource = R.drawable.ffe4e4e4_bottom_line
                                 textView {
-                                    text = "制作费用"
+                                    text = resources.getString(R.string.project_info_production_cost)
                                     textSize = 17f
                                     textColor = Color.parseColor("#FF444444")
                                 }.lparams {
@@ -281,21 +274,21 @@ class ProjectDemandDetails: Fragment() {
                                     orientation = LinearLayout.HORIZONTAL
                                     verticalLayout {
                                         textView {
-                                            text = "截稿日期"
+                                            text = resources.getString(R.string.project_info_material_deadline)
                                             textSize = 14f
                                             textColor = Color.parseColor("#FF999999")
                                         }.lparams {
                                             topMargin = dip(15)
                                         }
                                         textView {
-                                            text = "个人单价"
+                                            text = resources.getString(R.string.project_info_unit_price)
                                             textSize = 14f
                                             textColor = Color.parseColor("#FF999999")
                                         }.lparams {
                                             topMargin = dip(15)
                                         }
                                         textView {
-                                            text = "总金额"
+                                            text = resources.getString(R.string.project_info_total_sum)
                                             textSize = 14f
                                             textColor = Color.parseColor("#FF999999")
                                         }.lparams {
@@ -333,14 +326,14 @@ class ProjectDemandDetails: Fragment() {
                                     orientation = LinearLayout.HORIZONTAL
                                     verticalLayout {
                                         textView {
-                                            text = "结算币种"
+                                            text = resources.getString(R.string.project_info_currency)
                                             textSize = 14f
                                             textColor = Color.parseColor("#FF999999")
                                         }.lparams {
                                             topMargin = dip(15)
                                         }
                                         textView {
-                                            text = "原画数量"
+                                            text = resources.getString(R.string.project_info_paintings_num)
                                             textSize = 14f
                                             textColor = Color.parseColor("#FF999999")
                                         }.lparams {
@@ -382,7 +375,7 @@ class ProjectDemandDetails: Fragment() {
                             linearLayout {
                                 backgroundResource = R.drawable.ffe4e4e4_bottom_line
                                 textView {
-                                    text = "制作费用"
+                                    text = resources.getString(R.string.project_info_evaluation_bonus)
                                     textSize = 17f
                                     textColor = Color.parseColor("#FF444444")
                                 }.lparams {
@@ -397,14 +390,14 @@ class ProjectDemandDetails: Fragment() {
                                     orientation = LinearLayout.HORIZONTAL
                                     verticalLayout {
                                         textView {
-                                            text = "满意"
+                                            text = resources.getString(R.string.project_info_satisfied)
                                             textSize = 14f
                                             textColor = Color.parseColor("#FF999999")
                                         }.lparams {
                                             topMargin = dip(15)
                                         }
                                         textView {
-                                            text = "超越期待"
+                                            text = resources.getString(R.string.project_info_beyond_expectations)
                                             textSize = 14f
                                             textColor = Color.parseColor("#FF999999")
                                         }.lparams {
@@ -436,14 +429,14 @@ class ProjectDemandDetails: Fragment() {
                                     orientation = LinearLayout.HORIZONTAL
                                     verticalLayout {
                                         textView {
-                                            text = "非常满意"
+                                            text = resources.getString(R.string.project_info_very_satisfied)
                                             textSize = 14f
                                             textColor = Color.parseColor("#FF999999")
                                         }.lparams {
                                             topMargin = dip(15)
                                         }
                                         textView {
-                                            text = "惊为天人"
+                                            text = resources.getString(R.string.project_info_more_satisfied)
                                             textSize = 14f
                                             textColor = Color.parseColor("#FF999999")
                                         }.lparams {
@@ -489,7 +482,7 @@ class ProjectDemandDetails: Fragment() {
                             linearLayout {
                                 backgroundResource = R.drawable.ffe4e4e4_bottom_line
                                 textView {
-                                    text = "需求详情"
+                                    text = resources.getString(R.string.project_info_demand_details)
                                     textSize = 17f
                                     textColor = Color.parseColor("#FF444444")
                                 }.lparams {
@@ -504,49 +497,49 @@ class ProjectDemandDetails: Fragment() {
                                     orientation = LinearLayout.HORIZONTAL
                                     verticalLayout {
                                         textView {
-                                            text = "稿件类型"
+                                            text = resources.getString(R.string.project_info_manuscripts_type)
                                             textSize = 14f
                                             textColor = Color.parseColor("#FF999999")
                                         }.lparams {
                                             topMargin = dip(15)
                                         }
                                         textView {
-                                            text = "风格"
+                                            text = resources.getString(R.string.project_info_style)
                                             textSize = 14f
                                             textColor = Color.parseColor("#FF999999")
                                         }.lparams {
                                             topMargin = dip(15)
                                         }
                                         textView {
-                                            text = "规格"
+                                            text = resources.getString(R.string.project_info_size)
                                             textSize = 14f
                                             textColor = Color.parseColor("#FF999999")
                                         }.lparams {
                                             topMargin = dip(15)
                                         }
                                         textView {
-                                            text = "试稿要求"
+                                            text = resources.getString(R.string.project_info_requirement)
                                             textSize = 14f
                                             textColor = Color.parseColor("#FF999999")
                                         }.lparams {
                                             topMargin = dip(15)
                                         }
                                         textView {
-                                            text = "公开权限"
+                                            text = resources.getString(R.string.project_info_open_authority)
                                             textSize = 14f
                                             textColor = Color.parseColor("#FF999999")
                                         }.lparams {
                                             topMargin = dip(15)
                                         }
                                         textView {
-                                            text = "颜色模式"
+                                            text = resources.getString(R.string.project_info_color_mode)
                                             textSize = 14f
                                             textColor = Color.parseColor("#FF999999")
                                         }.lparams {
                                             topMargin = dip(15)
                                         }
                                         textView {
-                                            text = "稿件格式"
+                                            text = resources.getString(R.string.project_info_format)
                                             textSize = 14f
                                             textColor = Color.parseColor("#FF999999")
                                         }.lparams {
@@ -618,7 +611,7 @@ class ProjectDemandDetails: Fragment() {
                             linearLayout {
                                 backgroundResource = R.drawable.ffe4e4e4_bottom_line
                                 textView {
-                                    text = "稿件构思"
+                                    text = resources.getString(R.string.project_info_conception)
                                     textSize = 17f
                                     textColor = Color.parseColor("#FF444444")
                                 }.lparams {
@@ -653,7 +646,7 @@ class ProjectDemandDetails: Fragment() {
                             linearLayout {
                                 backgroundResource = R.drawable.ffe4e4e4_bottom_line
                                 textView {
-                                    text = "补充内容"
+                                    text = resources.getString(R.string.project_info_supplementary)
                                     textSize = 17f
                                     textColor = Color.parseColor("#FF444444")
                                 }.lparams {
@@ -688,7 +681,7 @@ class ProjectDemandDetails: Fragment() {
                             linearLayout {
                                 backgroundResource = R.drawable.ffe4e4e4_bottom_line
                                 textView {
-                                    text = "参考图例"
+                                    text = resources.getString(R.string.project_info_reference_legend)
                                     textSize = 17f
                                     textColor = Color.parseColor("#FF444444")
                                 }.lparams{
@@ -722,7 +715,7 @@ class ProjectDemandDetails: Fragment() {
                             linearLayout {
                                 backgroundResource = R.drawable.ffe4e4e4_bottom_line
                                 textView {
-                                    text = "各阶段费用占比及交稿时间"
+                                    text = resources.getString(R.string.project_info_proportion)
                                     textSize = 17f
                                     textColor = Color.parseColor("#FF444444")
                                 }.lparams {
@@ -746,7 +739,7 @@ class ProjectDemandDetails: Fragment() {
                                             gravity = Gravity.CENTER_VERTICAL
                                         }
                                         textView {
-                                            text = "1 开始制作"
+                                            text = resources.getString(R.string.project_info_making)
                                             textSize = 15f
                                             textColor = Color.parseColor("#FF444444")
                                         }.lparams {

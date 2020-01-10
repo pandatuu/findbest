@@ -43,7 +43,6 @@ class ProjectMainList : Fragment() {
 
     lateinit var mContext: Context
     lateinit var smart: SmartRefreshLayout
-    lateinit var recycle: RecyclerView
     private lateinit var listFram: FrameLayout
     private lateinit var listFragment: MyProjectListFragment
     private var nullData: NullDataPageFragment? = null
@@ -120,7 +119,6 @@ class ProjectMainList : Fragment() {
             }
 
             if (it.code() in 200..299) {
-                //完善信息成功
                 val list = it.body()!!.data
                 println(list)
                 if(list.size()>0){
@@ -175,10 +173,9 @@ class ProjectMainList : Fragment() {
                     .awaitSingle()
             }
             if (it.code() in 200..299) {
-                //完善信息成功
                 val list = it.body()!!.data
                 if (list.size() == 0) {
-                    toast("没有数据啦...")
+                    toast(resources.getString(R.string.common_no_list_data))
                     return
                 }
                 if(nullData!=null){

@@ -84,6 +84,7 @@ class ProjectApplicantsAdapter(
             Glide.with(mContext)
                 .load(model["avatar"].asString)
                 .apply(RequestOptions.bitmapTransform(CircleCrop()))
+                .placeholder(R.mipmap.default_avatar)
                 .into(headPic)
         }
 

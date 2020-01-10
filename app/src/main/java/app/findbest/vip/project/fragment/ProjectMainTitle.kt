@@ -47,7 +47,7 @@ class ProjectMainTitle: Fragment() {
                 relativeLayout {
                     backgroundResource = R.drawable.ffe3e3e3_bottom_line
                     textView {
-                        text = "项目"
+                        text = resources.getString(R.string.project_title)
                         textSize = 17f
                         textColor = Color.parseColor("#FF222222")
                     }.lparams(wrapContent, wrapContent){
@@ -64,7 +64,7 @@ class ProjectMainTitle: Fragment() {
                             imageResource = R.mipmap.tab_icon_search_nor
                         }
                         textView {
-                            text = "搜索"
+                            text = resources.getString(R.string.common_search)
                             textSize = 15f
                             textColor = Color.parseColor("#FF666666")
                         }.lparams(wrapContent, wrapContent){
@@ -82,7 +82,7 @@ class ProjectMainTitle: Fragment() {
                     linearLayout {
                         gravity = Gravity.CENTER_VERTICAL
                         textView {
-                            text = "筛选"
+                            text = resources.getString(R.string.common_srceen)
                             textSize = 15f
                             textColor= Color.parseColor("#FF333333")
                         }

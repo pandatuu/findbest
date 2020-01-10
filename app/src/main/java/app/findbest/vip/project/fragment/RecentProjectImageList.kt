@@ -97,7 +97,7 @@ class RecentProjectImageList : Fragment() {
                                         clickImage.clickImage(imageList.size)
                                         isClick = true
                                     }else{
-                                        toast("最多选择4张图片")
+                                        toast(resources.getString(R.string.enlist_bigger_num))
                                     }
                                 }
                             }
