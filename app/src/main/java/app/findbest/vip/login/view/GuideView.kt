@@ -38,6 +38,7 @@ class GuideView: BaseActivity() {
         val systemCountry = Locale.getDefault().language
         val mEdit = mPerferences.edit()
         mEdit.putString("systemCountry",systemCountry)
+        mEdit.commit()
 
         if(userToken!=""){
             //登录过，校验token是否过期

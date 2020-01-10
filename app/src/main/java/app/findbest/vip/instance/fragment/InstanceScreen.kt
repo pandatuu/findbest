@@ -1,6 +1,7 @@
 package app.findbest.vip.instance.fragment
 
 import android.content.Context
+import android.content.SharedPreferences
 import android.graphics.Color
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -8,6 +9,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import androidx.fragment.app.Fragment
+import androidx.preference.PreferenceManager
 import app.findbest.vip.R
 import app.findbest.vip.project.api.ProjectApi
 import app.findbest.vip.project.model.StyleModel
@@ -170,10 +172,12 @@ class InstanceScreen : Fragment(), InstanceScreenType.ScreenAll, InstanceScreenS
 
     private suspend fun getTypeList() {
         try {
+            val mPerferences: SharedPreferences = PreferenceManager.getDefaultSharedPreferences(mContext)
+            val systemCountry = mPerferences.getString("systemCountry", "").toString()
             val retrofitUils =
                 RetrofitUtils(mContext, resources.getString(R.string.developmentUrl))
             val it = retrofitUils.create(ProjectApi::class.java)
-                .getTypeList("cn")
+                .getTypeList(systemCountry)
                 .subscribeOn(Schedulers.io())
                 .awaitSingle()
 
@@ -203,10 +207,12 @@ class InstanceScreen : Fragment(), InstanceScreenType.ScreenAll, InstanceScreenS
 
     private suspend fun getStyleList(typeId: Int) {
         try {
+            val mPerferences: SharedPreferences = PreferenceManager.getDefaultSharedPreferences(mContext)
+            val systemCountry = mPerferences.getString("systemCountry", "").toString()
             val retrofitUils =
                 RetrofitUtils(mContext, resources.getString(R.string.developmentUrl))
             val it = retrofitUils.create(ProjectApi::class.java)
-                .getStyleList("cn", typeId)
+                .getStyleList(systemCountry, typeId)
                 .subscribeOn(Schedulers.io())
                 .awaitSingle()
 

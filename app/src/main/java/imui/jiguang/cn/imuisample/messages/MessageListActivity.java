@@ -4,7 +4,6 @@ package imui.jiguang.cn.imuisample.messages;
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
-import android.app.FragmentTransaction;
 import android.content.*;
 import android.graphics.Bitmap;
 import android.graphics.Matrix;
@@ -26,10 +25,12 @@ import android.widget.*;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.preference.PreferenceManager;
 
 import app.findbest.vip.R;
 import app.findbest.vip.application.App;
-import app.findbest.vip.message.activity.videoRequestActivity;
+import app.findbest.vip.message.activity.VideoRequestActivity;
+import app.findbest.vip.message.activity.VideoResultActivity;
 import app.findbest.vip.message.listener.RecieveMessageListener;
 import cgland.job.sk_android.utils.UploadPic;
 import cgland.job.sk_android.utils.UploadVoice;
@@ -61,13 +62,9 @@ import imui.jiguang.cn.imuisample.listener.VideoChatControllerListener;
 import imui.jiguang.cn.imuisample.models.DefaultUser;
 import imui.jiguang.cn.imuisample.models.InterviewState;
 import imui.jiguang.cn.imuisample.models.MyMessage;
-import imui.jiguang.cn.imuisample.models.ResumeListItem;
-import imui.jiguang.cn.imuisample.utils.Http;
 import imui.jiguang.cn.imuisample.views.ChatView;
 import io.github.sac.Ack;
 import io.github.sac.Socket;
-import io.reactivex.functions.Consumer;
-import io.reactivex.schedulers.Schedulers;
 import okhttp3.*;
 
 import org.jetbrains.annotations.NotNull;
@@ -135,12 +132,14 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
     private TextView translateText;
 //    private TextView hisCompany;
 
+    private Boolean isTranslate;
     boolean isInitHistory = true;
     boolean isFirstRequestHistory = true;
     Integer now_groupId = -100;
 
     //是初次聊天吗，是的话需要打招呼
     Boolean isFirstChat = false;
+    Boolean isVideo = true;
 
     JSONArray historyMessage;
     String lastShowedMessageId;
@@ -206,6 +205,18 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
     Long latestMessageTime = null;
 
     @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if(keyCode == KeyEvent.KEYCODE_BACK && event.getAction() == KeyEvent.ACTION_DOWN){
+            new MyMessage().isTrans = false;
+
+            finish();//返回
+            overridePendingTransition(R.anim.left_in, R.anim.right_out);
+            return true;
+        }
+        return super.onKeyDown(keyCode, event);
+    }
+
+    @Override
     protected void onStart() {
         super.onStart();
 
@@ -216,6 +227,8 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                new MyMessage().isTrans = false;
+
                 finish();//返回
                 overridePendingTransition(R.anim.left_in, R.anim.right_out);
 
@@ -257,7 +270,7 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
                     }
                 });
         ImageButton imageButton = mChatView.getSelectAlbumBtn();
-        if(imageButton!=null){
+        if (imageButton != null) {
             imageButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -279,26 +292,58 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
             }
         });
 
-
+        isTranslate = getIntent().getBooleanExtra("isTranslate",false);
         translateText = findViewById(R.id.translateText);
+        if(HIS_ID.equals("000000000000000000000000")){
+            translateText.setClickable(false);
+            translateText.setVisibility(View.GONE);
+        }
+        if(isTranslate){
+            new MyMessage().isTrans = true;
+            translateText.setText("停用翻译");
+        }else{
+            new MyMessage().isTrans = false;
+        }
         translateText.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Toast toast = Toast.makeText(getApplicationContext(), "这里是翻译", Toast.LENGTH_SHORT);
                 toast.setGravity(Gravity.CENTER, 0, 0);
                 toast.show();
-                if(translateText.getText().toString() == getResources().getText(R.string.use_translate)){
-                    new  MyMessage().isTrans = true;
+                JSONObject jsonObject = new JSONObject();
+                reconnectSocket();
 
-                    for(String id : mUUIDlist){
+
+            SharedPreferences mPerferences = PreferenceManager.getDefaultSharedPreferences(thisContext);
+            String systemCountry = mPerferences.getString("systemCountry", "").toString();
+                if (translateText.getText().toString() == getResources().getText(R.string.use_translate)) {
+                    try {
+                        jsonObject.put("isTranslate", true);
+                        jsonObject.put("source_lang", "auto");
+                        jsonObject.put("target_lang", systemCountry);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                    socket.emit("setTranslateLanguage", jsonObject);
+                    new MyMessage().isTrans = true;
+
+                    for (String id : mUUIDlist) {
                         mAdapter.updateMessage(id);
                     }
                     mAdapter.notifyDataSetChanged();
 
                     translateText.setText(getResources().getText(R.string.use_disTranslate));
-                }else{
-                    new  MyMessage().isTrans = false;
-                    for(String id : mUUIDlist){
+                } else {
+                    try {
+                        jsonObject.put("isTranslate", false);
+                        jsonObject.put("source_lang", "auto");
+                        jsonObject.put("target_lang", "cn");
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                    socket.emit("setTranslateLanguage", jsonObject);
+                    new MyMessage().isTrans = false;
+                    for (String id : mUUIDlist) {
                         mAdapter.updateMessage(id);
                     }
                     mAdapter.notifyDataSetChanged();
@@ -568,7 +613,7 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
                                     .centerCrop()
                                     .placeholder(R.mipmap.no_pic_show)
                                     .into(avatarImageView);
-                        }catch (Exception e) {
+                        } catch (Exception e) {
                             e.printStackTrace();
                         }
 
@@ -1090,6 +1135,67 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
      */
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        //邀请方点击视频中间页关闭
+        if (requestCode == 1001 && resultCode == RESULT_OK) {
+            if (data != null) {
+                Boolean bool = getIntent().getBooleanExtra("isVideo", false);
+                if (!bool) {
+                    //视频中间页挂断
+                    try {
+                        JSONObject message = new JSONObject(sendMessageModel.toString());
+
+                        message.getJSONObject("content").put("type", "video");
+                        message.getJSONObject("content").put("msg", "已取消");
+                        message.getJSONObject("content").put("videoRoomId", 2);
+                        System.out.println("--------------------");
+                        System.out.println(message);
+                        System.out.println("--------------------");
+                        channelSend.publish(message, new Ack() {
+                            public void call(String channelName, Object error, Object data) {
+                                if (error == null) {
+                                    //成功 修改信息状态
+                                    System.out.println("发送取消视频成功");
+                                } else {
+                                    //失败
+                                    System.out.println("发送消息出错了");
+                                    System.out.println(error);
+                                }
+                            }
+                        });
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+                return;
+            }
+        }
+        //被邀请方点击视频中间页拒绝
+        if (requestCode == 1002 && resultCode == RESULT_OK) {
+            if (data != null) {
+                Boolean bool = getIntent().getBooleanExtra("isVideo", false);
+                if (!bool) {
+                    //视频中间页挂断
+                    sendSystemMessageToMyself("已拒绝");
+                    sendSystemMessageToOther("已拒绝");
+
+                    JSONObject requestJson = new JSONObject();
+                    try {
+                        requestJson.put("receiver_id", HIS_ID.toString());
+
+                        JSONObject message = new JSONObject(sendMessageModel.toString());
+                        message.getJSONObject("content").put("type", "video");
+                        message.getJSONObject("content").put("msg", "已拒绝");
+                        message.getJSONObject("content").put("videoRoomId", 1);
+
+                        requestJson.put("message", message);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                    socket.emit("forwardSystemMsg", requestJson);
+                }
+                return;
+            }
+        }
         if (data != null) {
             String offerState = data.getStringExtra("offerState");
             if (offerState != null && !"".equals(offerState)) {
@@ -1571,18 +1677,18 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
 
         String room = message.getRoomNumber();
 
-        //链接视频
-        JitsiMeetConferenceOptions options
-                = new JitsiMeetConferenceOptions.Builder()
-                .setRoom(room)
-                .setUserInfo(new JitsiMeetUserInfo())
-                .build();
-        // Launch the new activity with the given options. The launch() method takes care
-        // of creating the required Intent and passing the options.
-
-
-        jitsiMeetActivitySon.launch(thisContext, options, message.getInterviewId());
-        startVideoTime = new Date();
+//        //链接视频
+//        JitsiMeetConferenceOptions options
+//                = new JitsiMeetConferenceOptions.Builder()
+//                .setRoom(room)
+//                .setUserInfo(new JitsiMeetUserInfo())
+//                .build();
+//        // Launch the new activity with the given options. The launch() method takes care
+//        // of creating the required Intent and passing the options.
+//
+//
+//        jitsiMeetActivitySon.launch(thisContext, options, message.getInterviewId());
+//        startVideoTime = new Date();
 
     }
 
@@ -1857,23 +1963,42 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
             @Override
             public void videoChat() {
                 //视频聊天的代码
-
-
                 Toast toast = Toast.makeText(getApplicationContext(), "这里是视频", Toast.LENGTH_SHORT);
                 toast.setGravity(Gravity.CENTER, 0, 0);
                 toast.show();
+                String roomId = MY_ID+"_"+HIS_ID;
+                try {
+                    JSONObject message = new JSONObject(sendMessageModel.toString());
+                    message.getJSONObject("content").put("type", "video");
+                    message.getJSONObject("content").put("msg", "视频通话");
+                    message.getJSONObject("content").put("videoRoomId", roomId);
+                    System.out.println("--------------------");
+                    System.out.println(message);
+                    System.out.println("--------------------");
+                    channelSend.publish(message, new Ack() {
+                        public void call(String channelName, Object error, Object data) {
+                            if (error == null) {
+                                //成功 修改信息状态
+                                System.out.println("发送视频成功");
+                            } else {
+                                //失败
+                                System.out.println("发送消息出错了");
+                                System.out.println(error);
+                            }
+                        }
+                    });
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
 
-
-                Intent intent = new Intent(MessageListActivity.this, videoRequestActivity.class);
+                Intent intent = new Intent(MessageListActivity.this, VideoRequestActivity.class);
+                intent.putExtra("sendMessageModel", sendMessageModel.toString());
+                intent.putExtra("otherId", HIS_ID);
+                intent.putExtra("otherName", hisName.getText());
+                intent.putExtra("otherAvatar", hisLogo);
+                intent.putExtra("roomId", roomId);
                 startActivity(intent);
                 overridePendingTransition(R.anim.fade_in_out, R.anim.fade_in_out);
-
-
-
-
-
-
-
 
             }
 
@@ -2251,12 +2376,11 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
                 if (type != null && type.equals("p2p")) {
                     MyMessage message = null;
                     String contentMsg = content.get("msg").toString();
-                    String transMsg = content.get("msg").toString();
-
 
 
                     String msgType = content.get("type").toString();
                     if (msgType != null && msgType.equals("text")) {
+                        String transMsg = content.get("translation").toString();
                         //文字消息
 //                      String path=getEmotion(contentMsg);
 //                      if(path==null){
@@ -2273,8 +2397,6 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
 
                         //todo
                         mUUIDlist.add(message.getMsgId());
-
-
 
 
                     } else if (msgType != null && msgType.equals("image")) {
@@ -2303,13 +2425,22 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
 
                         } else {
                             //系统消息
-                            message = new MyMessage(contentMsg, IMessage.MessageType.EVENT.ordinal());
+                            if (HIS_ID == "000000000000000000000000") {
+                                //这是系统消息页面
+                                message = new MyMessage(contentMsg, IMessage.MessageType.RECEIVE_TEXT.ordinal());
+                            } else {
+                                message = new MyMessage(contentMsg, IMessage.MessageType.EVENT.ordinal());
+                            }
                             if (content.has("interviewId") && content.has("duration")) {
                                 if (content.getInt("duration") == 1) {
                                     latestVideoMessageInterviewId.add(content.getString("interviewId"));
                                     setVideoInviteHandled();
                                 }
                             }
+//                            if()
+//
+//                            message = new MyMessage(contentMsg, IMessage.MessageType.RECEIVE_TEXT.ordinal());
+//                            message.setTransMsg(transMsg);
                         }
 
 
@@ -2353,7 +2484,15 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
                         message.setMessageChannelMsgId(jsono.getString("_id"));
                         message.setInterviewId(interviewId);
                         message.setRoomNumber(interviewId);
-                    } else if (msgType != null && msgType.equals("interviewResult")) {
+                    } else if (msgType != null && msgType.equals("video") && isVideo) {
+                        isVideo = false;
+                        //进入视频中间页
+                        Intent intent = new Intent(this, VideoResultActivity.class);
+                        intent.putExtra("otherName", sender.get("name").toString());
+                        intent.putExtra("otherAvatar", sender.get("avator").toString());
+                        startActivityForResult(intent,1002);
+                        overridePendingTransition(R.anim.right_in, R.anim.left_out);
+                    }  else if (msgType != null && msgType.equals("interviewResult")) {
                         //其他面试结果  当前处理为面试通过!
                         message = new MyMessage(contentMsg, IMessage.MessageType.INTERVIEW_SUCCESS.ordinal());
                     } else if (msgType != null && msgType.equals("interviewReject")) {
@@ -2379,7 +2518,7 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
 
                     }
                     if (msgType != null && msgType.equals("system")) {
-                    }else{
+                    } else {
                         sendTimeBar();
                     }
 
@@ -2389,11 +2528,11 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
                         MessageListActivity.this.runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
-                                if (!msgType_f.equals("system") && !msgType_f.equals("videoOver")) {
+                                if (!msgType_f.equals("system") || HIS_ID == "000000000000000000000000" && !msgType_f.equals("videoOver")) {
                                     //系统消息没有头像
                                     //剔除系统消息
                                     message_recieve.setUserInfo(new DefaultUser("1", "", hisLogo));
-                                   // message_recieve.setTimeString(new SimpleDateFormat("HH:mm", Locale.getDefault()).format(new Date()));
+                                    // message_recieve.setTimeString(new SimpleDateFormat("HH:mm", Locale.getDefault()).format(new Date()));
                                     message_recieve.setMessageStatus(IMessage.MessageStatus.RECEIVE_SUCCEED);
                                 }
                                 message_recieve.setHandled(false);
@@ -2439,7 +2578,7 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
         socket = application.getSocket();
 
 
-        if( socket!=null && socket.isconnected()   &&(WebSocketState.OPEN == socket.getCurrentState() || WebSocketState.CREATED == socket.getCurrentState())) {
+        if (socket != null && socket.isconnected() && (WebSocketState.OPEN == socket.getCurrentState() || WebSocketState.CREATED == socket.getCurrentState())) {
 
         } else {
             System.out.println("socket失效，重连中！！！！！！！--");
@@ -2453,7 +2592,7 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
 
 
             while (true) {
-                if( socket!=null && socket.isconnected()   &&(WebSocketState.OPEN == socket.getCurrentState() || WebSocketState.CREATED == socket.getCurrentState())) {
+                if (socket != null && socket.isconnected() && (WebSocketState.OPEN == socket.getCurrentState() || WebSocketState.CREATED == socket.getCurrentState())) {
 
                     break;
 
@@ -2568,7 +2707,7 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
                     message.setUserInfo(new DefaultUser("1", "", myLogo));
                     message.setMediaFilePath(voidPath);
                     message.setDuration(voiceDuration);
-                  //  message.setTimeString(new SimpleDateFormat("HH:mm", Locale.getDefault()).format(new Date()));
+                    //  message.setTimeString(new SimpleDateFormat("HH:mm", Locale.getDefault()).format(new Date()));
                     message.setMessageStatus(IMessage.MessageStatus.SEND_GOING);
 
                     final MyMessage fMsg_sending = message;
@@ -2591,7 +2730,7 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
                     Request request = new Request.Builder()
                             .url(thisContext.getString(R.string.storageUrl) + "api/v1/storage")
                             .addHeader("Authorization", authorization)
-                           // .addHeader("Content-Type", "multipart/form-data")
+                            // .addHeader("Content-Type", "multipart/form-data")
                             .post(requestBody)
                             .build();
 
@@ -2634,7 +2773,7 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
                                     System.out.println("Published message to channel " + channelName + " successfully");
                                     System.out.println(data);
 
-                                  //  message_f.setTimeString(new SimpleDateFormat("HH:mm", Locale.getDefault()).format(new Date()));
+                                    //  message_f.setTimeString(new SimpleDateFormat("HH:mm", Locale.getDefault()).format(new Date()));
                                     message_f.setMediaFilePath(voidPath);
                                     message_f.setUserInfo(new DefaultUser("1", "", myLogo));
                                     message_f.setMessageStatus(IMessage.MessageStatus.SEND_SUCCEED);
@@ -2691,7 +2830,7 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
 
                         mPathList.add(path);
                         mMsgIdList.add(message.getMsgId());
-                     //   message.setTimeString(new SimpleDateFormat("HH:mm", Locale.getDefault()).format(new Date()));
+                        //   message.setTimeString(new SimpleDateFormat("HH:mm", Locale.getDefault()).format(new Date()));
                         message.setMediaFilePath(path);
                         message.setUserInfo(new DefaultUser("1", "", myLogo));
                         message.setMessageStatus(IMessage.MessageStatus.SEND_GOING);
@@ -2727,10 +2866,9 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
                         Request request = new Request.Builder()
                                 .url(thisContext.getString(R.string.storageUrl) + "api/v1/storage")
                                 .addHeader("Authorization", authorization)
-                               // .addHeader("Content-Type", "multipart/form-data")
+                                // .addHeader("Content-Type", "multipart/form-data")
                                 .post(requestBody)
                                 .build();
-
 
 
                         System.out.println("---------------++++");
@@ -2748,7 +2886,7 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
 
 
                             JSONArray array = new JSONArray(jsonString);
-                            JSONObject result=array.getJSONObject(0);
+                            JSONObject result = array.getJSONObject(0);
                             JSONObject sendMessage = new JSONObject(sendMessageModel.toString());
                             sendMessage.getJSONObject("content").put("msg", result.getString("url"));
                             sendMessage.getJSONObject("content").put("type", "image");
@@ -2856,7 +2994,6 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
             try {
                 //因为  如果  职位信息都展示出来了  那么必定没有更多的历史消息展示在它上面
                 if (positionshowedFlag) {
-
                     //展示
                     for (int i = 0; i < historyMessage.length(); i++) {
                         String senderId;
@@ -2879,12 +3016,19 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
                         if (type != null && type.equals("p2p")) {
 
                             String msg = content.getString("msg");
+                            String trans = content.isNull("translation") ? "000000000000000000000000" : content.getString("translation") ;
                             String contetType = content.get("type").toString();
                             String handled = null;
                             if (content.has("handled")) {
                                 handled = content.get("handled").toString();
                             }
 
+                            if(contetType==null || !contetType.equals("system")){
+                                String senderName = historyMessage.getJSONObject(i).getJSONObject("receiver").getString("name");
+                                String receiverName = historyMessage.getJSONObject(i).getJSONObject("sender").getString("name");
+                                sendMessageModel.getJSONObject("sender").put("name", senderName);
+                                sendMessageModel.getJSONObject("receiver").put("name", receiverName);
+                            }
                             if (senderId != null && senderId.equals(MY_ID)) {
 
 
@@ -2895,6 +3039,7 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
 //                                String path=getEmotion(msg);
 //                                if(path==null){
                                     message = new MyMessage(msg, IMessage.MessageType.SEND_TEXT.ordinal());
+                                    message.setTransMsg(trans);
 //                                }
 //                                else{
 //                                    message = new MyMessage(msg, IMessage.MessageType.SEND_EMOTICON.ordinal());
@@ -2957,6 +3102,7 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
 //                                String path=getEmotion(msg);
 //                                if(path==null){
                                     message = new MyMessage(msg, IMessage.MessageType.RECEIVE_TEXT.ordinal());
+                                    message.setTransMsg(trans);
 //                                }else{
 //                                    message = new MyMessage(msg, IMessage.MessageType.RECEIVE_EMOTICON.ordinal());
 //                                    message.setMediaFilePath(path);
@@ -2979,7 +3125,6 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
                                         //时间
 
 
-
                                         String messageTimeString = sdf_show_year.format(new Date(Long.parseLong(msg.substring(4, msg.length()))));
 
                                         if (nowTimeString.substring(0, 4).equals(messageTimeString.substring(0, 4))) {
@@ -2994,14 +3139,182 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
 
                                     } else {
                                         //系统消息
-                                        message = new MyMessage(msg, IMessage.MessageType.EVENT.ordinal());
-
-                                        if (content.has("interviewId") && content.has("duration")) {
-                                            if (content.getInt("duration") == 1) {
-                                                latestVideoMessageInterviewId.add(content.getString("interviewId"));
-                                                setVideoInviteHandled();
+                                        if ("000000000000000000000000".equals(HIS_ID)) {
+                                            //这是系统消息页面
+                                            JSONObject json = new JSONObject(msg);
+                                            JSONObject value = new JSONObject(msg).getJSONObject("value");
+                                            String str = "";
+                                            switch (json.getString("id")){
+                                                //用户相关
+                                                case "USER_AUDIT_REMIND":
+                                                    String input = getResources().getString(R.string.user_audit_remind);
+                                                    // 参数1-stringxml，参数2..n依次是动态string里面的占位符
+                                                    str = String.format(input, "Android", 3);
+                                                    break;
+                                                case "USER_AUDIT_RESULTS":
+                                                    str = msg;
+                                                    break;
+                                                case "USER_AUDIT_REJECT":
+                                                    str = msg;
+                                                    break;
+                                                case "USER_CASHING_RESULTS":
+                                                    str = msg;
+                                                    break;
+                                                case "USER_CASHING_REJECT":
+                                                    str = msg;
+                                                    break;
+                                                case "USER_WORKS_PASS":
+                                                    String workPass = getResources().getString(R.string.user_works_pass);
+                                                    // 参数1-stringxml，参数2..n依次是动态string里面的占位符
+                                                    str = String.format(workPass, value.getString("name"),
+                                                            value.getString("workName"));
+                                                    break;
+                                                case "USER_WORKS_REJECT":
+                                                    str = msg;
+                                                    break;
+                                                case "USER_ACCOUNT_DISABLE":
+                                                    str = msg;
+                                                    break;
+                                                case "SYSTEM_NOTIFY":
+                                                    str = msg;
+                                                    break;
+                                                case "PREPAY_PASS":
+                                                    str = msg;
+                                                    break;
+                                                case "PREPAY_REJECT":
+                                                    str = msg;
+                                                    break;
+                                                case "USER_INVITE_REGISTERED":
+                                                    str = msg;
+                                                    break;
+                                                case "USER_INVITE_CERTIFICATION":
+                                                    String userInviteCertification = getResources().getString(R.string.user_invite_certification);
+                                                    // 参数1-stringxml，参数2..n依次是动态string里面的占位符
+                                                    str = String.format(userInviteCertification, value.getString("name"));
+                                                    break;
+                                                case "USER_INVITE_SUCCESS":
+                                                    str = msg;
+                                                    break;
+                                                case "USER_PASS_GIVE_VIP":
+                                                    str = msg;
+                                                    break;
+                                                case "USER_VIP_END":
+                                                    str = msg;
+                                                    break;
+                                                case "PROJECT_PUBLISH_PASS":
+                                                    str = msg;
+                                                    break;
+                                                    //项目相关
+                                                case "PROJECT_PUBLISH_REJECT":
+                                                    str = msg;
+                                                    break;
+                                                case "PROJECT_INVITE":
+                                                    String projectInvite = getResources().getString(R.string.project_invite);
+                                                    // 参数1-stringxml，参数2..n依次是动态string里面的占位符
+                                                    str = String.format(projectInvite, value.getString("consumer"),
+                                                            value.getString("projectName"),
+                                                            !value.isNull("url") ? value.getString("url") : "");
+                                                    break;
+                                                case "INVITE_PASS":
+                                                    str = msg;
+                                                    break;
+                                                case "INVITE_REJECT":
+                                                    str = msg;
+                                                    break;
+                                                case "PROJECT_APPLY_CREATE":
+                                                    str = msg;
+                                                    break;
+                                                case "PROJECT_APPLY_REFUSE":
+                                                    String projectApplyRefuse = getResources().getString(R.string.project_apply_refuse);
+                                                    // 参数1-stringxml，参数2..n依次是动态string里面的占位符
+                                                    str = String.format(projectApplyRefuse, value.getString("consumer"),
+                                                            value.getString("projectName"),
+                                                            !value.isNull("reason") ? value.getString("reason") : "");
+                                                    break;
+                                                case "PROVIDER_PROJECT_APPLY_CANCEL":
+                                                    str = msg;
+                                                    break;
+                                                case "PROJECT_APPLY":
+                                                    str = msg;
+                                                    break;
+                                                case "PROJECT_APPLY_REJECT":
+                                                    str = msg;
+                                                    break;
+                                                case "PROJECT_APPLY_PASS":
+                                                    str = msg;
+                                                    break;
+                                                case "CONSUMER_PROJECT_APPLY_CANCEL":
+                                                    str = msg;
+                                                    break;
+                                                case "PROJECT_DELIVERY":
+                                                    str = msg;
+                                                    break;
+                                                case "PROJECT_DELIVERY_PASS":
+                                                    str = msg;
+                                                    break;
+                                                case "PROJECT_DELIVERY_REJECT":
+                                                    String projectDeliveryReject = getResources().getString(R.string.project_delivery_reject);
+                                                    // 参数1-stringxml，参数2..n依次是动态string里面的占位符
+                                                    str = String.format(projectDeliveryReject, value.getString("consumer"),
+                                                            value.getString("projectName"),
+                                                            !value.isNull("stageName") ? value.getInt("stageName") : 0,
+                                                            !value.isNull("times") ? value.getInt("times") : 0,
+                                                            !value.isNull("reason") ? value.getString("reason") : "");
+                                                    break;
+                                                case "projectDeliveryNext":
+                                                    String projectDeliveryNext = getResources().getString(R.string.project_delivery_next);
+                                                    // 参数1-stringxml，参数2..n依次是动态string里面的占位符
+                                                    str = String.format(projectDeliveryNext, value.getString("consumer"),
+                                                            value.getString("projectName"),
+                                                            !value.isNull("stageName") ? value.getInt("stageName") : 0,
+                                                            !value.isNull("times") ? value.getInt("times") : 0,
+                                                            !value.isNull("nextStageName") ? value.getInt("nextStageName") : 0);
+                                                    break;
+                                                case "PROJECT_DELIVERY_COMPLETE":
+                                                    str = msg;
+                                                    break;
+                                                case "PROVIDER_PROJECT_STOP_APPLY":
+                                                    str = msg;
+                                                    break;
+                                                case "CONSUMER_PROJECT_STOP_PASS":
+                                                    str = msg;
+                                                    break;
+                                                case "CONSUMER_PROJECT_STOP_REJECT":
+                                                    str = msg;
+                                                    break;
+                                                case "CONSUMER_PROJECT_STOP_APPLY":
+                                                    str = msg;
+                                                    break;
+                                                case "PROVIDER_PROJECT_STOP_PASS":
+                                                    str = msg;
+                                                    break;
+                                                case "PROVIDER_PROJECT_STOP_REJECT":
+                                                    str = msg;
+                                                    break;
+                                                case "PROVIDER_BILL_SEND":
+                                                    str = msg;
+                                                    break;
+                                                case "CONSUMER_BILL_PASS":
+                                                    str = msg;
+                                                    break;
+                                                case "CONSUMER_BILL_REJECT":
+                                                    str = msg;
+                                                    break;
+                                                case "CONSUMER_BILL_PAY":
+                                                    str = msg;
+                                                    break;
+                                                case "CONSUMER_EVALUATE":
+                                                    str = msg;
+                                                    break;
+                                                case "PROVIDER_EVALUATE":
+                                                    str = msg;
+                                                    break;
                                             }
+                                            message = new MyMessage(str, IMessage.MessageType.RECEIVE_TEXT.ordinal());
+                                        } else {
+                                            message = new MyMessage(msg, IMessage.MessageType.EVENT.ordinal());
                                         }
+                                        message.setUserInfo(new DefaultUser("0", "", "000000000000000000000000"));
                                     }
 
 
@@ -3117,7 +3430,7 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
                                 }
 
 
-                                if (!contetType.equals("system") && message != null) {
+                                if (!contetType.equals("system") || HIS_ID == "000000000000000000000000" && message != null) {
                                     //系统消息没有头像
                                     message.setUserInfo(new DefaultUser("0", "", hisLogo));
                                 }
@@ -3194,15 +3507,8 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
                             }
 
 
-
-
                             //todo
                             mUUIDlist.add(message.getMsgId());
-
-
-
-
-
 
 
                             list.add(message);
@@ -4410,9 +4716,10 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
 
     public void reconnectSocket() {
 
-        if( socket!=null && socket.isconnected()   &&(WebSocketState.OPEN == socket.getCurrentState() || WebSocketState.CREATED == socket.getCurrentState())) {
+        if (socket != null && socket.isconnected() && (WebSocketState.OPEN == socket.getCurrentState() || WebSocketState.CREATED == socket.getCurrentState())) {
 
         } else {
+            new MyMessage().isTrans = false;
             finish();
             overridePendingTransition(R.anim.left_in, R.anim.right_out);
         }
@@ -4428,7 +4735,7 @@ public class MessageListActivity extends Activity implements View.OnTouchListene
 //    }
 
 
-    private void sendTimeBar(){
+    private void sendTimeBar() {
 //        Date now = new Date();
 //        //大于5分钟,显示时间定位消息
 //
