@@ -164,7 +164,6 @@ class ProjectSideApplicants : Fragment(), ProjectSideApplicantList.ProjectSideLi
             if (it.code() in 200..299) {
                 val array = it.body()!!.data
                 if(array.size() ==0){
-                    toast("没有数据了。。。")
                     return
                 }
                 nowPage = page

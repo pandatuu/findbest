@@ -172,7 +172,6 @@ class ProjectSideProjectInvite : Fragment(), ProjectSideProjectInviteList.Projec
             if (it.code() in 200..299) {
                 val array = it.body()!!["invites"].asJsonObject["data"].asJsonArray
                 if(array.size() ==0){
-                    toast("没有数据了。。。")
                     return
                 }
                 nowPage = page

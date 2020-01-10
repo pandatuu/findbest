@@ -96,11 +96,11 @@ class ProjectSideApplicantList: Fragment(), ProjectSideApplicantsAdapter.Printed
     }
     //发送委托
     override fun send(commitId: String) {
-        toast("请前往web端发布委托")
+        toast(resources.getString(R.string.my_project_enlist_release_commission))
     }
     //拒绝应征
     override fun refuse(commitId: String) {
-        toast("拒绝")
+        toast(resources.getString(R.string.common_refuse))
         projectSideList.refuse(commitId)
     }
 

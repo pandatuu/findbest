@@ -1,6 +1,7 @@
 package app.findbest.vip.individual.fragment
 
 import android.content.Context
+import android.content.SharedPreferences
 import android.graphics.Color
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -8,6 +9,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import androidx.fragment.app.Fragment
+import androidx.preference.PreferenceManager
 import app.findbest.vip.R
 import app.findbest.vip.project.api.ProjectApi
 import app.findbest.vip.project.fragment.ProjectApplicants
@@ -43,7 +45,7 @@ class PainterSideProjectDetails : Fragment() {
     lateinit var applicants: ProjectApplicants
     lateinit var painterInvite: PainterSideProjectInvite
     lateinit var mContext: Context
-    private var demand: ProjectDetailsDetails? = null
+    private var demand: IndividualProjectDemandDetails? = null
     var projectId = ""
     val mainId = 1
 
@@ -64,7 +66,7 @@ class PainterSideProjectDetails : Fragment() {
                 val details = 2
                 frameLayout {
                     id = details
-                    demand = ProjectDetailsDetails.newInstance(mContext)
+                    demand = IndividualProjectDemandDetails.newInstance()
                     childFragmentManager.beginTransaction().add(details, demand!!).commit()
                 }.lparams(matchParent, dip(0)) {
                     weight = 1f
@@ -80,16 +82,19 @@ class PainterSideProjectDetails : Fragment() {
 
     private suspend fun getInfo(id: String) {
         try {
+            val mPerferences: SharedPreferences = PreferenceManager.getDefaultSharedPreferences(mContext)
+            val systemCountry = mPerferences.getString("systemCountry", "").toString()
             val retrofitUils =
                 RetrofitUtils(mContext, resources.getString(R.string.developmentUrl))
             val it = retrofitUils.create(ProjectApi::class.java)
-                .getProjectInfoById(id, "zh")
+                .getProjectInfoById(id, systemCountry)
                 .subscribeOn(Schedulers.io())
                 .awaitSingle()
             if (it.code() in 200..299) {
                 val model = it.body()!!
                 applicants.setProjectName(model.name)
                 painterInvite.setProjectName(model.name)
+                painterInvite.setProjectCountry(model.allowedCountries)
                 demand?.setInfomation(model)
             }
         } catch (throwable: Throwable) {

@@ -112,7 +112,7 @@ class PainterInviteListAdapter(
                         linearLayout {
                             verticalLayout {
                                 textView {
-                                    text = "邀请您加入本项目，您是否同意？"
+                                    text = resources.getString(R.string.my_project_invite_isagree)
                                     textSize = 15f
                                     textColor = Color.parseColor("#666666FF")
                                 }
@@ -154,7 +154,7 @@ class PainterInviteListAdapter(
                                     backgroundResource = R.drawable.grey_around_button
                                     gravity = Gravity.CENTER
                                     textView {
-                                        text = "已加入该项目"
+                                        text = resources.getString(R.string.my_project_invite_join)
                                         textSize = 15f
                                         textColor = Color.parseColor("#666660FF")
                                     }
@@ -175,7 +175,7 @@ class PainterInviteListAdapter(
                                     backgroundResource = R.drawable.grey_around_button
                                     gravity = Gravity.CENTER
                                     textView {
-                                        text = "已拒绝加入该项目"
+                                        text = resources.getString(R.string.my_project_invite_refuse_join)
                                         textSize = 15f
                                         textColor = Color.parseColor("#666660FF")
                                     }
@@ -196,7 +196,7 @@ class PainterInviteListAdapter(
                                     backgroundResource = R.drawable.grey_around_button
                                     gravity = Gravity.CENTER
                                     textView {
-                                        text = "被拒绝加入该项目"
+                                        text = resources.getString(R.string.my_project_invite_quilt_refuse_join)
                                         textSize = 15f
                                         textColor = Color.parseColor("#666660FF")
                                     }

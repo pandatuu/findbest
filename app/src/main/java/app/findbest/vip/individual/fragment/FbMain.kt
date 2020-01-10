@@ -25,7 +25,9 @@ import org.jetbrains.anko.*
 import org.jetbrains.anko.support.v4.UI
 import withTrigger
 import android.annotation.SuppressLint
+import android.view.Gravity
 import android.view.inputmethod.InputMethodManager
+import android.widget.Toast
 import app.findbest.vip.individual.api.IndividualApi
 import org.jetbrains.anko.support.v4.toast
 
@@ -107,11 +109,12 @@ class FbMain : FragmentParent() {
 
                 button {
                     backgroundResource = R.drawable.button_gradient
-                    textResource = R.string.fb_submit
+                    textResource = R.string.common_submit
                     textColor = Color.WHITE
                     textSize = 15f
 
                     this.withTrigger().click {
+                        closeFocusjianpan()
                         submit()
                     }
                 }.lparams(width = matchParent, height = dip(47)) {
@@ -143,6 +146,10 @@ class FbMain : FragmentParent() {
             .subscribeOn(Schedulers.io())
             .subscribe({
                 if (it.code() in 200..299) {
+                    val toast =
+                        Toast.makeText(mContext, resources.getString(R.string.common_submit), Toast.LENGTH_SHORT)
+                    toast.setGravity(Gravity.CENTER, 0, 0)
+                    toast.show()
                     activity!!.finish()
                     activity!!.overridePendingTransition(R.anim.left_in, R.anim.right_out)
                 }

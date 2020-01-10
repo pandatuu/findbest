@@ -78,7 +78,7 @@ class ProjectSideApplicantsAdapter(
                                     imageResource = R.mipmap.ico_leave_message_nor
                                 }
                                 textView {
-                                    text = "画师留言"
+                                    text = resources.getString(R.string.my_project_enlist_leavingmessage)
                                     textSize = 12f
                                     textColor = Color.parseColor("#FF666666")
                                 }.lparams {
@@ -117,7 +117,7 @@ class ProjectSideApplicantsAdapter(
                             imageResource = R.mipmap.ico_chat_nor
                         }.lparams(dip(25), dip(25))
                         textView {
-                            text = "聊一聊"
+                            text = resources.getString(R.string.my_project_enlist_chat)
                             textSize = 14f
                             textColor = Color.parseColor("#FF555555")
                         }.lparams {
@@ -137,7 +137,7 @@ class ProjectSideApplicantsAdapter(
                             imageResource = R.mipmap.ico_send_nor
                         }.lparams(dip(25), dip(25))
                         textView {
-                            text = "发送委托"
+                            text = resources.getString(R.string.my_project_enlist_senddelegation)
                             textSize = 14f
                             textColor = Color.parseColor("#FF555555")
                         }.lparams {
@@ -157,7 +157,7 @@ class ProjectSideApplicantsAdapter(
                             imageResource = R.mipmap.ico_refused_nor
                         }.lparams(dip(25), dip(25))
                         textView {
-                            text = "拒绝"
+                            text = resources.getString(R.string.common_refuse)
                             textSize = 14f
                             textColor = Color.parseColor("#FF555555")
                         }.lparams {

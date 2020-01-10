@@ -138,14 +138,14 @@ class PainterSideInvite : Fragment() {
                         relativeLayout {
                             verticalLayout {
                                 textView {
-                                    text = "邀请您加入本项目，您是否同意？"
+                                    text = resources.getString(R.string.my_project_invite_isagree)
                                     textSize = 15f
                                     textColor = Color.parseColor("#FF666666")
                                 }
                                 linearLayout {
                                     orientation = LinearLayout.HORIZONTAL
                                     button {
-                                        text = "同意"
+                                        text = resources.getString(R.string.common_agree)
                                         textSize = 15f
                                         textColor = Color.parseColor("#FFFFFFFF")
                                         backgroundResource = R.drawable.enable_around_button
@@ -156,7 +156,7 @@ class PainterSideInvite : Fragment() {
                                         weight = 1f
                                     }
                                     button {
-                                        text = "拒绝"
+                                        text = resources.getString(R.string.common_refuse)
                                         textSize = 15f
                                         textColor = Color.parseColor("#FFFFFFFF")
                                         backgroundResource = R.drawable.black_around_button
@@ -185,7 +185,7 @@ class PainterSideInvite : Fragment() {
                                 backgroundResource = R.drawable.grey_around_button
                                 gravity = Gravity.CENTER
                                 textView {
-                                    text = "已加入该项目"
+                                    text = resources.getString(R.string.my_project_invite_join)
                                     textSize = 15f
                                     textColor = Color.parseColor("#FF666660")
                                 }
@@ -204,7 +204,7 @@ class PainterSideInvite : Fragment() {
                                 backgroundResource = R.drawable.grey_around_button
                                 gravity = Gravity.CENTER
                                 textView {
-                                    text = "已拒绝加入该项目"
+                                    text = resources.getString(R.string.my_project_invite_refuse_join)
                                     textSize = 15f
                                     textColor = Color.parseColor("#FF666660")
                                 }
@@ -223,7 +223,7 @@ class PainterSideInvite : Fragment() {
                                 backgroundResource = R.drawable.grey_around_button
                                 gravity = Gravity.CENTER
                                 textView {
-                                    text = "已被拒绝加入该项目"
+                                    text = resources.getString(R.string.my_project_invite_quilt_refuse_join)
                                     textSize = 15f
                                     textColor = Color.parseColor("#FF666660")
                                 }
@@ -241,7 +241,7 @@ class PainterSideInvite : Fragment() {
     //拒绝项目，修改状态
     fun updateSatuts(boolean: Boolean) {
         statusLayout.removeAllViews()
-        val statusText = if(boolean) "已加入该项目" else "已拒绝加入该项目"
+        val statusText = if(boolean) resources.getString(R.string.my_project_invite_join) else resources.getString(R.string.my_project_invite_refuse_join)
         val view = UI {
             relativeLayout {
                 linearLayout {

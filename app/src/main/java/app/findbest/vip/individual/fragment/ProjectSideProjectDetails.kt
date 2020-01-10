@@ -42,7 +42,7 @@ class ProjectSideProjectDetails : Fragment() {
     var projectSideApplicants: ProjectSideApplicants? = null
     var projectInvite: ProjectSideProjectInvite? = null
     lateinit var mContext: Context
-    private var demand: ProjectDetailsDetails? = null
+    private var demand: IndividualProjectDemandDetails? = null
     var projectId = ""
     val mainId = 1
 
@@ -63,7 +63,7 @@ class ProjectSideProjectDetails : Fragment() {
                 val details = 2
                 frameLayout {
                     id = details
-                    demand = ProjectDetailsDetails.newInstance(mContext)
+                    demand = IndividualProjectDemandDetails.newInstance()
                     childFragmentManager.beginTransaction().add(details, demand!!).commit()
                 }.lparams(matchParent, dip(0)) {
                     weight = 1f

@@ -1,6 +1,7 @@
 package app.findbest.vip.project.fragment
 
 import android.content.Context
+import android.content.SharedPreferences
 import android.graphics.Color
 import android.os.Bundle
 import android.view.Gravity
@@ -9,6 +10,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import androidx.fragment.app.Fragment
+import androidx.preference.PreferenceManager
 import app.findbest.vip.R
 import app.findbest.vip.commonfrgmant.BackgroundFragment
 import app.findbest.vip.project.api.ProjectApi
@@ -111,8 +113,8 @@ class ProjectDemand : Fragment(), EnlistCheckTipsDialog.ButtomClick, BackgroundF
 
     private suspend fun getInfo(id: String) {
         try {
-            val mPerferences: SharedPreferences = PreferenceManager.getDefaultSharedPreferences(this@GuideView)
-            val systemCountry = mPerferences.getString("systemCountry", "")
+            val mPerferences: SharedPreferences = PreferenceManager.getDefaultSharedPreferences(mContext)
+            val systemCountry = mPerferences.getString("systemCountry", "").toString()
             val retrofitUils =
                 RetrofitUtils(mContext, resources.getString(R.string.developmentUrl))
             val it = retrofitUils.create(ProjectApi::class.java)

@@ -47,14 +47,14 @@ class ChooseRefuse : Fragment() {
                     relativeLayout {
                         backgroundColor = Color.parseColor("#FFF6F6F6")
                         textView {
-                            text = "请选择您的拒绝理由"
+                            text = resources.getString(R.string.my_project_invite_refuse)
                             textSize = 16f
                             textColor = Color.parseColor("#FF333333")
                         }.lparams(wrapContent, wrapContent){
                             centerInParent()
                         }
                         textView {
-                            text = "确定"
+                            text = resources.getString(R.string.common_determine)
                             textSize = 14f
                             textColor = Color.parseColor("#FFF87A1B")
                         }.lparams(wrapContent, wrapContent){
@@ -65,7 +65,9 @@ class ChooseRefuse : Fragment() {
                     }.lparams(matchParent, dip(44))
                     linearLayout {
                         orientation = LinearLayout.VERTICAL
-                        val countryList = arrayListOf("价格太低","没时间","不擅长","其他原因")
+                        val countryList = arrayListOf(resources.getString(R.string.my_project_invite_refuse_one),
+                            resources.getString(R.string.my_project_invite_refuse_two),resources.getString(R.string.my_project_invite_refuse_three),
+                            resources.getString(R.string.my_project_invite_refuse_four))
                         for (index in countryList.indices){
                             linearLayout {
                                 backgroundResource = R.drawable.login_input_bottom

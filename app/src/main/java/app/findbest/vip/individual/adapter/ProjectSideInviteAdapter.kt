@@ -92,7 +92,7 @@ class ProjectSideInviteAdapter(
                         backgroundResource = R.drawable.around_button_24
                         gravity = Gravity.CENTER
                         textView {
-                            text = "取消邀请"
+                            text = resources.getString(R.string.my_project_invite_cancel)
                             textSize = 14f
                             textColor = Color.WHITE
                         }
@@ -126,21 +126,21 @@ class ProjectSideInviteAdapter(
         if (!model["painterName"].isJsonNull) {
             name.text = model["painterName"].asString
         }else{
-            name.text = "*****(匿名)"
+            name.text = mContext.getString(R.string.painter_list_anonymous_name)
         }
 
         //0待接收，100已同意，25,50拒绝
         if(!model["status"].isJsonNull){
             when(model["status"].asInt){
                 0 -> {
-                    status.text = "待同意"
+                    status.text = mContext.getString(R.string.my_project_invite_await_agree)
                 }
                 100 -> {
-                    status.text = "已同意"
+                    status.text = mContext.getString(R.string.my_project_invite_already_agree)
                     isInvite.visibility = RelativeLayout.GONE
                 }
                 25,50 -> {
-                    status.text = "已拒绝"
+                    status.text = mContext.getString(R.string.my_project_invite_already_cancel)
                     isInvite.visibility = RelativeLayout.GONE
                 }
             }

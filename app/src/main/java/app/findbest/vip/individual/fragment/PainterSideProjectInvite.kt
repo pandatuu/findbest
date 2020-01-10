@@ -2,6 +2,7 @@ package app.findbest.vip.individual.fragment
 
 import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import android.graphics.Color
 import android.os.Bundle
 import android.view.Gravity
@@ -10,6 +11,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import androidx.fragment.app.Fragment
+import androidx.preference.PreferenceManager
 import app.findbest.vip.R
 import app.findbest.vip.commonfrgmant.BackgroundFragment
 import app.findbest.vip.commonfrgmant.NullDataPageFragment
@@ -50,6 +52,7 @@ class PainterSideProjectInvite : Fragment(), PainterSideInvite.ChooseStatus, Bac
     private var tipsDialog: EnlistCheckTipsDialog? = null
     private var backgroundFragment: BackgroundFragment? = null
     private var chooseRefuse: ChooseRefuse? = null
+    private var countryList = mutableListOf<String>()
 
     var projectId = ""
     private val inviteId = 2
@@ -128,10 +131,12 @@ class PainterSideProjectInvite : Fragment(), PainterSideInvite.ChooseStatus, Bac
     //获取收到的邀请
     private suspend fun getPainterSideInviteById(id: String) {
         try {
+            val mPerferences: SharedPreferences = PreferenceManager.getDefaultSharedPreferences(mContext)
+            val systemCountry = mPerferences.getString("systemCountry", "").toString()
             val retrofitUils =
                 RetrofitUtils(mContext, resources.getString(R.string.developmentUrl))
             val it = retrofitUils.create(IndividualApi::class.java)
-                .getPainterSideInviteById(id,"zh")
+                .getPainterSideInviteById(id,systemCountry)
                 .subscribeOn(Schedulers.io())
                 .awaitSingle()
             if (it.code() in 200..299) {
@@ -186,16 +191,16 @@ class PainterSideProjectInvite : Fragment(), PainterSideInvite.ChooseStatus, Bac
     private suspend fun refuseInvite(inviteId: String, str: String) {
         try {
             val reason = when(str){
-                "价格太低" -> 42
-                "没时间" -> 44
-                "不擅长" -> 46
-                "其他原因" -> 49
+                resources.getString(R.string.my_project_invite_refuse_one) -> 42
+                resources.getString(R.string.my_project_invite_refuse_two) -> 44
+                resources.getString(R.string.my_project_invite_refuse_three) -> 46
+                resources.getString(R.string.my_project_invite_refuse_four) -> 49
                 else -> 0
             }
             val params = if(reason==49){
                 mapOf(
                     "reason" to reason,
-                    "content" to "其他原因"
+                    "content" to resources.getString(R.string.my_project_invite_refuse_four)
                 )
             }else{
                 mapOf(
@@ -225,6 +230,9 @@ class PainterSideProjectInvite : Fragment(), PainterSideInvite.ChooseStatus, Bac
     fun setProjectName(str: String) {
         name = str
     }
+    fun setProjectCountry(country: ArrayList<String>) {
+        countryList = country
+    }
 
     private fun openTipsDialog(status: Int) {
         val mTransaction = activity!!.supportFragmentManager.beginTransaction()
@@ -237,7 +245,7 @@ class PainterSideProjectInvite : Fragment(), PainterSideInvite.ChooseStatus, Bac
 
         mTransaction.setCustomAnimations(R.anim.right_in, R.anim.right_in)
 
-        tipsDialog = EnlistCheckTipsDialog.newInstance(this@PainterSideProjectInvite, status)
+        tipsDialog = EnlistCheckTipsDialog.newInstance(this@PainterSideProjectInvite, status, countryList)
         mTransaction.add(mainId, tipsDialog!!)
 
         mTransaction.commit()

@@ -63,7 +63,6 @@ class HMain:FragmentParent() {
                     }
 
                     textView {
-                        text = "Amy Gonzalez"
                         textColor = Color.parseColor("#333333")
                         textSize = 17f
                         gravity = Gravity.CENTER

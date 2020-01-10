@@ -152,57 +152,57 @@ class MyProjectListAdapter(
         title.text = model["name"].asString ?: ""
 
         if(!model["endAt"].isJsonNull){
-            date.text = "截稿日期：${longToString(model["endAt"].asLong)}"
+            date.text = "${mContext.resources.getString(R.string.project_info_material_deadline)}：${longToString(model["endAt"].asLong)}"
         }
 
         if(!model["status"].isJsonNull){
             status.text = when(model["status"].asInt){
                 // 待发布     CREATED = 0,
-                0 -> "待发布"
+                0 -> mContext.resources.getString(R.string.project_status_zero)
                 // 收到邀请待确认     RECEIVINGINVITATION = 1
-                1 -> "收到邀请待确认"
+                1 -> mContext.resources.getString(R.string.project_status_one)
                 // 应征中     APPLYING = 2
-                2 -> "应征中"
+                2 -> mContext.resources.getString(R.string.project_status_two)
                 // 委托中     COMMISSIONING = 3
-                3 -> "委托中"
+                3 -> mContext.resources.getString(R.string.project_status_three)
                 // 制作中     MAKING = 4
-                4 -> "制作中"
+                4 -> mContext.resources.getString(R.string.project_status_four)
                 // 项目终止     PROJECTTERMINATION = 5,
-                5 -> "项目终止"
+                5 -> mContext.resources.getString(R.string.project_status_five)
                 // 结算阶段     SETTLEMENT = 6,
-                6 -> "结算阶段"
+                6 -> mContext.resources.getString(R.string.project_status_six)
                 // 应征失败     APPLICATIONFAILED = 8
-                8 -> "应征失败"
+                8 -> mContext.resources.getString(R.string.project_status_eight)
                 // 待审核     AUDITED = 10,
-                10 -> "待审核"
+                10 -> mContext.resources.getString(R.string.project_status_ten)
                 // 审核失败     AUDITFAIL = 11,
-                11 -> "审核失败"
+                11 -> mContext.resources.getString(R.string.project_status_zero)
                 // 草稿制作中     CMAKING = 43,
-                43 -> "草稿制作中"
+                43 -> mContext.resources.getString(R.string.project_status_fortythree)
                 // 草稿验收中     CACCEPTANCE = 46,
-                46 -> "草稿验收中"
+                46 -> mContext.resources.getString(R.string.project_status_fortysix)
                 // 线稿制作中     XMAKING = 63,
-                63 -> "线稿制作中"
+                63 -> mContext.resources.getString(R.string.project_status_sixtythree)
                 // 线稿验收中     XACCEPTANCE = 66,
-                66 -> "线稿验收中"
+                66 -> mContext.resources.getString(R.string.project_status_sixtysix)
                 // 上色制作中     SMAKING = 83,
-                83 -> "上色制作中"
+                83 -> mContext.resources.getString(R.string.project_status_eightythree)
                 // 上色验收中     SACCEPTANCE = 86,
-                86 -> "上色验收中"
+                86 -> mContext.resources.getString(R.string.project_status_eightysix)
                 // 验收通过     ACCEPTANCE = 100,
-                100 -> "验收通过"
+                100 -> mContext.resources.getString(R.string.project_status_onehundred)
                 // 账单待确认     BILLCONFIRMED = 106,
-                106 -> "账单待确认"
+                106 -> mContext.resources.getString(R.string.project_status_onehundred_six)
                 // 账单待付款     BILLPAY = 123,
-                123 -> "账单待付款"
+                123 -> mContext.resources.getString(R.string.project_status_onehundred_twentythree)
                 // 已完成     COMPLETED = 200,
-                200 -> "已完成"
+                200 -> mContext.resources.getString(R.string.project_status_twohundred)
                 // 发布中     ANNOUNCING = 231,
-                231 -> "发布中"
+                231 -> mContext.resources.getString(R.string.project_status_twohundred_thirtyone)
                 // 招募中     RECRUITING = 232,
-                232 -> "招募中"
+                232 -> mContext.resources.getString(R.string.project_status_twohundred_thirtytwo)
                 // 委托待接受     COMMISSIONING = 233,
-                233 -> "委托待接受"
+                233 -> mContext.resources.getString(R.string.project_status_twohundred_thirtythree)
                 else -> ""
             }
         }

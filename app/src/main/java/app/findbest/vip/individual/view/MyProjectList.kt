@@ -1,11 +1,13 @@
 package app.findbest.vip.individual.view
 
+import android.content.SharedPreferences
 import android.graphics.Color
 import android.graphics.Typeface
 import android.os.Bundle
 import android.view.Gravity
 import android.view.View
 import android.widget.*
+import androidx.preference.PreferenceManager
 import app.findbest.vip.R
 import app.findbest.vip.commonfrgmant.NullDataPageFragment
 import app.findbest.vip.individual.api.IndividualApi
@@ -43,9 +45,13 @@ class MyProjectList : BaseActivity(){
     private var isNullData = false
     //弹窗是否可以点击
     private var isDialogClick = false
+    private var systemCountry = "" 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        val mPerferences: SharedPreferences = PreferenceManager.getDefaultSharedPreferences(this@MyProjectList)
+        systemCountry = mPerferences.getString("systemCountry", "").toString()
 
         val statusText = intent.getStringExtra("status") ?: ""
         screenStatus = when(statusText){
@@ -83,7 +89,7 @@ class MyProjectList : BaseActivity(){
                         bottomMargin = dip(10)
                     }
                     textView {
-                        text = "我的项目"
+                        text = resources.getString(R.string.my_project_list)
                         textSize = 17f
                         textColor = Color.parseColor("#FF222222")
                         typeface = Typeface.DEFAULT_BOLD
@@ -98,10 +104,10 @@ class MyProjectList : BaseActivity(){
                         status = textView {
                             gravity = Gravity.BOTTOM
                             text = when(statusText){
-                                "beforeNumber" -> "发布阶段"
-                                "makingNumber" -> "制作阶段"
-                                "finishNumber" -> "交易完成"
-                                else -> "全部"
+                                "beforeNumber" -> resources.getString(R.string.project_status_release_stage)
+                                "makingNumber" -> resources.getString(R.string.project_status_produce_stage)
+                                "finishNumber" -> resources.getString(R.string.project_status_transaction_done)
+                                else -> resources.getString(R.string.srceen_all)
                             }
                             textSize = 15f
                             textColor = Color.parseColor("#FF333333")
@@ -116,10 +122,6 @@ class MyProjectList : BaseActivity(){
                         }
                         setOnClickListener {
                             if(!isDialogClick){
-                                val toast =
-                                    Toast.makeText(applicationContext, "正在加载中...", Toast.LENGTH_SHORT)
-                                toast.setGravity(Gravity.CENTER, 0, 0)
-                                toast.show()
                                 return@setOnClickListener
                             }
                             val la = View.inflate(this@MyProjectList, R.layout.screen_status, null)
@@ -139,7 +141,7 @@ class MyProjectList : BaseActivity(){
 
                             first.setOnClickListener {
                                 if(popup!=null){
-                                    status.text = "全部"
+                                    status.text = resources.getString(R.string.srceen_all)
                                     screenStatus = 3
                                     popup?.dismiss()
                                     popup = null
@@ -148,7 +150,7 @@ class MyProjectList : BaseActivity(){
                             }
                             second.setOnClickListener {
                                 if(popup!=null){
-                                    status.text = "发布阶段"
+                                    status.text = resources.getString(R.string.project_status_release_stage)
                                     screenStatus = 0
                                     popup?.dismiss()
                                     popup = null
@@ -157,7 +159,7 @@ class MyProjectList : BaseActivity(){
                             }
                             third.setOnClickListener {
                                 if(popup!=null){
-                                    status.text = "制作阶段"
+                                    status.text = resources.getString(R.string.project_status_produce_stage)
                                     screenStatus = 1
                                     popup?.dismiss()
                                     popup = null
@@ -166,7 +168,7 @@ class MyProjectList : BaseActivity(){
                             }
                             forth.setOnClickListener {
                                 if(popup!=null){
-                                    status.text = "交易完成"
+                                    status.text = resources.getString(R.string.project_status_transaction_done)
                                     screenStatus = 2
                                     popup?.dismiss()
                                     popup = null
@@ -237,25 +239,25 @@ class MyProjectList : BaseActivity(){
             val it = when (screenStatus) {
                 0 -> {
                     retrofitUils.create(IndividualApi::class.java)
-                        .getPainterSideList(1, "zh", screenStatus)
+                        .getPainterSideList(1, systemCountry, screenStatus)
                         .subscribeOn(Schedulers.io())
                         .awaitSingle()
                 }
                 1 -> {
                     retrofitUils.create(IndividualApi::class.java)
-                        .getPainterSideList(1, "zh", screenStatus)
+                        .getPainterSideList(1, systemCountry, screenStatus)
                         .subscribeOn(Schedulers.io())
                         .awaitSingle()
                 }
                 2 -> {
                     retrofitUils.create(IndividualApi::class.java)
-                        .getPainterSideList(1, "zh", screenStatus)
+                        .getPainterSideList(1, systemCountry, screenStatus)
                         .subscribeOn(Schedulers.io())
                         .awaitSingle()
                 }
                 else -> {
                     retrofitUils.create(IndividualApi::class.java)
-                        .getPainterSideList(1, "zh", null)
+                        .getPainterSideList(1, systemCountry, null)
                         .subscribeOn(Schedulers.io())
                         .awaitSingle()
                 }
@@ -292,25 +294,25 @@ class MyProjectList : BaseActivity(){
             val it = when (screenStatus) {
                 0 -> {
                     retrofitUils.create(IndividualApi::class.java)
-                        .getPainterSideList(page, "zh", screenStatus)
+                        .getPainterSideList(page, systemCountry, screenStatus)
                         .subscribeOn(Schedulers.io())
                         .awaitSingle()
                 }
                 1 -> {
                     retrofitUils.create(IndividualApi::class.java)
-                        .getPainterSideList(page, "zh", screenStatus)
+                        .getPainterSideList(page, systemCountry, screenStatus)
                         .subscribeOn(Schedulers.io())
                         .awaitSingle()
                 }
                 2 -> {
                     retrofitUils.create(IndividualApi::class.java)
-                        .getPainterSideList(page, "zh", screenStatus)
+                        .getPainterSideList(page, systemCountry, screenStatus)
                         .subscribeOn(Schedulers.io())
                         .awaitSingle()
                 }
                 else -> {
                     retrofitUils.create(IndividualApi::class.java)
-                        .getPainterSideList(page, "zh", null)
+                        .getPainterSideList(page, systemCountry, null)
                         .subscribeOn(Schedulers.io())
                         .awaitSingle()
                 }
@@ -342,25 +344,25 @@ class MyProjectList : BaseActivity(){
             val it = when (screenStatus) {
                 0 -> {
                     retrofitUils.create(IndividualApi::class.java)
-                        .getProjectSideList(1, "zh", screenStatus)
+                        .getProjectSideList(1, systemCountry, screenStatus)
                         .subscribeOn(Schedulers.io())
                         .awaitSingle()
                 }
                 1 -> {
                     retrofitUils.create(IndividualApi::class.java)
-                        .getProjectSideList(1, "zh", screenStatus)
+                        .getProjectSideList(1, systemCountry, screenStatus)
                         .subscribeOn(Schedulers.io())
                         .awaitSingle()
                 }
                 2 -> {
                     retrofitUils.create(IndividualApi::class.java)
-                        .getProjectSideList(1, "zh", screenStatus)
+                        .getProjectSideList(1, systemCountry, screenStatus)
                         .subscribeOn(Schedulers.io())
                         .awaitSingle()
                 }
                 else -> {
                     retrofitUils.create(IndividualApi::class.java)
-                        .getProjectSideList(1, "zh", null)
+                        .getProjectSideList(1, systemCountry, null)
                         .subscribeOn(Schedulers.io())
                         .awaitSingle()
                 }
@@ -398,25 +400,25 @@ class MyProjectList : BaseActivity(){
             val it = when (screenStatus) {
                 0 -> {
                     retrofitUils.create(IndividualApi::class.java)
-                        .getProjectSideList(page, "zh", screenStatus)
+                        .getProjectSideList(page, systemCountry, screenStatus)
                         .subscribeOn(Schedulers.io())
                         .awaitSingle()
                 }
                 1 -> {
                     retrofitUils.create(IndividualApi::class.java)
-                        .getProjectSideList(page, "zh", screenStatus)
+                        .getProjectSideList(page, systemCountry, screenStatus)
                         .subscribeOn(Schedulers.io())
                         .awaitSingle()
                 }
                 2 -> {
                     retrofitUils.create(IndividualApi::class.java)
-                        .getProjectSideList(page, "zh", screenStatus)
+                        .getProjectSideList(page, systemCountry, screenStatus)
                         .subscribeOn(Schedulers.io())
                         .awaitSingle()
                 }
                 else -> {
                     retrofitUils.create(IndividualApi::class.java)
-                        .getProjectSideList(page, "zh", null)
+                        .getProjectSideList(page, systemCountry, null)
                         .subscribeOn(Schedulers.io())
                         .awaitSingle()
                 }

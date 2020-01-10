@@ -1,5 +1,6 @@
 package app.findbest.vip.painter.view
 
+import android.content.SharedPreferences
 import android.graphics.Color
 import android.graphics.Typeface
 import android.os.Bundle
@@ -7,6 +8,7 @@ import android.view.Gravity
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.preference.PreferenceManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import app.findbest.vip.R
@@ -54,8 +56,8 @@ class PainterInfomation : BaseActivity(), PainterInfoPictureAdapter.ImageClick, 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        val mPerferences: SharedPreferences = PreferenceManager.getDefaultSharedPreferences(this@GuideView)
-        systemCountry = mPerferences.getString("systemCountry", "")
+        val mPerferences: SharedPreferences = PreferenceManager.getDefaultSharedPreferences(this@PainterInfomation)
+        systemCountry = mPerferences.getString("systemCountry", "").toString()
         val userId = intent.getStringExtra("userId") ?: ""
 
         frameLayout {

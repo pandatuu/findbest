@@ -551,7 +551,6 @@ class Terminal : FragmentParent() {
                 .subscribeOn(Schedulers.io())
                 .awaitSingle()
             if(it.code() in 200..299){
-                toast("登出")
                 //清除token
                 val mPerferences: SharedPreferences =
                     androidx.preference.PreferenceManager.getDefaultSharedPreferences(mContext)

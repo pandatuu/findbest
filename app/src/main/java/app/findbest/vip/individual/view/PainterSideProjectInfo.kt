@@ -29,9 +29,9 @@ class PainterSideProjectInfo : BaseActivity() {
         val projectId = intent.getStringExtra("projectId") ?: "43b982d7-6877-498a-a602-1bf7c8b998c8"
 
         val listTitle = ArrayList<String>()
-        listTitle.add("项目信息")
-        listTitle.add("应征画师")
-        listTitle.add("我的邀请")
+        listTitle.add(resources.getString(R.string.my_project_details))
+        listTitle.add(resources.getString(R.string.my_project_enlist))
+        listTitle.add(resources.getString(R.string.my_project_invite))
         val applicants = ProjectApplicants.newInstance(this@PainterSideProjectInfo,projectId)
         val invite = PainterSideProjectInvite.newInstance(this@PainterSideProjectInfo, projectId)
         val datas = ArrayList<Fragment>()
