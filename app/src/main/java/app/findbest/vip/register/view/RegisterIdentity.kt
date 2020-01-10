@@ -65,7 +65,7 @@ class RegisterIdentity : BaseActivity() {
                         gravity = Gravity.CENTER_HORIZONTAL
                     }
                     textView {
-                        text = "选择角色与主体"
+                        text = resources.getString(R.string.register_identity)
                         textColor = Color.parseColor("#FF333333")
                         textSize = 19f
                     }.lparams(wrapContent, wrapContent) {
@@ -82,7 +82,7 @@ class RegisterIdentity : BaseActivity() {
                                     topMargin = dip(23)
                                 }
                                 textView {
-                                    text = "项目方"
+                                    text = resources.getString(R.string.register_identity_project)
                                     textSize = 15f
                                     textColor = Color.parseColor("#FF333333")
                                 }.lparams {
@@ -121,7 +121,7 @@ class RegisterIdentity : BaseActivity() {
                                     topMargin = dip(23)
                                 }
                                 textView {
-                                    text = "制作方"
+                                    text = resources.getString(R.string.register_identity_producer)
                                     textSize = 15f
                                     textColor = Color.parseColor("#FF333333")
                                 }.lparams {
@@ -162,7 +162,7 @@ class RegisterIdentity : BaseActivity() {
                                     topMargin = dip(23)
                                 }
                                 textView {
-                                    text = "团队"
+                                    text = resources.getString(R.string.register_identity_team)
                                     textSize = 15f
                                     textColor = Color.parseColor("#FF333333")
                                 }.lparams {
@@ -201,7 +201,7 @@ class RegisterIdentity : BaseActivity() {
                                     topMargin = dip(23)
                                 }
                                 textView {
-                                    text = "个人"
+                                    text = resources.getString(R.string.register_identity_person)
                                     textSize = 15f
                                     textColor = Color.parseColor("#FF333333")
                                 }.lparams {
@@ -239,7 +239,7 @@ class RegisterIdentity : BaseActivity() {
                     }
                     button {
                         backgroundResource = R.drawable.enable_around_button
-                        text = "下一步"
+                        text = resources.getString(R.string.common_next)
                         textSize = 15f
                         textColor = Color.parseColor("#FFFFFFFF")
                         setOnClickListener {

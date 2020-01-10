@@ -54,7 +54,7 @@ class RegisterEmail: BaseActivity() {
                         gravity = Gravity.CENTER_HORIZONTAL
                     }
                     textView {
-                        text = "输入联系方式"
+                        text = resources.getString(R.string.register_email)
                         textColor = Color.parseColor("#FF333333")
                         textSize = 19f
                     }.lparams(wrapContent, wrapContent){
@@ -73,7 +73,7 @@ class RegisterEmail: BaseActivity() {
                                 backgroundResource = R.drawable.login_input_bottom
                                 email = editText {
                                     background = null
-                                    hint = "请输入电子邮箱，以便及时联系您"
+                                    hint = resources.getString(R.string.register_email_hint)
                                     hintTextColor = Color.parseColor("#FFD0D0D0")
                                     textSize = 15f
                                     singleLine = true
@@ -87,7 +87,7 @@ class RegisterEmail: BaseActivity() {
                     }.lparams(matchParent, wrapContent)
                     button {
                         backgroundResource = R.drawable.enable_around_button
-                        text = "下一步"
+                        text = resources.getString(R.string.common_next)
                         textSize = 15f
                         textColor = Color.parseColor("#FFFFFFFF")
                         setOnClickListener {
@@ -95,12 +95,12 @@ class RegisterEmail: BaseActivity() {
                             val emailText = email.text.toString()
 
                             if(emailText.isNullOrBlank()){
-                                toast("请填写邮箱地址")
+                                toast(resources.getString(R.string.register_input_email))
                                 return@setOnClickListener
                             }
 
                             if(!emailMatch(emailText)){
-                                toast("邮箱格式不正确")
+                                toast(resources.getString(R.string.register_input_email_wrong))
                                 return@setOnClickListener
                             }
 

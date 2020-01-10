@@ -29,6 +29,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.rx2.awaitSingle
 import okhttp3.RequestBody
 import org.jetbrains.anko.*
+import org.json.JSONObject
 import retrofit2.HttpException
 import withTrigger
 import java.util.regex.Pattern
@@ -90,7 +91,7 @@ class ResetPassword: BaseActivity(), BackgroundFragment.ClickBack, ChooseCountry
                             gravity = Gravity.CENTER_VERTICAL
                         }
                         textView {
-                            text = "返回"
+                            text = resources.getString(R.string.common_toolbar_back)
                             textSize = 17f
                             textColor = Color.parseColor("#FF333333")
                         }.lparams(wrapContent, wrapContent){
@@ -109,7 +110,7 @@ class ResetPassword: BaseActivity(), BackgroundFragment.ClickBack, ChooseCountry
                 linearLayout {
                     orientation = LinearLayout.VERTICAL
                     textView {
-                        text = "重置密码"
+                        text = resources.getString(R.string.login_reset_pwd)
                         textColor = Color.parseColor("#FF333333")
                         textSize = 19f
                     }.lparams(wrapContent, wrapContent){
@@ -147,7 +148,7 @@ class ResetPassword: BaseActivity(), BackgroundFragment.ClickBack, ChooseCountry
                             }.lparams(wrapContent, matchParent)
                             phoneNumber = editText {
                                 background = null
-                                hint = "请输入手机号码"
+                                hint = resources.getString(R.string.common_input_phone)
                                 hintTextColor = Color.parseColor("#FFD0D0D0")
                                 textSize = 15f
                                 singleLine = true
@@ -175,6 +176,10 @@ class ResetPassword: BaseActivity(), BackgroundFragment.ClickBack, ChooseCountry
                             }
                             imageView {
                                 imageResource = R.mipmap.login_ico_close
+                                setOnClickListener {
+                                    closeFocusjianpan()
+                                    phoneNumber.setText("")
+                                }
                             }.lparams(dip(18),dip(18)){
                                 leftMargin = dip(5)
                                 gravity = Gravity.CENTER_VERTICAL
@@ -197,7 +202,7 @@ class ResetPassword: BaseActivity(), BackgroundFragment.ClickBack, ChooseCountry
                             backgroundResource = R.drawable.login_input_bottom
                             vCode = editText {
                                 background = null
-                                hint = "请输入验证码"
+                                hint = resources.getString(R.string.common_input_vcode)
                                 hintTextColor = Color.parseColor("#FFD0D0D0")
                                 textSize = 15f
                                 singleLine = true
@@ -225,7 +230,7 @@ class ResetPassword: BaseActivity(), BackgroundFragment.ClickBack, ChooseCountry
                             relativeLayout {
                                 backgroundResource = R.drawable.around_button_5
                                 code = textView {
-                                    text = "获取验证码"
+                                    text = resources.getString(R.string.common_get_vcode)
                                     textSize = 12f
                                     textColor = Color.parseColor("#FFFFFFFF")
                                 }.lparams(wrapContent, wrapContent){
@@ -235,7 +240,7 @@ class ResetPassword: BaseActivity(), BackgroundFragment.ClickBack, ChooseCountry
                                     val phoneNum = phoneNumber.text.toString()
                                     if(phoneNum.isNullOrBlank()){
                                         val toast =
-                                            Toast.makeText(applicationContext, "请填写手机号", Toast.LENGTH_SHORT)
+                                            Toast.makeText(applicationContext, resources.getString(R.string.common_input_phone), Toast.LENGTH_SHORT)
                                         toast.setGravity(Gravity.CENTER, 0, 0)
                                         toast.show()
                                         return@setOnClickListener
@@ -243,7 +248,7 @@ class ResetPassword: BaseActivity(), BackgroundFragment.ClickBack, ChooseCountry
 
                                     if(phoneNum.length !in 10..11){
                                         val toast =
-                                            Toast.makeText(applicationContext, "请输入10~11位手机号", Toast.LENGTH_SHORT)
+                                            Toast.makeText(applicationContext, resources.getString(R.string.common_input_right_phone), Toast.LENGTH_SHORT)
                                         toast.setGravity(Gravity.CENTER, 0, 0)
                                         toast.show()
                                         return@setOnClickListener
@@ -278,7 +283,7 @@ class ResetPassword: BaseActivity(), BackgroundFragment.ClickBack, ChooseCountry
                             backgroundResource = R.drawable.login_input_bottom
                             newPwd = editText {
                                 background = null
-                                hint = "请输入新密码"
+                                hint = resources.getString(R.string.common_input_new_pwd)
                                 hintTextColor = Color.parseColor("#FFD0D0D0")
                                 textSize = 15f
                                 singleLine = true
@@ -320,7 +325,7 @@ class ResetPassword: BaseActivity(), BackgroundFragment.ClickBack, ChooseCountry
                             backgroundResource = R.drawable.login_input_bottom
                             againPwd = editText {
                                 background = null
-                                hint = "请再次输入新密码"
+                                hint = resources.getString(R.string.common_input_new_pwd_again)
                                 hintTextColor = Color.parseColor("#FFD0D0D0")
                                 textSize = 15f
                                 singleLine = true
@@ -352,7 +357,7 @@ class ResetPassword: BaseActivity(), BackgroundFragment.ClickBack, ChooseCountry
                     }
                     button = button {
                         backgroundResource = R.drawable.disable_around_button
-                        text = "登录"
+                        text = resources.getString(R.string.login_title)
                         textSize = 15f
                         textColor = Color.parseColor("#FFFFFFFF")
                         setOnClickListener {
@@ -363,7 +368,7 @@ class ResetPassword: BaseActivity(), BackgroundFragment.ClickBack, ChooseCountry
                             val aPwd = againPwd.text.toString()
                             if(phoneNum.isNullOrBlank()){
                                 val toast =
-                                    Toast.makeText(applicationContext, "请填写手机号", Toast.LENGTH_SHORT)
+                                    Toast.makeText(applicationContext, resources.getString(R.string.common_input_phone), Toast.LENGTH_SHORT)
                                 toast.setGravity(Gravity.CENTER, 0, 0)
                                 toast.show()
                                 return@setOnClickListener
@@ -371,7 +376,7 @@ class ResetPassword: BaseActivity(), BackgroundFragment.ClickBack, ChooseCountry
 
                             if(phoneNum.length !in 10..11){
                                 val toast =
-                                    Toast.makeText(applicationContext, "请输入10~11位手机号", Toast.LENGTH_SHORT)
+                                    Toast.makeText(applicationContext, resources.getString(R.string.common_input_right_phone), Toast.LENGTH_SHORT)
                                 toast.setGravity(Gravity.CENTER, 0, 0)
                                 toast.show()
                                 return@setOnClickListener
@@ -379,7 +384,7 @@ class ResetPassword: BaseActivity(), BackgroundFragment.ClickBack, ChooseCountry
 
                             if(vCode.isNullOrBlank()){
                                 val toast =
-                                    Toast.makeText(applicationContext, "请填写验证码", Toast.LENGTH_SHORT)
+                                    Toast.makeText(applicationContext, resources.getString(R.string.common_input_vcode), Toast.LENGTH_SHORT)
                                 toast.setGravity(Gravity.CENTER, 0, 0)
                                 toast.show()
                                 return@setOnClickListener
@@ -387,7 +392,7 @@ class ResetPassword: BaseActivity(), BackgroundFragment.ClickBack, ChooseCountry
 
                             if(nPwd.isNullOrBlank()){
                                 val toast =
-                                    Toast.makeText(applicationContext, "请填写密码", Toast.LENGTH_SHORT)
+                                    Toast.makeText(applicationContext, resources.getString(R.string.common_input_pwd), Toast.LENGTH_SHORT)
                                 toast.setGravity(Gravity.CENTER, 0, 0)
                                 toast.show()
                                 return@setOnClickListener
@@ -395,7 +400,7 @@ class ResetPassword: BaseActivity(), BackgroundFragment.ClickBack, ChooseCountry
 
                             if(!pwdMatch(nPwd)){
                                 val toast =
-                                    Toast.makeText(applicationContext, "请输入8~16位数字、大小写字母、符号中的任意两种以上（含）", Toast.LENGTH_SHORT)
+                                    Toast.makeText(applicationContext, resources.getString(R.string.common_input_right_pwd), Toast.LENGTH_SHORT)
                                 toast.setGravity(Gravity.CENTER, 0, 0)
                                 toast.show()
                                 return@setOnClickListener
@@ -403,7 +408,7 @@ class ResetPassword: BaseActivity(), BackgroundFragment.ClickBack, ChooseCountry
 
                             if(aPwd.isNullOrBlank()){
                                 val toast =
-                                    Toast.makeText(applicationContext, "请再次填写密码", Toast.LENGTH_SHORT)
+                                    Toast.makeText(applicationContext, resources.getString(R.string.common_input_new_pwd_again), Toast.LENGTH_SHORT)
                                 toast.setGravity(Gravity.CENTER, 0, 0)
                                 toast.show()
                                 return@setOnClickListener
@@ -411,7 +416,7 @@ class ResetPassword: BaseActivity(), BackgroundFragment.ClickBack, ChooseCountry
 
                             if(nPwd != aPwd){
                                 val toast =
-                                    Toast.makeText(applicationContext, "两次输入密码不一致", Toast.LENGTH_SHORT)
+                                    Toast.makeText(applicationContext, resources.getString(R.string.common_input_pwd_disaccord), Toast.LENGTH_SHORT)
                                 toast.setGravity(Gravity.CENTER, 0, 0)
                                 toast.show()
                                 return@setOnClickListener
@@ -453,13 +458,19 @@ class ResetPassword: BaseActivity(), BackgroundFragment.ClickBack, ChooseCountry
                 .awaitSingle()
             if (it.code() in 200..299) {
                 val toast =
-                    Toast.makeText(applicationContext, "已发送验证码", Toast.LENGTH_SHORT)
+                    Toast.makeText(applicationContext, resources.getString(R.string.common_tips_send_vcode), Toast.LENGTH_SHORT)
                 toast.setGravity(Gravity.CENTER, 0, 0)
                 toast.show()
 
                 return true
+            }else{
+                val errorJson = JSONObject(it.errorBody()!!.string())
+                val errorMsg = errorJson.getString("message")
+                if("phone_not_exist" == errorMsg){
+                    toast(resources.getString(R.string.common_tips_phone_noexist))
+                }
+                return false
             }
-            return false
         }catch (throwable: Throwable){
             return false
         }
@@ -485,12 +496,15 @@ class ResetPassword: BaseActivity(), BackgroundFragment.ClickBack, ChooseCountry
                 .awaitSingle()
             if (it.code() in 200..299) {
                 //修改成功
-                toast("修改成功")
+                toast(resources.getString(R.string.common_tips_update_success))
                 startActivity<LoginActivity>()
                 overridePendingTransition(R.anim.left_in, R.anim.right_out)
-            }
-            if(it.code() == 500){
-                toast("密码错误")
+            }else{
+                val errorJson = JSONObject(it.errorBody()!!.string())
+                val errorMsg = errorJson.getString("error")
+                if("ValidtionError" == errorMsg){
+                    toast(resources.getString(R.string.common_tips_vcode_wrong))
+                }
             }
         } catch (throwable: Throwable) {
             if(throwable is HttpException){
@@ -562,14 +576,14 @@ class ResetPassword: BaseActivity(), BackgroundFragment.ClickBack, ChooseCountry
             code.text = (l / 1000).toString() + "s"
 
             code.withTrigger().click  {
-                toast("冷却中...")
+                toast(resources.getString(R.string.common_countdown_rest))
 
             }
         }
 
         override fun onFinish() {
             runningDownTimer = false
-            code.text = "获取"
+            code.text = resources.getString(R.string.common_get_vcode)
 
 
             code.withTrigger().click  {

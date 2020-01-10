@@ -45,7 +45,7 @@ class AgreementWeb : BaseActivity() {
                     bottomMargin = dip(10)
                 }
                 textView {
-                    text = "隐私服务协议"
+                    text = resources.getString(R.string.register_agreement_url)
                     textSize = 17f
                     textColor = Color.parseColor("#FF222222")
                     typeface = Typeface.DEFAULT_BOLD

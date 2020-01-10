@@ -86,7 +86,7 @@ class RegisterActivity: BaseActivity(), BackgroundFragment.ClickBack, ChooseCoun
                 relativeLayout {
                     textView {
                         padding = dip(10)
-                        text = "登录"
+                        text = resources.getString(R.string.login_title)
                         textColor = Color.parseColor("#FF333333")
                         textSize = 17f
                         setOnClickListener {
@@ -104,7 +104,7 @@ class RegisterActivity: BaseActivity(), BackgroundFragment.ClickBack, ChooseCoun
                 linearLayout {
                     orientation = LinearLayout.VERTICAL
                     textView {
-                        text = "注册"
+                        text = resources.getString(R.string.register_title)
                         textColor = Color.parseColor("#FF333333")
                         textSize = 19f
                     }.lparams(wrapContent, wrapContent){
@@ -142,7 +142,7 @@ class RegisterActivity: BaseActivity(), BackgroundFragment.ClickBack, ChooseCoun
                             }.lparams(wrapContent, matchParent)
                             phoneNumber = editText {
                                 background = null
-                                hint = "请输入手机号码"
+                                hint = resources.getString(R.string.common_input_phone)
                                 hintTextColor = Color.parseColor("#FFD0D0D0")
                                 textSize = 15f
                                 singleLine = true
@@ -171,6 +171,10 @@ class RegisterActivity: BaseActivity(), BackgroundFragment.ClickBack, ChooseCoun
                             }
                             imageView {
                                 imageResource = R.mipmap.login_ico_close
+                                setOnClickListener {
+                                    closeFocusjianpan()
+                                    phoneNumber.setText("")
+                                }
                             }.lparams(dip(18),dip(18)){
                                 leftMargin = dip(5)
                                 gravity = Gravity.CENTER_VERTICAL
@@ -193,7 +197,7 @@ class RegisterActivity: BaseActivity(), BackgroundFragment.ClickBack, ChooseCoun
                             backgroundResource = R.drawable.login_input_bottom
                             vCode = editText {
                                 background = null
-                                hint = "请输入验证码"
+                                hint = resources.getString(R.string.common_input_vcode)
                                 hintTextColor = Color.parseColor("#FFD0D0D0")
                                 textSize = 15f
                                 singleLine = true
@@ -222,7 +226,7 @@ class RegisterActivity: BaseActivity(), BackgroundFragment.ClickBack, ChooseCoun
                             relativeLayout {
                                 backgroundResource = R.drawable.around_button_5
                                 code = textView {
-                                    text = "获取验证码"
+                                    text = resources.getString(R.string.common_get_vcode)
                                     textSize = 12f
                                     textColor = Color.parseColor("#FFFFFFFF")
                                 }.lparams(wrapContent, wrapContent){
@@ -232,7 +236,7 @@ class RegisterActivity: BaseActivity(), BackgroundFragment.ClickBack, ChooseCoun
                                     val phoneNum = phoneNumber.text.toString()
                                     if(phoneNum.isNullOrBlank()){
                                         val toast =
-                                            Toast.makeText(applicationContext, "请填写手机号", Toast.LENGTH_SHORT)
+                                            Toast.makeText(applicationContext, resources.getString(R.string.common_input_phone), Toast.LENGTH_SHORT)
                                         toast.setGravity(Gravity.CENTER, 0, 0)
                                         toast.show()
                                         return@setOnClickListener
@@ -240,7 +244,7 @@ class RegisterActivity: BaseActivity(), BackgroundFragment.ClickBack, ChooseCoun
 
                                     if(phoneNum.length !in 10..11){
                                         val toast =
-                                            Toast.makeText(applicationContext, "请输入10~11位手机号", Toast.LENGTH_SHORT)
+                                            Toast.makeText(applicationContext, resources.getString(R.string.common_input_right_phone), Toast.LENGTH_SHORT)
                                         toast.setGravity(Gravity.CENTER, 0, 0)
                                         toast.show()
                                         return@setOnClickListener
@@ -275,7 +279,7 @@ class RegisterActivity: BaseActivity(), BackgroundFragment.ClickBack, ChooseCoun
                             backgroundResource = R.drawable.login_input_bottom
                             newPwd = editText {
                                 background = null
-                                hint = "请输入新密码"
+                                hint = resources.getString(R.string.common_input_new_pwd)
                                 hintTextColor = Color.parseColor("#FFD0D0D0")
                                 textSize = 15f
                                 singleLine = true
@@ -318,7 +322,7 @@ class RegisterActivity: BaseActivity(), BackgroundFragment.ClickBack, ChooseCoun
                             backgroundResource = R.drawable.login_input_bottom
                             againPwd = editText {
                                 background = null
-                                hint = "请再次输入新密码"
+                                hint = resources.getString(R.string.common_input_new_pwd_again)
                                 hintTextColor = Color.parseColor("#FFD0D0D0")
                                 textSize = 15f
                                 singleLine = true
@@ -351,7 +355,7 @@ class RegisterActivity: BaseActivity(), BackgroundFragment.ClickBack, ChooseCoun
                     }
                     button = button {
                         backgroundResource = R.drawable.disable_around_button
-                        text = "注册"
+                        text = resources.getString(R.string.register_title)
                         textSize = 15f
                         textColor = Color.parseColor("#FFFFFFFF")
                         setOnClickListener {
@@ -362,7 +366,7 @@ class RegisterActivity: BaseActivity(), BackgroundFragment.ClickBack, ChooseCoun
                             val aPwd = againPwd.text.toString()
                             if(phoneNum.isNullOrBlank()){
                                 val toast =
-                                    Toast.makeText(applicationContext, "请填写手机号", Toast.LENGTH_SHORT)
+                                    Toast.makeText(applicationContext, resources.getString(R.string.common_input_phone), Toast.LENGTH_SHORT)
                                 toast.setGravity(Gravity.CENTER, 0, 0)
                                 toast.show()
                                 return@setOnClickListener
@@ -370,7 +374,7 @@ class RegisterActivity: BaseActivity(), BackgroundFragment.ClickBack, ChooseCoun
 
                             if(phoneNum.length !in 10..11){
                                 val toast =
-                                    Toast.makeText(applicationContext, "请输入10~11位手机号", Toast.LENGTH_SHORT)
+                                    Toast.makeText(applicationContext, resources.getString(R.string.common_input_right_phone), Toast.LENGTH_SHORT)
                                 toast.setGravity(Gravity.CENTER, 0, 0)
                                 toast.show()
                                 return@setOnClickListener
@@ -378,7 +382,7 @@ class RegisterActivity: BaseActivity(), BackgroundFragment.ClickBack, ChooseCoun
 
                             if(code.isNullOrBlank()){
                                 val toast =
-                                    Toast.makeText(applicationContext, "请填写验证码", Toast.LENGTH_SHORT)
+                                    Toast.makeText(applicationContext, resources.getString(R.string.common_input_vcode), Toast.LENGTH_SHORT)
                                 toast.setGravity(Gravity.CENTER, 0, 0)
                                 toast.show()
                                 return@setOnClickListener
@@ -386,7 +390,7 @@ class RegisterActivity: BaseActivity(), BackgroundFragment.ClickBack, ChooseCoun
 
                             if(nPwd.isNullOrBlank()){
                                 val toast =
-                                    Toast.makeText(applicationContext, "请填写密码", Toast.LENGTH_SHORT)
+                                    Toast.makeText(applicationContext, resources.getString(R.string.common_input_pwd), Toast.LENGTH_SHORT)
                                 toast.setGravity(Gravity.CENTER, 0, 0)
                                 toast.show()
                                 return@setOnClickListener
@@ -394,7 +398,7 @@ class RegisterActivity: BaseActivity(), BackgroundFragment.ClickBack, ChooseCoun
 
                             if(!pwdMatch(nPwd)){
                                 val toast =
-                                    Toast.makeText(applicationContext, "请输入8~16位数字、大小写字母、符号中的任意两种以上（含）", Toast.LENGTH_SHORT)
+                                    Toast.makeText(applicationContext, resources.getString(R.string.common_input_right_pwd), Toast.LENGTH_SHORT)
                                 toast.setGravity(Gravity.CENTER, 0, 0)
                                 toast.show()
                                 return@setOnClickListener
@@ -402,7 +406,7 @@ class RegisterActivity: BaseActivity(), BackgroundFragment.ClickBack, ChooseCoun
 
                             if(aPwd.isNullOrBlank()){
                                 val toast =
-                                    Toast.makeText(applicationContext, "请再次填写密码", Toast.LENGTH_SHORT)
+                                    Toast.makeText(applicationContext, resources.getString(R.string.common_input_pwd_again), Toast.LENGTH_SHORT)
                                 toast.setGravity(Gravity.CENTER, 0, 0)
                                 toast.show()
                                 return@setOnClickListener
@@ -410,7 +414,7 @@ class RegisterActivity: BaseActivity(), BackgroundFragment.ClickBack, ChooseCoun
 
                             if(nPwd != aPwd){
                                 val toast =
-                                    Toast.makeText(applicationContext, "两次输入密码不一致", Toast.LENGTH_SHORT)
+                                    Toast.makeText(applicationContext, resources.getString(R.string.common_input_pwd_disaccord), Toast.LENGTH_SHORT)
                                 toast.setGravity(Gravity.CENTER, 0, 0)
                                 toast.show()
                                 return@setOnClickListener
@@ -418,7 +422,7 @@ class RegisterActivity: BaseActivity(), BackgroundFragment.ClickBack, ChooseCoun
 
                             if(!checkBox.isChecked){
                                 val toast =
-                                    Toast.makeText(applicationContext, "请勾选协议", Toast.LENGTH_SHORT)
+                                    Toast.makeText(applicationContext, resources.getString(R.string.register_agreement), Toast.LENGTH_SHORT)
                                 toast.setGravity(Gravity.CENTER, 0, 0)
                                 toast.show()
                                 return@setOnClickListener
@@ -462,14 +466,14 @@ class RegisterActivity: BaseActivity(), BackgroundFragment.ClickBack, ChooseCoun
                             checkBox.isChecked = !checkBox.isChecked
                         }
                         textView {
-                            text = "我同意"
+                            text = resources.getString(R.string.register_i_agreement)
                             textSize = 13f
                             textColor = Color.parseColor("#FF202020")
                         }.lparams(wrapContent, wrapContent){
                             leftMargin = dip(10)
                         }
                         textView {
-                            text = "隐私协议 "
+                            text = resources.getString(R.string.register_privacy_protocol)
                             textSize = 13f
                             textColor = Color.parseColor("#FFFF7900")
                             setOnClickListener {
@@ -480,14 +484,14 @@ class RegisterActivity: BaseActivity(), BackgroundFragment.ClickBack, ChooseCoun
                             leftMargin = dip(5)
                         }
                         textView {
-                            text = "和"
+                            text = resources.getString(R.string.register_and)
                             textSize = 13f
                             textColor = Color.parseColor("#FF202020")
                         }.lparams(wrapContent, wrapContent){
                             leftMargin = dip(5)
                         }
                         textView {
-                            text = "服务申明"
+                            text = resources.getString(R.string.register_service_declaration)
                             textSize = 13f
                             textColor = Color.parseColor("#FFFF7900")
                             setOnClickListener {
@@ -528,24 +532,24 @@ class RegisterActivity: BaseActivity(), BackgroundFragment.ClickBack, ChooseCoun
                 .sendvCode(body)
                 .subscribeOn(Schedulers.io())
                 .awaitSingle()
+
+            println("code-----------${it.code()}")
             if (it.code() in 200..299) {
 //                DialogUtils.hideLoading(thisDialog)
                 val toast =
-                    Toast.makeText(applicationContext, "已发送验证码", Toast.LENGTH_SHORT)
+                    Toast.makeText(applicationContext, resources.getString(R.string.common_tips_send_vcode), Toast.LENGTH_SHORT)
                 toast.setGravity(Gravity.CENTER, 0, 0)
                 toast.show()
 
                 return true
-            }
-            if(it.code() == 400){
-                val toast =
-                    Toast.makeText(applicationContext, "手机号已经注册过了", Toast.LENGTH_SHORT)
-                toast.setGravity(Gravity.CENTER, 0, 0)
-                toast.show()
-
+            }else{
+                val errorJson = JSONObject(it.errorBody()!!.string())
+                val errorMsg = errorJson.getString("message")
+                if("phone_exist" == errorMsg){
+                    toast(resources.getString(R.string.common_tips_phone_exist))
+                }
                 return false
             }
-            return false
         }catch (throwable: Throwable){
             return false
         }
@@ -577,9 +581,9 @@ class RegisterActivity: BaseActivity(), BackgroundFragment.ClickBack, ChooseCoun
                 val errorJson = JSONObject(it.errorBody()!!.string())
                 val errorMsg = errorJson.getJSONArray("validtions").getJSONObject(0).getJSONArray("messages")[0].toString()
                 if(errorMsg == "invalid code"){
-                    toast("验证码错误")
+                    toast(resources.getString(R.string.common_tips_vcode_wrong))
                 }else if(errorMsg == "phone exist"){
-                    toast("账号已存在")
+                    toast(resources.getString(R.string.common_tips_account_exist))
                 }
             }
         } catch (throwable: Throwable) {
@@ -608,15 +612,14 @@ class RegisterActivity: BaseActivity(), BackgroundFragment.ClickBack, ChooseCoun
             code.text = (l / 1000).toString() + "s"
 
             code. withTrigger().click  {
-                toast("冷却中...")
+                toast(resources.getString(R.string.common_countdown_rest))
 
             }
         }
 
         override fun onFinish() {
             runningDownTimer = false
-            code.text = "获取"
-
+            code.text = resources.getString(R.string.common_get_vcode)
 
             code.withTrigger().click  {
                 onPcode()

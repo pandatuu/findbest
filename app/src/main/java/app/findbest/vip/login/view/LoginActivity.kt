@@ -60,7 +60,7 @@ class LoginActivity : BaseActivity(), BackgroundFragment.ClickBack, ChooseCountr
 
                     textView {
                         padding = dip(10)
-                        text = "注册"
+                        text = resources.getString(R.string.register_title)
                         textColor = Color.parseColor("#FF333333")
                         textSize = 17f
                         setOnClickListener {
@@ -78,7 +78,7 @@ class LoginActivity : BaseActivity(), BackgroundFragment.ClickBack, ChooseCountr
                 linearLayout {
                     orientation = LinearLayout.VERTICAL
                     textView {
-                        text = "登录"
+                        text = resources.getString(R.string.login_title)
                         textColor = Color.parseColor("#FF333333")
                         textSize = 19f
                     }.lparams(wrapContent, wrapContent) {
@@ -116,7 +116,7 @@ class LoginActivity : BaseActivity(), BackgroundFragment.ClickBack, ChooseCountr
                             }.lparams(wrapContent, matchParent)
                             phoneNumber = editText {
                                 background = null
-                                hint = "请输入手机号码"
+                                hint = resources.getString(R.string.common_input_phone)
                                 hintTextColor = Color.parseColor("#FFD0D0D0")
                                 textSize = 15f
                                 singleLine = true
@@ -171,7 +171,7 @@ class LoginActivity : BaseActivity(), BackgroundFragment.ClickBack, ChooseCountr
                             backgroundResource = R.drawable.login_input_bottom
                             pwd = editText {
                                 background = null
-                                hint = "请输入密码"
+                                hint = resources.getString(R.string.common_input_pwd)
                                 hintTextColor = Color.parseColor("#FFD0D0D0")
                                 textSize = 15f
                                 singleLine = true
@@ -215,7 +215,7 @@ class LoginActivity : BaseActivity(), BackgroundFragment.ClickBack, ChooseCountr
                     }
                     textView {
                         padding = dip(10)
-                        text = "忘记密码？"
+                        text = resources.getString(R.string.login_forget_pwd)
                         textColor = Color.parseColor("#FF202020")
                         textSize = 13f
                         setOnClickListener {
@@ -228,7 +228,7 @@ class LoginActivity : BaseActivity(), BackgroundFragment.ClickBack, ChooseCountr
                     }
                     button = button {
                         backgroundResource = R.drawable.disable_around_button
-                        text = "登录"
+                        text = resources.getString(R.string.login_title)
                         textSize = 15f
                         textColor = Color.parseColor("#FFFFFFFF")
                         setOnClickListener {
@@ -238,14 +238,14 @@ class LoginActivity : BaseActivity(), BackgroundFragment.ClickBack, ChooseCountr
                             val pwd = pwd.text.toString()
                             if (phoneNum.isNullOrBlank()) {
                                 val toast =
-                                    Toast.makeText(applicationContext, "请输入手机号", Toast.LENGTH_SHORT)
+                                    Toast.makeText(applicationContext, resources.getString(R.string.common_input_phone), Toast.LENGTH_SHORT)
                                 toast.setGravity(Gravity.CENTER, 0, 0)
                                 toast.show()
                                 return@setOnClickListener
                             }
                             if (pwd.isNullOrBlank()) {
                                 val toast =
-                                    Toast.makeText(applicationContext, "请输入密码", Toast.LENGTH_SHORT)
+                                    Toast.makeText(applicationContext, resources.getString(R.string.common_input_pwd), Toast.LENGTH_SHORT)
                                 toast.setGravity(Gravity.CENTER, 0, 0)
                                 toast.show()
                                 return@setOnClickListener
@@ -305,7 +305,7 @@ class LoginActivity : BaseActivity(), BackgroundFragment.ClickBack, ChooseCountr
                 val refresh = it.body()!!["refreshToken"].asString
                 isAccount(token,refresh)
             }else if(it.code() == 400){
-                toast("账号或密码错误")
+                toast(resources.getString(R.string.common_tips_accountpwd_wrong))
             }else{
                 val errorJson = JSONObject(it.errorBody()!!.string())
                 val errorMsg = errorJson.getString("error")
@@ -333,6 +333,7 @@ class LoginActivity : BaseActivity(), BackgroundFragment.ClickBack, ChooseCountr
             }
             AccountStatus.UNCOMPLETED.arg -> {
                 //未完善信息
+                toast(resources.getString(R.string.common_tips_user_uncompleted))
                 startActivity<RegisterCountry>("onlyCompleted" to true, "refreshToken" to refreshToken)
                 overridePendingTransition(R.anim.right_in, R.anim.left_out)
             }

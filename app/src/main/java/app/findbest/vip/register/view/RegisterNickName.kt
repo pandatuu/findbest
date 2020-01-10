@@ -87,9 +87,9 @@ class RegisterNickName : BaseActivity() {
                     textView {
                         //设置昵称
                         text = if (identity == 2) {
-                            "设置团队名称"
+                            resources.getString(R.string.register_team_nickname)
                         } else {
-                            "设置个人昵称"
+                            resources.getString(R.string.register_person_nickname)
                         }
                         textColor = Color.parseColor("#FF333333")
                         textSize = 19f
@@ -110,9 +110,9 @@ class RegisterNickName : BaseActivity() {
                                 nickName = editText {
                                     background = null
                                     hint = if (identity == 2){
-                                        "设置团队名称"
+                                        resources.getString(R.string.register_team_nickname)
                                     } else {
-                                        "设置个人昵称"
+                                        resources.getString(R.string.register_person_nickname)
                                     }
                                     hintTextColor = Color.parseColor("#FFD0D0D0")
                                     textSize = 15f
@@ -127,19 +127,19 @@ class RegisterNickName : BaseActivity() {
                     }.lparams(matchParent, wrapContent)
                     button {
                         backgroundResource = R.drawable.enable_around_button
-                        text = "完成注册"
+                        text = resources.getString(R.string.register_done)
                         textSize = 15f
                         textColor = Color.parseColor("#FFFFFFFF")
                         setOnClickListener {
                             closeFocusjianpan()
                             val nickname = nickName.text.toString()
                             if (nickname.isNullOrBlank()) {
-                                toast("请填写昵称")
+                                toast(resources.getString(R.string.register_input_nickname))
                                 return@setOnClickListener
                             }
 
                             if (nickeNameMatch(nickname)) {
-                                toast("昵称格式不正确")
+                                toast(resources.getString(R.string.register_input_nickname_wrong))
                                 return@setOnClickListener
                             }
 
@@ -252,7 +252,6 @@ class RegisterNickName : BaseActivity() {
                 .subscribeOn(Schedulers.io())
                 .awaitSingle()
             if (it.code() in 200..299) {
-                //完善信息成功
                 refreshToken(refreshToken)
             }
         } catch (throwable: Throwable) {

@@ -60,7 +60,7 @@ class RegisterCountry : BaseActivity() {
                         gravity = Gravity.CENTER_HORIZONTAL
                     }
                     textView {
-                        text = "选择国家和地区"
+                        text = resources.getString(R.string.register_country)
                         textColor = Color.parseColor("#FF333333")
                         textSize = 19f
                     }.lparams(wrapContent, wrapContent) {
@@ -68,11 +68,10 @@ class RegisterCountry : BaseActivity() {
                     }
                     linearLayout {
                         orientation = LinearLayout.VERTICAL
-                        val country = arrayListOf("中国", "日本", "韩国")
                         china = relativeLayout {
                             backgroundResource = R.drawable.rigister_country_input
                             textView {
-                                text = "中国"
+                                text = resources.getString(R.string.register_country_china)
                                 textSize = 15f
                                 textColor = Color.parseColor("#FF333333")
                             }.lparams {
@@ -108,7 +107,7 @@ class RegisterCountry : BaseActivity() {
                         japan = relativeLayout {
                             backgroundResource = R.drawable.rigister_country_input
                             textView {
-                                text = "日本"
+                                text = resources.getString(R.string.register_country_japan)
                                 textSize = 15f
                                 textColor = Color.parseColor("#FF333333")
                             }.lparams {
@@ -144,7 +143,7 @@ class RegisterCountry : BaseActivity() {
                         korea = relativeLayout {
                             backgroundResource = R.drawable.rigister_country_input
                             textView {
-                                text = "韩国"
+                                text = resources.getString(R.string.register_country_korea)
                                 textSize = 15f
                                 textColor = Color.parseColor("#FF333333")
                             }.lparams {
@@ -182,7 +181,7 @@ class RegisterCountry : BaseActivity() {
                     }
                     button {
                         backgroundResource = R.drawable.enable_around_button
-                        text = "下一步"
+                        text = resources.getString(R.string.common_next)
                         textSize = 15f
                         textColor = Color.parseColor("#FFFFFFFF")
                         setOnClickListener {
@@ -254,7 +253,7 @@ class RegisterCountry : BaseActivity() {
                                     startActivity<RegisterIdentity>("user" to user as Serializable, "refreshToken" to refreshToken)
                                     overridePendingTransition(R.anim.right_in, R.anim.left_out)
                                 }
-                                else -> toast("未选择")
+                                else -> toast(resources.getString(R.string.common_no_choose))
                             }
                         }
                     }.lparams(matchParent, dip(47)) {

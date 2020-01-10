@@ -17,6 +17,7 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.rx2.awaitSingle
 import org.jetbrains.anko.*
+import java.util.*
 
 class GuideView: BaseActivity() {
 
@@ -33,6 +34,11 @@ class GuideView: BaseActivity() {
         //当用户以前登陆过才校验token是否过期
         val mPerferences: SharedPreferences = PreferenceManager.getDefaultSharedPreferences(this@GuideView)
         val userToken = mPerferences.getString("token", "")
+        //获取手机系统国家
+        val systemCountry = Locale.getDefault().language
+        val mEdit = mPerferences.edit()
+        mEdit.putString("systemCountry",systemCountry)
+
         if(userToken!=""){
             //登录过，校验token是否过期
             GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
@@ -56,16 +62,12 @@ class GuideView: BaseActivity() {
             if (it.code() in 200..299) {
                 println("token未过期")
 
-//                val mPerferences: SharedPreferences =
-//                    PreferenceManager.getDefaultSharedPreferences(this@GuideView)
-//                val token = mPerferences.getString("token", "")
-
                 startActivity<MainActivity>()
                 overridePendingTransition(R.anim.right_in, R.anim.left_out)
             }
             if(it.code() == 400){
                 println("token过期，需要登录")
-                toast("token过期，需要重新登录")
+                toast(resources.getString(R.string.common_tips_token_overdue))
                 startActivity<LoginActivity>()
                 overridePendingTransition(R.anim.right_in, R.anim.left_out)
             }
