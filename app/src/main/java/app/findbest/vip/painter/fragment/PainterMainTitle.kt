@@ -47,7 +47,7 @@ class PainterMainTitle: Fragment() {
                 relativeLayout {
                     backgroundResource = R.drawable.ffe3e3e3_bottom_line
                     textView {
-                        text = "画师"
+                        text = resources.getString(R.string.instance_title)
                         textSize = 17f
                         textColor = Color.parseColor("#FF222222")
                     }.lparams(wrapContent, wrapContent){
@@ -65,7 +65,7 @@ class PainterMainTitle: Fragment() {
                             imageResource = R.mipmap.tab_icon_search_nor
                         }
                         textView {
-                            text = "搜索"
+                            text = resources.getString(R.string.common_search)
                             textSize = 15f
                             textColor = Color.parseColor("#FF666666")
                         }.lparams(wrapContent, wrapContent){
@@ -82,7 +82,7 @@ class PainterMainTitle: Fragment() {
                     linearLayout {
                         gravity = Gravity.CENTER_VERTICAL
                         textView {
-                            text = "排序"
+                            text = resources.getString(R.string.common_sort)
                             textSize = 15f
                             textColor= Color.parseColor("#FF333333")
                         }
@@ -100,7 +100,7 @@ class PainterMainTitle: Fragment() {
                     linearLayout {
                         gravity = Gravity.CENTER_VERTICAL
                         textView {
-                            text = "筛选"
+                            text = resources.getString(R.string.common_srceen)
                             textSize = 15f
                             textColor= Color.parseColor("#FF333333")
                         }

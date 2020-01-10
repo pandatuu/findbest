@@ -96,7 +96,7 @@ class PainterScreenType : Fragment() {
                                 id = index
                                 backgroundColor = Color.parseColor("#FFFF7C00")
                                 textView {
-                                    text = "全部"
+                                    text = resources.getString(R.string.srceen_all)
                                     textSize = 12f
                                     textColor = Color.parseColor("#FF555555")
                                 }.lparams {
@@ -117,7 +117,7 @@ class PainterScreenType : Fragment() {
                                             Color.parseColor("#FFF8F8F8")
                                     }
                                     backgroundColor = Color.parseColor("#FFFF7C00")
-                                    screenAll.clickType("全部")
+                                    screenAll.clickType(resources.getString(R.string.srceen_all))
                                 }
                             }.lparams(wrapContent, dip(30)) {
                                 leftMargin = dip(10)
@@ -137,7 +137,7 @@ class PainterScreenType : Fragment() {
                                 id = index + 2
                                 backgroundColor = Color.parseColor("#FFF8F8F8")
                                 textView {
-                                    text = "更多"
+                                    text = resources.getString(R.string.srceen_more)
                                     textSize = 12f
                                     textColor = Color.parseColor("#FF555555")
                                 }.lparams {
@@ -162,7 +162,7 @@ class PainterScreenType : Fragment() {
                                         typeSomeView!!.backgroundColor =
                                             Color.parseColor("#FFF8F8F8")
                                     }
-                                    screenAll.clickType("更多")
+                                    screenAll.clickType(resources.getString(R.string.srceen_more))
                                 }
                             }.lparams(wrapContent, dip(30)) {
                                 leftMargin = dip(10)
@@ -187,7 +187,7 @@ class PainterScreenType : Fragment() {
                 backgroundColor = Color.WHITE
                 linearLayout {
                     textView {
-                        text = "类型"
+                        text = resources.getString(R.string.srceen_type)
                         textSize = 17f
                         textColor = Color.parseColor("#FF222222")
                     }.lparams {

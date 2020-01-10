@@ -152,7 +152,7 @@ class PainterSearchList : Fragment(){
             if (it.code() in 200..299) {
                 val array = it.body()!!.data
                 if (array.size() == 0) {
-                    toast("没有数据啦...")
+                    toast(resources.getString(R.string.common_no_list_data))
                     return
                 }
                 nowPage = page

@@ -36,7 +36,8 @@ class PainterSort: Fragment() {
 
     private lateinit var sortClick:SortClick
     lateinit var mPerferences: SharedPreferences
-    private var mSortList = arrayListOf("系统推荐","入驻日期","画师星级","完成项目")
+    private var mSortList = arrayListOf(resources.getString(R.string.sort_first),
+        resources.getString(R.string.sort_second),resources.getString(R.string.sort_third),resources.getString(R.string.sort_forth))
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -68,7 +69,7 @@ class PainterSort: Fragment() {
                         linearLayout {
                             backgroundResource = R.drawable.ffe4e4e4_bottom_line
                             textView {
-                                text = "排序"
+                                text = resources.getString(R.string.common_sort)
                                 textSize = 17f
                                 textColor = Color.parseColor("#FF222222")
                             }.lparams(wrapContent, wrapContent){
@@ -78,48 +79,6 @@ class PainterSort: Fragment() {
                         }.lparams(matchParent, dip(56))
                         linearLayout {
                             flow = flowLayout {
-                                //                                linearLayout {
-//                                    backgroundColor = Color.parseColor("#FFFF7C00")
-//                                    gravity = Gravity.CENTER
-//                                    textView {
-//                                        text = "系统推荐"
-//                                        textSize = 12f
-//                                        textColor = Color.parseColor("#FFFFFF")
-//                                    }
-//                                }.lparams(dip(68),dip(30))
-//                                linearLayout {
-//                                    backgroundColor = Color.parseColor("#FFFFFF")
-//                                    gravity = Gravity.CENTER
-//                                    textView {
-//                                        text = "入驻日期"
-//                                        textSize = 12f
-//                                        textColor = Color.parseColor("#FF555555")
-//                                    }
-//                                }.lparams(dip(68),dip(30)){
-//                                    leftMargin = dip(5)
-//                                }
-//                                linearLayout {
-//                                    backgroundColor = Color.parseColor("#FFFFFF")
-//                                    gravity = Gravity.CENTER
-//                                    textView {
-//                                        text = "画师星级"
-//                                        textSize = 12f
-//                                        textColor = Color.parseColor("#FF555555")
-//                                    }
-//                                }.lparams(dip(68),dip(30)){
-//                                    leftMargin = dip(5)
-//                                }
-//                                linearLayout {
-//                                    backgroundColor = Color.parseColor("#FFFFFF")
-//                                    gravity = Gravity.CENTER
-//                                    textView {
-//                                        text = "完成项目"
-//                                        textSize = 12f
-//                                        textColor = Color.parseColor("#FF555555")
-//                                    }
-//                                }.lparams(dip(68),dip(30)){
-//                                    leftMargin = dip(5)
-//                                }
                             }.lparams{
                                 topMargin = dip(12)
                             }

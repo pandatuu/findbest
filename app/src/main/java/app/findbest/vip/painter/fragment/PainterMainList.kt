@@ -9,6 +9,7 @@ import android.view.ViewGroup
 import android.widget.LinearLayout
 import androidx.fragment.app.Fragment
 import androidx.viewpager.widget.ViewPager
+import app.findbest.vip.R
 import app.findbest.vip.painter.adapter.PainterAdapter
 import app.findbest.vip.utils.tabLayout
 import com.google.android.material.tabs.TabLayout
@@ -55,8 +56,8 @@ class PainterMainList: Fragment() {
 
     private fun createV(): View {
         val listTitle = ArrayList<String>()
-        listTitle.add("个人画师")
-        listTitle.add("公司团队")
+        listTitle.add(resources.getString(R.string.painter_of_person))
+        listTitle.add(resources.getString(R.string.painter_of_team))
         personList = PainterPersonList.newInstance(mContext)
         companyList = PainterCompanyList.newInstance(mContext)
         val datas = ArrayList<Fragment>()

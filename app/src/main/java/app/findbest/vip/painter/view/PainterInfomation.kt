@@ -49,10 +49,13 @@ class PainterInfomation : BaseActivity(), PainterInfoPictureAdapter.ImageClick, 
     private var bigImage: BigImage2? = null
     val mainId = 1
     var nowPage = 0
+    private var systemCountry = "" 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        val mPerferences: SharedPreferences = PreferenceManager.getDefaultSharedPreferences(this@GuideView)
+        systemCountry = mPerferences.getString("systemCountry", "")
         val userId = intent.getStringExtra("userId") ?: ""
 
         frameLayout {
@@ -176,20 +179,18 @@ class PainterInfomation : BaseActivity(), PainterInfoPictureAdapter.ImageClick, 
             val retrofitUils =
                 RetrofitUtils(this@PainterInfomation, resources.getString(R.string.developmentUrl))
             val it = retrofitUils.create(PainterApi::class.java)
-                .getPainterInfo(id, "zh", 1)
+                .getPainterInfo(id, systemCountry, 1)
                 .subscribeOn(Schedulers.io())
                 .awaitSingle()
             if (it.code() in 200..299) {
                 val model = it.body()!!
                 nowPage = 1
                 setInfo(model)
-
                 val imageList = arrayListOf<String>()
                 model.works.data.forEach {
                     imageList.add(it.asJsonObject["url"].asString)
                 }
                 painterInfoPic?.resetData(arrayListOf(imageList))
-
             }
         } catch (throwable: Throwable) {
             if (throwable is HttpException) {
@@ -203,20 +204,17 @@ class PainterInfomation : BaseActivity(), PainterInfoPictureAdapter.ImageClick, 
             val retrofitUils =
                 RetrofitUtils(this@PainterInfomation, resources.getString(R.string.developmentUrl))
             val it = retrofitUils.create(PainterApi::class.java)
-                .getPainterInfo(id, "zh", page)
+                .getPainterInfo(id, systemCountry, page)
                 .subscribeOn(Schedulers.io())
                 .awaitSingle()
             if (it.code() in 200..299) {
                 val model = it.body()!!
                 nowPage = page
-//                setInfo(model)
-
                 val imageList = arrayListOf<String>()
                 model.works.data.forEach {
                     imageList.add(it.asJsonObject["url"].asString)
                 }
                 painterInfoPic?.addData(arrayListOf(imageList))
-
             }
         } catch (throwable: Throwable) {
             if (throwable is HttpException) {
