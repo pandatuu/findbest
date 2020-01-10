@@ -50,14 +50,14 @@ class ChooseCountry : Fragment() {
                     relativeLayout {
                         backgroundColor = Color.parseColor("#FFF6F6F6")
                         textView {
-                            text = "请选择您的国家"
+                            text = resources.getString(R.string.common_choose_country)
                             textSize = 16f
                             textColor = Color.parseColor("#FF333333")
                         }.lparams(wrapContent, wrapContent){
                             centerInParent()
                         }
                         textView {
-                            text = "确定"
+                            text = resources.getString(R.string.common_determine)
                             textSize = 14f
                             textColor = Color.parseColor("#FFF87A1B")
                         }.lparams(wrapContent, wrapContent){
@@ -68,7 +68,8 @@ class ChooseCountry : Fragment() {
                     }.lparams(matchParent,dip(44))
                     linearLayout {
                         orientation = LinearLayout.VERTICAL
-                        val countryList = arrayListOf("日本","中国","韩国")
+                        val countryList = arrayListOf(resources.getString(R.string.register_country_japan),
+                            resources.getString(R.string.register_country_china),resources.getString(R.string.register_country_korea))
                         val codeList = arrayListOf("81","86","82")
                         for (index in countryList.indices){
                                 linearLayout {

@@ -38,7 +38,7 @@ class NullDataPageFragment: Fragment() {
                         imageResource = R.mipmap.null_data
                     }
                     textView {
-                        text = "暂时没有相关内容哦！"
+                        text = resources.getString(R.string.common_no_data)
                         textSize = 14f
                         textColor = Color.parseColor("#FF5C5C5C")
                     }.lparams{

@@ -1,6 +1,8 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <string name="app_name">findbest</string>
 
+    <!-- 推送国际化 -->
+    <string name="notification_text">You have a new message</string>
 
     <!-- Request permission start -->
     <string name="rationale_record_voice">This app needs access microphone to record voice.</string>
@@ -8,7 +10,185 @@
     <string name="rationale_camera">This app needs access camera.！！！</string>
     <!-- Request permission end -->
 
-    <!--Terminal-->
+    <!-- 通用 -->
+    <string name="common_toolbar_back">返回</string>
+    <string name="common_cancel">取消</string>
+    <string name="common_search">搜索</string>
+    <string name="common_next">下一步</string>
+    <string name="common_submit">提交</string>
+    <string name="common_determine">确定</string>
+    <string name="common_reset">重置</string>
+    <string name="common_not_somethings">无</string>
+    <string name="common_no_choose">未选择</string>
+    <string name="common_agree">同意</string>
+    <string name="common_refuse">拒绝</string>
+    <string name="common_no_data">暂时没有相关内容哦！</string>
+    <string name="common_choose_country">请选择您的国家！</string>
+    <string name="common_no_list_data">没有数据了...</string>
+    <!-- 通用-筛选 -->
+    <string name="common_srceen">筛选</string>
+    <string name="srceen_type">类型</string>
+    <string name="srceen_style">风格</string>
+    <string name="srceen_all">全部</string>
+    <string name="srceen_more">更多</string>
+    <!-- 通用-排序 -->
+    <string name="common_sort">排序</string>
+    <string name="sort_first">系统推荐</string>
+    <string name="sort_second">入驻日期</string>
+    <string name="sort_third">画师星级</string>
+    <string name="sort_forth">完成项目</string>
+    <!-- 通用-网络提示 -->
+    <string name="common_tips_token_overdue">token过期，需要重新登录</string>
+    <string name="common_tips_accountpwd_wrong">账号或密码错误</string>
+    <string name="common_tips_user_uncompleted">该账户未完善信息</string>
+    <string name="common_tips_send_vcode">已发送验证码</string>
+    <string name="common_tips_phone_noexist">手机号不存在</string>
+    <string name="common_tips_update_success">修改成功</string>
+    <string name="common_tips_vcode_wrong">验证码错误</string>
+    <string name="common_tips_phone_exist">手机号已经注册过了</string>
+    <string name="common_tips_account_exist">账号已存在</string>
+    <!-- 通用-登录注册的错误提示 -->
+    <string name="common_input_phone">请输入手机号码</string>
+    <string name="common_input_right_phone">请输入10~11位手机号</string>
+    <string name="common_input_vcode">请输入验证码</string>
+    <string name="common_input_pwd">请输入密码</string>
+    <string name="common_input_pwd_again">请再次输入密码</string>
+    <string name="common_input_right_pwd">请输入8~16位数字、大小写字母、符号中的任意两种以上（含）</string>
+    <string name="common_input_new_pwd">请输入新密码</string>
+    <string name="common_input_new_pwd_again">请再次输入新密码</string>
+    <string name="common_input_pwd_disaccord">两次输入密码不一致</string>
+    <string name="common_countdown_rest">冷却中...</string>
+    <string name="common_get_vcode">获取</string>
+
+    <!-- 登录 -->
+    <string name="login_title">登录</string>
+    <string name="login_forget_pwd">忘记密码？</string>
+    <string name="login_reset_pwd">重置密码</string>
+
+    <!-- 注册 -->
+    <string name="register_title">注册</string>
+    <!-- 注册-设置国家 -->
+    <string name="register_country">选择国家和地区</string>
+    <string name="register_country_china">选择国家和地区</string>
+    <string name="register_country_japan">选择国家和地区</string>
+    <string name="register_country_korea">选择国家和地区</string>
+    <!-- 注册-设置角色 -->
+    <string name="register_identity">选择角色与主体</string>
+    <string name="register_identity_project">项目方</string>
+    <string name="register_identity_producer">制作方</string>
+    <string name="register_identity_team">团队</string>
+    <string name="register_identity_person">个人</string>
+    <!-- 注册-设置邮箱 -->
+    <string name="register_email">输入联系方式</string>
+    <string name="register_email_hint">请输入电子邮箱，以便及时联系您</string>
+    <string name="register_input_email">请填写邮箱地址</string>
+    <string name="register_input_email_wrong">邮箱格式不正确</string>
+    <!-- 注册-设置昵称 -->
+    <string name="register_team_nickname">设置团队名称</string>
+    <string name="register_person_nickname">设置个人名称</string>
+    <string name="register_done">完成注册</string>
+    <string name="register_input_nickname">请填写昵称</string>
+    <string name="register_input_nickname_wrong">昵称格式不正确</string>
+    <!-- 注册-勾选协议 -->
+    <string name="register_agreement">请勾选协议</string>
+    <string name="register_i_agreement">我同意</string>
+    <string name="register_privacy_protocol">隐私协议</string>
+    <string name="register_and">和</string>
+    <string name="register_service_declaration">服务申明</string>
+    <!-- 注册-协议页面 -->
+    <string name="register_agreement_url">隐私服务协议</string>
+
+    <!-- 项目 -->
+    <!-- 项目-首页 -->
+    <string name="project_title">项目</string>
+    <!-- 项目-项目详情 -->
+    <string name="project_fragment_first">项目信息</string>
+    <string name="project_fragment_second">应征画师</string>
+    <string name="project_info_button">我要应征</string>
+    <string name="project_info_production_cost">制作费用</string>
+    <string name="project_info_material_deadline">截稿日期</string>
+    <string name="project_info_currency">结算币种</string>
+    <string name="project_info_unit_price">个人单价</string>
+    <string name="project_info_paintings_num">原画数量</string>
+    <string name="project_info_source_tax">源泉税率</string>
+    <string name="project_info_total_sum">总金额</string>
+    <string name="project_info_evaluation_bonus">评价奖金</string>
+    <string name="project_info_satisfied">满意</string>
+    <string name="project_info_very_satisfied">非常满意</string>
+    <string name="project_info_beyond_expectations">超越期待</string>
+    <string name="project_info_more_satisfied">惊为天人</string>
+    <string name="project_info_demand_details">需求详情</string>
+    <string name="project_info_manuscripts_type">稿件类型</string>
+    <string name="project_info_style">风格</string>
+    <string name="project_info_size">规格</string>
+    <string name="project_info_requirement">试稿要求</string>
+    <string name="project_info_not_test">无需试稿</string>
+    <string name="project_info_paid_test">有偿试稿</string>
+    <string name="project_info_not_paid_test">无偿试稿</string>
+    <string name="project_info_open_authority">公开权限</string>
+    <string name="project_info_open_not_authority">不公开</string>
+    <string name="project_info_open_only_person">只允许个人</string>
+    <string name="project_info_open_only_company">只允许公司</string>
+    <string name="project_info_open_authority_all">允许个人和公司</string>
+    <string name="project_info_color_mode">颜色模式</string>
+    <string name="project_info_no_color_mode">不限</string>
+    <string name="project_info_format">稿件格式</string>
+    <string name="project_info_other_format">其他格式</string>
+    <string name="project_info_conception">稿件构思</string>
+    <string name="project_info_supplementary">补充内容</string>
+    <string name="project_info_reference_legend">参考图例</string>
+    <string name="project_info_proportion">各阶段费用占比及交稿时间</string>
+    <string name="project_info_making">1 开始制作</string>
+    <string name="project_info_draft">草稿</string>
+    <string name="project_info_draft_acceptance">2 草稿验收</string>
+    <string name="project_info_line">线稿</string>
+    <string name="project_info_acceptance_line">3 线稿验收</string>
+    <string name="project_info_coloring">上色</string>
+    <string name="project_info_acceptance_coloring">4 上色验收</string>
+    <!-- 项目-项目应征 -->
+    <string name="enlist_edittext_hint">请输入项目说明与备注</string>
+    <string name="enlist_submit_button">提交应征作品</string>
+    <string name="enlist_edit">编辑</string>
+    <string name="enlist_done">完成</string>
+    <!-- 项目-应征弹窗 -->
+    <string name="enlist_status_one">您应征的项目已被删除或不存在，请刷新页面后再试！</string>
+    <string name="enlist_status_two">您应征的项目已被委托或取消，请刷新页面后再试！</string>
+    <string name="enlist_status_three">您当前帐号为项目方，无法应征该项目！</string>
+    <string name="enlist_status_four">当前项目限制应征画师国家为%1$s，您无法应征此项目！</string>
+    <string name="enlist_status_five">您已应征过该项目，请勿重复应征！</string>
+    <string name="enlist_status_six">个人画师只能同时进行2个任务，请先将正在进行的任务提交并验收后才可以接更多的任务喔！</string>
+    <string name="enlist_status_seven">您当前帐号为项目方，无法应征该项目！</string>
+    <string name="enlist_status_eight">为了保证画稿质量及双方权益，平台需要您先进行画师认证，前往web端认证</string>
+    <string name="enlist_status_nine">本平台仅限VIP用户应征，您当前还不是VIP用户,前往web端购买</string>
+    <string name="enlist_least_one">至少上传一个作品</string>
+    <string name="enlist_bigger_num">最多选择4张图片</string>
+    <string name="enlist_success">请等候项目方筛选！如果应征成功平台将会给您发送系统消息请注意查看！</string>
+    <string name="determine_submit">提交确定</string>
+    <string name="enlist_tip">提示</string>
+    <string name="enlist_know">知道了</string>
+
+    <!-- 案例 -->
+    <!-- 案例-首页 -->
+    <string name="instance_title">案例</string>
+    <!-- 案例-案例详情 -->
+    <string name="instance_invite_painter">邀请画师</string>
+    <!-- 案例-邀请画师 -->
+    <string name="instance_chose_project">选择项目</string>
+    <string name="instance_send_invitation">发送邀请</string>
+    <!-- 案例-邀请弹窗 -->
+    <string name="instance_invite_success">发送邀请成功</string>
+    <string name="instance_invite_wait">请等候对方同意</string>
+
+    <!-- 画师 -->
+    <!-- 画师-首页 -->
+    <string name="painter_title">画师</string>
+    <string name="painter_of_person">个人画师</string>
+    <string name="painter_of_team">公司团队</string>
+    <string name="painter_list_anonymous_name">******(匿名)</string>
+    <!-- 画师-画师详情 -->
+
+    <!-- 我的 -->
+    <!-- 我的首页 -->
     <string name="tl_title">我的</string>
     <string name="tl_share">分享</string>
     <string name="tl_application_items">应征项目</string>
@@ -26,30 +206,78 @@
     <string name="tl_feedback">意见反馈</string>
     <string name="tl_loginout">账户退出</string>
     <string name="tl_about_us">关于我们</string>
-
-    <!--UsActionbar-->
+    <!-- 我的-修改头像 -->
+    <string name="h_title">个人头像</string>
+    <string name="h_update">修改</string>
+    <!-- 我的-我的项目列表 -->
+    <string name="my_project_list">我的项目</string>
+<!--    <string name="my_project_list">全部</string> 用上面有的-->
+<!--    <string name="project_status">截稿日期</string>  用上面有的-->
+    <string name="project_status_release_stage">发布阶段</string>
+    <string name="project_status_produce_stage">制作阶段</string>
+    <string name="project_status_transaction_done">交易完成</string>
+    <string name="project_status_zero">待发布</string>
+    <string name="project_status_one">收到邀请待确认</string>
+    <string name="project_status_two">应征中</string>
+    <string name="project_status_three">委托中</string>
+    <string name="project_status_four">制作中</string>
+    <string name="project_status_five">项目终止</string>
+    <string name="project_status_six">结算阶段</string>
+    <string name="project_status_eight">应征失败</string>
+    <string name="project_status_ten">待审核</string>
+    <string name="project_status_eleven">审核失败</string>
+    <string name="project_status_fortythree">草稿制作中</string>
+    <string name="project_status_fortysix">草稿验收中</string>
+    <string name="project_status_sixtythree">线稿制作中</string>
+    <string name="project_status_sixtysix">线稿验收中</string>
+    <string name="project_status_eightythree">上色制作中</string>
+    <string name="project_status_eightysix">上色验收中</string>
+    <string name="project_status_onehundred">验收通过</string>
+    <string name="project_status_onehundred_six">账单待确认</string>
+    <string name="project_status_onehundred_twentythree">账单待付款</string>
+    <string name="project_status_twohundred">已完成</string>
+    <string name="project_status_twohundred_thirtyone">发布中</string>
+    <string name="project_status_twohundred_thirtytwo">招募中</string>
+    <string name="project_status_twohundred_thirtythree">委托待接受</string>
+    <!-- 我的-我的项目-项目详情 -->
+    <string name="my_project_details">项目信息</string>
+    <!-- 我的-我的项目-应征画师 -->
+    <string name="my_project_enlist">应征画师</string>
+    <string name="my_project_enlist_leavingmessage">画师留言</string>
+    <string name="my_project_enlist_chat">聊一聊</string>
+    <string name="my_project_enlist_senddelegation">发送委托</string>
+<!--    <string name="my_project_enlist_leavingmessage">拒绝</string> 用上面有的-->
+    <string name="my_project_enlist_release_commission">请前往web端发布委托</string>
+    <!-- 我的-我的项目-项目邀请 -->
+    <string name="my_project_invite">我的邀请</string>
+    <string name="my_project_invite_cancel">取消邀请</string>
+    <string name="my_project_invite_await_agree">待同意</string>
+    <string name="my_project_invite_already_agree">已同意</string>
+    <string name="my_project_invite_already_cancel">已拒绝</string>
+    <string name="my_project_invite_isagree">邀请您加入本项目，您是否同意？</string>
+    <string name="my_project_invite_join">已加入该项目</string>
+    <string name="my_project_invite_refuse_join">已拒绝加入该项目</string>
+    <string name="my_project_invite_quilt_refuse_join">已被拒绝加入该项目</string>
+    <string name="my_project_invite_refuse">请选择您的拒绝理由</string>
+    <string name="my_project_invite_refuse_one">价格太低</string>
+    <string name="my_project_invite_refuse_two">没时间</string>
+    <string name="my_project_invite_refuse_three">不擅长</string>
+    <string name="my_project_invite_refuse_four">其他原因</string>
+    <!-- 我的-帮助 -->
+    <string name="hb_title">制作方使用帮助</string>
+    <!-- 我的-反馈 -->
+    <string name="fb_title">意见反馈</string>
+    <string name="fb_hint">请输入您要反馈的内容</string>
+    <string name="fb_toast">感谢您的反馈</string>
+    <string name="liNetError">网络出错，请稍后</string>
+    <!-- 我的-关于我们 -->
     <string name="us_title">关于我们</string>
-
-    <!--UsMain-->
     <string name="us_prefix">致力于打造全球顶尖的</string>
     <string name="us_suffix">原画创作交易平台</string>
     <string name="us_web">平台网址</string>
     <string name="us_phone">客服电话</string>
 
-    <!--FbActionbar-->
-    <string name="fb_title">意见反馈</string>
 
-    <!--FbMain-->
-    <string name="fb_hint">请输入您要反馈的内容</string>
-    <string name="fb_submit">提交</string>
-    <string name="liNetError">网络出错，请稍后</string>
-
-    <!--HpActionbar-->
-    <string name="hb_title">制作方使用帮助</string>
-
-    <!--HActionbar-->
-    <string name="h_title">个人头像</string>
-    <string name="h_update">修改</string>
     <!--底部菜单-->
     <string name="mine_wode">我的</string>
     <string name="message_xiaoxi">消息</string>
@@ -65,15 +293,55 @@
     <string name="system_msg">系统消息</string>
     <string name="isRead">已读</string>
     <string name="notRead">未读</string>
+    <!--消息 系统消息动态国际化-->
+    <string name="user_audit_remind"> %1$s 欢迎注册 Findbest, (发布项目|接包)之前需要先进行资料认证。%2$s</string>
+    <string name="user_audit_results">亲爱的 %1$s , 你的资料认证已经通过, 快去 (发布|接) 项目吧。%2$s</string>
+    <string name="user_audit_reject">亲爱的 %1$s, 你的资料认证未通过, 原因: %2$s。%3$s</string>
+    <string name="user_cashing_results">亲爱的 %1$s, 你的提现申请已通过, 财务会尽快将提现金额支付到你预留的银行账户中。</string>
+    <string name="user_cashing_reject">亲爱的 %1$s, 你的提现申请未通过, 原因: %2$s。</string>
+    <string name="user_works_pass">亲爱的 %1$s, 你的作品 %2$s 通过了系统审核。</string>
+    <string name="user_works_reject">亲爱的 %1$s, 你的作品 %2$s 未通过系统审核，原因：%3$s。</string>
+    <string name="user_account_disable">亲爱的 %1$s, 你的账号被禁用，原因：%2$s。</string>
+    <string name="system_notify">【系统公告】因违反系统规定，对以下账号进行 %1$s 封禁：%2$s</string>
+    <string name="prepay_pass">亲爱的 %1$s, 你的垫付申请已通过,垫付金额已支付到你的账户中。</string>
+    <string name="prepay_reject">亲爱的 %1$s, 你的垫付申请未通过, 原因: %2$s。</string>
+    <string name="user_invite_registered">您邀请的用户\'%1$s\'已经注册！</string>
+    <string name="user_invite_certification">您邀请的用户\'%1$s\'已经认证成功！</string>
+    <string name="user_invite_success">恭喜您成功邀请注册用户 %1$s 人！系统已赠送您 %2$s 个月会员时长！</string>
+    <string name="user_pass_give_vip">恭喜您认证成功！同时赠送您 %1$s 个月会员时长！</string>
+    <string name="user_vip_end">尊贵的会员 %1$s 您好，因您的系统余额不足，无法再进行会员的自动续费操作，会员已于 %2$s 结束，请及时充值续费，谢谢！</string>
+    <string name="user_vip_auto_renew">尊贵的会员 %1$s 您好，系统已于%2$s进行自动续费操作，会员延期至 %3$s 结束，感谢您的支持！</string>
+    <!-- 系统消息 项目相关 -->
+    <string name="project_publish_pass">亲爱的 %1$s, 你的项目: %2$s 申请发布成功。%3$s</string>
+    <string name="project_publish_reject">亲爱的 %1$s, 你的项目: %2$s 申请发布失败, 原因: %3$s。%4$s</string>
+    <string name="project_invite">%1$s 邀请你应征项目: %2$s。%3$s</string>
+    <string name="invite_pass">%1$s 同意了你的项目要请。</string>
+    <string name="invite_reject">%1$s} 拒绝了你的项目要请，原因是：%2$s。</string>
+    <string name="project_apply_create">%1$s} 应征了你的项目 %2$s</string>
+    <string name="project_apply_refuse">%1$s 拒绝了你应征项目 %2$s，原因是：%3$s。</string>
+    <string name="provider_project_apply_cancel">%1$s 取消了应征您的 %2$s 项目, 原因: %3$s</string>
+    <string name="project_apply">亲爱的 %1$s, 你收到一份 %2$s 发来的 %3$s 项目的委托书。%4$s</string>
+    <string name="project_apply_reject">%1$s 拒绝了你发送的 %2$s 项目的委托书，原因：%3$s 。</string>
+    <string name="project_apply_pass">%1$s 接受了你发送的 %2$s 项目的委托书，项目进入 %3$s 阶段。</string>
+    <string name="consumer_project_apply_cancel">%1$s 取消了 %2$s 项目的委托</string>
+    <string name="project_delivery">%1$s 对 %2$s 项目的 %3$s 阶段进行了第 %4$s 提交。%5$s</string>
+    <string name="project_delivery_pass">%1$s 验收并通过了你对 %2$s 项目的 %3$s 阶段的第 %4$s次提交。</string>
+    <string name="project_delivery_reject">%1$s 验收并拒绝了你对 %2$s 项目的 %3$d 阶段的第 %4$d 次提交，原因：%5$s。</string>
+    <string name="project_delivery_next">%1$s 验收并通过了你对 %2$s 项目的 %3$d 阶段的第 %4$d 次提交，项目进入 %5$d 阶段。</string>
+    <string name="project_delivery_complete">%1$s 验收完成 %2$s 项目并给与评价 （%3$s 奖励 + %4$s %5$s）,备注：%6$s。</string>
+    <string name="provider_project_stop_apply">%1$s 申请中止 %2$s 的制作。原因：%3$s。</string>
+    <string name="consumer_project_stop_pass">%1$s 同意中止 %2$s 的制作，项目进入验收完成。</string>
+    <string name="consumer_project_stop_reject">%1$s 拒绝中止 %2$s 的制作，原因：%3$s。</string>
+    <string name="consumer_project_stop_apply">%1$s 申请中止 %2$s 的制作。原因：%3$s。</string>
+    <string name="provider_project_stop_pass">%1$s 同意中止 %2$s 的制作，项目进入验收完成。</string>
+    <string name="provider_project_stop_reject">%1$s 拒绝中止 %2$s 的制作，原因：%3$s。</string>
+    <string name="provider_bill_send">%1$s 发送 %2$s 项目的账单。%3$s</string>
+    <string name="consumer_bill_pass">%1$s 同意了你发送的 %2$s 项目的账单。%3$s</string>
+    <string name="consumer_bill_reject">%1$s 拒绝了你发送的 %2$s 项目的账单，原因：%3$s。</string>
+    <string name="consumer_bill_pay">%1$s 支付了你发送的 %2$s 项目的账单。</string>
+    <string name="consumer_evaluate">%1$s 对你和 %2$s 项目进行了评价。%3$s</string>
+    <string name="provider_evaluate">%1$s 对你和 %2$s 项目进行了评价。%3$s</string>
     <!--消息 聊天-->
     <string name="use_translate">启用翻译</string>
     <string name="use_disTranslate">停用翻译</string>
-
-    <!--邀请画师-->
-    <string name="invite_painter">邀请画师</string>
-    <string name="send_invitation">发送邀请</string>
-    <string name="chose_project">选择项目</string>
-    <string name="sample">案例</string>
-
-
 </resources>

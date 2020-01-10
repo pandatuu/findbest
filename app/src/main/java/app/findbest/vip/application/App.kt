@@ -67,7 +67,7 @@ class App : Application() {
     var mVideoListener: VideoListener? = null
     private var messageChatRecordListFragment: MessageChatRecordListFragment? = null
 
-    var sdf = SimpleDateFormat("yyyy年MM月dd日")
+    var sdf = SimpleDateFormat("yyyy-MM-dd")
     var year = sdf.format(Date()).substring(0, 4)
     private var myId = ""
     private var videoHisName = ""
