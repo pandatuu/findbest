@@ -141,7 +141,7 @@ public interface IMessage {
      * @return text
      */
     String getText();
-
+    String getTranslaText();
     String getSize();
 
     /**

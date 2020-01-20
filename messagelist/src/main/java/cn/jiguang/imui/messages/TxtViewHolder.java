@@ -56,7 +56,7 @@ public class TxtViewHolder<MESSAGE extends IMessage> extends BaseMessageViewHold
     public void onBind(final MESSAGE message) {
 
         mMsgTv.setText(SpannableStringUtil.stringToSpannableString(mContext, message.getText()));
-        mTranslateMsgTv.setText(SpannableStringUtil.stringToSpannableString(mContext, message.getText()));
+        mTranslateMsgTv.setText(message.getTranslaText());
         if(message.getEnable()){
             mTranslateMsgTv.setVisibility(View.VISIBLE);
         }else{
@@ -78,7 +78,11 @@ public class TxtViewHolder<MESSAGE extends IMessage> extends BaseMessageViewHold
 
 
         if (isAvatarExists && mImageLoader != null) {
-            mImageLoader.loadAvatarImage(mAvatarIv, message.getFromUser().getAvatarFilePath(), "CIRCLE");
+            if(message.getFromUser().getAvatarFilePath().equals("000000000000000000000000")){
+                mAvatarIv.setImageResource(R.mipmap.message_ico_message_nor);
+            }else{
+                mImageLoader.loadAvatarImage(mAvatarIv, message.getFromUser().getAvatarFilePath(), "CIRCLE");
+            }
         } else if (mImageLoader == null) {
             mAvatarIv.setVisibility(View.GONE);
         }

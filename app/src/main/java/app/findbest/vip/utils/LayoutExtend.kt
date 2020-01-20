@@ -2,12 +2,15 @@ package app.findbest.vip.utils
 
 import android.content.Context
 import android.view.ViewManager
+import androidx.appcompat.widget.AppCompatEditText
+import androidx.appcompat.widget.AppCompatTextView
 import androidx.recyclerview.widget.RecyclerView
 import cn.jiguang.imui.view.RoundImageView
 import cn.jiguang.imui.view.ShapeImageView
 import com.github.chrisbanes.photoview.PhotoView
 import com.google.android.material.tabs.TabLayout
 import com.scwang.smart.refresh.layout.SmartRefreshLayout
+import com.zyyoona7.wheel.WheelView
 import org.jetbrains.anko.AnkoViewDslMarker
 
 
@@ -52,6 +55,12 @@ inline fun ViewManager.smartRefreshLayout(init: (@AnkoViewDslMarker SmartRefresh
 
 inline fun ViewManager.photoView(init: (@AnkoViewDslMarker PhotoView).() -> Unit): PhotoView {
     return ankoView({ ctx: Context -> PhotoView(ctx) }, theme = 0) { init() }
+}
+inline fun ViewManager.appCompatTextView(init: (@AnkoViewDslMarker AppCompatTextView).() -> Unit): AppCompatTextView {
+    return ankoView({ ctx: Context -> AppCompatTextView(ctx) }, theme = 0) { init() }
+}
+inline fun ViewManager.wheelView(init: (@AnkoViewDslMarker WheelView<Any>).() -> Unit): WheelView<Any> {
+    return ankoView({ ctx: Context -> WheelView(ctx) }, theme = 0) { init() }
 }
 //inline fun ViewManager.ptrLayout(
 //    ctx: Context = AnkoInternals.getContext(this),

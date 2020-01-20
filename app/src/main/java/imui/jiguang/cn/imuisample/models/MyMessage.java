@@ -231,6 +231,11 @@ public class MyMessage implements IMessage {
     }
 
     @Override
+    public String getTranslaText() {
+        return translateText;
+    }
+
+    @Override
     public String getMediaFilePath() {
         return mediaFilePath;
     }

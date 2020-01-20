@@ -24,18 +24,13 @@ public class JitsiMeetActivitySon extends FragmentActivity implements JitsiMeetA
     public static final String ACTION_JITSI_MEET_CONFERENCE = "org.jitsi.meet.CONFERENCE";
     public static final String JITSI_MEET_CONFERENCE_OPTIONS = "JitsiMeetConferenceOptions";
 
-    private static  MessageListActivity thiscontext;
-    private static  String thisInterviewId;
 
     private static int leaveType ;
 
     public JitsiMeetActivitySon() {
     }
 
-    public static void launch(Context context, JitsiMeetConferenceOptions options,String interviewId) {
-
-        thiscontext=(MessageListActivity)context;
-        thisInterviewId=interviewId;
+    public static void launch(Context context, JitsiMeetConferenceOptions options) {
 
 
         Intent intent = new Intent(context,JitsiMeetActivitySon.class);
@@ -55,7 +50,6 @@ public class JitsiMeetActivitySon extends FragmentActivity implements JitsiMeetA
         if (!this.extraInitialize()) {
             this.initialize();
         }
-        thiscontext.setVideoChatControllerListener(this);
     }
 
     public void finishVideo(int  type) {
@@ -154,7 +148,6 @@ public class JitsiMeetActivitySon extends FragmentActivity implements JitsiMeetA
         System.out.println("onConferenceTerminated");
 
         if(leaveType!=2){
-            thiscontext.sendMessageToHimToshutDownVideo(thisInterviewId);
             this.finishVideo(1);
         }
        

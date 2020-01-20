@@ -16,7 +16,8 @@ import android.widget.FrameLayout
 import androidx.fragment.app.Fragment
 import app.findbest.vip.R
 import app.findbest.vip.application.App
-import app.findbest.vip.instance.activity.InstanceSearchActivity
+import app.findbest.vip.instance.view.ChatSearchActivity
+import app.findbest.vip.message.activity.VideoResultActivity
 import app.findbest.vip.message.frament.MessageChatRecordListFragment
 import app.findbest.vip.message.listener.ChatRecord
 import app.findbest.vip.message.model.ChatRecordModel
@@ -29,6 +30,7 @@ import io.github.sac.Ack
 import io.github.sac.Socket
 import org.jetbrains.anko.*
 import org.jetbrains.anko.support.v4.UI
+import org.jetbrains.anko.support.v4.startActivity
 import org.json.JSONArray
 import org.json.JSONObject
 import java.text.SimpleDateFormat
@@ -129,6 +131,7 @@ class MessageChatRecordFragment : Fragment(),
 
                     }
 
+                    val isTran = json.getJSONObject("content").getBoolean("isTranslate")
                     val chatRecordModel =
                         ChatRecordModel(
                             uid,
@@ -137,14 +140,14 @@ class MessageChatRecordFragment : Fragment(),
                             if(item["uid"].toString() == "000000000000000000000000") "0" else avatar,
                             msg,
                             unreads,
-                            item.getJSONObject("lastMsg"),
+                            if(!item.isNull("lastMsg"))item.getJSONObject("lastMsg") else null,
+                            isTran,
                             companyName,
                             "",
                             createdTime
                         )
                     chatRecordList.add(chatRecordModel)
                 }
-
             }
             messageChatRecordListFragment.setRecyclerAdapter(chatRecordList)
 
@@ -199,12 +202,22 @@ class MessageChatRecordFragment : Fragment(),
 //        var groupArray: JSONArray = JSONArray()
         var map: MutableMap<String, Int> = mutableMapOf()
         lateinit var json: JSONObject
-        var groupId = 0;
-        fun newInstance(): MessageChatRecordFragment {
-            return MessageChatRecordFragment()
+        var groupId = 0
+        fun newInstance(context: Context): MessageChatRecordFragment {
+            val fragment = MessageChatRecordFragment()
+            fragment.mContext = context
+            return fragment
         }
     }
 
+    override fun onResume() {
+        super.onResume()
+//        val bool = App.getInstance()?.getInviteVideoBool()
+//        if(bool!!){
+//            startActivity<VideoResultActivity>()
+//            activity!!.overridePendingTransition(R.anim.right_in, R.anim.left_out)
+//        }
+    }
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -256,7 +269,7 @@ class MessageChatRecordFragment : Fragment(),
                         linearLayout {
                             //去搜索
                             setOnClickListener {
-                                val intent = Intent(activity, InstanceSearchActivity::class.java)
+                                val intent = Intent(activity, ChatSearchActivity::class.java)
                                 activity!!.startActivityForResult(intent, 101)
                                 activity!!.overridePendingTransition(
                                     R.anim.right_in,
@@ -279,7 +292,7 @@ class MessageChatRecordFragment : Fragment(),
                                 //去搜索
                                 setOnClickListener {
                                     val intent =
-                                        Intent(activity, InstanceSearchActivity::class.java)
+                                        Intent(activity, ChatSearchActivity::class.java)
                                     activity!!.startActivityForResult(intent, 22)
                                     activity!!.overridePendingTransition(
                                         R.anim.right_in,
@@ -287,7 +300,7 @@ class MessageChatRecordFragment : Fragment(),
                                     )
                                 }
                                 isFocusable = false
-                                hint = "搜索"
+                                hint = resources.getString(R.string.common_search)
                                 hintTextColor = Color.parseColor("#ff666666")
                                 backgroundColor = Color.TRANSPARENT
 

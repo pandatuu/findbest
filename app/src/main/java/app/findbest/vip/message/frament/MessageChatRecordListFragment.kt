@@ -76,6 +76,7 @@ class MessageChatRecordListFragment : Fragment(){
             intent.putExtra("companyName",item.companyName)
             intent.putExtra("hisName",item.userName)
             intent.putExtra("hislogo",item.avatar)
+            intent.putExtra("isTranslate",item.isTranslate)
 
             if(item.lastPositionId==null || "" == item.lastPositionId){
                 println("跳转到聊天界面之前,数据异常:缺少lastPositionId")

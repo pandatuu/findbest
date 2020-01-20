@@ -20,7 +20,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="全部"
+                android:text="@string/srceen_all"
                 android:textSize="16sp"
                 android:textColor="#FF333333"
                 android:layout_gravity="center_vertical"/>
@@ -36,7 +36,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="发布阶段"
+                android:text="@string/project_status_release_stage"
                 android:textSize="16sp"
                 android:textColor="#FF333333"
                 android:layout_gravity="center_vertical"/>
@@ -52,7 +52,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="制作阶段"
+                android:text="@string/project_status_produce_stage"
                 android:textSize="16sp"
                 android:textColor="#FF333333"
                 android:layout_gravity="center_vertical"/>
@@ -67,7 +67,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="交易完成"
+                android:text="@string/project_status_transaction_done"
                 android:textSize="16sp"
                 android:textColor="#FF333333"
                 android:layout_gravity="center_vertical"/>

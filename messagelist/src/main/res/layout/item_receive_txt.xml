@@ -61,11 +61,11 @@
                 android:paddingTop="6dp"
                 android:paddingBottom="6dp"
                 android:gravity="left"
-                android:textSize="14sp"
-                android:textColor="#333333"
+                android:textSize="13sp"
+                android:textColor="#FF333333"
                 android:layout_toRightOf="@id/aurora_iv_msgitem_avatar"
                 android:layout_marginTop="5dp"
-                android:background="@drawable/radius_button_white" />
+                android:background="#FFFFF2CC" />
         </LinearLayout>
     </RelativeLayout>
 </LinearLayout>

@@ -10,7 +10,8 @@ data class ChatRecordModel(
     var avatar:String,
     val massage:String,
     val number:Int,
-    val lastMsg: JSONObject,
+    val lastMsg: JSONObject?,
+    val isTranslate: Boolean,
     val companyName:String,
     val lastPositionId:String,
     val time:String
