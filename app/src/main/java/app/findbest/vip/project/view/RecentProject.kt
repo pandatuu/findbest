@@ -9,6 +9,7 @@ import android.view.Gravity
 import android.widget.*
 import app.findbest.vip.R
 import app.findbest.vip.commonfrgmant.NullDataPageFragment
+import app.findbest.vip.commonfrgmant.NullPicturesFragment
 import app.findbest.vip.project.api.ProjectApi
 import app.findbest.vip.project.fragment.RecentProjectImageList
 import app.findbest.vip.utils.*
@@ -29,7 +30,7 @@ class RecentProject : BaseActivity(), RecentProjectImageList.ClickImage {
     private var imageList = arrayListOf<String>()
     private lateinit var listFram: FrameLayout
     private lateinit var listFragment: RecentProjectImageList
-    private var nullData: NullDataPageFragment? = null
+    private var nullData: NullPicturesFragment? = null
     private val nullId = 2
 
     @SuppressLint("SetTextI18n")
@@ -135,8 +136,10 @@ class RecentProject : BaseActivity(), RecentProjectImageList.ClickImage {
                     }
                     listFragment.addItems(model)
                 }else{
-                    nullData = NullDataPageFragment.newInstance()
-                    supportFragmentManager.beginTransaction().add(nullId,nullData!!).commit()
+                    if(nullData==null){
+                        nullData = NullPicturesFragment.newInstance()
+                        supportFragmentManager.beginTransaction().replace(nullId,nullData!!).commit()
+                    }
                 }
             }
         } catch (throwable: Throwable) {

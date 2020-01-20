@@ -12,6 +12,7 @@ data class ProjectListModel(
     var commitAt: Long,
     var country: String,
     var styleList: JsonArray,
-    var minPrice: Float,
-    var maxPrice: Float
+    var payCurrency: String,
+    var minPrice: String,
+    var maxPrice: String
 ): Serializable

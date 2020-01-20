@@ -112,6 +112,11 @@ class PainterPersonList : Fragment() {
                             .getPainterList(1,5,1,1,mCategory,mStyle)//个人画师传1
                             .subscribeOn(Schedulers.io())
                             .awaitSingle()
+                    } else if (mStyle == 0 && mCategory != 0) {
+                        retrofitUils.create(PainterApi::class.java)
+                            .getPainterList(1,5,1,1,mCategory,null)//个人画师传1
+                            .subscribeOn(Schedulers.io())
+                            .awaitSingle()
                     }else{
                         retrofitUils.create(PainterApi::class.java)
                             .getPainterList(1,5,1,1)//个人画师传1
@@ -123,6 +128,11 @@ class PainterPersonList : Fragment() {
                     if (mStyle != 0 && mCategory != 0) {
                         retrofitUils.create(PainterApi::class.java)
                             .getPainterList(1,5,1,2,mCategory,mStyle)//个人画师传1
+                            .subscribeOn(Schedulers.io())
+                            .awaitSingle()
+                    } else if (mStyle == 0 && mCategory != 0) {
+                        retrofitUils.create(PainterApi::class.java)
+                            .getPainterList(1,5,1,2,mCategory,null)//个人画师传1
                             .subscribeOn(Schedulers.io())
                             .awaitSingle()
                     }else{
@@ -138,6 +148,11 @@ class PainterPersonList : Fragment() {
                             .getPainterList(1,5,1,3,mCategory,mStyle)//个人画师传1
                             .subscribeOn(Schedulers.io())
                             .awaitSingle()
+                    } else if (mStyle == 0 && mCategory != 0) {
+                        retrofitUils.create(PainterApi::class.java)
+                            .getPainterList(1,5,1,3,mCategory,null)//个人画师传1
+                            .subscribeOn(Schedulers.io())
+                            .awaitSingle()
                     }else{
                         retrofitUils.create(PainterApi::class.java)
                             .getPainterList(1,5,1,3)//个人画师传1
@@ -151,6 +166,11 @@ class PainterPersonList : Fragment() {
                             .getPainterList(1,5,1,4,mCategory,mStyle)//个人画师传1
                             .subscribeOn(Schedulers.io())
                             .awaitSingle()
+                    } else if (mStyle == 0 && mCategory != 0) {
+                        retrofitUils.create(PainterApi::class.java)
+                            .getPainterList(1,5,1,4,mCategory,null)//个人画师传1
+                            .subscribeOn(Schedulers.io())
+                            .awaitSingle()
                     }else{
                         retrofitUils.create(PainterApi::class.java)
                             .getPainterList(1,5,1,4)//个人画师传1
@@ -162,6 +182,11 @@ class PainterPersonList : Fragment() {
                     if (mStyle != 0 && mCategory != 0) {
                         retrofitUils.create(PainterApi::class.java)
                             .getPainterList(1,5,1,1,mCategory,mStyle)//个人画师传1
+                            .subscribeOn(Schedulers.io())
+                            .awaitSingle()
+                    } else if (mStyle == 0 && mCategory != 0) {
+                        retrofitUils.create(PainterApi::class.java)
+                            .getPainterList(1,5,1,1,mCategory,null)//个人画师传1
                             .subscribeOn(Schedulers.io())
                             .awaitSingle()
                     }else{
@@ -186,8 +211,10 @@ class PainterPersonList : Fragment() {
                     nowPage = 1
                     listFragment.resetItems(mutableList)
                 }else{
-                    nullData = NullDataPageFragment.newInstance()
-                    childFragmentManager.beginTransaction().replace(nullId,nullData!!).commit()
+                    if(nullData == null){
+                        nullData = NullDataPageFragment.newInstance()
+                        childFragmentManager.beginTransaction().add(nullId,nullData!!).commit()
+                    }
                 }
             }
         } catch (throwable: Throwable) {
@@ -209,6 +236,11 @@ class PainterPersonList : Fragment() {
                             .getPainterList(1,5,page,1,mCategory,mStyle)//个人画师传1
                             .subscribeOn(Schedulers.io())
                             .awaitSingle()
+                    } else if (mStyle == 0 && mCategory != 0) {
+                        retrofitUils.create(PainterApi::class.java)
+                            .getPainterList(1,5,page,1,mCategory,null)//个人画师传1
+                            .subscribeOn(Schedulers.io())
+                            .awaitSingle()
                     }else{
                         retrofitUils.create(PainterApi::class.java)
                             .getPainterList(1,5,page,1)//个人画师传1
@@ -220,6 +252,11 @@ class PainterPersonList : Fragment() {
                     if (mStyle != 0 && mCategory != 0) {
                         retrofitUils.create(PainterApi::class.java)
                             .getPainterList(1,5,page,2,mCategory,mStyle)//个人画师传1
+                            .subscribeOn(Schedulers.io())
+                            .awaitSingle()
+                    } else if (mStyle == 0 && mCategory != 0) {
+                        retrofitUils.create(PainterApi::class.java)
+                            .getPainterList(1,5,page,2,mCategory,null)//个人画师传1
                             .subscribeOn(Schedulers.io())
                             .awaitSingle()
                     }else{
@@ -235,6 +272,11 @@ class PainterPersonList : Fragment() {
                             .getPainterList(1,5,page,3,mCategory,mStyle)//个人画师传1
                             .subscribeOn(Schedulers.io())
                             .awaitSingle()
+                    } else if (mStyle == 0 && mCategory != 0) {
+                        retrofitUils.create(PainterApi::class.java)
+                            .getPainterList(1,5,page,3,mCategory,null)//个人画师传1
+                            .subscribeOn(Schedulers.io())
+                            .awaitSingle()
                     }else{
                         retrofitUils.create(PainterApi::class.java)
                             .getPainterList(1,5,page,3)//个人画师传1
@@ -248,6 +290,11 @@ class PainterPersonList : Fragment() {
                             .getPainterList(1,5,page,4,mCategory,mStyle)//个人画师传1
                             .subscribeOn(Schedulers.io())
                             .awaitSingle()
+                    } else if (mStyle == 0 && mCategory != 0) {
+                        retrofitUils.create(PainterApi::class.java)
+                            .getPainterList(1,5,page,4,mCategory,null)//个人画师传1
+                            .subscribeOn(Schedulers.io())
+                            .awaitSingle()
                     }else{
                         retrofitUils.create(PainterApi::class.java)
                             .getPainterList(1,5,page,4)//个人画师传1
@@ -259,6 +306,11 @@ class PainterPersonList : Fragment() {
                     if (mStyle != 0 && mCategory != 0) {
                         retrofitUils.create(PainterApi::class.java)
                             .getPainterList(1,5,page,1,mCategory,mStyle)//个人画师传1
+                            .subscribeOn(Schedulers.io())
+                            .awaitSingle()
+                    } else if (mStyle == 0 && mCategory != 0) {
+                        retrofitUils.create(PainterApi::class.java)
+                            .getPainterList(1,5,page,1,mCategory,null)//个人画师传1
                             .subscribeOn(Schedulers.io())
                             .awaitSingle()
                     }else{
@@ -300,7 +352,7 @@ class PainterPersonList : Fragment() {
     }
 
     fun setSortList(index: Int) {
-        mWeight += index
+        mWeight = index
         smart.autoRefresh()
     }
 

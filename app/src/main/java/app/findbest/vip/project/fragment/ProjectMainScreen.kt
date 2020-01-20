@@ -27,7 +27,7 @@ import org.jetbrains.anko.support.v4.UI
 import retrofit2.HttpException
 import withTrigger
 
-class ProjectMainScreen : Fragment(), ProjectScreenType.ScreenAll, ProjectScreenStyle.ScreenAll {
+class ProjectMainScreen : Fragment(), ProjectScreenType.ScreenAll {
 
     interface ProjectScreen {
         fun backgroundClick()
@@ -61,10 +61,6 @@ class ProjectMainScreen : Fragment(), ProjectScreenType.ScreenAll, ProjectScreen
         return createV()
     }
 
-    //点击style更多
-    override fun clickMore() {
-        screenStyle!!.setMore()
-    }
     //点击type
     override fun clickType(name: String) {
         if (name != resources.getString(R.string.srceen_all) && name != resources.getString(R.string.srceen_more)) {
@@ -77,8 +73,6 @@ class ProjectMainScreen : Fragment(), ProjectScreenType.ScreenAll, ProjectScreen
             }
         }else if(name == resources.getString(R.string.srceen_all)){
             screenStyle!!.setTextGone()
-        }else{
-            screenType!!.setMore()
         }
     }
 
@@ -88,7 +82,7 @@ class ProjectMainScreen : Fragment(), ProjectScreenType.ScreenAll, ProjectScreen
             getTypeList()
         }
         screenType = ProjectScreenType.newInstance(this@ProjectMainScreen)
-        screenStyle = ProjectScreenStyle.newInstance(this@ProjectMainScreen,mutableListOf())
+        screenStyle = ProjectScreenStyle.newInstance(mutableListOf())
         return UI {
             linearLayout {
                 orientation = LinearLayout.HORIZONTAL
@@ -150,10 +144,11 @@ class ProjectMainScreen : Fragment(), ProjectScreenType.ScreenAll, ProjectScreen
                                         array.add(it.id)
                                     }
                                 }
+                                array.add(0)
                                 typeModelList.forEach {
                                     it.styleList.forEach { child ->
                                         if(child.lang == style){
-                                            array.add(child.id)
+                                            array[1] = child.id
                                         }
                                     }
                                 }

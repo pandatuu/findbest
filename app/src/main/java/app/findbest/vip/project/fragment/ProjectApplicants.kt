@@ -2,7 +2,9 @@ package app.findbest.vip.project.fragment
 
 import android.content.Context
 import android.graphics.Color
+import android.graphics.Typeface
 import android.os.Bundle
+import android.text.TextUtils
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
@@ -11,16 +13,10 @@ import android.widget.FrameLayout
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.fragment.app.Fragment
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import app.findbest.vip.R
-import app.findbest.vip.commonfrgmant.BackgroundFragment
 import app.findbest.vip.commonfrgmant.NullDataPageFragment
-import app.findbest.vip.painter.fragment.BigImage2
-import app.findbest.vip.project.adapter.ProjectApplicantsAdapter
 import app.findbest.vip.project.api.ProjectApi
 import app.findbest.vip.utils.RetrofitUtils
-import app.findbest.vip.utils.recyclerView
 import com.google.gson.JsonObject
 import io.reactivex.schedulers.Schedulers
 import kotlinx.coroutines.CoroutineStart
@@ -69,11 +65,12 @@ class ProjectApplicants : Fragment(){
                         name = textView {
                             textSize = 21f
                             textColor = Color.parseColor("#FF202020")
+                            typeface = Typeface.DEFAULT_BOLD
                         }.lparams {
                             gravity = Gravity.CENTER_VERTICAL
-                            leftMargin = dip(15)
+                            setMargins(dip(15),dip(20),dip(15),dip(20))
                         }
-                    }.lparams(matchParent, dip(70))
+                    }.lparams(matchParent, wrapContent)
                     linearLayout {
                         backgroundColor = Color.parseColor("#FFF6F6F6")
                     }.lparams(matchParent, dip(5))
@@ -82,11 +79,8 @@ class ProjectApplicants : Fragment(){
                         id = nullId
                         listFragment = ProjectApplicantList.newInstance(mContext)
                         childFragmentManager.beginTransaction().add(nullId, listFragment).commit()
-                    }
-                    val listFramlp = listFram.layoutParams
-                    listFramlp.width = LinearLayout.LayoutParams.MATCH_PARENT
-                    listFramlp.height = LinearLayout.LayoutParams.MATCH_PARENT
-                }
+                    }.lparams(matchParent, matchParent)
+                }.lparams(matchParent, matchParent)
             }
         }.view
         GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
@@ -116,8 +110,10 @@ class ProjectApplicants : Fragment(){
                     }
                     listFragment.resetItems(mutableList)
                 }else{
-                    nullData = NullDataPageFragment.newInstance()
-                    childFragmentManager.beginTransaction().replace(nullId,nullData!!).commit()
+                    if(nullData==null){
+                        nullData = NullDataPageFragment.newInstance()
+                        childFragmentManager.beginTransaction().replace(nullId,nullData!!).commit()
+                    }
                 }
             }
         } catch (throwable: Throwable) {

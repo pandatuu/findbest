@@ -68,7 +68,7 @@ class GuideView: BaseActivity() {
             }
             if(it.code() == 400){
                 println("token过期，需要登录")
-                toast(resources.getString(R.string.common_tips_token_overdue))
+//                toast(resources.getString(R.string.common_tips_token_overdue))
                 startActivity<LoginActivity>()
                 overridePendingTransition(R.anim.right_in, R.anim.left_out)
             }

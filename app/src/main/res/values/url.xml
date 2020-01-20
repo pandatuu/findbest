@@ -2,8 +2,8 @@
 <resources>
 
 <!--    <string name="testUrl">http://192.168.2.200:4000/</string>-->
-<!--    <string name="developmentUrl" translatable="false">http://192.168.2.200:3300/</string>-->
     <string name="developmentUrl" translatable="false">http://192.168.2.200:4000/</string>
+<!--    <string name="developmentUrl" translatable="false">http://192.168.2.200:4000/</string>-->
 
 
 <!--    wss://findbest.vip/im/findbest/-->

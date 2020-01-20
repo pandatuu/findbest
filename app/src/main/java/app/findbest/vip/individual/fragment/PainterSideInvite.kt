@@ -3,6 +3,7 @@ package app.findbest.vip.individual.fragment
 import android.content.Context
 import android.graphics.Color
 import android.os.Bundle
+import android.text.TextUtils
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
@@ -70,7 +71,9 @@ class PainterSideInvite : Fragment() {
                             name = textView {
                                 textSize = 18f
                                 textColor = Color.parseColor("#FF444444")
-                            }.lparams {
+                                singleLine = true
+                                ellipsize = TextUtils.TruncateAt.END
+                            }.lparams(matchParent, wrapContent) {
                                 topMargin = dip(17)
                             }
                             stars = linearLayout {

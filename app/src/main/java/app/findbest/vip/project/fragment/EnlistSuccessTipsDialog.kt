@@ -42,6 +42,7 @@ class EnlistSuccessTipsDialog : Fragment() {
                     gravity = Gravity.CENTER_HORIZONTAL
                     backgroundResource = R.mipmap.iamge_submitted_successfully
                     verticalLayout {
+                        gravity = Gravity.CENTER_HORIZONTAL
                         textView {
                             text = resources.getString(R.string.determine_submit)
                             textSize = 17f
@@ -57,8 +58,9 @@ class EnlistSuccessTipsDialog : Fragment() {
                             leftMargin = dip(40)
                             rightMargin = dip(40)
                             bottomMargin = dip(12.5f)
+                            topMargin = dip(33.5f)
                         }
-                    }.lparams(matchParent,dip(200))
+                    }.lparams(matchParent, wrapContent)
                     linearLayout {
                         backgroundColor = Color.parseColor("#FFE3E3E3")
                     }.lparams(matchParent,dip(1))
@@ -74,7 +76,7 @@ class EnlistSuccessTipsDialog : Fragment() {
                             buttomClick.click()
                         }
                     }.lparams(matchParent,dip(45))
-                }.lparams(wrapContent, wrapContent) {
+                }.lparams(matchParent, wrapContent) {
                     gravity = Gravity.CENTER_VERTICAL
                     leftMargin = dip(50)
                     rightMargin = dip(50)

@@ -11,8 +11,12 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.core.widget.TextViewCompat
 import androidx.recyclerview.widget.RecyclerView
 import app.findbest.vip.R
+import app.findbest.vip.utils.FlowLayout
+import app.findbest.vip.utils.appCompatTextView
+import app.findbest.vip.utils.flowLayout
 import click
 import com.google.gson.JsonObject
 import org.jetbrains.anko.*
@@ -97,12 +101,11 @@ class MyProjectListAdapter(
                         backgroundResource = R.drawable.ffe4e4e4_top_line
                         linearLayout {
                             country = imageView {
-                                imageResource = R.mipmap.image_china
-                            }
+                            }.lparams(dip(30), wrapContent)
                             style = linearLayout {
                                 orientation = LinearLayout.HORIZONTAL
-
-                            }.lparams{
+                            }.lparams(dip(0), dip(20)){
+                                weight = 1f
                                 leftMargin = dip(10)
                             }
                         }.lparams {
@@ -232,14 +235,21 @@ class MyProjectListAdapter(
                     relativeLayout {
                         relativeLayout {
                             backgroundColor = Color.parseColor("#FFF7F7F7")
-                            textView {
+                            appCompatTextView {
                                 text = styleString
-                                textSize = 11f
                                 textColor = Color.parseColor("#FF555555")
-                            }.lparams {
-                                setMargins(dip(7),dip(2.5f),dip(7),dip(2.5f))
+                                singleLine = true
+                                setAutoSizeTextTypeUniformWithConfiguration(
+                                    TextViewCompat.AUTO_SIZE_TEXT_TYPE_UNIFORM,
+                                    dip(11),
+                                    1,
+                                    0
+                                )
+                            }.lparams(wrapContent, dip(15)) {
+                                setMargins(dip(7),0,dip(7),0)
+                                centerVertically()
                             }
-                        }.lparams(wrapContent, wrapContent){
+                        }.lparams(wrapContent, dip(20)){
                             leftMargin = dip(10)
                         }
                     }

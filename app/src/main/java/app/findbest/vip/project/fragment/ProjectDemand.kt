@@ -13,6 +13,7 @@ import androidx.fragment.app.Fragment
 import androidx.preference.PreferenceManager
 import app.findbest.vip.R
 import app.findbest.vip.commonfrgmant.BackgroundFragment
+import app.findbest.vip.commonfrgmant.BigImage2
 import app.findbest.vip.project.api.ProjectApi
 import app.findbest.vip.project.view.EnlistProject
 import app.findbest.vip.utils.MimeType
@@ -31,7 +32,7 @@ import org.jetbrains.anko.support.v4.UI
 import retrofit2.HttpException
 import withTrigger
 
-class ProjectDemand : Fragment(), EnlistCheckTipsDialog.ButtomClick, BackgroundFragment.ClickBack {
+class ProjectDemand : Fragment(), EnlistCheckTipsDialog.ButtomClick, BackgroundFragment.ClickBack, ProjectDemandDetails.ClickImage, BigImage2.ImageClick {
 
     companion object {
         fun newInstance(
@@ -54,8 +55,8 @@ class ProjectDemand : Fragment(), EnlistCheckTipsDialog.ButtomClick, BackgroundF
 
     private lateinit var applicants: ProjectApplicants
     private var backgroundFragment: BackgroundFragment? = null
+    private var bigImage: BigImage2? = null
     private var tipsDialog: EnlistCheckTipsDialog? = null
-    private var countrylist = mutableListOf<String>()
 
 
     override fun onCreateView(
@@ -73,6 +74,23 @@ class ProjectDemand : Fragment(), EnlistCheckTipsDialog.ButtomClick, BackgroundF
     override fun click() {
         closeAlertDialog()
     }
+    //点击放大的图片
+    override fun clickclose() {
+        closeBigDialog()
+    }
+
+    override fun clickImage(str: String, b: Boolean) {
+        val mainId = 1
+        if (backgroundFragment == null) {
+            backgroundFragment = BackgroundFragment.newInstance(this@ProjectDemand)
+            activity!!.supportFragmentManager.beginTransaction().add(mainId, backgroundFragment!!)
+                .commit()
+        }
+        if (bigImage == null) {
+            bigImage = BigImage2.newInstance(str, this@ProjectDemand, b)
+            activity!!.supportFragmentManager.beginTransaction().add(mainId, bigImage!!).commit()
+        }
+    }
 
     private fun createV(): View {
         val view = UI {
@@ -82,7 +100,7 @@ class ProjectDemand : Fragment(), EnlistCheckTipsDialog.ButtomClick, BackgroundF
                 val details = 2
                 frameLayout {
                     id = details
-                    demand = ProjectDemandDetails.newInstance()
+                    demand = ProjectDemandDetails.newInstance(this@ProjectDemand)
                     childFragmentManager.beginTransaction().add(details, demand!!).commit()
                 }.lparams(matchParent, dip(0)) {
                     weight = 1f
@@ -124,7 +142,6 @@ class ProjectDemand : Fragment(), EnlistCheckTipsDialog.ButtomClick, BackgroundF
             if (it.code() in 200..299) {
                 val model = it.body()!!
                 applicants.setProjectName(model.name)
-                countrylist = model.allowedCountries
                 demand?.setInfomation(model)
             }
         } catch (throwable: Throwable) {
@@ -174,7 +191,7 @@ class ProjectDemand : Fragment(), EnlistCheckTipsDialog.ButtomClick, BackgroundF
 
         mTransaction.setCustomAnimations(R.anim.right_in, R.anim.right_in)
 
-        tipsDialog = EnlistCheckTipsDialog.newInstance(this@ProjectDemand, status,countrylist)
+        tipsDialog = EnlistCheckTipsDialog.newInstance(this@ProjectDemand, status)
         mTransaction.add(mainId, tipsDialog!!)
 
         mTransaction.commit()
@@ -196,6 +213,20 @@ class ProjectDemand : Fragment(), EnlistCheckTipsDialog.ButtomClick, BackgroundF
             )
             mTransaction.remove(backgroundFragment!!)
             backgroundFragment = null
+        }
+        mTransaction.commit()
+    }
+
+    private fun closeBigDialog() {
+        val mTransaction = activity!!.supportFragmentManager.beginTransaction()
+        if (backgroundFragment != null) {
+            mTransaction.remove(backgroundFragment!!)
+            backgroundFragment = null
+        }
+
+        if (bigImage != null) {
+            mTransaction.remove(bigImage!!)
+            bigImage = null
         }
         mTransaction.commit()
     }

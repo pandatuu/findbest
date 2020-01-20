@@ -3,11 +3,17 @@ package app.findbest.vip.register.view
 import android.content.Context
 import android.content.SharedPreferences
 import android.graphics.Color
+import android.graphics.Typeface
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.view.Gravity
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import android.widget.LinearLayout
+import android.widget.RelativeLayout
+import android.widget.TextView
+import androidx.core.widget.TextViewCompat
 import androidx.preference.PreferenceManager
 import com.alibaba.fastjson.JSON
 import app.findbest.vip.R
@@ -15,10 +21,7 @@ import app.findbest.vip.commonactivity.MainActivity
 import app.findbest.vip.login.api.LoginApi
 import app.findbest.vip.register.api.RegisterApi
 import app.findbest.vip.register.model.RegisterModel
-import app.findbest.vip.utils.BaseActivity
-import app.findbest.vip.utils.CheckToken
-import app.findbest.vip.utils.MimeType
-import app.findbest.vip.utils.RetrofitUtils
+import app.findbest.vip.utils.*
 import io.reactivex.schedulers.Schedulers
 import kotlinx.coroutines.CoroutineStart
 import kotlinx.coroutines.Dispatchers
@@ -39,6 +42,7 @@ import java.util.regex.Pattern
 class RegisterNickName : BaseActivity() {
 
     private lateinit var nickName: EditText
+    private lateinit var nickNameHint: TextView
     private lateinit var user: RegisterModel
     var identity = 0
     var role = ""
@@ -81,6 +85,7 @@ class RegisterNickName : BaseActivity() {
                         text = "5/5"
                         textColor = Color.parseColor("#FF333333")
                         textSize = 19f
+                        typeface = Typeface.DEFAULT_BOLD
                     }.lparams(wrapContent, wrapContent) {
                         gravity = Gravity.CENTER_HORIZONTAL
                     }
@@ -93,6 +98,7 @@ class RegisterNickName : BaseActivity() {
                         }
                         textColor = Color.parseColor("#FF333333")
                         textSize = 19f
+                        typeface = Typeface.DEFAULT_BOLD
                     }.lparams(wrapContent, wrapContent) {
                         gravity = Gravity.CENTER_HORIZONTAL
                     }
@@ -107,16 +113,65 @@ class RegisterNickName : BaseActivity() {
                             linearLayout {
                                 orientation = LinearLayout.HORIZONTAL
                                 backgroundResource = R.drawable.login_input_bottom
-                                nickName = editText {
-                                    background = null
-                                    hint = if (identity == 2){
-                                        resources.getString(R.string.register_team_nickname)
-                                    } else {
-                                        resources.getString(R.string.register_person_nickname)
+                                relativeLayout {
+                                    nickName = editText {
+                                        background = null
+                                        textSize = 15f
+                                        singleLine = true
+                                        addTextChangedListener(object : TextWatcher {
+                                            override fun afterTextChanged(s: Editable?) {}
+                                            override fun beforeTextChanged(
+                                                s: CharSequence?,
+                                                start: Int,
+                                                count: Int,
+                                                after: Int
+                                            ) {
+                                            }
+
+                                            override fun onTextChanged(
+                                                s: CharSequence?,
+                                                start: Int,
+                                                before: Int,
+                                                count: Int
+                                            ) {
+                                                if (s != null) {
+                                                    if (s.isNotEmpty()) {
+                                                        nickNameHint.visibility = RelativeLayout.GONE
+                                                    } else {
+                                                        nickNameHint.visibility =
+                                                            RelativeLayout.VISIBLE
+                                                    }
+                                                }
+                                            }
+                                        })
+                                    }.lparams(matchParent, matchParent)
+                                    nickNameHint = appCompatTextView {
+                                        backgroundColor = Color.TRANSPARENT
+                                        text = if (identity == 2) {
+                                            resources.getString(R.string.register_team_nickname)
+                                        } else {
+                                            resources.getString(R.string.register_person_nickname)
+                                        }
+                                        textColor = Color.parseColor("#FFD0D0D0")
+                                        maxLines = 1
+                                        setAutoSizeTextTypeUniformWithConfiguration(
+                                            TextViewCompat.AUTO_SIZE_TEXT_TYPE_UNIFORM,
+                                            dip(15),
+                                            1,
+                                            0
+                                        )
+                                        setOnClickListener {
+                                            nickName.isFocusable = true
+                                            nickName.isFocusableInTouchMode = true
+                                            nickName.requestFocus()
+                                            val imm =
+                                                context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+                                            imm.showSoftInput(nickName, 0)
+                                        }
+                                    }.lparams {
+                                        centerVertically()
+                                        leftMargin = dip(5)
                                     }
-                                    hintTextColor = Color.parseColor("#FFD0D0D0")
-                                    textSize = 15f
-                                    singleLine = true
                                 }.lparams(matchParent, matchParent)
                             }.lparams(matchParent, matchParent) {
                                 leftMargin = dip(14)
@@ -255,7 +310,7 @@ class RegisterNickName : BaseActivity() {
                 refreshToken(refreshToken)
             }
         } catch (throwable: Throwable) {
-
+            println(throwable)
         }
     }
 

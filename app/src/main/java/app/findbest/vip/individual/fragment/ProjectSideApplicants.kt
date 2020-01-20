@@ -2,7 +2,9 @@ package app.findbest.vip.individual.fragment
 
 import android.content.Context
 import android.graphics.Color
+import android.graphics.Typeface
 import android.os.Bundle
+import android.text.TextUtils
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
@@ -11,12 +13,9 @@ import android.widget.FrameLayout
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.fragment.app.Fragment
-import androidx.recyclerview.widget.RecyclerView
 import app.findbest.vip.R
-import app.findbest.vip.commonfrgmant.BackgroundFragment
 import app.findbest.vip.commonfrgmant.NullDataPageFragment
 import app.findbest.vip.individual.api.IndividualApi
-import app.findbest.vip.painter.fragment.BigImage2
 import app.findbest.vip.utils.RetrofitUtils
 import app.findbest.vip.utils.smartRefreshLayout
 import com.google.gson.JsonObject
@@ -79,11 +78,12 @@ class ProjectSideApplicants : Fragment(), ProjectSideApplicantList.ProjectSideLi
                         name = textView {
                             textSize = 21f
                             textColor = Color.parseColor("#FF202020")
+                            typeface = Typeface.DEFAULT_BOLD
                         }.lparams {
                             gravity = Gravity.CENTER_VERTICAL
-                            leftMargin = dip(15)
+                            setMargins(dip(15),dip(20),dip(15),dip(20))
                         }
-                    }.lparams(matchParent, dip(70))
+                    }.lparams(matchParent, wrapContent)
 
                     smart = smartRefreshLayout {
                         setEnableAutoLoadMore(false)
@@ -143,8 +143,10 @@ class ProjectSideApplicants : Fragment(), ProjectSideApplicantList.ProjectSideLi
                     }
                     listFragment.resetView(mutableList)
                 }else{
-                    nullData = NullDataPageFragment.newInstance()
-                    childFragmentManager.beginTransaction().replace(nullId,nullData!!).commit()
+                    if(nullData == null){
+                        nullData = NullDataPageFragment.newInstance()
+                        childFragmentManager.beginTransaction().add(nullId,nullData!!).commit()
+                    }
                 }
             }
         } catch (throwable: Throwable) {
@@ -189,6 +191,7 @@ class ProjectSideApplicants : Fragment(), ProjectSideApplicantList.ProjectSideLi
                 .subscribeOn(Schedulers.io())
                 .awaitSingle()
             if (it.code() in 200..299) {
+                toast(resources.getString(R.string.common_refuse))
                 listFragment = ProjectSideApplicantList.newInstance(mContext,this@ProjectSideApplicants)
                 childFragmentManager.beginTransaction().replace(nullId, listFragment).commit()
                 smart.autoRefresh()

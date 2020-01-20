@@ -19,7 +19,7 @@ interface PainterApi {
     @Headers("Content-Type: application/json")
     @GET("/api/v1/company-painter/app/list")
     fun getPainterList(@Query("type") type : Int?, @Query("size") size : Int, @Query("page") page : Int,
-                       @Query("weight") weight : Int, @Query("category") category: Int, @Query("styles") styles: Int): Observable<Response<PageModel>>
+                       @Query("weight") weight : Int, @Query("category") category: Int?, @Query("styles") styles: Int?): Observable<Response<PageModel>>
 
     //获取公司团队画师列表
     @Headers("Content-Type: application/json")
@@ -31,7 +31,7 @@ interface PainterApi {
     @Headers("Content-Type: application/json")
     @GET("/api/v1/company-painter/app/list")
     fun getCompanyPainterList(@Query("type") type : Int, @Query("size") size : Int, @Query("page") page : Int,
-                              @Query("weight") weight : Int, @Query("category") category: Int, @Query("styles") styles: Int): Observable<Response<PageModel>>
+                              @Query("weight") weight : Int, @Query("category") category: Int?, @Query("styles") styles: Int?): Observable<Response<PageModel>>
 
     //通过搜索获取画师列表
     @Headers("Content-Type: application/json")

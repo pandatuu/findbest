@@ -1,6 +1,7 @@
 package app.findbest.vip.painter.fragment
 
 import android.graphics.Color
+import android.graphics.Typeface
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -71,12 +72,18 @@ class PainterScreenType : Fragment() {
                         setOnClickListener {
                             if (typeSomeView != null) {
                                 if (typeSomeView!!.id != it.id) {
+                                    val oldtext = typeSomeView?.getChildAt(0) as TextView
+                                    oldtext.textColor = Color.parseColor("#FF555555")
                                     typeSomeView!!.backgroundColor = Color.parseColor("#FFF8F8F8")
                                     typeSomeView = it as LinearLayout
+                                    val newtext = typeSomeView?.getChildAt(0) as TextView
+                                    newtext.textColor = Color.parseColor("#FFFFFF")
                                     typeSomeView!!.backgroundColor = Color.parseColor("#FFFF7C00")
                                 }
                             } else {
                                 typeSomeView = it as LinearLayout
+                                val oldtext = typeSomeView?.getChildAt(0) as TextView
+                                oldtext.textColor = Color.parseColor("#FF555555")
                                 typeSomeView!!.backgroundColor = Color.parseColor("#FFF8F8F8")
                             }
                             backgroundColor = Color.parseColor("#FFFF7C00")
@@ -98,21 +105,27 @@ class PainterScreenType : Fragment() {
                                 textView {
                                     text = resources.getString(R.string.srceen_all)
                                     textSize = 12f
-                                    textColor = Color.parseColor("#FF555555")
+                                    textColor = Color.parseColor("#FFFFFF")
                                 }.lparams {
                                     setMargins(dip(10), dip(7), dip(10), dip(7))
                                 }
                                 setOnClickListener {
                                     if (typeSomeView != null) {
                                         if (typeSomeView!!.id != it.id) {
+                                            val oldtext = typeSomeView?.getChildAt(0) as TextView
+                                            oldtext.textColor = Color.parseColor("#FF555555")
                                             typeSomeView!!.backgroundColor =
                                                 Color.parseColor("#FFF8F8F8")
                                             typeSomeView = it as LinearLayout
+                                            val newtext = typeSomeView?.getChildAt(0) as TextView
+                                            newtext.textColor = Color.parseColor("#FFFFFF")
                                             typeSomeView!!.backgroundColor =
                                                 Color.parseColor("#FFFF7C00")
                                         }
                                     } else {
                                         typeSomeView = it as LinearLayout
+                                        val oldtext = typeSomeView?.getChildAt(0) as TextView
+                                        oldtext.textColor = Color.parseColor("#FF555555")
                                         typeSomeView!!.backgroundColor =
                                             Color.parseColor("#FFF8F8F8")
                                     }
@@ -149,20 +162,7 @@ class PainterScreenType : Fragment() {
                                     setMargins(dip(5), dip(14), dip(10), dip(12))
                                 }
                                 setOnClickListener {
-                                    if (typeSomeView != null) {
-                                        if (typeSomeView!!.id != it.id) {
-                                            typeSomeView!!.backgroundColor =
-                                                Color.parseColor("#FFF8F8F8")
-                                            typeSomeView = it as LinearLayout
-                                            typeSomeView!!.backgroundColor =
-                                                Color.parseColor("#FFFF7C00")
-                                        }
-                                    } else {
-                                        typeSomeView = it as LinearLayout
-                                        typeSomeView!!.backgroundColor =
-                                            Color.parseColor("#FFF8F8F8")
-                                    }
-                                    screenAll.clickType(resources.getString(R.string.srceen_more))
+                                    setMore()
                                 }
                             }.lparams(wrapContent, dip(30)) {
                                 leftMargin = dip(10)
@@ -190,6 +190,7 @@ class PainterScreenType : Fragment() {
                         text = resources.getString(R.string.srceen_type)
                         textSize = 17f
                         textColor = Color.parseColor("#FF222222")
+                        typeface = Typeface.DEFAULT_BOLD
                     }.lparams {
                         bottomMargin = dip(12)
                     }
@@ -220,8 +221,7 @@ class PainterScreenType : Fragment() {
         return ""
     }
 
-    fun setMore() {
-        typeSomeView = null
+    private fun setMore() {
         typeFlow?.removeViewAt(11)
         for (index in mTypeList.indices) {
             val view = UI {
@@ -239,12 +239,18 @@ class PainterScreenType : Fragment() {
                         setOnClickListener {
                             if (typeSomeView != null) {
                                 if (typeSomeView!!.id != it.id) {
+                                    val oldtext = typeSomeView?.getChildAt(0) as TextView
+                                    oldtext.textColor = Color.parseColor("#FF555555")
                                     typeSomeView!!.backgroundColor = Color.parseColor("#FFF8F8F8")
                                     typeSomeView = it as LinearLayout
+                                    val newtext = typeSomeView?.getChildAt(0) as TextView
+                                    newtext.textColor = Color.parseColor("#FFFFFF")
                                     typeSomeView!!.backgroundColor = Color.parseColor("#FFFF7C00")
                                 }
                             } else {
                                 typeSomeView = it as LinearLayout
+                                val oldtext = typeSomeView?.getChildAt(0) as TextView
+                                oldtext.textColor = Color.parseColor("#FF555555")
                                 typeSomeView!!.backgroundColor = Color.parseColor("#FFF8F8F8")
                             }
                             backgroundColor = Color.parseColor("#FFFF7C00")

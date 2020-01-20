@@ -1,7 +1,6 @@
 package app.findbest.vip.instance.fragment
 
 import android.content.Context
-import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -10,22 +9,12 @@ import android.view.ViewGroup
 import android.widget.FrameLayout
 import android.widget.LinearLayout
 import androidx.fragment.app.Fragment
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import app.findbest.vip.R
 import app.findbest.vip.commonfrgmant.NullDataPageFragment
 import app.findbest.vip.instance.api.InstanceApi
-import app.findbest.vip.instance.view.InstanceActivity
 import app.findbest.vip.painter.adapter.PainterInfoPictureAdapter
-import app.findbest.vip.painter.fragment.PainterListFragment
-import app.findbest.vip.project.adapter.ProjectMainListAdapter
-import app.findbest.vip.project.api.ProjectApi
-import app.findbest.vip.project.model.ProjectListModel
-import app.findbest.vip.project.view.ProjectInformation
 import app.findbest.vip.utils.RetrofitUtils
-import app.findbest.vip.utils.recyclerView
 import app.findbest.vip.utils.smartRefreshLayout
-import com.google.gson.JsonObject
 import com.scwang.smart.refresh.footer.BallPulseFooter
 import com.scwang.smart.refresh.header.MaterialHeader
 import com.scwang.smart.refresh.layout.SmartRefreshLayout
@@ -38,7 +27,6 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.rx2.awaitSingle
 import org.jetbrains.anko.*
 import org.jetbrains.anko.support.v4.UI
-import org.jetbrains.anko.support.v4.startActivity
 import org.jetbrains.anko.support.v4.toast
 import retrofit2.HttpException
 
@@ -128,7 +116,7 @@ class InstanceSearchList : Fragment() {
             val retrofitUils =
                 RetrofitUtils(mContext, resources.getString(R.string.developmentUrl))
             val it = retrofitUils.create(InstanceApi::class.java)
-                .instanceListSearch(1, 5, searchText)
+                .instanceListSearch(1, 6, searchText)
                 .subscribeOn(Schedulers.io())
                 .awaitSingle()
 
@@ -139,8 +127,10 @@ class InstanceSearchList : Fragment() {
                     nowPage = 1
                     listFragment?.resetData(item)
                 }else{
-                    nullData = NullDataPageFragment.newInstance()
-                    childFragmentManager.beginTransaction().replace(nullId,nullData!!).commit()
+                    if(nullData==null){
+                        nullData = NullDataPageFragment.newInstance()
+                        childFragmentManager.beginTransaction().replace(nullId,nullData!!).commit()
+                    }
                 }
             }
         } catch (throwable: Throwable) {
@@ -156,7 +146,7 @@ class InstanceSearchList : Fragment() {
             val retrofitUils =
                 RetrofitUtils(mContext, resources.getString(R.string.developmentUrl))
             val it = retrofitUils.create(InstanceApi::class.java)
-                .instanceListSearch(page, 5, searchText)
+                .instanceListSearch(page, 6, searchText)
                 .subscribeOn(Schedulers.io())
                 .awaitSingle()
 

@@ -2,6 +2,7 @@ package app.findbest.vip.project.fragment
 
 import android.content.Context
 import android.graphics.Color
+import android.graphics.Typeface
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -53,6 +54,7 @@ class MainSearchTitle : Fragment() {
                         text = resources.getString(R.string.project_title)
                         textSize = 17f
                         textColor = Color.parseColor("#FF222222")
+                        typeface = Typeface.DEFAULT_BOLD
                     }.lparams(wrapContent, wrapContent) {
                         alignParentBottom()
                         centerHorizontally()

@@ -1,7 +1,6 @@
 package app.findbest.vip.painter.fragment
 
 import android.content.Context
-import android.graphics.Color
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -9,6 +8,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import app.findbest.vip.R
+import app.findbest.vip.commonfrgmant.BigImage2
 import app.findbest.vip.painter.adapter.PainterMainListAdapter
 import app.findbest.vip.painter.view.PainterInfomation
 import app.findbest.vip.utils.recyclerView
@@ -79,7 +79,7 @@ class PainterListFragment : Fragment(), PainterMainListAdapter.ImageClick, BigIm
     private fun openDialog(pic: String) {
         val mTransaction = activity!!.supportFragmentManager.beginTransaction()
         mTransaction.setCustomAnimations(R.anim.right_in, R.anim.right_in)
-        bigImage = BigImage2.newInstance(pic,this@PainterListFragment)
+        bigImage = BigImage2.newInstance(pic,this@PainterListFragment, true)
         mTransaction.add(mainId, bigImage!!)
 
         mTransaction.commit()

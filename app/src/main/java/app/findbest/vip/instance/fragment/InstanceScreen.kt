@@ -27,7 +27,7 @@ import org.jetbrains.anko.support.v4.UI
 import retrofit2.HttpException
 import withTrigger
 
-class InstanceScreen : Fragment(), InstanceScreenType.ScreenAll, InstanceScreenStyle.ScreenAll {
+class InstanceScreen : Fragment(), InstanceScreenType.ScreenAll {
 
     interface ProjectScreen {
         fun backgroundClick()
@@ -61,10 +61,6 @@ class InstanceScreen : Fragment(), InstanceScreenType.ScreenAll, InstanceScreenS
         return createV()
     }
 
-    //点击style更多
-    override fun clickMore() {
-        screenStyle!!.setMore()
-    }
     //点击type
     override fun clickType(s: String) {
         if (s != resources.getString(R.string.srceen_all) && s != resources.getString(R.string.srceen_more)) {
@@ -77,8 +73,6 @@ class InstanceScreen : Fragment(), InstanceScreenType.ScreenAll, InstanceScreenS
             }
         }else if(s == resources.getString(R.string.srceen_all)){
             screenStyle!!.setTextGone()
-        }else{
-            screenType!!.setMore()
         }
     }
 
@@ -88,7 +82,7 @@ class InstanceScreen : Fragment(), InstanceScreenType.ScreenAll, InstanceScreenS
             getTypeList()
         }
         screenType = InstanceScreenType.newInstance(this@InstanceScreen)
-        screenStyle = InstanceScreenStyle.newInstance(this@InstanceScreen,mutableListOf())
+        screenStyle = InstanceScreenStyle.newInstance(mutableListOf())
         return UI {
             linearLayout {
                 orientation = LinearLayout.HORIZONTAL
@@ -150,10 +144,11 @@ class InstanceScreen : Fragment(), InstanceScreenType.ScreenAll, InstanceScreenS
                                         array.add(it.id)
                                     }
                                 }
+                                array.add(0)
                                 typeModelList.forEach {
                                     it.styleList.forEach { child ->
                                         if(child.lang == style){
-                                            array.add(child.id)
+                                            array[1] = child.id
                                         }
                                     }
                                 }

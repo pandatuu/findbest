@@ -2,6 +2,7 @@ package app.findbest.vip.individual.adapter
 
 import android.content.Context
 import android.graphics.Color
+import android.text.TextUtils
 import android.view.Gravity
 import android.view.View
 import android.view.ViewGroup
@@ -48,6 +49,7 @@ class ProjectSideApplicantsAdapter(
     private lateinit var rightLine: LinearLayout
     private lateinit var refuse: LinearLayout
     private var printedCrad: PrintedCrad = printedCrad
+    private var commitList = mutableListOf<TextView>()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         val view = mContext.UI {
@@ -64,7 +66,9 @@ class ProjectSideApplicantsAdapter(
                         name = textView {
                             textSize = 17f
                             textColor = Color.parseColor("#FF444444")
-                        }.lparams {
+                            singleLine = true
+                            ellipsize = TextUtils.TruncateAt.END
+                        }.lparams(matchParent, wrapContent) {
                             topMargin = dip(8)
                         }
                         relativeLayout {
@@ -106,7 +110,8 @@ class ProjectSideApplicantsAdapter(
                     rightMargin = dip(10)
                 }
                 imageList = horizontalScrollView {
-                    isHorizontalScrollBarEnabled = false
+                    overScrollMode = View.OVER_SCROLL_NEVER
+                    isScrollbarFadingEnabled = false
                 }.lparams(matchParent, dip(85)) {
                     topMargin = dip(15)
                 }
@@ -173,6 +178,7 @@ class ProjectSideApplicantsAdapter(
             val lp = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,LinearLayout.LayoutParams.WRAP_CONTENT)
             linea.layoutParams = lp
         }.view
+        commitList.add(commit)
         return ViewHolder(view)
     }
 
@@ -190,8 +196,19 @@ class ProjectSideApplicantsAdapter(
                 Glide.with(mContext)
                     .load(model["avatar"].asString)
                     .apply(RequestOptions.bitmapTransform(CircleCrop()))
+                    .placeholder(R.mipmap.default_avatar)
+                    .into(headPic)
+            }else{
+                Glide.with(mContext)
+                    .load(R.mipmap.default_avatar)
+                    .apply(RequestOptions.bitmapTransform(CircleCrop()))
                     .into(headPic)
             }
+        }else{
+            Glide.with(mContext)
+                .load(R.mipmap.default_avatar)
+                .apply(RequestOptions.bitmapTransform(CircleCrop()))
+                .into(headPic)
         }
 
         if (model.has("name")) {
@@ -220,18 +237,19 @@ class ProjectSideApplicantsAdapter(
             stars.addView(view)
         }
 
+        commitList[position].text = mContext.resources.getString(R.string.common_not_somethings)
         if (mData[position].has("comment")) {
             if (!mData[position]["comment"].isJsonNull) {
-                commit.text = mData[position]["comment"].asString
-                commitButton.setOnClickListener {
-                    if (mData[position]["comment"].asString != "") {
-                        if (commit.visibility != LinearLayout.GONE) {
-                            commit.visibility = LinearLayout.GONE
-                        } else {
-                            commit.visibility = LinearLayout.VISIBLE
-                        }
-                    }
+                if (mData[position]["comment"].asString != "") {
+                    commitList[position].text = mData[position]["comment"].asString
                 }
+            }
+        }
+        commitButton.setOnClickListener {
+            if (commitList[position].visibility != LinearLayout.GONE) {
+                commitList[position].visibility = LinearLayout.GONE
+            } else {
+                commitList[position].visibility = LinearLayout.VISIBLE
             }
         }
 
@@ -270,7 +288,8 @@ class ProjectSideApplicantsAdapter(
         }
 
         chat.withTrigger().click {
-            printedCrad.chat(mData[position])
+//            printedCrad.chat(mData[position])
+            mContext.toast("功能开发中，请耐心等待")
         }
         send.withTrigger().click {
             printedCrad.send(mData[position]["id"].asString)

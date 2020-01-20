@@ -163,7 +163,14 @@
         </activity>
 
         <!-- 案例详情 -->
-        <activity android:name=".instance.view.InstanceActivity"
+        <activity android:name=".instance.view.InstanceSreachDetail"
+            android:windowSoftInputMode="adjustPan"
+            android:launchMode="standard"
+            android:theme="@style/AppTheme.NoActionBar">
+        </activity>
+
+        <!-- 案例详情 -->
+        <activity android:name=".instance.view.InstanceDetailPagers"
             android:windowSoftInputMode="adjustPan"
             android:launchMode="standard"
             android:theme="@style/AppTheme.NoActionBar">

@@ -1,23 +1,22 @@
 package app.findbest.vip.painter.view
 
+import android.content.Intent
 import android.content.SharedPreferences
 import android.graphics.Color
 import android.graphics.Typeface
 import android.os.Bundle
+import android.text.TextUtils
 import android.view.Gravity
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.core.widget.TextViewCompat
 import androidx.preference.PreferenceManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import app.findbest.vip.R
 import app.findbest.vip.painter.adapter.PainterInfoPictureAdapter
 import app.findbest.vip.painter.api.PainterApi
-import app.findbest.vip.utils.BaseActivity
-import app.findbest.vip.utils.RetrofitUtils
-import app.findbest.vip.utils.recyclerView
-import app.findbest.vip.utils.smartRefreshLayout
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.CircleCrop
 import com.bumptech.glide.request.RequestOptions
@@ -33,8 +32,11 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.rx2.awaitSingle
 import org.jetbrains.anko.*
 import retrofit2.HttpException
-import app.findbest.vip.painter.fragment.BigImage2
+import app.findbest.vip.commonfrgmant.BigImage2
+import app.findbest.vip.instance.view.InvitationActivity
 import app.findbest.vip.painter.model.PainterInfo
+import app.findbest.vip.utils.*
+import org.jetbrains.anko.support.v4.nestedScrollView
 
 
 class PainterInfomation : BaseActivity(), PainterInfoPictureAdapter.ImageClick, BigImage2.ImageClick{
@@ -58,6 +60,8 @@ class PainterInfomation : BaseActivity(), PainterInfoPictureAdapter.ImageClick, 
 
         val mPerferences: SharedPreferences = PreferenceManager.getDefaultSharedPreferences(this@PainterInfomation)
         systemCountry = mPerferences.getString("systemCountry", "").toString()
+        val role =  mPerferences.getString("role", "").toString()
+
         val userId = intent.getStringExtra("userId") ?: ""
 
         frameLayout {
@@ -70,6 +74,10 @@ class PainterInfomation : BaseActivity(), PainterInfoPictureAdapter.ImageClick, 
                         gravity = Gravity.CENTER_VERTICAL
                         toolbar {
                             navigationIconResource = R.mipmap.nav_ico_return
+                            setOnClickListener {
+                                finish()
+                                overridePendingTransition(R.anim.left_in, R.anim.right_out)
+                            }
                         }.lparams(dip(10), dip(17.5f))
                         setOnClickListener {
                             finish()
@@ -85,17 +93,25 @@ class PainterInfomation : BaseActivity(), PainterInfoPictureAdapter.ImageClick, 
                     gravity = Gravity.CENTER_VERTICAL
                     headImage = imageView {}.lparams(dip(60), dip(60))
                     verticalLayout {
-                        relativeLayout {
-                            name = textView {
-                                textSize = 17f
+                        linearLayout {
+                            orientation = LinearLayout.HORIZONTAL
+                            name = appCompatTextView {
                                 textColor = Color.parseColor("#FF444444")
                                 typeface = Typeface.DEFAULT_BOLD
+                                maxLines = 1
+                                setAutoSizeTextTypeUniformWithConfiguration(
+                                    TextViewCompat.AUTO_SIZE_TEXT_TYPE_UNIFORM,
+                                    dip(17),
+                                    1,
+                                    0
+                                )
+                            }.lparams(dip(0), matchParent){
+                                weight = 1f
                             }
                             starts = linearLayout {
-                            }.lparams(wrapContent, dip(8)) {
-                                alignParentRight()
-                                centerVertically()
+                            }.lparams(dip(72), dip(8)) {
                                 rightMargin = dip(15)
+                                gravity = Gravity.CENTER_VERTICAL
                             }
                         }.lparams(matchParent, dip(25))
                         relativeLayout {
@@ -118,54 +134,102 @@ class PainterInfomation : BaseActivity(), PainterInfoPictureAdapter.ImageClick, 
                     leftMargin = dip(15)
                     rightMargin = dip(15)
                 }
-                linearLayout {
-                    backgroundResource = R.drawable.ffe4e4e4_top_line
-                    commit = textView {
-                        textColor = Color.parseColor("#FF333333")
-                        textSize = 15f
+//                nestedScrollView {
+//                }
+                verticalLayout {
+                    verticalLayout {
+                        backgroundResource = R.drawable.ffe4e4e4_top_line
+                        commit = textView {
+                            textColor = Color.parseColor("#FF333333")
+                            textSize = 15f
+                        }.lparams(matchParent, dip(40)) {
+                            setMargins(0, dip(20), dip(5), dip(20))
+                        }
+//                    linearLayout {
+//                        val text = textView {
+//                            text = resources.getString(R.string.srceen_more)
+//                            textSize = 12f
+//                            textColor = Color.parseColor("#FF555555")
+//                        }.lparams {
+//                            setMargins(dip(10), dip(7), 0, dip(7))
+//                        }
+//                        setOnClickListener {
+//                            if(text.text == resources.getString(R.string.srceen_more)){
+//                                val lp = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,LinearLayout.LayoutParams.WRAP_CONTENT)
+//                                commit.layoutParams = lp
+//                                text.text = "收起"
+//                            }else{
+//                                val lp = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,dip(40))
+//                                commit.layoutParams = lp
+//                                text.text = resources.getString(R.string.srceen_more)
+//                            }
+//                        }
+//                    }.lparams(wrapContent, dip(30)) {
+//                        topMargin = dip(10)
+//                        gravity = Gravity.CENTER_HORIZONTAL
+//                    }
                     }.lparams(matchParent, wrapContent) {
-                        setMargins(0, dip(20), dip(5), dip(20))
+                        leftMargin = dip(15)
+                        rightMargin = dip(15)
                     }
-                }.lparams(matchParent, wrapContent) {
-                    leftMargin = dip(15)
-                    rightMargin = dip(15)
+                    linearLayout {
+                        backgroundColor = Color.parseColor("#FFF6F6F6")
+                    }.lparams(matchParent, dip(5))
+                    smart = smartRefreshLayout {
+                        setEnableAutoLoadMore(false)
+                        setRefreshFooter(
+                            BallPulseFooter(this@PainterInfomation).setSpinnerStyle(
+                                SpinnerStyle.Scale
+                            )
+                        )
+                        setOnLoadMoreListener {
+                            GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
+                                getInfo(userId, nowPage + 1)
+                                it.finishLoadMore(1000)
+                            }
+                        }
+                        recycler = recyclerView {
+                            layoutManager = LinearLayoutManager(this@PainterInfomation)
+                            painterInfoPic = PainterInfoPictureAdapter(this@PainterInfomation,
+                                arrayListOf(),this@PainterInfomation)
+                            adapter = painterInfoPic
+                        }
+                        val lp = recycler.layoutParams
+                        lp.width = LinearLayout.LayoutParams.MATCH_PARENT
+                        lp.height = LinearLayout.LayoutParams.MATCH_PARENT
+                    }.lparams(matchParent, dip(0)){
+                        weight = 1f
+                    }
+                }.lparams(matchParent, dip(0)){
+                    weight = 1f
                 }
                 linearLayout {
-                    backgroundColor = Color.parseColor("#FFF6F6F6")
-                }.lparams(matchParent, dip(5))
-                smart = smartRefreshLayout {
-                    setEnableAutoLoadMore(false)
-                    setRefreshHeader(MaterialHeader(this@PainterInfomation))
-                    setOnRefreshListener {
-                        GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
-                            getInfo(userId)
-                            it.finishRefresh(1000)
-                        }
+                    backgroundResource = R.drawable.enable_rectangle_button
+                    gravity = Gravity.CENTER
+                    visibility = if(role != "consumer"){  //consumer是发包方
+                        LinearLayout.GONE
+                    }else{
+                        LinearLayout.VISIBLE
                     }
-                    setRefreshFooter(
-                        BallPulseFooter(this@PainterInfomation).setSpinnerStyle(
-                            SpinnerStyle.Scale
-                        )
-                    )
-                    setOnLoadMoreListener {
-                        GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
-                            getInfo(userId, nowPage + 1)
-                            it.finishLoadMore(1000)
-                        }
+                    textView {
+                        text = resources.getString(R.string.instance_invite_painter)
+                        textSize =16f
+                        textColor =Color.WHITE
                     }
-                    recycler = recyclerView {
-                        layoutManager = LinearLayoutManager(this@PainterInfomation)
-                        painterInfoPic = PainterInfoPictureAdapter(this@PainterInfomation,
-                            arrayListOf(),this@PainterInfomation)
-                        adapter = painterInfoPic
+                    setOnClickListener {
+                        val intent = Intent(this@PainterInfomation, InvitationActivity::class.java)
+                        //跳转详情
+                        //画师/团队的id
+                        intent.putExtra("id", userId)
+                        startActivity(intent)
+                        overridePendingTransition(R.anim.right_in, R.anim.left_out)
                     }
-                    val lp = recycler.layoutParams
-                    lp.width = LinearLayout.LayoutParams.MATCH_PARENT
-                    lp.height = LinearLayout.LayoutParams.MATCH_PARENT
-                }.lparams(matchParent, wrapContent)
+                }.lparams(matchParent,dip(50))
             }
         }
-        smart.autoRefresh()
+        GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
+            getInfo(userId)
+        }
     }
 
     override fun click(str: String) {
@@ -231,6 +295,12 @@ class PainterInfomation : BaseActivity(), PainterInfoPictureAdapter.ImageClick, 
             Glide.with(this@PainterInfomation)
                 .load(model.logo)
                 .apply(RequestOptions.bitmapTransform(CircleCrop()))
+                .placeholder(R.mipmap.default_avatar)
+                .into(headImage)
+        }else{
+            Glide.with(this@PainterInfomation)
+                .load(R.mipmap.default_avatar)
+                .apply(RequestOptions.bitmapTransform(CircleCrop()))
                 .into(headImage)
         }
 
@@ -241,7 +311,7 @@ class PainterInfomation : BaseActivity(), PainterInfoPictureAdapter.ImageClick, 
             val view = UI {
                 linearLayout {
                     imageView {
-                        imageResource = if (index < model.star) {
+                        imageResource = if (index < model.star.toInt()) {
                             R.mipmap.ico_star_select
                         } else {
                             R.mipmap.ico_star_no
@@ -284,7 +354,14 @@ class PainterInfomation : BaseActivity(), PainterInfoPictureAdapter.ImageClick, 
             "82" -> country.imageResource = R.mipmap.image_korea
         }
 
-        commit.text = if(model.introduction!="") "无" else model.introduction
+        commit.text = if(model.introduction!=null){
+           if(model.introduction=="")
+               resources.getString(R.string.common_not_somethings)
+           else
+               model.introduction
+        }else{
+            resources.getString(R.string.common_not_somethings)
+        }
 
     }
 
@@ -293,7 +370,7 @@ class PainterInfomation : BaseActivity(), PainterInfoPictureAdapter.ImageClick, 
 
         mTransaction.setCustomAnimations(R.anim.right_in, R.anim.right_in)
 
-        bigImage = BigImage2.newInstance(pic,this@PainterInfomation)
+        bigImage = BigImage2.newInstance(pic,this@PainterInfomation, true)
         mTransaction.add(mainId, bigImage!!)
 
         mTransaction.commit()

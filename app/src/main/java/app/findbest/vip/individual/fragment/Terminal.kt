@@ -5,6 +5,7 @@ import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
 import android.graphics.Color
+import android.graphics.Typeface
 import android.os.Bundle
 import android.preference.PreferenceManager
 import android.text.TextUtils
@@ -16,6 +17,7 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toolbar
+import androidx.core.widget.TextViewCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import app.findbest.vip.R
@@ -28,6 +30,7 @@ import app.findbest.vip.login.api.LoginApi
 import app.findbest.vip.login.view.LoginActivity
 import app.findbest.vip.message.activity.VideoResultActivity
 import app.findbest.vip.utils.RetrofitUtils
+import app.findbest.vip.utils.appCompatTextView
 import app.findbest.vip.utils.recyclerView
 import click
 import com.bumptech.glide.Glide
@@ -132,10 +135,15 @@ class Terminal : FragmentParent() {
                         //我的名字，头像，是否认证那一排
                         linearLayout {
                             verticalLayout {
-                                personName = textView {
-                                    textSize = 30f
+                                personName = appCompatTextView {
                                     textColor = Color.WHITE
-                                    ellipsize = TextUtils.TruncateAt.END
+                                    singleLine = true
+                                    setAutoSizeTextTypeUniformWithConfiguration(
+                                        TextViewCompat.AUTO_SIZE_TEXT_TYPE_UNIFORM,
+                                        dip(30),
+                                        1,
+                                        0
+                                    )
                                 }.lparams(matchParent, dip(42)) {
                                     bottomMargin = dip(3)
                                     leftMargin = dip(2)
@@ -284,6 +292,7 @@ class Terminal : FragmentParent() {
                                 textResource = R.string.tl_account_balance
                                 textSize = 20f
                                 textColor = Color.parseColor("#333333")
+                                typeface = Typeface.DEFAULT_BOLD
                             }.lparams{
                                 leftMargin = dip(10)
                             }
@@ -459,42 +468,6 @@ class Terminal : FragmentParent() {
                             rightMargin = dip(20)
                         }
 
-                        //账户退出
-                        relativeLayout {
-                            backgroundResource = R.drawable.ffe3e3e3_bottom_line
-                            this.withTrigger().click {
-                                GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
-                                    logout()
-                                }
-                            }
-                            linearLayout {
-                                orientation = LinearLayout.HORIZONTAL
-                                imageView {
-                                    imageResource = R.mipmap.ico_exit_nor
-                                }.lparams(dip(19), dip(18))
-
-                                textView {
-                                    textResource = R.string.tl_loginout
-                                    textSize = 13f
-                                    textColor = Color.parseColor("#333333")
-                                }.lparams(wrapContent, wrapContent) {
-                                    leftMargin = dip(10)
-                                }
-                            }.lparams{
-                                centerVertically()
-                            }
-
-                            imageView {
-                                imageResource = R.mipmap.btn_slect_nor
-                            }.lparams(dip(6), dip(11)) {
-                                alignParentRight()
-                                centerVertically()
-                            }
-                        }.lparams(matchParent, dip(62)) {
-                            leftMargin = dip(20)
-                            rightMargin = dip(20)
-                        }
-
                         //关于我们
                         linearLayout {
                             gravity = Gravity.CENTER
@@ -529,6 +502,42 @@ class Terminal : FragmentParent() {
                         }.lparams(matchParent, wrapContent) {
                             topMargin = dip(16)
                             bottomMargin = dip(16)
+                            leftMargin = dip(20)
+                            rightMargin = dip(20)
+                        }
+
+                        //账户退出
+                        relativeLayout {
+                            backgroundResource = R.drawable.ffe3e3e3_bottom_line
+                            this.withTrigger().click {
+                                GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
+                                    logout()
+                                }
+                            }
+                            linearLayout {
+                                orientation = LinearLayout.HORIZONTAL
+                                imageView {
+                                    imageResource = R.mipmap.ico_exit_nor
+                                }.lparams(dip(19), dip(18))
+
+                                textView {
+                                    textResource = R.string.tl_loginout
+                                    textSize = 13f
+                                    textColor = Color.parseColor("#333333")
+                                }.lparams(wrapContent, wrapContent) {
+                                    leftMargin = dip(10)
+                                }
+                            }.lparams{
+                                centerVertically()
+                            }
+
+                            imageView {
+                                imageResource = R.mipmap.btn_slect_nor
+                            }.lparams(dip(6), dip(11)) {
+                                alignParentRight()
+                                centerVertically()
+                            }
+                        }.lparams(matchParent, dip(62)) {
                             leftMargin = dip(20)
                             rightMargin = dip(20)
                         }

@@ -19,7 +19,7 @@ interface ProjectApi {
     //根据分类标签，获取项目列表
     @Headers("Content-Type: application/json")
     @GET("/api/v1/projects/page")
-    fun getProjectListByCategory(@Query("page") page : Int, @Query("size") size : Int, @Query("category") category : Int, @Query("style") style : Int): Observable<Response<PageModel>>
+    fun getProjectListByCategory(@Query("page") page : Int, @Query("size") size : Int, @Query("category") category : Int?, @Query("style") style : Int?): Observable<Response<PageModel>>
 
     //根据搜索，获取项目列表
     @Headers("Content-Type: application/json")

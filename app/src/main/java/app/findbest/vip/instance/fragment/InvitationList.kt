@@ -237,13 +237,19 @@ class InvitationList : FragmentParent(), InstanceListFragment.InstanceList {
                 val jsonObject = JSONObject(response.body().toString())
                 val array = jsonObject.getJSONArray("data")
                 if(array.length()>0){
+                    if(nullData!=null){
+                        childFragmentManager.beginTransaction().remove(nullData!!).commit()
+                        nullData = null
+                    }
                     if (array.length() == 0 && pageNum > 1) {
                         pageNum -= 1
                     }
                     listFragment.addView(array)
                 }else{
-                    nullData = NullDataPageFragment.newInstance()
-                    childFragmentManager.beginTransaction().replace(nullId,nullData!!).commit()
+                    if(nullData==null){
+                        nullData = NullDataPageFragment.newInstance()
+                        childFragmentManager.beginTransaction().replace(nullId,nullData!!).commit()
+                    }
                 }
             }
         }

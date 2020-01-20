@@ -13,12 +13,10 @@ import androidx.recyclerview.widget.RecyclerView
 import app.findbest.vip.R
 import app.findbest.vip.commonfrgmant.BackgroundFragment
 import app.findbest.vip.individual.adapter.ProjectSideApplicantsAdapter
-import app.findbest.vip.painter.fragment.BigImage2
+import app.findbest.vip.commonfrgmant.BigImage2
 import app.findbest.vip.utils.recyclerView
 import com.google.gson.JsonObject
-import imui.jiguang.cn.imuisample.messages.MessageListActivity
 import org.jetbrains.anko.backgroundColor
-import org.jetbrains.anko.linearLayout
 import org.jetbrains.anko.support.v4.UI
 import org.jetbrains.anko.support.v4.nestedScrollView
 import org.jetbrains.anko.support.v4.toast
@@ -63,7 +61,7 @@ class ProjectSideApplicantList: Fragment(), ProjectSideApplicantsAdapter.Printed
                 .commit()
         }
         if (bigImage == null) {
-            bigImage = BigImage2.newInstance(str, this@ProjectSideApplicantList)
+            bigImage = BigImage2.newInstance(str, this@ProjectSideApplicantList, true)
             activity!!.supportFragmentManager.beginTransaction().add(mainId, bigImage!!).commit()
         }
     }
@@ -79,20 +77,22 @@ class ProjectSideApplicantList: Fragment(), ProjectSideApplicantsAdapter.Printed
     }
     //聊一聊
     override fun chat(model: JsonObject) {
-        val provider = model["provider"].asJsonObject
-        val intent = Intent(mContext, MessageListActivity::class.java)
-        val id = if(!provider["id"].isJsonNull) provider["id"].asString else ""
-        val name = if(!provider["name"].isJsonNull) provider["name"].asString else ""
-        val avatar = if(!provider["avatar"].isJsonNull) provider["avatar"].asString else ""
-        intent.putExtra("hisId",id)
-        intent.putExtra("companyName","")
-        intent.putExtra("hisName",name)
-        intent.putExtra("hislogo",avatar)
-        intent.putExtra("position_id","")
-        intent.putExtra("isTranslate",false)
+//        val provider = model["provider"].asJsonObject
+//        val intent = Intent(mContext, MessageListActivity::class.java)
+//        val id = if(!provider["id"].isJsonNull) provider["id"].asString else ""
+//        val name = if(!provider["name"].isJsonNull) provider["name"].asString else ""
+//        val avatar = if(!provider["avatar"].isJsonNull) provider["avatar"].asString else ""
+//        intent.putExtra("hisId",id)
+//        intent.putExtra("companyName","")
+//        intent.putExtra("hisName",name)
+//        intent.putExtra("hislogo",avatar)
+//        intent.putExtra("position_id","")
+//        intent.putExtra("isTranslate",false)
+//
+//        startActivity(intent)
+//        activity!!.overridePendingTransition(R.anim.right_in, R.anim.left_out)
 
-        startActivity(intent)
-        activity!!.overridePendingTransition(R.anim.right_in, R.anim.left_out)
+        toast("coming soon,wait")
     }
     //发送委托
     override fun send(commitId: String) {
@@ -100,7 +100,6 @@ class ProjectSideApplicantList: Fragment(), ProjectSideApplicantsAdapter.Printed
     }
     //拒绝应征
     override fun refuse(commitId: String) {
-        toast(resources.getString(R.string.common_refuse))
         projectSideList.refuse(commitId)
     }
 

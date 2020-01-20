@@ -2,6 +2,7 @@ package app.findbest.vip.individual.adapter
 
 import android.content.Context
 import android.graphics.Color
+import android.text.TextUtils
 import android.view.Gravity
 import android.view.View
 import android.view.ViewGroup
@@ -50,10 +51,15 @@ class ProjectSideInviteAdapter(
                     }
                     linearLayout {
                         orientation = LinearLayout.VERTICAL
-                        relativeLayout {
+                        linearLayout {
+                            orientation = LinearLayout.HORIZONTAL
                             name = textView {
                                 textSize = 17f
                                 textColor = Color.parseColor("#FF444444")
+                                singleLine = true
+                                ellipsize = TextUtils.TruncateAt.END
+                            }.lparams(dip(0), wrapContent){
+                                weight = 1f
                             }
                             linearLayout {
                                 orientation = LinearLayout.HORIZONTAL
@@ -65,9 +71,7 @@ class ProjectSideInviteAdapter(
                                 }.lparams{
                                     setMargins(dip(10),dip(2.5f),dip(10),dip(2.5f))
                                 }
-                            }.lparams(dip(53),dip(20)) {
-                                alignParentRight()
-                            }
+                            }.lparams(dip(53),dip(20))
                         }.lparams {
                             topMargin = dip(8)
                         }
@@ -82,7 +86,8 @@ class ProjectSideInviteAdapter(
                     setMargins(dip(10), dip(5), dip(10),0)
                 }
                 imageList = horizontalScrollView {
-                    isHorizontalScrollBarEnabled = false
+                    overScrollMode = View.OVER_SCROLL_NEVER
+                    isScrollbarFadingEnabled = false
                 }.lparams(matchParent, dip(85)) {
                     topMargin = dip(15)
                     bottomMargin = dip(20)
@@ -119,6 +124,12 @@ class ProjectSideInviteAdapter(
         if (!model["consumerLogo"].isJsonNull) {
             Glide.with(mContext)
                 .load(model["consumerLogo"].asString)
+                .apply(RequestOptions.bitmapTransform(CircleCrop()))
+                .placeholder(R.mipmap.default_avatar)
+                .into(headPic)
+        }else{
+            Glide.with(mContext)
+                .load(R.mipmap.default_avatar)
                 .apply(RequestOptions.bitmapTransform(CircleCrop()))
                 .into(headPic)
         }

@@ -1,11 +1,13 @@
 package app.findbest.vip.project.view
 
 import android.annotation.SuppressLint
+import android.content.Context
 import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
 import android.view.Gravity
 import android.view.ViewGroup
+import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import android.widget.LinearLayout
 import android.widget.TextView
@@ -53,6 +55,9 @@ class EnlistProject : BaseActivity(), EnlistSuccessTipsDialog.ButtomClick, Backg
         frameLayout {
             id = mainId
             verticalLayout {
+                setOnClickListener {
+                    closeFocusjianpan()
+                }
                 relativeLayout {
                     backgroundResource = R.drawable.ffe3e3e3_bottom_line
                     linearLayout {
@@ -93,7 +98,7 @@ class EnlistProject : BaseActivity(), EnlistSuccessTipsDialog.ButtomClick, Backg
 
                 verticalLayout {
                     listText = textView {
-                        text = "（0/4）"
+                        text = "（0/3）"
                         textSize = 15f
                         textColor = Color.parseColor("#FF333333")
                     }.lparams {
@@ -101,7 +106,7 @@ class EnlistProject : BaseActivity(), EnlistSuccessTipsDialog.ButtomClick, Backg
                     }
                     linea = linearLayout {
                         orientation = LinearLayout.HORIZONTAL
-                        for (index in 0..3) {
+                        for (index in 0..2) {
                             linearLayout {
                                 backgroundResource = R.drawable.around_rectangle_2
                                 gravity = Gravity.CENTER
@@ -129,6 +134,7 @@ class EnlistProject : BaseActivity(), EnlistSuccessTipsDialog.ButtomClick, Backg
                     textSize = 16f
                     backgroundResource = R.drawable.enable_rectangle_button
                     setOnClickListener {
+                        closeFocusjianpan()
                         GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
                             enlist(projectId)
                         }
@@ -167,7 +173,7 @@ class EnlistProject : BaseActivity(), EnlistSuccessTipsDialog.ButtomClick, Backg
     }
     @SuppressLint("SetTextI18n")
     private fun changeImageList(){
-        listText.text = "（${imageList.size}/4）"
+        listText.text = "（${imageList.size}/3）"
         linea.removeAllViews()
         for (index in 0 until imageList.size) {
             val imageViews = UI {
@@ -202,7 +208,7 @@ class EnlistProject : BaseActivity(), EnlistSuccessTipsDialog.ButtomClick, Backg
             }.view
             linea.addView(imageViews)
         }
-        for (index in 0 until 4 - imageList.size) {
+        for (index in 0 until 3 - imageList.size) {
             val notImage = UI {
                 val linea = linearLayout {
                     backgroundResource = R.drawable.around_rectangle_2
@@ -298,5 +304,13 @@ class EnlistProject : BaseActivity(), EnlistSuccessTipsDialog.ButtomClick, Backg
             backgroundFragment = null
         }
         mTransaction.commit()
+    }
+
+    private fun closeFocusjianpan() {
+        //关闭ｅｄｉｔ光标
+        commitText.clearFocus()
+        //关闭键盘事件
+        val phone = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        phone.hideSoftInputFromWindow(commitText.windowToken, 0)
     }
 }

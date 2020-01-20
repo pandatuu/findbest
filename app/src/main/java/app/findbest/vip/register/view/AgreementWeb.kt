@@ -5,16 +5,23 @@ import android.graphics.Bitmap
 import android.graphics.Color
 import android.graphics.Typeface
 import android.os.Bundle
+import android.text.TextUtils
 import android.view.Gravity
 import android.view.KeyEvent
 import android.webkit.*
+import android.widget.LinearLayout
+import android.widget.TextView
+import androidx.core.widget.TextViewCompat
 import app.findbest.vip.R
 import app.findbest.vip.utils.BaseActivity
+import app.findbest.vip.utils.appCompatTextView
+import kotlinx.android.synthetic.main.photo_view.view.*
 import org.jetbrains.anko.*
 
 class AgreementWeb : BaseActivity() {
 
     private lateinit var web: WebView
+    private lateinit var titleText: TextView
     @SuppressLint("SetJavaScriptEnabled")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -22,7 +29,9 @@ class AgreementWeb : BaseActivity() {
         val url = intent.getStringExtra("webUrl") ?: ""
 
         verticalLayout {
-            relativeLayout {
+            linearLayout {
+                orientation = LinearLayout.HORIZONTAL
+                gravity = Gravity.BOTTOM
                 backgroundResource = R.drawable.ffe3e3e3_bottom_line
                 linearLayout {
                     gravity = Gravity.CENTER
@@ -39,20 +48,23 @@ class AgreementWeb : BaseActivity() {
                         overridePendingTransition(R.anim.left_in, R.anim.right_out)
                     }
                 }.lparams(dip(30), dip(25)) {
-                    alignParentBottom()
-                    alignParentLeft()
                     leftMargin = dip(15)
                     bottomMargin = dip(10)
                 }
-                textView {
-                    text = resources.getString(R.string.register_agreement_url)
-                    textSize = 17f
+                titleText = appCompatTextView {
+                    gravity = Gravity.CENTER
                     textColor = Color.parseColor("#FF222222")
                     typeface = Typeface.DEFAULT_BOLD
-                }.lparams {
-                    centerHorizontally()
-                    alignParentBottom()
-                    bottomMargin = dip(10)
+                    setAutoSizeTextTypeUniformWithConfiguration(
+                        TextViewCompat.AUTO_SIZE_TEXT_TYPE_UNIFORM,
+                        dip(17),
+                        1,
+                        0
+                    )
+                    maxLines = 1
+                }.lparams(wrapContent, dip(25)) {
+                    weight = 1f
+                    bottomMargin = dip(5)
                 }
             }.lparams(matchParent, dip(65))
             web = webView {
@@ -64,7 +76,12 @@ class AgreementWeb : BaseActivity() {
                 settings.useWideViewPort = true
                 settings.javaScriptCanOpenWindowsAutomatically = true
                 settings.setSupportMultipleWindows(true)
-                webChromeClient = WebChromeClient()
+                webChromeClient = object:  WebChromeClient(){
+                    override fun onReceivedTitle(view: WebView?, title: String?) {
+                        super.onReceivedTitle(view, title)
+                        titleText.text = title
+                    }
+                }
                 webViewClient = object : WebViewClient() {
                     override fun shouldOverrideUrlLoading(view: WebView?, request: WebResourceRequest?): Boolean {
                         view?.loadUrl(request?.url.toString())

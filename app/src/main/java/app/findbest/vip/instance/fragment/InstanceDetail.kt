@@ -2,6 +2,7 @@ package app.findbest.vip.instance.fragment
 
 import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -10,13 +11,17 @@ import android.view.ViewGroup
 import org.jetbrains.anko.linearLayout
 import org.jetbrains.anko.support.v4.UI
 import android.graphics.Color
+import android.graphics.Typeface
 import android.view.*
 import org.jetbrains.anko.*
-import android.graphics.Typeface
+import android.text.TextUtils
 import app.findbest.vip.R
 import app.findbest.vip.commonfrgmant.FragmentParent
 
 import android.widget.*
+import androidx.core.widget.TextViewCompat
+import androidx.preference.PreferenceManager
+import app.findbest.vip.instance.model.InstanceModel
 import app.findbest.vip.instance.view.InvitationActivity
 import app.findbest.vip.utils.*
 import click
@@ -28,9 +33,10 @@ import withTrigger
 class InstanceDetail : FragmentParent() {
 
     companion object {
-        fun newInstance(context: Context): InstanceDetail {
+        fun newInstance(context: Context, model: InstanceModel): InstanceDetail {
             val f = InstanceDetail()
             f.activityInstance = context
+            f.model = model
             return f
         }
     }
@@ -39,10 +45,7 @@ class InstanceDetail : FragmentParent() {
     var toolbar1: Toolbar? = null
     private var mContext: Context? = null
     lateinit var activityInstance: Context
-
-
-    private var screenWidth = 0
-    private var picWidth = 0
+    lateinit var model: InstanceModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -62,81 +65,38 @@ class InstanceDetail : FragmentParent() {
     }
 
     private fun createView(): View {
-        screenWidth = px2dp(getDisplay(mContext!!)!!.width.toFloat())
-        picWidth = (screenWidth - 18) / 2
-        if (picWidth >= 180) {
-            picWidth = 180
-        }
-
-        val view = UI {
+        val mPerferences: SharedPreferences = PreferenceManager.getDefaultSharedPreferences(mContext)
+        val role =  mPerferences.getString("role", "").toString()
+        return UI {
             verticalLayout {
-                relativeLayout {
-                    textView {
-                        backgroundColor = Color.parseColor("#FFE3E3E3")
-                    }.lparams {
-                        width = matchParent
-                        height = dip(1)
-                        alignParentBottom()
-                    }
-                    relativeLayout {
-                        toolbar1 = toolbar {
-                            backgroundResource = R.color.transparent
-                            isEnabled = true
-                            navigationIconResource = R.mipmap.nav_ico_return
-                            title = ""
-                            this.withTrigger().click {
-                                activity!!.finish()
-                                activity!!.overridePendingTransition(
-                                    R.anim.left_in,
-                                    R.anim.right_out
-                                )
-                            }
-                        }.lparams {
-                            width = matchParent
-                            height = dip(65)
-                            alignParentBottom()
-                            height = dip(65 - getStatusBarHeight(this@InstanceDetail.context!!))
-                        }
-                        textView {
-                            text = ""
-                            backgroundColor = Color.TRANSPARENT
-                            gravity = Gravity.CENTER
-                            textColor = Color.parseColor("#FF222222")
-                            textSize = 16f
-                            typeface = Typeface.defaultFromStyle(Typeface.BOLD)
-                        }.lparams {
-                            width = matchParent
-                            height = wrapContent
-                            height = dip(65 - getStatusBarHeight(this@InstanceDetail.context!!))
-                            alignParentBottom()
-                        }
-                    }.lparams {
-                        width = matchParent
-                        height = dip(65)
-                    }
-                }.lparams {
-                    width = matchParent
-                    height = dip(65)
-                }
                 linearLayout {
+                    orientation = LinearLayout.HORIZONTAL
                     gravity = Gravity.CENTER_VERTICAL
                     roundImageView {
                         Glide.with(this@InstanceDetail)
-                            .load(activity!!.intent.getStringExtra("logo"))
+                            .load(model.logo)
                             .skipMemoryCache(false)
                             .dontAnimate()
                             .centerCrop()
-                            .placeholder(R.mipmap.no_pic_show)
+                            .placeholder(R.mipmap.default_avatar)
                             .into(this)
                     }.lparams {
                         width = dip(45)
                         height = dip(45)
                     }
-                    textView {
-                        text = activity!!.intent.getStringExtra("name")
+                    appCompatTextView {
+                        text = model.name
                         textSize = 17f
                         textColor = Color.parseColor("#FF444444")
-                    }.lparams {
+                        singleLine = true
+                        setAutoSizeTextTypeUniformWithConfiguration(
+                            TextViewCompat.AUTO_SIZE_TEXT_TYPE_UNIFORM,
+                            dip(17),
+                            1,
+                            0
+                        )
+                    }.lparams(dip(0), dip(25)) {
+                        weight = 1f
                         leftMargin = dip(8)
                     }
                 }.lparams {
@@ -152,44 +112,48 @@ class InstanceDetail : FragmentParent() {
                     height = dip(1)
                 }
                 linearLayout {
-                    gravity=Gravity.CENTER
-                    image= imageView {}.lparams {
+                    gravity =Gravity.CENTER
+                    image = imageView {}.lparams {
                         width = matchParent
-                        height=matchParent
+                        height =matchParent
                         margin = dip(5)
-                        rightMargin=dip(10)
-                        leftMargin=dip(10)
+                        rightMargin = dip(10)
+                        leftMargin = dip(10)
                     }
+                    Glide.with(image.context)
+                        .load(model.url)
+                        .centerCrop()
+                        .placeholder(R.mipmap.no_pic_show)
+                        .into(image)
                 }.lparams {
                     height = dip(0)
                     weight = 1f
                     width = matchParent
                 }
-                textView {
-                    gravity=Gravity.CENTER
-                    text=activity!!.getString(R.string.instance_invite_painter)
-                    textSize=16f
-                    textColor=Color.WHITE
-                    backgroundResource=R.drawable.enable_rectangle_button
-                    this.withTrigger().click {
-                        val intent = Intent(activityInstance, InvitationActivity::class.java)
+
+                linearLayout {
+                    backgroundResource = R.drawable.enable_rectangle_button
+                    gravity = Gravity.CENTER
+                    visibility = if(role != "consumer"){  //consumer是发包方
+                        LinearLayout.GONE
+                    }else{
+                        LinearLayout.VISIBLE
+                    }
+                    textView {
+                        text = resources.getString(R.string.instance_invite_painter)
+                        textSize =16f
+                        textColor =Color.WHITE
+                    }
+                    setOnClickListener {
+                        val intent = Intent(mContext, InvitationActivity::class.java)
                         //跳转详情
                         //画师/团队的id
-                        intent.putExtra("id", activity!!.intent.getStringExtra("id"))
+                        intent.putExtra("id", model.id)
                         startActivity(intent)
                         activity!!.overridePendingTransition(R.anim.right_in, R.anim.left_out)
                     }
-                }.lparams {
-                    height = dip(50)
-                    width = matchParent
-                }
+                }.lparams(matchParent,dip(50))
             }
         }.view
-        Glide.with(image.context)
-            .load(activity!!.intent.getStringExtra("url"))
-            .centerCrop()
-            .placeholder(R.mipmap.no_pic_show)
-            .into(image)
-        return view
     }
 }

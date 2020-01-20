@@ -46,25 +46,21 @@ class ProjectInformation: BaseActivity() {
                 relativeLayout {
                     backgroundResource = R.drawable.ffe3e3e3_bottom_line
                     linearLayout {
-                        gravity = Gravity.CENTER_VERTICAL
+                        gravity = Gravity.CENTER
                         toolbar {
                             navigationIconResource = R.mipmap.nav_ico_return
-                        }.lparams(dip(10),dip(18)){
-                            setMargins(dip(5),dip(5),0,dip(8))
-                        }
-                        textView {
-                            text = resources.getString(R.string.common_toolbar_back)
-                            textSize = 17f
-                            textColor = Color.parseColor("#FF222222")
-                        }.lparams{
-                            setMargins(dip(5),dip(5),dip(5),dip(8))
-                        }
+                            setOnClickListener {
+                                finish()
+                                overridePendingTransition(R.anim.left_in, R.anim.right_out)
+                            }
+                        }.lparams(dip(10),dip(18))
                         setOnClickListener {
                             finish()
                             overridePendingTransition(R.anim.left_in, R.anim.right_out)
                         }
-                    }.lparams{
+                    }.lparams(dip(30),dip(25)){
                         leftMargin = dip(10)
+                        bottomMargin = dip(10)
                         alignParentBottom()
                         alignParentLeft()
                     }

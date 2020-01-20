@@ -4,7 +4,9 @@ import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
 import android.graphics.Color
+import android.graphics.Typeface
 import android.os.Bundle
+import android.text.TextUtils
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
@@ -52,7 +54,6 @@ class PainterSideProjectInvite : Fragment(), PainterSideInvite.ChooseStatus, Bac
     private var tipsDialog: EnlistCheckTipsDialog? = null
     private var backgroundFragment: BackgroundFragment? = null
     private var chooseRefuse: ChooseRefuse? = null
-    private var countryList = mutableListOf<String>()
 
     var projectId = ""
     private val inviteId = 2
@@ -103,11 +104,12 @@ class PainterSideProjectInvite : Fragment(), PainterSideInvite.ChooseStatus, Bac
                             text = name
                             textSize = 21f
                             textColor = Color.parseColor("#FF202020")
+                            typeface = Typeface.DEFAULT_BOLD
                         }.lparams {
                             gravity = Gravity.CENTER_VERTICAL
-                            leftMargin = dip(15)
+                            setMargins(dip(15),dip(20),dip(15),dip(20))
                         }
-                    }.lparams(matchParent, dip(70))
+                    }.lparams(matchParent, wrapContent)
                     frameLayout {
                         id = inviteId
                     }.lparams(matchParent, matchParent)
@@ -146,8 +148,10 @@ class PainterSideProjectInvite : Fragment(), PainterSideInvite.ChooseStatus, Bac
                     painterSideInvite = PainterSideInvite.newInstance(mContext,this@PainterSideProjectInvite,model)
                     childFragmentManager.beginTransaction().add(inviteId,painterSideInvite!!).commit()
                 }else{
-                    nullData = NullDataPageFragment.newInstance()
-                    childFragmentManager.beginTransaction().replace(inviteId,nullData!!).commit()
+                    if(nullData==null){
+                        nullData = NullDataPageFragment.newInstance()
+                        childFragmentManager.beginTransaction().replace(inviteId,nullData!!).commit()
+                    }
                 }
             }
         } catch (throwable: Throwable) {
@@ -217,7 +221,6 @@ class PainterSideProjectInvite : Fragment(), PainterSideInvite.ChooseStatus, Bac
                 .subscribeOn(Schedulers.io())
                 .awaitSingle()
             if (it.code() in 200..299) {
-                val model = it.body()!!
                 painterSideInvite?.updateSatuts(false)
             }
         } catch (throwable: Throwable) {
@@ -230,10 +233,6 @@ class PainterSideProjectInvite : Fragment(), PainterSideInvite.ChooseStatus, Bac
     fun setProjectName(str: String) {
         name = str
     }
-    fun setProjectCountry(country: ArrayList<String>) {
-        countryList = country
-    }
-
     private fun openTipsDialog(status: Int) {
         val mTransaction = activity!!.supportFragmentManager.beginTransaction()
 
@@ -245,7 +244,7 @@ class PainterSideProjectInvite : Fragment(), PainterSideInvite.ChooseStatus, Bac
 
         mTransaction.setCustomAnimations(R.anim.right_in, R.anim.right_in)
 
-        tipsDialog = EnlistCheckTipsDialog.newInstance(this@PainterSideProjectInvite, status, countryList)
+        tipsDialog = EnlistCheckTipsDialog.newInstance(this@PainterSideProjectInvite, status)
         mTransaction.add(mainId, tipsDialog!!)
 
         mTransaction.commit()

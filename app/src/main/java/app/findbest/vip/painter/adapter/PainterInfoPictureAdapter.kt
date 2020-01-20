@@ -48,64 +48,12 @@ class PainterInfoPictureAdapter(
                         orientation = LinearLayout.HORIZONTAL
                         leftImage = linearLayout {
                             orientation = LinearLayout.VERTICAL
-//                            backgroundColor = Color.YELLOW
-//                            for (index in pictureList[viewType].indices) {
-//                                if (index % 2 == 0) {
-//                                    linearLayout {
-//                                        orientation = LinearLayout.VERTICAL
-////                                        val text = textView {
-////                                        }
-////                                        text.text = "1111111111111111"
-//                                    val image = imageView {
-//                                        scaleType = ImageView.ScaleType.FIT_CENTER
-////                                        adjustViewBounds = true
-//                                        setOnClickListener {
-//                                            //                                fragmentClick.clickImg(pictureList[position])
-//                                        }
-//                                    }.lparams {
-//                                        width = matchParent
-//                                        height = wrapContent
-//                                    }
-//                                    Glide.with(mContext)
-//                                        .load(pictureList[viewType][index])
-//                                        .into(image)
-//                                    }.lparams(matchParent, wrapContent) {
-//                                        topMargin = dip(10)
-//                                    }
-//                                }
-//                            }
                         }.lparams(dip(0), wrapContent) {
                             weight = 1f
                             rightMargin = dip(5)
                         }
                         rightImage = linearLayout {
                             orientation = LinearLayout.VERTICAL
-//                            backgroundColor = Color.BLUE
-//                            for (index in pictureList[viewType].indices) {
-//                                if (index % 2 == 1) {
-//                                    linearLayout {
-//                                        orientation = LinearLayout.VERTICAL
-////                                        val text = textView {
-////                                        }
-////                                        text.text = "22222222"
-//                                    val image = imageView {
-//                                        scaleType = ImageView.ScaleType.FIT_CENTER
-//                                        adjustViewBounds = true
-//                                        setOnClickListener {
-//                                            //                                fragmentClick.clickImg(pictureList[position])
-//                                        }
-//                                    }.lparams {
-//                                        width = matchParent
-//                                        height = wrapContent
-//                                    }
-//                                    Glide.with(mContext)
-//                                        .load(pictureList[viewType][index])
-//                                        .into(image)
-//                                    }.lparams(matchParent, wrapContent) {
-//                                        topMargin = dip(10)
-//                                    }
-//                                }
-//                            }
                         }.lparams(dip(0), wrapContent) {
                             weight = 1f
                             leftMargin = dip(5)

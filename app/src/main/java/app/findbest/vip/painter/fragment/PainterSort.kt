@@ -3,6 +3,7 @@ package app.findbest.vip.painter.fragment
 import android.content.Context
 import android.content.SharedPreferences
 import android.graphics.Color
+import android.graphics.Typeface
 import android.os.Bundle
 import android.view.Gravity
 import android.view.LayoutInflater
@@ -34,16 +35,23 @@ class PainterSort: Fragment() {
         }
     }
 
+    private var sortSomeView: LinearLayout? = null
+    private lateinit var flow: FlowLayout
+    private lateinit var mContext: Context
     private lateinit var sortClick:SortClick
     lateinit var mPerferences: SharedPreferences
-    private var mSortList = arrayListOf(resources.getString(R.string.sort_first),
-        resources.getString(R.string.sort_second),resources.getString(R.string.sort_third),resources.getString(R.string.sort_forth))
+    private var mSortList = arrayListOf<String>()
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        mSortList.add(resources.getString(R.string.sort_first))
+        mSortList.add(resources.getString(R.string.sort_second))
+        mSortList.add(resources.getString(R.string.sort_third))
+        mSortList.add(resources.getString(R.string.sort_forth))
+
         mPerferences =
             PreferenceManager.getDefaultSharedPreferences(mContext)
 
@@ -55,10 +63,6 @@ class PainterSort: Fragment() {
 
         return createV()
     }
-
-    private var sortSomeView: LinearLayout? = null
-    private lateinit var flow: FlowLayout
-    private lateinit var mContext: Context
 
     private fun createV(): View {
         val view = UI {
@@ -72,6 +76,7 @@ class PainterSort: Fragment() {
                                 text = resources.getString(R.string.common_sort)
                                 textSize = 17f
                                 textColor = Color.parseColor("#FF222222")
+                                typeface = Typeface.DEFAULT_BOLD
                             }.lparams(wrapContent, wrapContent){
                                 leftMargin = dip(5)
                                 gravity = Gravity.CENTER_VERTICAL

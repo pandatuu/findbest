@@ -9,7 +9,7 @@ data class PainterInfo(
     var introduction: String,
     var userName: String,
     var logo: String,
-    var star: Int,
+    var star: Float,
     var country: String,
     var styles: ArrayList<String>,
     var works: PageModel

@@ -1,6 +1,7 @@
 package app.findbest.vip.painter.fragment
 
 import android.graphics.Color
+import android.graphics.Typeface
 import android.os.Bundle
 import android.view.Gravity
 import android.view.LayoutInflater
@@ -47,9 +48,10 @@ class PainterMainTitle: Fragment() {
                 relativeLayout {
                     backgroundResource = R.drawable.ffe3e3e3_bottom_line
                     textView {
-                        text = resources.getString(R.string.instance_title)
+                        text = resources.getString(R.string.painter_title)
                         textSize = 17f
                         textColor = Color.parseColor("#FF222222")
+                        typeface = Typeface.DEFAULT_BOLD
                     }.lparams(wrapContent, wrapContent){
                         alignParentBottom()
                         centerHorizontally()

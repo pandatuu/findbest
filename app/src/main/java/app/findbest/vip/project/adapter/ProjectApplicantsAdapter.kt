@@ -2,7 +2,7 @@ package app.findbest.vip.project.adapter
 
 import android.content.Context
 import android.graphics.Color
-import android.view.Gravity
+import android.text.TextUtils
 import android.view.View
 import android.view.ViewGroup
 import android.widget.HorizontalScrollView
@@ -25,7 +25,7 @@ class ProjectApplicantsAdapter(
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     interface PrintedCrad {
-        fun oneClick(str: String)
+        fun oneClick(str: String, b: Boolean)
     }
 
     private var mContext: Context = context
@@ -36,8 +36,9 @@ class ProjectApplicantsAdapter(
     private var printedCrad: PrintedCrad = printedCrad
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
-        val view = with(mContext) {
-            verticalLayout {
+        val view = mContext.UI {
+            val linea = verticalLayout {
+                backgroundResource = R.drawable.ffe4e4e4_bottom_line
                 linearLayout {
                     headPic = imageView {
                     }.lparams(dip(45), dip(45)) {
@@ -48,7 +49,9 @@ class ProjectApplicantsAdapter(
                         name = textView {
                             textSize = 17f
                             textColor = Color.parseColor("#FF444444")
-                        }.lparams {
+                            singleLine = true
+                            ellipsize = TextUtils.TruncateAt.END
+                        }.lparams(matchParent, wrapContent) {
                             topMargin = dip(8)
                         }
                         stars = linearLayout {
@@ -61,17 +64,15 @@ class ProjectApplicantsAdapter(
                 }.lparams(matchParent, dip(55))
 
                 imageList = horizontalScrollView {
-                    isHorizontalScrollBarEnabled = false
-                }.lparams(dip(500), dip(85)) {
+                    overScrollMode = View.OVER_SCROLL_NEVER
+                    isScrollbarFadingEnabled = false
+                }.lparams(matchParent, dip(85)) {
                     bottomMargin = dip(15)
                 }
-                linearLayout {
-                    backgroundResource = R.drawable.ffe4e4e4_bottom_line
-                }.lparams(matchParent, dip(1)) {
-                    rightMargin = dip(15)
-                }
             }
-        }
+            val lp = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,LinearLayout.LayoutParams.WRAP_CONTENT)
+            linea.layoutParams = lp
+        }.view
         return ViewHolder(view)
     }
 
@@ -85,6 +86,11 @@ class ProjectApplicantsAdapter(
                 .load(model["avatar"].asString)
                 .apply(RequestOptions.bitmapTransform(CircleCrop()))
                 .placeholder(R.mipmap.default_avatar)
+                .into(headPic)
+        }else{
+            Glide.with(mContext)
+                .load(R.mipmap.default_avatar)
+                .apply(RequestOptions.bitmapTransform(CircleCrop()))
                 .into(headPic)
         }
 
@@ -112,34 +118,40 @@ class ProjectApplicantsAdapter(
             stars.addView(view)
         }
 
-
         val view = with(mContext) {
             linearLayout {
                 orientation = LinearLayout.HORIZONTAL
                 images.forEach {
                     val imageObject = it.asJsonObject
                     val image = imageView {
-                        imageResource = R.mipmap.not_look
-                        setOnClickListener {
-                            if (!imageObject["permise"].asBoolean) {
-                                printedCrad.oneClick(imageObject["url"].asString)
-                            } else {
-                                toast("被保护中，无法查看")
-                            }
-                        }
                     }.lparams(wrapContent, matchParent){
                         leftMargin = dip(10)
                     }
-                    if (!imageObject["permise"].asBoolean && !imageObject["url"].isJsonNull) {
+                    if (!imageObject["url"].isJsonNull || imageObject["url"].asString != "") {
                         Glide.with(mContext)
                             .load(imageObject["url"].asString)
                             .into(image)
+                        image.setOnClickListener {
+                            if(!imageObject["permise"].isJsonNull) {
+                                if (imageObject["permise"].asBoolean) {
+                                    printedCrad.oneClick(imageObject["url"].asString, true)
+                                } else {
+                                    printedCrad.oneClick(imageObject["url"].asString, false)
+                                }
+                            }
+                        }
+                    }else{
+                        Glide.with(mContext)
+                            .load(R.mipmap.not_look)
+                            .into(image)
+                        image.setOnClickListener {
+                            toast(resources.getString(R.string.project_permission_work))
+                        }
                     }
                 }
             }
         }
         imageList.addView(view)
-
     }
 
     override fun getItemCount(): Int {

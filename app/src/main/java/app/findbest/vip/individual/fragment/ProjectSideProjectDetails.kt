@@ -9,6 +9,8 @@ import android.view.ViewGroup
 import android.widget.LinearLayout
 import androidx.fragment.app.Fragment
 import app.findbest.vip.R
+import app.findbest.vip.commonfrgmant.BackgroundFragment
+import app.findbest.vip.commonfrgmant.BigImage2
 import app.findbest.vip.individual.api.IndividualApi
 import app.findbest.vip.utils.RetrofitUtils
 import io.reactivex.schedulers.Schedulers
@@ -21,7 +23,7 @@ import org.jetbrains.anko.*
 import org.jetbrains.anko.support.v4.UI
 import retrofit2.HttpException
 
-class ProjectSideProjectDetails : Fragment() {
+class ProjectSideProjectDetails : Fragment(), IndividualProjectDemandDetails.ClickImage, BigImage2.ImageClick, BackgroundFragment.ClickBack {
 
     companion object {
         fun newInstance(
@@ -43,6 +45,8 @@ class ProjectSideProjectDetails : Fragment() {
     var projectInvite: ProjectSideProjectInvite? = null
     lateinit var mContext: Context
     private var demand: IndividualProjectDemandDetails? = null
+    private var bigImage: BigImage2? = null
+    private var backgroundFragment: BackgroundFragment? = null
     var projectId = ""
     val mainId = 1
 
@@ -54,6 +58,26 @@ class ProjectSideProjectDetails : Fragment() {
     ): View? {
         return createV()
     }
+    override fun clickImage(str: String, b: Boolean) {
+        val mainId = 1
+        if (backgroundFragment == null) {
+            backgroundFragment = BackgroundFragment.newInstance(this@ProjectSideProjectDetails)
+            activity!!.supportFragmentManager.beginTransaction().add(mainId, backgroundFragment!!)
+                .commit()
+        }
+        if (bigImage == null) {
+            bigImage = BigImage2.newInstance(str, this@ProjectSideProjectDetails, b)
+            activity!!.supportFragmentManager.beginTransaction().add(mainId, bigImage!!).commit()
+        }
+    }
+
+    //点击放大的图片
+    override fun clickclose() {
+        closeDialog()
+    }
+    override fun clickAll() {
+        closeDialog()
+    }
 
     private fun createV(): View {
         val view = UI {
@@ -63,7 +87,8 @@ class ProjectSideProjectDetails : Fragment() {
                 val details = 2
                 frameLayout {
                     id = details
-                    demand = IndividualProjectDemandDetails.newInstance()
+                    backgroundColor = Color.WHITE
+                    demand = IndividualProjectDemandDetails.newInstance(this@ProjectSideProjectDetails)
                     childFragmentManager.beginTransaction().add(details, demand!!).commit()
                 }.lparams(matchParent, dip(0)) {
                     weight = 1f
@@ -96,5 +121,18 @@ class ProjectSideProjectDetails : Fragment() {
                 println(throwable.code())
             }
         }
+    }
+    private fun closeDialog() {
+        val mTransaction = activity!!.supportFragmentManager.beginTransaction()
+        if (backgroundFragment != null) {
+            mTransaction.remove(backgroundFragment!!)
+            backgroundFragment = null
+        }
+
+        if (bigImage != null) {
+            mTransaction.remove(bigImage!!)
+            bigImage = null
+        }
+        mTransaction.commit()
     }
 }

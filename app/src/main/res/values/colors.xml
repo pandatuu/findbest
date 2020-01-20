@@ -6,7 +6,7 @@
     <color name="transparent">#00FFFFFF</color>
     <color name="black66000000">#66000000</color>
 
-
+    <color name="pickViewItemBorder">#FFCDD9E2</color>
 
 
     <color name="chat_title_bg">#427BED</color>

@@ -11,18 +11,25 @@ import android.view.ViewGroup
 import android.widget.LinearLayout
 import androidx.fragment.app.Fragment
 import app.findbest.vip.R
+import app.findbest.vip.utils.wheelView
+import com.zyyoona7.wheel.WheelView
 import org.jetbrains.anko.*
 
 class ChooseCountry : Fragment() {
 
+
+    interface DialogSelect {
+        // 按下选项
+        fun getSelectedItem(index: String)
+    }
+
     private var mContext: Context? = null
     lateinit var dialogSelect: DialogSelect
-
+    private lateinit var wheel: WheelView<Any>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         mContext = activity
-
     }
 
     companion object {
@@ -33,7 +40,7 @@ class ChooseCountry : Fragment() {
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        var fragmentView = createView()
+        val fragmentView = createView()
         mContext = activity
         dialogSelect = activity as DialogSelect
         return fragmentView
@@ -60,6 +67,12 @@ class ChooseCountry : Fragment() {
                             text = resources.getString(R.string.common_determine)
                             textSize = 14f
                             textColor = Color.parseColor("#FFF87A1B")
+                            setOnClickListener {
+                                var string = wheel.selectedItemData.toString()
+                                val length = string.indexOf(" ")
+                                string = string.substring(0,length)
+                                dialogSelect.getSelectedItem(string)
+                            }
                         }.lparams(wrapContent, wrapContent){
                             alignParentRight()
                             centerVertically()
@@ -68,35 +81,22 @@ class ChooseCountry : Fragment() {
                     }.lparams(matchParent,dip(44))
                     linearLayout {
                         orientation = LinearLayout.VERTICAL
-                        val countryList = arrayListOf(resources.getString(R.string.register_country_japan),
-                            resources.getString(R.string.register_country_china),resources.getString(R.string.register_country_korea))
-                        val codeList = arrayListOf("81","86","82")
-                        for (index in countryList.indices){
-                                linearLayout {
-                                    backgroundResource = R.drawable.login_input_bottom
-                                    gravity = Gravity.CENTER
-                                    linearLayout {
-                                        orientation = LinearLayout.HORIZONTAL
-                                        textView {
-                                            text = countryList[index]
-                                            textSize = 16f
-                                            textColor = Color.parseColor("#FF333333")
-                                        }
-                                        textView {
-                                            text = "+${codeList[index]}"
-                                            textSize = 16f
-                                            textColor = Color.parseColor("#FF333333")
-                                        }.lparams{
-                                            leftMargin = dip(20)
-                                        }
-                                    }.lparams(wrapContent, wrapContent){
-                                        gravity = Gravity.CENTER
-                                    }
-                                    setOnClickListener {
-                                        dialogSelect.getSelectedItem(index)
-                                    }
-                                }.lparams(matchParent,dip(45))
-                            }
+                        val countryList = arrayListOf("${resources.getString(R.string.register_country_japan)}   81",
+                            "${resources.getString(R.string.register_country_china)}   86",
+                            "${resources.getString(R.string.register_country_korea)}   82")
+
+                        wheel = wheelView {
+                            data = countryList.toList()
+                            setTextSize(16f, true)
+                            normalItemTextColor = Color.parseColor("#FF333333")
+                            selectedItemTextColor = Color.parseColor("#FF333333")
+                            isShowDivider = true
+                            setDividerColorRes(R.color.pickViewItemBorder)
+                            isCyclic = false
+                            visibleItems = 3
+                            setLineSpacing(20f, true)
+                            isCurved = false
+                        }.lparams(matchParent, matchParent)
                     }.lparams(matchParent, matchParent)
                 }.lparams(width = matchParent, height = dip(230))
             }
@@ -105,12 +105,4 @@ class ChooseCountry : Fragment() {
 
         return view
     }
-
-
-
-    interface DialogSelect {
-        // 按下选项
-        fun getSelectedItem(index: Int)
-    }
-
 }

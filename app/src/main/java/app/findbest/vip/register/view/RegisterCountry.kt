@@ -1,6 +1,7 @@
 package app.findbest.vip.register.view
 
 import android.graphics.Color
+import android.graphics.Typeface
 import android.os.Bundle
 import android.view.Gravity
 import android.widget.Button
@@ -56,6 +57,7 @@ class RegisterCountry : BaseActivity() {
                         text = "2/5"
                         textColor = Color.parseColor("#FF333333")
                         textSize = 19f
+                        typeface = Typeface.DEFAULT_BOLD
                     }.lparams(wrapContent, wrapContent) {
                         gravity = Gravity.CENTER_HORIZONTAL
                     }
@@ -63,6 +65,7 @@ class RegisterCountry : BaseActivity() {
                         text = resources.getString(R.string.register_country)
                         textColor = Color.parseColor("#FF333333")
                         textSize = 19f
+                        typeface = Typeface.DEFAULT_BOLD
                     }.lparams(wrapContent, wrapContent) {
                         gravity = Gravity.CENTER_HORIZONTAL
                     }
@@ -253,7 +256,6 @@ class RegisterCountry : BaseActivity() {
                                     startActivity<RegisterIdentity>("user" to user as Serializable, "refreshToken" to refreshToken)
                                     overridePendingTransition(R.anim.right_in, R.anim.left_out)
                                 }
-                                else -> toast(resources.getString(R.string.common_no_choose))
                             }
                         }
                     }.lparams(matchParent, dip(47)) {

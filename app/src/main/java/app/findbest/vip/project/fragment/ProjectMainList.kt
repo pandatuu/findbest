@@ -111,7 +111,12 @@ class ProjectMainList : Fragment() {
                     .getProjectListByCategory(1, 5, mCategory, mStyle)
                     .subscribeOn(Schedulers.io())
                     .awaitSingle()
-            } else {
+            } else if (mStyle == 0 && mCategory != 0) {
+                retrofitUils.create(ProjectApi::class.java)
+                    .getProjectListByCategory(1, 5, mCategory, null)
+                    .subscribeOn(Schedulers.io())
+                    .awaitSingle()
+            }else {
                 retrofitUils.create(ProjectApi::class.java)
                     .getProjectList(1, 5)
                     .subscribeOn(Schedulers.io())
@@ -139,15 +144,18 @@ class ProjectMainList : Fragment() {
                             model["commitAt"].asLong,
                             model["consumer"].asJsonObject["country"].asString,
                             model["styles"].asJsonArray,
-                            model["minBonus"].asFloat,
-                            model["maxBonus"].asFloat
+                            model["payCurrency"].asString,
+                            model["minBonus"].asString,
+                            model["maxBonus"].asString
                         )
                         projectList.add(projectListModel)
                     }
                     listFragment.resetItems(projectList)
                 }else{
-                    nullData = NullDataPageFragment.newInstance()
-                    childFragmentManager.beginTransaction().add(nullId,nullData!!).commit()
+                    if(nullData == null){
+                        nullData = NullDataPageFragment.newInstance()
+                        childFragmentManager.beginTransaction().add(nullId,nullData!!).commit()
+                    }
                 }
             }
         } catch (throwable: Throwable) {
@@ -161,9 +169,14 @@ class ProjectMainList : Fragment() {
         try {
             val retrofitUils =
                 RetrofitUtils(mContext, resources.getString(R.string.developmentUrl))
-            val it = if (mStyle != 0 && mCategory != 0) {
+            val it = if ( mCategory != 0 && mStyle != 0) {
                 retrofitUils.create(ProjectApi::class.java)
                     .getProjectListByCategory(page, 5, mCategory, mStyle)
+                    .subscribeOn(Schedulers.io())
+                    .awaitSingle()
+            }else if ( mCategory != 0 && mStyle == 0) {
+                retrofitUils.create(ProjectApi::class.java)
+                    .getProjectListByCategory(page, 5, mCategory, null)
                     .subscribeOn(Schedulers.io())
                     .awaitSingle()
             } else {
@@ -195,8 +208,9 @@ class ProjectMainList : Fragment() {
                         model["commitAt"].asLong,
                         model["consumer"].asJsonObject["country"].asString,
                         model["styles"].asJsonArray,
-                        model["minBonus"].asFloat,
-                        model["maxBonus"].asFloat
+                        model["payCurrency"].asString,
+                        model["minBonus"].asString,
+                        model["maxBonus"].asString
                     )
                     projectList.add(projectListModel)
                 }

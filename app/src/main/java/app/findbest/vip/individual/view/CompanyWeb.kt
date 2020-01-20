@@ -11,6 +11,7 @@ import android.webkit.WebChromeClient
 import android.webkit.WebResourceRequest
 import android.webkit.WebView
 import android.webkit.WebViewClient
+import android.widget.TextView
 import app.findbest.vip.R
 import app.findbest.vip.utils.BaseActivity
 import org.jetbrains.anko.*
@@ -18,6 +19,7 @@ import org.jetbrains.anko.*
 class CompanyWeb : BaseActivity() {
 
     private lateinit var web: WebView
+    private lateinit var titleText: TextView
 
     @SuppressLint("SetJavaScriptEnabled")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -45,8 +47,7 @@ class CompanyWeb : BaseActivity() {
                     leftMargin = dip(15)
                     bottomMargin = dip(10)
                 }
-                textView {
-                    text = "公司官网"
+                titleText = textView {
                     textSize = 17f
                     textColor = Color.parseColor("#FF222222")
                     typeface = Typeface.DEFAULT_BOLD
@@ -65,7 +66,12 @@ class CompanyWeb : BaseActivity() {
                 settings.useWideViewPort = true
                 settings.javaScriptCanOpenWindowsAutomatically = true
                 settings.setSupportMultipleWindows(true)
-                webChromeClient = WebChromeClient()
+                webChromeClient = object:  WebChromeClient(){
+                    override fun onReceivedTitle(view: WebView?, title: String?) {
+                        super.onReceivedTitle(view, title)
+                        titleText.text = title
+                    }
+                }
                 webViewClient = object : WebViewClient() {
                     override fun shouldOverrideUrlLoading(view: WebView?, request: WebResourceRequest?): Boolean {
                         view?.loadUrl(request?.url.toString())

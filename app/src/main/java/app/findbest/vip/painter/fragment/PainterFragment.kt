@@ -31,7 +31,8 @@ class PainterFragment: Fragment(), PainterMainTitle.ChildrenClick, BackgroundFra
     private var mainId = 1
     private val toptitle = 2
     private val list = 3
-    private var backgroundFragment: BackgroundFragment? = null
+    private var sortBackgroundFragment: BackgroundFragment? = null
+    private var screenBackgroundFragment: BackgroundFragment? = null
     private var painterMainScreen: PainterMainScreen? = null
     private var painterSort: PainterSort? = null
     private var mainList: PainterMainList? = null
@@ -108,10 +109,10 @@ class PainterFragment: Fragment(), PainterMainTitle.ChildrenClick, BackgroundFra
     private fun openScreenDialog() {
         val mTransaction = activity!!.supportFragmentManager.beginTransaction()
 
-        if (backgroundFragment == null) {
-            backgroundFragment = BackgroundFragment.newInstance(this@PainterFragment)
+        if (screenBackgroundFragment == null) {
+            screenBackgroundFragment = BackgroundFragment.newInstance(this@PainterFragment)
 
-            mTransaction.add(mainId, backgroundFragment!!)
+            mTransaction.add(mainId, screenBackgroundFragment!!)
         }
 
         mTransaction.setCustomAnimations(R.anim.right_in, R.anim.right_in)
@@ -132,12 +133,12 @@ class PainterFragment: Fragment(), PainterMainTitle.ChildrenClick, BackgroundFra
             painterMainScreen = null
         }
 
-        if (backgroundFragment != null) {
+        if (screenBackgroundFragment != null) {
             mTransaction.setCustomAnimations(
                 R.anim.fade_in_out_a, R.anim.fade_in_out_a
             )
-            mTransaction.remove(backgroundFragment!!)
-            backgroundFragment = null
+            mTransaction.remove(screenBackgroundFragment!!)
+            screenBackgroundFragment = null
         }
         mTransaction.commit()
     }
@@ -145,10 +146,9 @@ class PainterFragment: Fragment(), PainterMainTitle.ChildrenClick, BackgroundFra
     private fun openSortDialog() {
         val mTransaction = activity!!.supportFragmentManager.beginTransaction()
 
-        if (backgroundFragment == null) {
-            backgroundFragment = BackgroundFragment.newInstance(this@PainterFragment)
-
-            mTransaction.add(list, backgroundFragment!!)
+        if (sortBackgroundFragment == null) {
+            sortBackgroundFragment = BackgroundFragment.newInstance(this@PainterFragment)
+            mTransaction.add(list, sortBackgroundFragment!!)
         }
 
         mTransaction.setCustomAnimations(R.anim.top_in, R.anim.top_in)
@@ -170,12 +170,12 @@ class PainterFragment: Fragment(), PainterMainTitle.ChildrenClick, BackgroundFra
             painterSort = null
         }
 
-        if (backgroundFragment != null) {
+        if (sortBackgroundFragment != null) {
             mTransaction.setCustomAnimations(
                 R.anim.fade_in_out_a, R.anim.fade_in_out_a
             )
-            mTransaction.remove(backgroundFragment!!)
-            backgroundFragment = null
+            mTransaction.remove(sortBackgroundFragment!!)
+            sortBackgroundFragment = null
         }
         mTransaction.commit()
     }

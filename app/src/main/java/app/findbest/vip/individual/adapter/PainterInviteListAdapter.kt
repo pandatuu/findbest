@@ -2,6 +2,7 @@ package app.findbest.vip.individual.adapter
 
 import android.content.Context
 import android.graphics.Color
+import android.text.TextUtils
 import android.view.Gravity
 import android.view.View
 import android.view.ViewGroup
@@ -46,7 +47,9 @@ class PainterInviteListAdapter(
                         name = textView {
                             textSize = 17f
                             textColor = Color.parseColor("#FF444444")
-                        }.lparams {
+                            singleLine = true
+                            ellipsize = TextUtils.TruncateAt.END
+                        }.lparams(matchParent, wrapContent) {
                             topMargin = dip(8)
                         }
                         stars = linearLayout {
@@ -76,6 +79,12 @@ class PainterInviteListAdapter(
         if (!model["consumerLogo"].isJsonNull) {
             Glide.with(mContext)
                 .load(model["consumerLogo"].asString)
+                .apply(RequestOptions.bitmapTransform(CircleCrop()))
+                .placeholder(R.mipmap.default_avatar)
+                .into(headPic)
+        }else{
+            Glide.with(mContext)
+                .load(R.mipmap.default_avatar)
                 .apply(RequestOptions.bitmapTransform(CircleCrop()))
                 .into(headPic)
         }

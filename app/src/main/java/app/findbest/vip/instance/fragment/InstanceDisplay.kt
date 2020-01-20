@@ -2,49 +2,44 @@ package app.findbest.vip.instance.fragment
 
 import android.content.Context
 import android.content.Intent
+import android.graphics.Color
+import android.graphics.Typeface
 import android.os.Bundle
+import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-
-import org.jetbrains.anko.linearLayout
-import org.jetbrains.anko.support.v4.UI
-import android.graphics.Color
-import android.view.*
-import org.jetbrains.anko.*
-import android.graphics.Typeface
+import android.widget.EditText
+import android.widget.FrameLayout
+import android.widget.LinearLayout
+import android.widget.Toolbar
 import app.findbest.vip.R
-import app.findbest.vip.commonfrgmant.FragmentParent
-
-import android.widget.*
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
-import app.findbest.vip.application.App
 import app.findbest.vip.commonfrgmant.BackgroundFragment
+import app.findbest.vip.commonfrgmant.FragmentParent
+import app.findbest.vip.commonfrgmant.NullDataPageFragment
 import app.findbest.vip.instance.adapter.InstanceListAdapter
 import app.findbest.vip.instance.api.InstanceApi
-import app.findbest.vip.instance.model.Instance
-import app.findbest.vip.instance.view.InstanceActivity
 import app.findbest.vip.instance.view.InstanceSearchActivity
-import app.findbest.vip.message.activity.VideoResultActivity
-import app.findbest.vip.painter.adapter.PainterInfoPictureAdapter
 import app.findbest.vip.utils.RetrofitUtils
-import app.findbest.vip.utils.recyclerView
 import app.findbest.vip.utils.smartRefreshLayout
 import com.google.gson.JsonObject
 import com.scwang.smart.refresh.footer.BallPulseFooter
 import com.scwang.smart.refresh.header.MaterialHeader
 import com.scwang.smart.refresh.layout.SmartRefreshLayout
 import com.scwang.smart.refresh.layout.constant.SpinnerStyle
-
 import io.reactivex.schedulers.Schedulers
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineStart
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.rx2.awaitSingle
-import org.jetbrains.anko.support.v4.startActivity
+import org.jetbrains.anko.*
+import org.jetbrains.anko.support.v4.UI
+import org.jetbrains.anko.support.v4.toast
 import retrofit2.HttpException
 
 
-class InstanceDisplay : FragmentParent(),PainterInfoPictureAdapter.ImageClick, BackgroundFragment.ClickBack,InstanceScreen.ProjectScreen {
+class InstanceDisplay : FragmentParent(), BackgroundFragment.ClickBack,InstanceScreen.ProjectScreen {
 
     companion object {
         fun newInstance(context: Context): InstanceDisplay {
@@ -60,19 +55,17 @@ class InstanceDisplay : FragmentParent(),PainterInfoPictureAdapter.ImageClick, B
     private lateinit var search: EditText
 
     val mainId = 1
-    var list = mutableListOf<MutableList<Instance>>()
-    var sonList = mutableListOf<Instance>()
     private var backgroundFragment: BackgroundFragment? = null
     private var instanceMainScreen: InstanceScreen? = null
     private lateinit var instanceApi: InstanceApi
-    var screenWidth = 0
-    var picWidth = 0
     var nowPage = 0
     var mCategory = 0
     var mStyle = 0
-    private lateinit var recycler: RecyclerView
-    private var painterInfoPic: PainterInfoPictureAdapter? = null
     val imageList: MutableList<JsonObject> = mutableListOf()
+    private lateinit var listFram: FrameLayout
+    private lateinit var listFragment: InstanceDisplayCenter
+    private var nullData: NullDataPageFragment? = null
+    private val nullId = 4
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -112,38 +105,17 @@ class InstanceDisplay : FragmentParent(),PainterInfoPictureAdapter.ImageClick, B
         mCategory = array[0]
         mStyle = array[1]
         smart.autoRefresh()
+        listFragment = InstanceDisplayCenter.newInstance(mContext!!)
+        childFragmentManager.beginTransaction().replace(nullId,listFragment).commit()
         closeAlertDialog()
     }
 
-    override fun click(str: String) {
-        imageList.forEach {
-            if(str == it["url"].asString){
-                val intent = Intent(mContext, InstanceActivity::class.java)
-                //跳转详情
-                intent.putExtra("url", if(!it["url"].isJsonNull) it["url"].asString else "")
-                intent.putExtra("logo", if(!it["logo"].isJsonNull) it["logo"].asString else "")
-                intent.putExtra("name", if(!it["name"].isJsonNull) it["name"].asString else "")
-                intent.putExtra("id", if(!it["id"].isJsonNull) it["id"].asString else "")
-                startActivity(intent)
-                activity!!.overridePendingTransition(R.anim.right_in, R.anim.left_out)
-            }
-        }
-    }
 
     private fun createView(): View {
-        screenWidth = px2dp(getDisplay(mContext!!)!!.width.toFloat())
-        picWidth = (screenWidth - 18) / 2
-        if (picWidth < 180) {
-        } else {
-            picWidth = 180
-        }
-        list.add(sonList)
-
         return UI {
             verticalLayout {
                 relativeLayout {
                     setOnClickListener {
-                        toast("123")
                         closeSoftKeyboard(search)
                     }
                     textView {
@@ -292,17 +264,25 @@ class InstanceDisplay : FragmentParent(),PainterInfoPictureAdapter.ImageClick, B
                                     it.finishLoadMore(1000)
                                 }
                             }
-
-                            recycler = recyclerView {
-                                layoutManager = LinearLayoutManager(mContext)
-                                painterInfoPic = PainterInfoPictureAdapter(
-                                    mContext!!,
-                                    arrayListOf(),this@InstanceDisplay)
-                                adapter = painterInfoPic
+//
+//                            recycler = recyclerView {
+//                                layoutManager = LinearLayoutManager(mContext)
+//                                painterInfoPic = PainterInfoPictureAdapter(
+//                                    mContext!!,
+//                                    arrayListOf(),this@InstanceDisplay)
+//                                adapter = painterInfoPic
+//                            }
+//                            val lp = recycler.layoutParams
+//                            lp.width = LinearLayout.LayoutParams.MATCH_PARENT
+//                            lp.height = LinearLayout.LayoutParams.MATCH_PARENT
+                            listFram = frameLayout {
+                                id = nullId
+                                listFragment = InstanceDisplayCenter.newInstance(mContext!!)
+                                childFragmentManager.beginTransaction().replace(nullId,listFragment).commit()
                             }
-                            val lp = recycler.layoutParams
-                            lp.width = LinearLayout.LayoutParams.MATCH_PARENT
-                            lp.height = LinearLayout.LayoutParams.MATCH_PARENT
+                            val listFramlp = listFram.layoutParams
+                            listFramlp.width = LinearLayout.LayoutParams.MATCH_PARENT
+                            listFramlp.height = LinearLayout.LayoutParams.MATCH_PARENT
                         }.lparams(matchParent, matchParent)
                     }.lparams {
                         width = matchParent
@@ -323,28 +303,34 @@ class InstanceDisplay : FragmentParent(),PainterInfoPictureAdapter.ImageClick, B
         try {
             val retrofitUils =
                 RetrofitUtils(mContext, resources.getString(R.string.developmentUrl))
-            val it = if (mStyle != 0 && mCategory != 0) {
+            val it = if (mCategory != 0 && mStyle != 0) {
                 retrofitUils.create(InstanceApi::class.java)
-                    .instanceList(1, 5, mCategory, mStyle)
+                    .instanceList(1, 6, mCategory, mStyle)
                     .subscribeOn(Schedulers.io())
                     .awaitSingle()
-            } else {
+            } else if(mCategory != 0 && mStyle == 0) {
                 retrofitUils.create(InstanceApi::class.java)
-                    .instanceList(1, 5)
+                    .instanceList(1, 6, mCategory, null)
+                    .subscribeOn(Schedulers.io())
+                    .awaitSingle()
+            }else{
+                retrofitUils.create(InstanceApi::class.java)
+                    .instanceList(1, 6)
                     .subscribeOn(Schedulers.io())
                     .awaitSingle()
             }
 
             if (it.code() in 200..299) {
                 val item = it.body()!!.data
-                nowPage = 1
-                val list1 = arrayListOf<String>()
-                imageList.clear()
-                item.forEach {
-                    imageList.add(it.asJsonObject)
-                    list1.add(it.asJsonObject["url"].asString)
+                if(item.size()>0){
+                    nowPage = 1
+                    listFragment.resetItems(item,nowPage)
+                }else{
+                    if(nullData == null){
+                        nullData = NullDataPageFragment.newInstance()
+                        childFragmentManager.beginTransaction().add(nullId,nullData!!).commit()
+                    }
                 }
-                painterInfoPic?.resetData(arrayListOf(list1))
             }
         } catch (throwable: Throwable) {
             if (throwable is HttpException) {
@@ -360,25 +346,29 @@ class InstanceDisplay : FragmentParent(),PainterInfoPictureAdapter.ImageClick, B
                 RetrofitUtils(mContext, resources.getString(R.string.developmentUrl))
             val it = if (mStyle != 0 && mCategory != 0) {
                 retrofitUils.create(InstanceApi::class.java)
-                    .instanceList(page, 5, mCategory, mStyle)
+                    .instanceList(page, 6, mCategory, mStyle)
+                    .subscribeOn(Schedulers.io())
+                    .awaitSingle()
+            } else if(mCategory != 0 && mStyle == 0) {
+                retrofitUils.create(InstanceApi::class.java)
+                    .instanceList(page, 6, mCategory, null)
                     .subscribeOn(Schedulers.io())
                     .awaitSingle()
             } else {
                 retrofitUils.create(InstanceApi::class.java)
-                    .instanceList(page, 5)
+                    .instanceList(page, 6)
                     .subscribeOn(Schedulers.io())
                     .awaitSingle()
             }
 
             if (it.code() in 200..299) {
                 val item = it.body()!!.data
-                nowPage = page
-                val list1 = arrayListOf<String>()
-                item.forEach {
-                    imageList.add(it.asJsonObject)
-                    list1.add(it.asJsonObject["url"].asString)
+                if (item.size() == 0) {
+                    toast(resources.getString(R.string.common_no_list_data))
+                    return
                 }
-                painterInfoPic?.addData(arrayListOf(list1))
+                nowPage = page
+                listFragment.addItems(item,nowPage)
             }
         } catch (throwable: Throwable) {
             if (throwable is HttpException) {

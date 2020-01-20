@@ -3,6 +3,8 @@ package app.findbest.vip.painter.adapter
 import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Color
+import android.text.TextUtils
+import android.view.Gravity
 import android.view.View
 import android.view.ViewGroup
 import android.widget.HorizontalScrollView
@@ -52,20 +54,22 @@ class PainterMainListAdapter(
                         }
                         linearLayout {
                             orientation = LinearLayout.VERTICAL
-                            relativeLayout {
+                            linearLayout {
+                                orientation = LinearLayout.HORIZONTAL
                                 name = textView {
                                     textSize = 17f
                                     textColor = Color.parseColor("#FF444444")
-                                }.lparams(wrapContent, wrapContent) {
-                                    alignParentLeft()
+                                    singleLine = true
+                                    ellipsize = TextUtils.TruncateAt.END
+                                }.lparams(dip(0), wrapContent) {
+                                    weight = 1f
                                     topMargin = dip(8)
                                 }
                                 country = imageView {
 
                                 }.lparams(dip(30), dip(20)) {
                                     rightMargin = dip(15)
-                                    alignParentRight()
-                                    alignParentBottom()
+                                    gravity = Gravity.BOTTOM
                                 }
                             }.lparams(matchParent, dip(30))
                             stars = linearLayout {
@@ -108,6 +112,12 @@ class PainterMainListAdapter(
         if (!model["logo"].isJsonNull) {
             Glide.with(mContext)
                 .load(model["logo"].asString)
+                .apply(RequestOptions.bitmapTransform(CircleCrop()))
+                .placeholder(R.mipmap.default_avatar)
+                .into(headPic)
+        }else{
+            Glide.with(mContext)
+                .load(R.mipmap.default_avatar)
                 .apply(RequestOptions.bitmapTransform(CircleCrop()))
                 .into(headPic)
         }

@@ -27,8 +27,14 @@ import withTrigger
 import android.annotation.SuppressLint
 import android.view.Gravity
 import android.view.inputmethod.InputMethodManager
+import android.widget.Button
 import android.widget.Toast
 import app.findbest.vip.individual.api.IndividualApi
+import kotlinx.coroutines.CoroutineStart
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.rx2.awaitSingle
 import org.jetbrains.anko.support.v4.toast
 
 
@@ -37,6 +43,7 @@ class FbMain : FragmentParent() {
     var activityInstance: Context? = this!!.context
     lateinit var myEdit: EditText
     lateinit var myText: TextView
+    lateinit var button: Button
     lateinit var sharedPreferences: SharedPreferences
     var json: MediaType? = MediaType.parse("application/json; charset=utf-8")
 
@@ -96,6 +103,11 @@ class FbMain : FragmentParent() {
                             count: Int
                         ) {
                             myText.text = s.length.toString()
+                            if(s.isNotEmpty()){
+                                button.backgroundResource = R.drawable.enable_around_button
+                            }else{
+                                button.backgroundResource = R.drawable.disable_around_button
+                            }
                         }
 
                         override fun afterTextChanged(s: Editable) {
@@ -107,15 +119,19 @@ class FbMain : FragmentParent() {
                     bottomMargin = dip(30)
                 }
 
-                button {
-                    backgroundResource = R.drawable.button_gradient
+                button = button {
+                    backgroundResource = R.drawable.disable_around_button
                     textResource = R.string.common_submit
                     textColor = Color.WHITE
                     textSize = 15f
-
                     this.withTrigger().click {
                         closeFocusjianpan()
-                        submit()
+                        if(myEdit.text.isEmpty()){
+                            return@click
+                        }
+                        GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
+                            submit()
+                        }
                     }
                 }.lparams(width = matchParent, height = dip(47)) {
                     leftMargin = dip(15)
@@ -127,35 +143,36 @@ class FbMain : FragmentParent() {
     }
 
     @SuppressLint("CheckResult")
-    private fun submit() {
-        val userId = sharedPreferences.getString("userId", "")?.trim()
-        val condition = myEdit.text
-        println(condition)
-        val conditionParams = mapOf(
-            "type" to 3,
-            "content" to condition,
-            "userId" to userId
-        )
-        val conditionJson = JSON.toJSONString(conditionParams)
-        val conditionBody = RequestBody.create(json, conditionJson)
+    private suspend fun submit() {
+        try {
+            val userId = sharedPreferences.getString("userId", "")?.trim()
+            val condition = myEdit.text
+            println(condition)
+            val conditionParams = mapOf(
+                "type" to 3,
+                "content" to condition,
+                "userId" to userId
+            )
+            val conditionJson = JSON.toJSONString(conditionParams)
+            val conditionBody = RequestBody.create(json, conditionJson)
 
-        val retrofitUils = RetrofitUtils(activity!!, this.getString(R.string.developmentUrl))
+            val retrofitUils = RetrofitUtils(activity!!, this.getString(R.string.developmentUrl))
 
-        retrofitUils.create(IndividualApi::class.java)
-            .feedback(conditionBody)
-            .subscribeOn(Schedulers.io())
-            .subscribe({
-                if (it.code() in 200..299) {
-                    val toast =
-                        Toast.makeText(mContext, resources.getString(R.string.common_submit), Toast.LENGTH_SHORT)
-                    toast.setGravity(Gravity.CENTER, 0, 0)
-                    toast.show()
-                    activity!!.finish()
-                    activity!!.overridePendingTransition(R.anim.left_in, R.anim.right_out)
-                }
-            }, {
-                toast(R.string.liNetError)
-            })
+            val it = retrofitUils.create(IndividualApi::class.java)
+                .feedback(conditionBody)
+                .subscribeOn(Schedulers.io())
+                .awaitSingle()
+            if (it.code() in 200..299) {
+                val toast =
+                    Toast.makeText(mContext, resources.getString(R.string.fb_toast), Toast.LENGTH_SHORT)
+                toast.setGravity(Gravity.CENTER, 0, 0)
+                toast.show()
+                activity!!.finish()
+                activity!!.overridePendingTransition(R.anim.left_in, R.anim.right_out)
+            }
+        }catch (throwable: Throwable){
+//            toast(R.string.liNetError)
+        }
     }
 
     private fun closeFocusjianpan() {

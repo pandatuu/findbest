@@ -9,6 +9,7 @@ import android.widget.FrameLayout
 import android.widget.Toast
 
 import androidx.fragment.app.Fragment
+import app.findbest.vip.R
 
 import app.findbest.vip.commonfrgmant.BottomButton
 import app.findbest.vip.instance.fragment.InstanceDisplay
@@ -37,7 +38,7 @@ class MainActivity : BaseActivity() {
         frameLayout {
             id = mainId
             verticalLayout {
-                var topPartId = 10
+                val topPartId = 10
                 mainFrameLayout = frameLayout {
                     id = topPartId
 
@@ -63,27 +64,12 @@ class MainActivity : BaseActivity() {
             }
         }
     }
-//            override fun onStart() {
-//                super.onStart()
-
-
-//        setActionBar((topFragment as InstanceDisplay).toolbar1)
-//        StatusBarUtil.setTranslucentForImageView(
-//            this@MainActivity,
-//            0,
-//            (topFragment as InstanceDisplay).toolbar1
-//        )
-//        getWindow().getDecorView()
-//            .setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR)
-
-//            }
-
 
     override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {
         if (event != null) {
             if (keyCode == KeyEvent.KEYCODE_BACK && event.action == KeyEvent.ACTION_DOWN) {
                 if ((System.currentTimeMillis() - exitTime) > 2000) {
-                    Toast.makeText(applicationContext, "再按一次退出程序", Toast.LENGTH_SHORT)
+                    Toast.makeText(applicationContext, resources.getString(R.string.common_finish_second), Toast.LENGTH_SHORT)
                         .show();
                     exitTime = System.currentTimeMillis()
                 } else {
@@ -118,12 +104,6 @@ class MainActivity : BaseActivity() {
             }
             3 -> {
                 topFragment = PainterFragment.newInstance(this@MainActivity)
-                supportFragmentManager.beginTransaction()
-                    .replace(mainFrameLayout.id, topFragment)
-                    .commit()
-            }
-            4 -> {
-                topFragment = MessageChatRecordFragment.newInstance(this@MainActivity)
                 supportFragmentManager.beginTransaction()
                     .replace(mainFrameLayout.id, topFragment)
                     .commit()

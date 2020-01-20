@@ -27,7 +27,7 @@ import org.jetbrains.anko.support.v4.UI
 import retrofit2.HttpException
 import withTrigger
 
-class PainterMainScreen : Fragment(), PainterScreenType.ScreenAll, PainterScreenStyle.ScreenAll {
+class PainterMainScreen : Fragment(), PainterScreenType.ScreenAll {
 
     interface PainterScreen {
         fun backgroundClick()
@@ -61,24 +61,18 @@ class PainterMainScreen : Fragment(), PainterScreenType.ScreenAll, PainterScreen
         return createV()
     }
 
-    //点击style更多
-    override fun clickMore() {
-        screenStyle!!.setMore()
-    }
     //点击type
-    override fun clickType(name: String) {
-        if (name != resources.getString(R.string.srceen_all) && name != resources.getString(R.string.srceen_more)) {
+    override fun clickType(s: String) {
+        if (s != resources.getString(R.string.srceen_all) && s != resources.getString(R.string.srceen_more)) {
             typeModelList.forEach {
-                if (it.lang == name) {
+                if (it.lang == s) {
                     GlobalScope.launch(Dispatchers.Main, CoroutineStart.DEFAULT) {
                         getStyleList(it.id)
                     }
                 }
             }
-        }else if(name == resources.getString(R.string.srceen_all)){
+        }else if(s == resources.getString(R.string.srceen_all)){
             screenStyle!!.setTextGone()
-        }else{
-            screenType!!.setMore()
         }
     }
 
@@ -88,7 +82,7 @@ class PainterMainScreen : Fragment(), PainterScreenType.ScreenAll, PainterScreen
             getTypeList()
         }
         screenType = PainterScreenType.newInstance(this@PainterMainScreen)
-        screenStyle = PainterScreenStyle.newInstance(this@PainterMainScreen,mutableListOf())
+        screenStyle = PainterScreenStyle.newInstance(mutableListOf())
         return UI {
             linearLayout {
                 orientation = LinearLayout.HORIZONTAL
@@ -150,10 +144,11 @@ class PainterMainScreen : Fragment(), PainterScreenType.ScreenAll, PainterScreen
                                         array.add(it.id)
                                     }
                                 }
+                                array.add(0)
                                 typeModelList.forEach {
                                     it.styleList.forEach { child ->
                                         if(child.lang == style){
-                                            array.add(child.id)
+                                            array[1] = child.id
                                         }
                                     }
                                 }

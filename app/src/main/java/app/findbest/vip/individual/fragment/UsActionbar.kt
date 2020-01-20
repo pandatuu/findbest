@@ -63,8 +63,6 @@ class UsActionbar : Fragment() {
                         gravity = Gravity.CENTER
                         textColor = Color.parseColor("#222222")
                         textSize = 17f
-                        setTypeface(Typeface.defaultFromStyle(Typeface.BOLD))
-
                     }.lparams() {
                         width = matchParent
                         height = wrapContent

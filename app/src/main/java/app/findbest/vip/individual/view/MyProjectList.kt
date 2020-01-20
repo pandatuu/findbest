@@ -27,12 +27,14 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.rx2.awaitSingle
 import org.jetbrains.anko.*
+import org.jetbrains.anko.support.v4.toast
 import retrofit2.HttpException
 
 class MyProjectList : BaseActivity(){
 
     private lateinit var smart: SmartRefreshLayout
     private var listFragment: MyProjectListFragment? = null
+    private var nullData: NullDataPageFragment? = null
     private lateinit var status: TextView
     private lateinit var listFram: FrameLayout
     private var popup: PopupWindow? = null
@@ -42,7 +44,6 @@ class MyProjectList : BaseActivity(){
     private var isPainter = false
     private var screenStatus = 3
     val nullId = 4
-    private var isNullData = false
     //弹窗是否可以点击
     private var isDialogClick = false
     private var systemCountry = "" 
@@ -265,7 +266,10 @@ class MyProjectList : BaseActivity(){
             if (it.code() in 200..299) {
                 val model = it.body()!!.data
                 if(model.size() > 0){
-                    isNullData = false
+                    if(nullData!=null){
+                        supportFragmentManager.beginTransaction().remove(nullData!!).commit()
+                        nullData = null
+                    }
                     nowPage = 1
                     val list = mutableListOf<JsonObject>()
                     model.forEach {
@@ -273,13 +277,14 @@ class MyProjectList : BaseActivity(){
                     }
                     listFragment?.resetItems(list)
                 }else{
-                    isNullData = true
-                    val nullData = NullDataPageFragment.newInstance()
-                    supportFragmentManager.beginTransaction().add(nullId,nullData).commit()
+                    if(nullData == null){
+                        nullData = NullDataPageFragment.newInstance()
+                        supportFragmentManager.beginTransaction().add(nullId,nullData!!).commit()
+                    }
                 }
             }
             if(it.code() == 403){
-                toast("forbidden")
+                println("forbidden")
             }
         } catch (throwable: Throwable) {
             if (throwable is HttpException) {
@@ -319,15 +324,21 @@ class MyProjectList : BaseActivity(){
             }
             if (it.code() in 200..299) {
                 val model = it.body()!!.data
-                if(!isNullData){
-                    nowPage = page
-
-                    val list = mutableListOf<JsonObject>()
-                    model.forEach {
-                        list.add(it.asJsonObject)
-                    }
-                    listFragment?.addItems(list)
+                if (model.size() == 0) {
+                    toast(resources.getString(R.string.common_no_list_data))
+                    return
                 }
+                if(nullData!=null){
+                    supportFragmentManager.beginTransaction().remove(nullData!!).commit()
+                    nullData = null
+                }
+                nowPage = page
+
+                val list = mutableListOf<JsonObject>()
+                model.forEach {
+                    list.add(it.asJsonObject)
+                }
+                listFragment?.addItems(list)
             }
         } catch (throwable: Throwable) {
             if (throwable is HttpException) {
@@ -370,22 +381,25 @@ class MyProjectList : BaseActivity(){
             if (it.code() in 200..299) {
                 val model = it.body()!!.data
                 if(model.size() > 0){
-                    isNullData = false
+                    if(nullData!=null){
+                        supportFragmentManager.beginTransaction().remove(nullData!!).commit()
+                        nullData = null
+                    }
                     nowPage = 1
-
                     val list = mutableListOf<JsonObject>()
                     model.forEach {
                         list.add(it.asJsonObject)
                     }
                     listFragment?.resetItems(list)
                 }else{
-                    isNullData = true
-                    val nullData = NullDataPageFragment.newInstance()
-                    supportFragmentManager.beginTransaction().add(nullId,nullData).commit()
+                    if(nullData == null){
+                        nullData = NullDataPageFragment.newInstance()
+                        supportFragmentManager.beginTransaction().add(nullId,nullData!!).commit()
+                    }
                 }
             }
             if(it.code() == 403){
-                toast("forbidden")
+                println("forbidden")
             }
         } catch (throwable: Throwable) {
             if (throwable is HttpException) {
@@ -425,14 +439,21 @@ class MyProjectList : BaseActivity(){
             }
             if (it.code() in 200..299) {
                 val model = it.body()!!.data
-                if(!isNullData){
-                    nowPage = page
-                    val list = mutableListOf<JsonObject>()
-                    model.forEach {
-                        list.add(it.asJsonObject)
-                    }
-                    listFragment?.addItems(list)
+                if (model.size() == 0) {
+                    toast(resources.getString(R.string.common_no_list_data))
+                    return
                 }
+                if(nullData!=null){
+                    supportFragmentManager.beginTransaction().remove(nullData!!).commit()
+                    nullData = null
+                }
+                nowPage = page
+                val list = mutableListOf<JsonObject>()
+                model.forEach {
+                    list.add(it.asJsonObject)
+                }
+                listFragment?.addItems(list)
+
             }
         } catch (throwable: Throwable) {
             if (throwable is HttpException) {

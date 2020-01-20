@@ -1,5 +1,6 @@
 package app.findbest.vip.project.fragment
 
+import android.annotation.SuppressLint
 import android.graphics.Color
 import android.os.Bundle
 import android.view.Gravity
@@ -14,11 +15,10 @@ import org.jetbrains.anko.support.v4.UI
 class EnlistCheckTipsDialog : Fragment() {
 
     companion object {
-        fun newInstance(buttomClick: ButtomClick, status: Int, country: MutableList<String>): EnlistCheckTipsDialog {
+        fun newInstance(buttomClick: ButtomClick, status: Int): EnlistCheckTipsDialog {
             val fragment = EnlistCheckTipsDialog()
             fragment.buttomClick = buttomClick
             fragment.status = status
-            fragment.countryList = country
             return fragment
         }
     }
@@ -27,7 +27,6 @@ class EnlistCheckTipsDialog : Fragment() {
         fun click()
     }
 
-    private var countryList: MutableList<String> = mutableListOf()
     private lateinit var buttomClick: ButtomClick
     private var status = 0
     override fun onCreateView(
@@ -38,6 +37,7 @@ class EnlistCheckTipsDialog : Fragment() {
         return createV()
     }
 
+    @SuppressLint("StringFormatInvalid")
     private fun createV(): View {
         var tipText = ""
         when (status) {
@@ -55,11 +55,7 @@ class EnlistCheckTipsDialog : Fragment() {
             }
             4 -> {
                 // 4为国家不匹配
-                var country = ""
-                countryList.forEach {
-                     country += "$it."
-                }
-                tipText = resources.getString(R.string.enlist_status_four, country)
+                tipText = resources.getString(R.string.enlist_status_four)
             }
             5 -> {
                 // 5为已经应征过

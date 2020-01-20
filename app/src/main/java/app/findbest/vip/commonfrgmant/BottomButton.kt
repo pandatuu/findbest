@@ -11,7 +11,6 @@ import android.widget.ImageView
 import androidx.fragment.app.Fragment
 import app.findbest.vip.R
 import app.findbest.vip.commonactivity.MainActivity
-import app.findbest.vip.instance.fragment.InstanceDisplay
 import click
 import org.jetbrains.anko.*
 import org.jetbrains.anko.support.v4.UI
@@ -19,31 +18,26 @@ import withTrigger
 
 class BottomButton : Fragment() {
 
-
     private var mContext: Context? = null
     lateinit var main: MainActivity
-
-
-
-    lateinit var imageView1:ImageView
-    lateinit var imageView2:ImageView
-    lateinit var imageView3:ImageView
-    lateinit var imageView4:ImageView
-    lateinit var imageView5:ImageView
-
+    private lateinit var imageView1:ImageView
+    private lateinit var imageView2:ImageView
+    private lateinit var imageView3:ImageView
+    private lateinit var imageView4:ImageView
+    private lateinit var imageView5:ImageView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        if (parentFragment != null) {
-            mContext = parentFragment?.context
+        mContext = if (parentFragment != null) {
+            parentFragment?.context
         } else {
-            mContext = activity
+            activity
         }
     }
 
     companion object {
         fun newInstance(main: MainActivity): BottomButton {
-            var f = BottomButton()
+            val f = BottomButton()
             f.main=main
             return f
         }
@@ -54,35 +48,27 @@ class BottomButton : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val fragmentView = createView()
-
-        return fragmentView
+        return createView()
     }
 
     private fun createView(): View {
         return UI {
             verticalLayout {
-                linearLayout() {
-
+                linearLayout {
                     //项目
-                    linearLayout() {
+                    linearLayout {
                         gravity = Gravity.CENTER
                         verticalLayout {
-
                             this.withTrigger().click {
                                 main.jumpPage(1)
-
                                 imageView1.setImageResource(R.mipmap.tab_ico_project_yes)
                                 imageView2.setImageResource(R.mipmap.tab_ico_case_nor)
                                 imageView3.setImageResource(R.mipmap.tab_ico_painter_nor)
-                                imageView4.setImageResource(R.mipmap.tab_ico_message_nor)
+//                                imageView4.setImageResource(R.mipmap.tab_ico_message_nor)
                                 imageView5.setImageResource(R.mipmap.tab_ico_my_nor)
-
-
                             }
 
                             imageView1=  imageView {
-
                                 setImageResource(R.mipmap.tab_ico_project_yes)
                             }
 
@@ -91,37 +77,30 @@ class BottomButton : Fragment() {
                                 text = activity!!.getString(R.string.project_xiangmu)
                                 textColor = Color.parseColor("#FF666666")
                                 gravity = Gravity.CENTER
-                            }.lparams() {
+                            }.lparams {
                                 topMargin = dip(2)
                             }
-
-                        }.lparams() {
+                        }.lparams {
                             height = dip(35)
                             width = dip(21)
                         }
-
-                    }.lparams() {
+                    }.lparams {
                         width = dip(0)
                         weight = 1f
                         height = matchParent
                     }
-
-                    linearLayout() {
-
+                    //案例
+                    linearLayout {
                         gravity = Gravity.CENTER
                         verticalLayout {
-
-
                             this.withTrigger().click {
                                 main.jumpPage(2)
-
                                 imageView1.setImageResource(R.mipmap.tab_ico_project_nor)
                                 imageView2.setImageResource(R.mipmap.tab_ico_case_yes)
                                 imageView3.setImageResource(R.mipmap.tab_ico_painter_nor)
-                                imageView4.setImageResource(R.mipmap.tab_ico_message_nor)
+//                                imageView4.setImageResource(R.mipmap.tab_ico_message_nor)
                                 imageView5.setImageResource(R.mipmap.tab_ico_my_nor)
                             }
-
 
                             imageView2=   imageView {
                                 setImageResource(R.mipmap.tab_ico_case_nor)
@@ -132,41 +111,32 @@ class BottomButton : Fragment() {
                                 text = activity!!.getString(R.string.sample_anli)
                                 textColor = Color.parseColor("#FF666666")
                                 gravity = Gravity.CENTER
-                            }.lparams() {
+                            }.lparams {
                                 topMargin = dip(2)
                             }
-
-                        }.lparams() {
+                        }.lparams {
                             height = dip(35)
                             width = dip(21)
                         }
-
-
-                    }.lparams() {
+                    }.lparams {
                         width = dip(0)
                         weight = 1f
                         height = matchParent
                     }
-
-
-                    linearLayout() {
-
+                    //画师
+                    linearLayout {
                         gravity = Gravity.CENTER
                         verticalLayout {
-
-
                             this.withTrigger().click {
                                 main.jumpPage(3)
-
                                 imageView1.setImageResource(R.mipmap.tab_ico_project_nor)
                                 imageView2.setImageResource(R.mipmap.tab_ico_case_nor)
                                 imageView3.setImageResource(R.mipmap.tab_ico_painter_yes)
-                                imageView4.setImageResource(R.mipmap.tab_ico_message_nor)
+//                                imageView4.setImageResource(R.mipmap.tab_ico_message_nor)
                                 imageView5.setImageResource(R.mipmap.tab_ico_my_nor)
                             }
 
-
-                            imageView3=    imageView {
+                            imageView3 = imageView {
                                 setImageResource(R.mipmap.tab_ico_painter_nor)
                             }
 
@@ -175,82 +145,72 @@ class BottomButton : Fragment() {
                                 text = activity!!.getString(R.string.painter_huashi)
                                 textColor = Color.parseColor("#FF666666")
                                 gravity = Gravity.CENTER
-                            }.lparams() {
+                            }.lparams {
                                 topMargin = dip(2)
                             }
-
-                        }.lparams() {
+                        }.lparams {
                             height = dip(35)
                             width = dip(21)
                         }
-
-
-                    }.lparams() {
+                    }.lparams {
                         width = dip(0)
                         weight = 1f
                         height = matchParent
                     }
-
-
-                    linearLayout() {
-
-
+                    //消息
+//                    linearLayout() {
+//
+//
+//                        gravity = Gravity.CENTER
+//                        verticalLayout {
+//
+//                            this.withTrigger().click {
+//                                main.jumpPage(4)
+//
+//                                imageView1.setImageResource(R.mipmap.tab_ico_project_nor)
+//                                imageView2.setImageResource(R.mipmap.tab_ico_case_nor)
+//                                imageView3.setImageResource(R.mipmap.tab_ico_painter_nor)
+//                                imageView4.setImageResource(R.mipmap.tab_ico_message_yes)
+//                                imageView5.setImageResource(R.mipmap.tab_ico_my_nor)
+//                            }
+//
+//                            imageView4=     imageView {
+//                                setImageResource(R.mipmap.tab_ico_message_nor)
+//                            }
+//
+//                            textView {
+//                                textSize = 10f
+//                                text = activity!!.getString(R.string.message_xiaoxi)
+//                                textColor = Color.parseColor("#FF666666")
+//                                gravity = Gravity.CENTER
+//                            }.lparams() {
+//                                topMargin = dip(2)
+//                            }
+//
+//                        }.lparams() {
+//                            height = dip(35)
+//                            width = dip(21)
+//                        }
+//
+//
+//                    }.lparams() {
+//                        width = dip(0)
+//                        weight = 1f
+//                        height = matchParent
+//                    }
+                    //我的
+                    linearLayout {
                         gravity = Gravity.CENTER
                         verticalLayout {
-
-                            this.withTrigger().click {
-                                main.jumpPage(4)
-
-                                imageView1.setImageResource(R.mipmap.tab_ico_project_nor)
-                                imageView2.setImageResource(R.mipmap.tab_ico_case_nor)
-                                imageView3.setImageResource(R.mipmap.tab_ico_painter_nor)
-                                imageView4.setImageResource(R.mipmap.tab_ico_message_yes)
-                                imageView5.setImageResource(R.mipmap.tab_ico_my_nor)
-                            }
-
-                            imageView4=     imageView {
-                                setImageResource(R.mipmap.tab_ico_message_nor)
-                            }
-
-                            textView {
-                                textSize = 10f
-                                text = activity!!.getString(R.string.message_xiaoxi)
-                                textColor = Color.parseColor("#FF666666")
-                                gravity = Gravity.CENTER
-                            }.lparams() {
-                                topMargin = dip(2)
-                            }
-
-                        }.lparams() {
-                            height = dip(35)
-                            width = dip(21)
-                        }
-
-
-                    }.lparams() {
-                        width = dip(0)
-                        weight = 1f
-                        height = matchParent
-                    }
-
-
-                    linearLayout() {
-
-
-                        gravity = Gravity.CENTER
-                        verticalLayout {
-
                             this.withTrigger().click {
                                 main.jumpPage(5)
-
                                 imageView1.setImageResource(R.mipmap.tab_ico_project_nor)
                                 imageView2.setImageResource(R.mipmap.tab_ico_case_nor)
                                 imageView3.setImageResource(R.mipmap.tab_ico_painter_nor)
-                                imageView4.setImageResource(R.mipmap.tab_ico_message_nor)
+//                                imageView4.setImageResource(R.mipmap.tab_ico_message_nor)
                                 imageView5.setImageResource(R.mipmap.tab_ico_my_yes)
                             }
-
-                            imageView5=     imageView {
+                            imageView5 = imageView {
                                 setImageResource(R.mipmap.tab_ico_my_nor)
                             }
 
@@ -259,30 +219,23 @@ class BottomButton : Fragment() {
                                 text = activity!!.getString(R.string.mine_wode)
                                 textColor = Color.parseColor("#FF666666")
                                 gravity = Gravity.CENTER
-                            }.lparams() {
+                            }.lparams {
                                 topMargin = dip(2)
                             }
-
-                        }.lparams() {
+                        }.lparams {
                             height = dip(35)
                             width = dip(21)
                         }
-
-
-                    }.lparams() {
+                    }.lparams {
                         width = dip(0)
                         weight = 1f
                         height = matchParent
                     }
-
-
-                }.lparams() {
+                }.lparams {
                     width = matchParent
                     height = matchParent
                 }
             }
         }.view
     }
-
-
 }

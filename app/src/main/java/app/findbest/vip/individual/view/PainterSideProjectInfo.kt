@@ -48,6 +48,10 @@ class PainterSideProjectInfo : BaseActivity() {
                         gravity = Gravity.CENTER
                         toolbar {
                             navigationIconResource = R.mipmap.icon_back
+                            setOnClickListener {
+                                finish()
+                                overridePendingTransition(R.anim.left_in, R.anim.right_out)
+                            }
                         }.lparams(dip(10), dip(18))
                         setOnClickListener {
                             finish()

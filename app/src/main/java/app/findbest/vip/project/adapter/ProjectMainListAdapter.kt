@@ -8,14 +8,18 @@ import android.text.TextUtils
 import android.view.Gravity
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
-import android.widget.LinearLayout
-import android.widget.RelativeLayout
-import android.widget.TextView
+import android.widget.*
 import androidx.recyclerview.widget.RecyclerView
 import app.findbest.vip.R
 import app.findbest.vip.project.model.ProjectListModel
+import app.findbest.vip.utils.FlowLayout
+import app.findbest.vip.utils.flowLayout
 import click
+import com.facebook.react.bridge.UiThreadUtil
+import kotlinx.coroutines.CoroutineStart
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import org.jetbrains.anko.*
 import withTrigger
 import java.text.SimpleDateFormat
@@ -42,6 +46,7 @@ class ProjectMainListAdapter(
     private lateinit var style: LinearLayout
     private lateinit var countryPrice: TextView
     private lateinit var maxPrice: TextView
+    private lateinit var symbol: TextView
     private lateinit var rela: RelativeLayout
     private val listAdapter: ListAdapter = listAdapter
 
@@ -96,8 +101,8 @@ class ProjectMainListAdapter(
                                 }.lparams {
                                     leftMargin = dip(8)
                                 }
-                            }.lparams(dip(0), wrapContent){
-                                weight = 1f
+                            }.lparams(dip(55), wrapContent){
+                                leftMargin = dip(10)
                             }
                             linearLayout {
                                 orientation = LinearLayout.HORIZONTAL
@@ -112,8 +117,8 @@ class ProjectMainListAdapter(
                                 }.lparams {
                                     leftMargin = dip(8)
                                 }
-                            }.lparams(dip(0), wrapContent){
-                                weight = 1f
+                            }.lparams(dip(90), wrapContent){
+                                leftMargin = dip(50)
                             }
                         }.lparams(matchParent, wrapContent) {
                             topMargin = dip(15)
@@ -123,15 +128,15 @@ class ProjectMainListAdapter(
                             backgroundResource = R.drawable.ffe4e4e4_top_line
                             linearLayout {
                                 country = imageView {
-                                    imageResource = R.mipmap.image_china
-                                }
+                                }.lparams(dip(30))
                                 style = linearLayout {
                                     orientation = LinearLayout.HORIZONTAL
-
-                                }.lparams{
+                                }.lparams(dip(0), dip(20)){
+                                    weight = 1f
                                     leftMargin = dip(10)
                                 }
                             }.lparams {
+                                width = dip(0)
                                 weight = 1f
                                 topMargin = dip(15)
                                 bottomMargin = dip(18)
@@ -141,7 +146,7 @@ class ProjectMainListAdapter(
                                     textSize = 15f
                                     textColor = Color.parseColor("#FFFF7C00")
                                 }
-                                textView {
+                                symbol = textView {
                                     text = "¥"
                                     textSize = 11f
                                     textColor = Color.parseColor("#FFFF7C00")
@@ -185,28 +190,55 @@ class ProjectMainListAdapter(
         title.text = mDataSet[position].title
         if(!mDataSet[position].isDefend) defend.visibility = RelativeLayout.GONE
         pixel.text = mDataSet[position].size
-        format.text = mDataSet[position].format
+//        format.text = mDataSet[position].format
+
+        //稿件格式
+        format.text = when(mDataSet[position].format){
+            "3" -> "PSD"
+            "6" -> "JPEG"
+            "9" -> "PNG"
+            "12" -> mContext.resources.getString(R.string.project_info_other_format)
+            else -> "获取错误"
+        }
+
         date.text = longToString(mDataSet[position].commitAt)
         when(mDataSet[position].country){
-            "china" -> {
+            "86" -> {
                 country.imageResource = R.mipmap.image_china
-                countryPrice.text = "CNY"
             }
-            "japan" -> {
+            "81" -> {
                 country.imageResource = R.mipmap.image_japan
-                countryPrice.text = "JPY"
             }
-            "korea" -> {
+            "82" -> {
                 country.imageResource = R.mipmap.image_korea
-                countryPrice.text = "KRW"
+            }
+            else -> {
+                country.imageResource = R.mipmap.no_pic_show
+            }
+        }
+
+        countryPrice.text = mDataSet[position].payCurrency
+        when(mDataSet[position].payCurrency){
+            "CNY" -> {
+                symbol.text = "¥"
+            }
+            "JPY" -> {
+                symbol.text = "¥"
+            }
+            "KRW" -> {
+                symbol.text = "₩"
+            }
+            "USD" -> {
+                symbol.text = "$"
             }
         }
         title.text = mDataSet[position].title
         //风格标签最多三个
-        for(index in 0 until mDataSet[position].styleList.size()){
+        val max  = mDataSet[position].styleList.size()
+        for(index in 0 until max){
             if(index < 3){
                 val styleString = mDataSet[position].styleList[index].asString
-                val view = with(mContext){
+                val view = mContext.UI{
                     relativeLayout {
                         relativeLayout {
                             backgroundColor = Color.parseColor("#FFF7F7F7")
@@ -214,21 +246,24 @@ class ProjectMainListAdapter(
                                 text = styleString
                                 textSize = 11f
                                 textColor = Color.parseColor("#FF555555")
-                            }.lparams {
-                                setMargins(dip(7),dip(2.5f),dip(7),dip(2.5f))
+                                singleLine = true
+                            }.lparams(wrapContent,dip(15)){
+                                setMargins(dip(7),0,dip(7),0)
+                                centerVertically()
                             }
-                        }.lparams(wrapContent, wrapContent){
+                        }.lparams(wrapContent, dip(20)){
                             leftMargin = dip(10)
                         }
                     }
-                }
+                }.view
                 style.addView(view)
             }
         }
-        maxPrice.text = mDataSet[position].maxPrice.toString()
+        maxPrice.text = mDataSet[position].maxPrice
         rela.withTrigger().click {
             listAdapter.oneClick(mDataSet[position].id)
         }
+
         //防止RecycleView数据刷新错乱
         h.setIsRecyclable(false)
 

@@ -19,12 +19,15 @@
     <string name="common_determine">确定</string>
     <string name="common_reset">重置</string>
     <string name="common_not_somethings">无</string>
-    <string name="common_no_choose">未选择</string>
     <string name="common_agree">同意</string>
     <string name="common_refuse">拒绝</string>
     <string name="common_no_data">暂时没有相关内容哦！</string>
+<!--    <string name="common_no_works">暂时没有相关内容哦！</string>-->
     <string name="common_choose_country">请选择您的国家！</string>
     <string name="common_no_list_data">没有数据了...</string>
+    <string name="common_no_list_works">您还没有上传作品，请在电脑端上传作品</string>
+    <string name="common_network_error">网络出错，请稍后</string>
+    <string name="common_finish_second">再按一次退出程序！</string>
     <!-- 通用-筛选 -->
     <string name="common_srceen">筛选</string>
     <string name="srceen_type">类型</string>
@@ -38,7 +41,7 @@
     <string name="sort_third">画师星级</string>
     <string name="sort_forth">完成项目</string>
     <!-- 通用-网络提示 -->
-    <string name="common_tips_token_overdue">token过期，需要重新登录</string>
+<!--    <string name="common_tips_token_overdue">token过期，需要重新登录</string>-->
     <string name="common_tips_accountpwd_wrong">账号或密码错误</string>
     <string name="common_tips_user_uncompleted">该账户未完善信息</string>
     <string name="common_tips_send_vcode">已发送验证码</string>
@@ -54,11 +57,9 @@
     <string name="common_input_pwd">请输入密码</string>
     <string name="common_input_pwd_again">请再次输入密码</string>
     <string name="common_input_right_pwd">请输入8~16位数字、大小写字母、符号中的任意两种以上（含）</string>
-    <string name="common_input_new_pwd">请输入新密码</string>
-    <string name="common_input_new_pwd_again">请再次输入新密码</string>
     <string name="common_input_pwd_disaccord">两次输入密码不一致</string>
-    <string name="common_countdown_rest">冷却中...</string>
-    <string name="common_get_vcode">获取</string>
+<!--    <string name="common_countdown_rest">冷却中...</string>-->
+    <string name="common_get_vcode">获取验证码</string>
 
     <!-- 登录 -->
     <string name="login_title">登录</string>
@@ -69,9 +70,9 @@
     <string name="register_title">注册</string>
     <!-- 注册-设置国家 -->
     <string name="register_country">选择国家和地区</string>
-    <string name="register_country_china">选择国家和地区</string>
-    <string name="register_country_japan">选择国家和地区</string>
-    <string name="register_country_korea">选择国家和地区</string>
+    <string name="register_country_china">中国</string>
+    <string name="register_country_japan">日本</string>
+    <string name="register_country_korea">韩国</string>
     <!-- 注册-设置角色 -->
     <string name="register_identity">选择角色与主体</string>
     <string name="register_identity_project">项目方</string>
@@ -88,19 +89,22 @@
     <string name="register_person_nickname">设置个人名称</string>
     <string name="register_done">完成注册</string>
     <string name="register_input_nickname">请填写昵称</string>
-    <string name="register_input_nickname_wrong">昵称格式不正确</string>
+    <string name="register_input_nickname_wrong">昵称格式不能含有特殊字符</string>
     <!-- 注册-勾选协议 -->
-    <string name="register_agreement">请勾选协议</string>
+<!--    <string name="register_agreement">请勾选协议</string>-->
     <string name="register_i_agreement">我同意</string>
     <string name="register_privacy_protocol">隐私协议</string>
     <string name="register_and">和</string>
     <string name="register_service_declaration">服务申明</string>
     <!-- 注册-协议页面 -->
-    <string name="register_agreement_url">隐私服务协议</string>
+<!--    <string name="register_agreement_url">隐私服务协议</string>-->
 
     <!-- 项目 -->
     <!-- 项目-首页 -->
     <string name="project_title">项目</string>
+    <string name="project_permission_work">本作品为保密作品，您当前无法查看！</string>
+    <string name="project_permission_tips">注：本作品为保密作品，仅限在线查看，请勿以任何形式保存或传播本作品，否则作者有权追究责任！</string>
+
     <!-- 项目-项目详情 -->
     <string name="project_fragment_first">项目信息</string>
     <string name="project_fragment_second">应征画师</string>
@@ -126,10 +130,9 @@
     <string name="project_info_paid_test">有偿试稿</string>
     <string name="project_info_not_paid_test">无偿试稿</string>
     <string name="project_info_open_authority">公开权限</string>
-    <string name="project_info_open_not_authority">不公开</string>
-    <string name="project_info_open_only_person">只允许个人</string>
-    <string name="project_info_open_only_company">只允许公司</string>
-    <string name="project_info_open_authority_all">允许个人和公司</string>
+    <string name="project_info_open_not_authority">不允许公开</string>
+    <string name="project_info_open_as_agreed">按约定公开</string>
+    <string name="project_info_open_authority_all">可公开</string>
     <string name="project_info_color_mode">颜色模式</string>
     <string name="project_info_no_color_mode">不限</string>
     <string name="project_info_format">稿件格式</string>
@@ -138,13 +141,13 @@
     <string name="project_info_supplementary">补充内容</string>
     <string name="project_info_reference_legend">参考图例</string>
     <string name="project_info_proportion">各阶段费用占比及交稿时间</string>
-    <string name="project_info_making">1 开始制作</string>
+    <string name="project_info_making">1.开始制作</string>
     <string name="project_info_draft">草稿</string>
-    <string name="project_info_draft_acceptance">2 草稿验收</string>
+    <string name="project_info_draft_acceptance">2.草稿验收</string>
     <string name="project_info_line">线稿</string>
-    <string name="project_info_acceptance_line">3 线稿验收</string>
+    <string name="project_info_acceptance_line">3.线稿验收</string>
     <string name="project_info_coloring">上色</string>
-    <string name="project_info_acceptance_coloring">4 上色验收</string>
+    <string name="project_info_acceptance_coloring">4.上色验收</string>
     <!-- 项目-项目应征 -->
     <string name="enlist_edittext_hint">请输入项目说明与备注</string>
     <string name="enlist_submit_button">提交应征作品</string>
@@ -154,7 +157,7 @@
     <string name="enlist_status_one">您应征的项目已被删除或不存在，请刷新页面后再试！</string>
     <string name="enlist_status_two">您应征的项目已被委托或取消，请刷新页面后再试！</string>
     <string name="enlist_status_three">您当前帐号为项目方，无法应征该项目！</string>
-    <string name="enlist_status_four">当前项目限制应征画师国家为%1$s，您无法应征此项目！</string>
+    <string name="enlist_status_four">当前项目限制应征画师国家，您无法应征此项目！</string>
     <string name="enlist_status_five">您已应征过该项目，请勿重复应征！</string>
     <string name="enlist_status_six">个人画师只能同时进行2个任务，请先将正在进行的任务提交并验收后才可以接更多的任务喔！</string>
     <string name="enlist_status_seven">您当前帐号为项目方，无法应征该项目！</string>
@@ -184,7 +187,7 @@
     <string name="painter_title">画师</string>
     <string name="painter_of_person">个人画师</string>
     <string name="painter_of_team">公司团队</string>
-    <string name="painter_list_anonymous_name">******(匿名)</string>
+    <string name="painter_list_anonymous_name">匿名用户</string>
     <!-- 画师-画师详情 -->
 
     <!-- 我的 -->
@@ -217,7 +220,7 @@
     <string name="project_status_produce_stage">制作阶段</string>
     <string name="project_status_transaction_done">交易完成</string>
     <string name="project_status_zero">待发布</string>
-    <string name="project_status_one">收到邀请待确认</string>
+    <string name="project_status_one">邀请待确认</string>
     <string name="project_status_two">应征中</string>
     <string name="project_status_three">委托中</string>
     <string name="project_status_four">制作中</string>
@@ -269,11 +272,9 @@
     <string name="fb_title">意见反馈</string>
     <string name="fb_hint">请输入您要反馈的内容</string>
     <string name="fb_toast">感谢您的反馈</string>
-    <string name="liNetError">网络出错，请稍后</string>
     <!-- 我的-关于我们 -->
     <string name="us_title">关于我们</string>
-    <string name="us_prefix">致力于打造全球顶尖的</string>
-    <string name="us_suffix">原画创作交易平台</string>
+    <string name="us_prefix">致力于打造全球顶尖的原画创作交易平台</string>
     <string name="us_web">平台网址</string>
     <string name="us_phone">客服电话</string>
 

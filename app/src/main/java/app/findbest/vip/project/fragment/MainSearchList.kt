@@ -151,15 +151,18 @@ class MainSearchList : Fragment(), ProjectMainListAdapter.ListAdapter {
                             model["commitAt"].asLong,
                             model["consumer"].asJsonObject["country"].asString,
                             model["styles"].asJsonArray,
-                            model["minBonus"].asFloat,
-                            model["maxBonus"].asFloat
+                            model["payCurrency"].asString,
+                            model["minBonus"].asString,
+                            model["maxBonus"].asString
                         )
                         projectList.add(projectListModel)
                     }
                     listFragment.resetItems(projectList)
                 }else{
-                    nullData = NullDataPageFragment.newInstance()
-                    childFragmentManager.beginTransaction().replace(nullId,nullData!!).commit()
+                    if(nullData==null){
+                        nullData = NullDataPageFragment.newInstance()
+                        childFragmentManager.beginTransaction().replace(nullId,nullData!!).commit()
+                    }
                 }
             }
         } catch (throwable: Throwable) {
@@ -198,8 +201,9 @@ class MainSearchList : Fragment(), ProjectMainListAdapter.ListAdapter {
                         model["commitAt"].asLong,
                         model["consumer"].asJsonObject["country"].asString,
                         model["styles"].asJsonArray,
-                        model["minBonus"].asFloat,
-                        model["maxBonus"].asFloat
+                        model["payCurrency"].asString,
+                        model["minBonus"].asString,
+                        model["maxBonus"].asString
                     )
                     projectList.add(projectListModel)
                 }

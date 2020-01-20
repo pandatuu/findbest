@@ -10,16 +10,10 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import app.findbest.vip.R
-import app.findbest.vip.commonfrgmant.BackgroundFragment
-import app.findbest.vip.individual.adapter.ProjectSideApplicantsAdapter
 import app.findbest.vip.individual.adapter.ProjectSideInviteAdapter
-import app.findbest.vip.painter.fragment.BigImage2
+import app.findbest.vip.commonfrgmant.BigImage2
 import app.findbest.vip.utils.recyclerView
 import com.google.gson.JsonObject
-import kotlinx.coroutines.CoroutineStart
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
 import org.jetbrains.anko.backgroundColor
 import org.jetbrains.anko.support.v4.UI
 import org.jetbrains.anko.support.v4.nestedScrollView
@@ -91,7 +85,7 @@ class ProjectSideProjectInviteList: Fragment(), ProjectSideInviteAdapter.Printed
         val mTransaction = activity!!.supportFragmentManager.beginTransaction()
         mTransaction.setCustomAnimations(R.anim.right_in, R.anim.right_in)
 
-        bigImage = BigImage2.newInstance(pic,this@ProjectSideProjectInviteList)
+        bigImage = BigImage2.newInstance(pic,this@ProjectSideProjectInviteList,true)
         mTransaction.add(mainId, bigImage!!)
 
         mTransaction.commit()

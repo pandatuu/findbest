@@ -129,8 +129,10 @@ class PainterSearchList : Fragment(){
                     }
                     listFragment?.resetItems(mutableList)
                 }else{
-                    nullData = NullDataPageFragment.newInstance()
-                    childFragmentManager.beginTransaction().replace(nullId,nullData!!).commit()
+                    if(nullData==null){
+                        nullData = NullDataPageFragment.newInstance()
+                        childFragmentManager.beginTransaction().replace(nullId,nullData!!).commit()
+                    }
                 }
             }
         } catch (throwable: Throwable) {

@@ -2,6 +2,7 @@ package app.findbest.vip.register.view
 
 import android.annotation.SuppressLint
 import android.graphics.Color
+import android.graphics.Typeface
 import android.os.Bundle
 import android.view.Gravity
 import android.widget.ImageView
@@ -61,6 +62,7 @@ class RegisterIdentity : BaseActivity() {
                         text = "3/5"
                         textColor = Color.parseColor("#FF333333")
                         textSize = 19f
+                        typeface = Typeface.DEFAULT_BOLD
                     }.lparams(wrapContent, wrapContent) {
                         gravity = Gravity.CENTER_HORIZONTAL
                     }
@@ -68,6 +70,7 @@ class RegisterIdentity : BaseActivity() {
                         text = resources.getString(R.string.register_identity)
                         textColor = Color.parseColor("#FF333333")
                         textSize = 19f
+                        typeface = Typeface.DEFAULT_BOLD
                     }.lparams(wrapContent, wrapContent) {
                         gravity = Gravity.CENTER_HORIZONTAL
                     }

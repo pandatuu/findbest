@@ -2,15 +2,19 @@ package app.findbest.vip.login.view
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.content.Intent
 import android.content.SharedPreferences
 import android.graphics.Color
+import android.graphics.Typeface
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.text.method.PasswordTransformationMethod
 import android.view.Gravity
+import android.view.KeyEvent
 import android.view.inputmethod.InputMethodManager
 import android.widget.*
+import androidx.core.widget.TextViewCompat
 import androidx.preference.PreferenceManager
 import app.findbest.vip.R
 import app.findbest.vip.commonactivity.MainActivity
@@ -19,10 +23,7 @@ import app.findbest.vip.commonfrgmant.ChooseCountry
 import app.findbest.vip.login.api.LoginApi
 import app.findbest.vip.register.view.RegisterActivity
 import app.findbest.vip.register.view.RegisterCountry
-import app.findbest.vip.utils.BaseActivity
-import app.findbest.vip.utils.CheckToken
-import app.findbest.vip.utils.MimeType
-import app.findbest.vip.utils.RetrofitUtils
+import app.findbest.vip.utils.*
 import com.alibaba.fastjson.JSON
 import io.reactivex.schedulers.Schedulers
 import kotlinx.coroutines.CoroutineStart
@@ -38,14 +39,17 @@ import retrofit2.HttpException
 class LoginActivity : BaseActivity(), BackgroundFragment.ClickBack, ChooseCountry.DialogSelect {
 
     private lateinit var phoneNumber: EditText
+    private lateinit var phoneNumberHint: TextView
     private lateinit var country: TextView
     private lateinit var pwd: EditText
+    private lateinit var pwdHint: TextView
     private lateinit var button: Button
 
     private var backgroundFragment: BackgroundFragment? = null
     private var chooseCountry: ChooseCountry? = null
 
     private val mainId = 1
+    private var exitTime: Long = 0
 
     @SuppressLint("SetTextI18n", "RtlHardcoded")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -81,6 +85,7 @@ class LoginActivity : BaseActivity(), BackgroundFragment.ClickBack, ChooseCountr
                         text = resources.getString(R.string.login_title)
                         textColor = Color.parseColor("#FF333333")
                         textSize = 19f
+                        typeface = Typeface.DEFAULT_BOLD
                     }.lparams(wrapContent, wrapContent) {
                         gravity = Gravity.CENTER_HORIZONTAL
                     }
@@ -114,42 +119,67 @@ class LoginActivity : BaseActivity(), BackgroundFragment.ClickBack, ChooseCountr
                                     openDialog()
                                 }
                             }.lparams(wrapContent, matchParent)
-                            phoneNumber = editText {
-                                background = null
-                                hint = resources.getString(R.string.common_input_phone)
-                                hintTextColor = Color.parseColor("#FFD0D0D0")
-                                textSize = 15f
-                                singleLine = true
-                                addTextChangedListener(object : TextWatcher {
-                                    override fun afterTextChanged(s: Editable?) {}
-                                    override fun beforeTextChanged(
-                                        s: CharSequence?,
-                                        start: Int,
-                                        count: Int,
-                                        after: Int
-                                    ) {
-                                    }
+                            relativeLayout {
+                                phoneNumber = editText {
+                                    background = null
+                                    textSize = 15f
+                                    singleLine = true
+                                    addTextChangedListener(object : TextWatcher {
+                                        override fun afterTextChanged(s: Editable?) {}
+                                        override fun beforeTextChanged(
+                                            s: CharSequence?,
+                                            start: Int,
+                                            count: Int,
+                                            after: Int
+                                        ) {
+                                        }
 
-                                    override fun onTextChanged(
-                                        s: CharSequence?,
-                                        start: Int,
-                                        before: Int,
-                                        count: Int
-                                    ) {
-                                        if (s != null) {
-                                            if (s.isNotBlank()) {
-                                                val pwd = pwd.text.toString()
-                                                if (pwd.isNotBlank()) {
+                                        override fun onTextChanged(
+                                            s: CharSequence?,
+                                            start: Int,
+                                            before: Int,
+                                            count: Int
+                                        ) {
+                                            if (s != null) {
+                                                if (s.isNotBlank()) {
+                                                    val pwd = pwd.text.toString()
+                                                    if (pwd.isNotBlank()) {
+                                                        button.backgroundResource =
+                                                            R.drawable.enable_around_button
+                                                    }
+                                                    phoneNumberHint.visibility = RelativeLayout.GONE
+                                                } else {
+                                                    phoneNumberHint.visibility = RelativeLayout.VISIBLE
                                                     button.backgroundResource =
-                                                        R.drawable.enable_around_button
+                                                        R.drawable.disable_around_button
                                                 }
-                                            } else {
-                                                button.backgroundResource =
-                                                    R.drawable.disable_around_button
                                             }
                                         }
+                                    })
+                                }.lparams(matchParent, matchParent)
+                                phoneNumberHint = appCompatTextView {
+                                    backgroundColor = Color.TRANSPARENT
+                                    text = resources.getString(R.string.common_input_phone)
+                                    textColor = Color.parseColor("#FFD0D0D0")
+                                    maxLines = 1
+                                    setAutoSizeTextTypeUniformWithConfiguration(
+                                        TextViewCompat.AUTO_SIZE_TEXT_TYPE_UNIFORM,
+                                        dip(15),
+                                        1,
+                                        0
+                                    )
+                                    setOnClickListener {
+                                        phoneNumber.isFocusable = true
+                                        phoneNumber.isFocusableInTouchMode = true
+                                        phoneNumber.requestFocus()
+                                        val imm =
+                                            context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+                                        imm.showSoftInput(phoneNumber, 0)
                                     }
-                                })
+                                }.lparams {
+                                    centerVertically()
+                                    leftMargin = dip(5)
+                                }
                             }.lparams(matchParent, matchParent) {
                                 leftMargin = dip(5)
                             }
@@ -169,43 +199,68 @@ class LoginActivity : BaseActivity(), BackgroundFragment.ClickBack, ChooseCountr
                         linearLayout {
                             orientation = LinearLayout.HORIZONTAL
                             backgroundResource = R.drawable.login_input_bottom
-                            pwd = editText {
-                                background = null
-                                hint = resources.getString(R.string.common_input_pwd)
-                                hintTextColor = Color.parseColor("#FFD0D0D0")
-                                textSize = 15f
-                                singleLine = true
-                                transformationMethod = PasswordTransformationMethod()
-                                addTextChangedListener(object : TextWatcher {
-                                    override fun afterTextChanged(s: Editable?) {}
-                                    override fun beforeTextChanged(
-                                        s: CharSequence?,
-                                        start: Int,
-                                        count: Int,
-                                        after: Int
-                                    ) {
-                                    }
+                            relativeLayout {
+                                pwd = editText {
+                                    background = null
+                                    textSize = 15f
+                                    singleLine = true
+                                    transformationMethod = PasswordTransformationMethod()
+                                    addTextChangedListener(object : TextWatcher {
+                                        override fun afterTextChanged(s: Editable?) {}
+                                        override fun beforeTextChanged(
+                                            s: CharSequence?,
+                                            start: Int,
+                                            count: Int,
+                                            after: Int
+                                        ) {
+                                        }
 
-                                    override fun onTextChanged(
-                                        s: CharSequence?,
-                                        start: Int,
-                                        before: Int,
-                                        count: Int
-                                    ) {
-                                        if (s != null) {
-                                            if (s.isNotBlank()) {
-                                                val phone = phoneNumber.text.toString()
-                                                if (phone.isNotBlank()) {
+                                        override fun onTextChanged(
+                                            s: CharSequence?,
+                                            start: Int,
+                                            before: Int,
+                                            count: Int
+                                        ) {
+                                            if (s != null) {
+                                                if (s.isNotBlank()) {
+                                                    val phone = phoneNumber.text.toString()
+                                                    if (phone.isNotBlank()) {
+                                                        button.backgroundResource =
+                                                            R.drawable.enable_around_button
+                                                    }
+                                                    pwdHint.visibility = RelativeLayout.GONE
+                                                } else {
+                                                    pwdHint.visibility = RelativeLayout.VISIBLE
                                                     button.backgroundResource =
-                                                        R.drawable.enable_around_button
+                                                        R.drawable.disable_around_button
                                                 }
-                                            } else {
-                                                button.backgroundResource =
-                                                    R.drawable.disable_around_button
                                             }
                                         }
+                                    })
+                                }.lparams(matchParent, matchParent)
+                                pwdHint = appCompatTextView {
+                                    backgroundColor = Color.TRANSPARENT
+                                    text = resources.getString(R.string.common_input_pwd)
+                                    textColor = Color.parseColor("#FFD0D0D0")
+                                    maxLines = 1
+                                    setAutoSizeTextTypeUniformWithConfiguration(
+                                        TextViewCompat.AUTO_SIZE_TEXT_TYPE_UNIFORM,
+                                        dip(15),
+                                        1,
+                                        0
+                                    )
+                                    setOnClickListener {
+                                        pwd.isFocusable = true
+                                        pwd.isFocusableInTouchMode = true
+                                        pwd.requestFocus()
+                                        val imm =
+                                            context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+                                        imm.showSoftInput(pwd, 0)
                                     }
-                                })
+                                }.lparams {
+                                    centerVertically()
+                                    leftMargin = dip(5)
+                                }
                             }.lparams(matchParent, matchParent)
                         }.lparams(matchParent, matchParent) {
                             leftMargin = dip(14)
@@ -305,11 +360,13 @@ class LoginActivity : BaseActivity(), BackgroundFragment.ClickBack, ChooseCountr
                 val refresh = it.body()!!["refreshToken"].asString
                 isAccount(token,refresh)
             }else if(it.code() == 400){
-                toast(resources.getString(R.string.common_tips_accountpwd_wrong))
-            }else{
                 val errorJson = JSONObject(it.errorBody()!!.string())
-                val errorMsg = errorJson.getString("error")
-                toast(errorMsg)
+                val errorMsg = if(!errorJson.isNull("error")) errorJson.getString("error") else errorJson.getString("message")
+                if("Phone not exist" == errorMsg){
+                    toast(resources.getString(R.string.common_tips_phone_noexist))
+                }else{ //"BadCredential" == errorMsg
+                    toast(resources.getString(R.string.common_tips_accountpwd_wrong))
+                }
             }
         } catch (throwable: Throwable) {
             if (throwable is HttpException) {
@@ -357,15 +414,15 @@ class LoginActivity : BaseActivity(), BackgroundFragment.ClickBack, ChooseCountr
     }
 
     @SuppressLint("SetTextI18n")
-    override fun getSelectedItem(index: Int) {
+    override fun getSelectedItem(index: String) {
         when (index) {
-            0 -> {
+            resources.getString(R.string.register_country_japan) -> {
                 country.text = "+81"
             }
-            1 -> {
+            resources.getString(R.string.register_country_china) -> {
                 country.text = "+86"
             }
-            2 -> {
+            resources.getString(R.string.register_country_korea) -> {
                 country.text = "+82"
             }
         }
@@ -417,6 +474,25 @@ class LoginActivity : BaseActivity(), BackgroundFragment.ClickBack, ChooseCountr
         val phone = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
         phone.hideSoftInputFromWindow(phoneNumber.windowToken, 0)
         phone.hideSoftInputFromWindow(pwd.windowToken, 0)
+    }
+
+    override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {
+        if (event != null) {
+            if (keyCode == KeyEvent.KEYCODE_BACK && event.action == KeyEvent.ACTION_DOWN) {
+                if ((System.currentTimeMillis() - exitTime) > 2000) {
+                    Toast.makeText(applicationContext,  resources.getString(R.string.common_finish_second), Toast.LENGTH_SHORT)
+                        .show()
+                    exitTime = System.currentTimeMillis()
+                } else {
+                    val startMain = Intent(Intent.ACTION_MAIN)
+                    startMain.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
+                    startMain.addCategory(Intent.CATEGORY_HOME)
+                    startActivity(startMain)
+                }
+                return true
+            }
+        }
+        return super.onKeyDown(keyCode, event)
     }
 }
 

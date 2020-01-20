@@ -2,17 +2,22 @@ package app.findbest.vip.individual.fragment
 
 import android.annotation.SuppressLint
 import android.graphics.Color
+import android.graphics.Typeface
 import android.os.Bundle
+import android.text.TextUtils
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.core.widget.TextViewCompat
 import androidx.fragment.app.Fragment
 import app.findbest.vip.R
 import app.findbest.vip.project.fragment.ProjectDemandDetails
 import app.findbest.vip.project.model.ProjectInfoModel
+import app.findbest.vip.utils.appCompatTextView
+import com.bumptech.glide.Glide
 import org.jetbrains.anko.*
 import org.jetbrains.anko.support.v4.UI
 import java.text.SimpleDateFormat
@@ -20,12 +25,19 @@ import java.util.*
 
 class IndividualProjectDemandDetails: Fragment() {
 
+    interface ClickImage{
+        fun clickImage(str: String, b: Boolean)
+    }
+
     companion object{
-        fun newInstance(): IndividualProjectDemandDetails {
-            return IndividualProjectDemandDetails()
+        fun newInstance(clickImage: ClickImage): IndividualProjectDemandDetails{
+            val fragment = IndividualProjectDemandDetails()
+            fragment.clickImage = clickImage
+            return fragment
         }
     }
 
+    private lateinit var clickImage: ClickImage
     private lateinit var projectName: TextView //项目名称
     private lateinit var commitAtDate: TextView //截稿日期
     private lateinit var userBounty: TextView //个人单价
@@ -48,6 +60,7 @@ class IndividualProjectDemandDetails: Fragment() {
     private lateinit var supplementParent	: LinearLayout
     private lateinit var supplement	: TextView //补充内容
     private lateinit var samplesParent: LinearLayout
+    private lateinit var samples: LinearLayout// 参考图例
     private lateinit var stages: LinearLayout// 项目阶段
 
     override fun onCreateView(
@@ -79,30 +92,36 @@ class IndividualProjectDemandDetails: Fragment() {
         entityCount.text = model.entityCount.toString()
 
         val bonuses = model.bonuses.asJsonArray
-        //满意
-        bountyFirst.text = bonuses[0].asJsonObject["bounty"].asString
-
-        //非常满意
-        bountySecond.text = bonuses[1].asJsonObject["bounty"].asString
-
-        //超越期待
-        bountyThrid.text = bonuses[2].asJsonObject["bounty"].asString
-
-        //惊为天人
-        bountyForth.text = bonuses[3].asJsonObject["bounty"].asString
+        bonuses.forEach {
+            when(it.asJsonObject["level"].asInt){
+                3 -> {
+                    //满意
+                    bountyFirst.text = it.asJsonObject["bounty"].asString
+                }
+                6 -> {
+                    //非常满意
+                    bountySecond.text = it.asJsonObject["bounty"].asString
+                }
+                9 -> {
+                    //超越期待
+                    bountyThrid.text = it.asJsonObject["bounty"].asString
+                }
+                12 -> {
+                    //惊为天人
+                    bountyForth.text = it.asJsonObject["bounty"].asString
+                }
+            }
+        }
 
         //稿件类型
         category.text = model.category
 
         var styleText = ""
-//        model.styles.forEach {
-//            styleText = "$styleText ${it.toString().trim()}"
-//        }
         for (index in 0 until model.styles.size()){
             styleText = if (index == 0){
                 model.styles[index].asString.trim()
             }else{
-                "$styleText ${model.styles[index].asString.trim()}"
+                "$styleText,${model.styles[index].asString.trim()}"
             }
         }
         //风格
@@ -120,11 +139,10 @@ class IndividualProjectDemandDetails: Fragment() {
         }
 
         //公开权限
-        publicity.text = when(model.publicity){
-            0 -> resources.getString(R.string.project_info_open_not_authority)
-            1 -> resources.getString(R.string.project_info_open_only_person)
-            2 -> resources.getString(R.string.project_info_open_only_company)
-            3 -> resources.getString(R.string.project_info_open_authority_all)
+        publicity.text = when(model.pubPerm){
+            3 -> resources.getString(R.string.project_info_open_not_authority)
+            6 -> resources.getString(R.string.project_info_open_as_agreed)
+            9 -> resources.getString(R.string.project_info_open_authority_all)
             else -> "获取错误"
         }
 
@@ -167,60 +185,92 @@ class IndividualProjectDemandDetails: Fragment() {
         }
         if(images.size==0){
             samplesParent.visibility = LinearLayout.GONE
+        }else{
+            images.forEach { str ->
+                val view = UI {
+                    linearLayout {
+                        val image = imageView {
+                            setOnClickListener {
+                                clickImage.clickImage(str,true)
+                            }
+                        }.lparams(wrapContent, matchParent){
+                            leftMargin = dip(10)
+                        }
+                        Glide.with(this@IndividualProjectDemandDetails)
+                            .load(str)
+                            .placeholder(R.mipmap.no_pic_show)
+                            .into(image)
+                    }
+                }.view
+                samples.addView(view)
+            }
         }
 
         val stepList = arrayListOf(resources.getString(R.string.project_info_draft_acceptance),resources.getString(R.string.project_info_acceptance_line),resources.getString(R.string.project_info_acceptance_coloring))
         val stepPercent = arrayListOf(resources.getString(R.string.project_info_draft),resources.getString(R.string.project_info_line),resources.getString(R.string.project_info_coloring))
         for(index in 0 until model.stages.size()){
             val item = model.stages[index].asJsonObject
-
             val view = UI {
-                linearLayout {
+                val linea = linearLayout {
                     orientation = LinearLayout.VERTICAL
-                    linearLayout {
-                        imageView {
-                            imageResource = R.mipmap.project_stage_scale
-                        }.lparams(dip(8), dip(8)) {
-                            gravity = Gravity.CENTER_VERTICAL
-                            leftMargin = dip(3.5f)
-                        }
+                    //实心圆
+                    relativeLayout {
                         textView {
                             text = "${stepPercent[index]}${item["step"]}%"
                             textSize = 13f
                             textColor = Color.parseColor("#FF666666")
                         }.lparams {
-                            leftMargin = dip(10)
+                            if(index%2==0){
+                                alignParentLeft()
+                            }else{
+                                alignParentRight()
+                            }
                         }
-                    }.lparams(wrapContent, dip(20))
+                        imageView {
+                            imageResource = R.mipmap.project_stage_scale
+                        }.lparams(dip(8), dip(8)) {
+                            centerInParent()
+                        }
+                    }.lparams(dip(130), dip(20)){
+                        gravity = Gravity.CENTER_HORIZONTAL
+                    }
+                    //虚线
                     linearLayout {
                         backgroundResource = R.mipmap.dotted_line
                     }.lparams(dip(1), wrapContent) {
-                        leftMargin = dip(7)
+                        gravity = Gravity.CENTER_HORIZONTAL
                     }
-                    linearLayout {
-                        imageView {
-                            imageResource = R.mipmap.project_stage
-                        }.lparams(dip(15), dip(15)) {
-                            gravity = Gravity.CENTER_VERTICAL
-                        }
+                    //同心圆
+                    relativeLayout {
                         textView {
                             text = stepList[index]
                             textSize = 15f
                             textColor = Color.parseColor("#FF444444")
                         }.lparams {
-                            leftMargin = dip(10)
+                            if(index%2==1){
+                                alignParentLeft()
+                            }else{
+                                alignParentRight()
+                            }
                         }
-                    }.lparams(wrapContent, dip(20))
+                        imageView {
+                            imageResource = R.mipmap.project_stage
+                        }.lparams(dip(15), dip(15)) {
+                            centerInParent()
+                        }
+                    }.lparams(matchParent, dip(20))
                     //是否是最后阶段，是-隐藏，否-显示
                     //isLast
                     if(!item["last"].asBoolean){
                         linearLayout {
                             backgroundResource = R.mipmap.dotted_line
                         }.lparams(dip(1), wrapContent) {
-                            leftMargin = dip(7)
+                            gravity = Gravity.CENTER_HORIZONTAL
                         }
                     }
                 }
+                val lp = LinearLayout.LayoutParams(dip(176),LinearLayout.LayoutParams.WRAP_CONTENT)
+                linea.layoutParams = lp
             }.view
             stages.addView(view)
         }
@@ -230,6 +280,7 @@ class IndividualProjectDemandDetails: Fragment() {
     private fun createV(): View {
         return UI {
             linearLayout {
+                backgroundColor = Color.WHITE
                 scrollView {
                     isVerticalScrollBarEnabled = false
                     linearLayout{
@@ -243,15 +294,16 @@ class IndividualProjectDemandDetails: Fragment() {
                                 projectName = textView {
                                     textSize = 21f
                                     textColor = Color.parseColor("#FF202020")
+                                    typeface = Typeface.DEFAULT_BOLD
                                 }.lparams {
-                                    leftMargin = dip(15)
+                                    setMargins(dip(15),dip(20),dip(15),dip(20))
                                     gravity = Gravity.CENTER_VERTICAL
                                 }
-                            }.lparams(matchParent, dip(70))
-                            linearLayout {
-                                backgroundColor = Color.parseColor("#FFF6F6F6")
-                            }.lparams(matchParent, dip(5))
+                            }.lparams(matchParent, wrapContent)
                         }
+                        linearLayout {
+                            backgroundColor = Color.parseColor("#FFF6F6F6")
+                        }.lparams(matchParent, dip(5))
                         /**
                          * 制作费用
                          */
@@ -320,7 +372,7 @@ class IndividualProjectDemandDetails: Fragment() {
                                     }.lparams {
                                         leftMargin = dip(12)
                                     }
-                                }.lparams(wrapContent, matchParent) {
+                                }.lparams(wrapContent, matchParent){
                                     alignParentLeft()
                                 }
                                 linearLayout {
@@ -357,17 +409,18 @@ class IndividualProjectDemandDetails: Fragment() {
                                     }.lparams {
                                         leftMargin = dip(12)
                                     }
-                                }.lparams(wrapContent, matchParent) {
+                                }.lparams(wrapContent, matchParent){
                                     alignParentRight()
+                                    rightMargin = dip(16)
                                 }
                             }.lparams(matchParent, wrapContent) {
                                 leftMargin = dip(15)
                                 rightMargin = dip(15)
                             }
-                            linearLayout {
-                                backgroundColor = Color.parseColor("#FFF6F6F6")
-                            }.lparams(matchParent, dip(5))
                         }
+                        linearLayout {
+                            backgroundColor = Color.parseColor("#FFF6F6F6")
+                        }.lparams(matchParent, dip(5))
                         /**
                          * 评价奖金
                          */
@@ -423,7 +476,7 @@ class IndividualProjectDemandDetails: Fragment() {
                                     }.lparams {
                                         leftMargin = dip(12)
                                     }
-                                }.lparams(wrapContent, matchParent) {
+                                }.lparams(wrapContent, matchParent){
                                     alignParentLeft()
                                 }
                                 linearLayout {
@@ -448,15 +501,27 @@ class IndividualProjectDemandDetails: Fragment() {
                                         topMargin
                                     }
                                     verticalLayout {
-                                        bountySecond = textView {
-                                            textSize = 14f
+                                        bountySecond = appCompatTextView {
                                             textColor = Color.parseColor("#FF444444")
-                                        }.lparams {
+                                            singleLine = true
+                                            setAutoSizeTextTypeUniformWithConfiguration(
+                                                TextViewCompat.AUTO_SIZE_TEXT_TYPE_UNIFORM,
+                                                dip(14),
+                                                1,
+                                                0
+                                            )
+                                        }.lparams(matchParent, wrapContent) {
                                             topMargin = dip(15)
                                         }
-                                        bountyForth = textView {
-                                            textSize = 14f
+                                        bountyForth = appCompatTextView {
                                             textColor = Color.parseColor("#FF444444")
+                                            singleLine = true
+                                            setAutoSizeTextTypeUniformWithConfiguration(
+                                                TextViewCompat.AUTO_SIZE_TEXT_TYPE_UNIFORM,
+                                                dip(14),
+                                                1,
+                                                0
+                                            )
                                         }.lparams {
                                             topMargin = dip(15)
                                             bottomMargin = dip(15)
@@ -464,17 +529,18 @@ class IndividualProjectDemandDetails: Fragment() {
                                     }.lparams {
                                         leftMargin = dip(12)
                                     }
-                                }.lparams(wrapContent, matchParent) {
+                                }.lparams(wrapContent, matchParent){
                                     alignParentRight()
+                                    rightMargin = dip(16)
                                 }
                             }.lparams(matchParent, wrapContent) {
                                 leftMargin = dip(15)
                                 rightMargin = dip(15)
                             }
-                            linearLayout {
-                                backgroundColor = Color.parseColor("#FFF6F6F6")
-                            }.lparams(matchParent, dip(5))
                         }
+                        linearLayout {
+                            backgroundColor = Color.parseColor("#FFF6F6F6")
+                        }.lparams(matchParent, dip(5))
                         /**
                          * 需求详情
                          */
@@ -493,117 +559,142 @@ class IndividualProjectDemandDetails: Fragment() {
                                 leftMargin = dip(15)
                                 rightMargin = dip(15)
                             }
-                            relativeLayout {
+                            verticalLayout {
+                                //稿件类型
                                 linearLayout {
                                     orientation = LinearLayout.HORIZONTAL
-                                    verticalLayout {
-                                        textView {
-                                            text = resources.getString(R.string.project_info_manuscripts_type)
-                                            textSize = 14f
-                                            textColor = Color.parseColor("#FF999999")
-                                        }.lparams {
-                                            topMargin = dip(15)
-                                        }
-                                        textView {
-                                            text = resources.getString(R.string.project_info_style)
-                                            textSize = 14f
-                                            textColor = Color.parseColor("#FF999999")
-                                        }.lparams {
-                                            topMargin = dip(15)
-                                        }
-                                        textView {
-                                            text = resources.getString(R.string.project_info_size)
-                                            textSize = 14f
-                                            textColor = Color.parseColor("#FF999999")
-                                        }.lparams {
-                                            topMargin = dip(15)
-                                        }
-                                        textView {
-                                            text = resources.getString(R.string.project_info_requirement)
-                                            textSize = 14f
-                                            textColor = Color.parseColor("#FF999999")
-                                        }.lparams {
-                                            topMargin = dip(15)
-                                        }
-                                        textView {
-                                            text = resources.getString(R.string.project_info_open_authority)
-                                            textSize = 14f
-                                            textColor = Color.parseColor("#FF999999")
-                                        }.lparams {
-                                            topMargin = dip(15)
-                                        }
-                                        textView {
-                                            text = resources.getString(R.string.project_info_color_mode)
-                                            textSize = 14f
-                                            textColor = Color.parseColor("#FF999999")
-                                        }.lparams {
-                                            topMargin = dip(15)
-                                        }
-                                        textView {
-                                            text = resources.getString(R.string.project_info_format)
-                                            textSize = 14f
-                                            textColor = Color.parseColor("#FF999999")
-                                        }.lparams {
-                                            topMargin = dip(15)
-                                            bottomMargin = dip(15)
-                                        }
-                                    }
-                                    verticalLayout {
-                                        category = textView {
-                                            textSize = 14f
-                                            textColor = Color.parseColor("#FF444444")
-                                        }.lparams {
-                                            topMargin = dip(15)
-                                        }
-                                        style = textView {
-                                            textSize = 14f
-                                            textColor = Color.parseColor("#FF444444")
-                                        }.lparams {
-                                            topMargin = dip(15)
-                                        }
-                                        size = textView {
-                                            textSize = 14f
-                                            textColor = Color.parseColor("#FF444444")
-                                        }.lparams {
-                                            topMargin = dip(15)
-                                        }
-                                        testing = textView {
-                                            textSize = 14f
-                                            textColor = Color.parseColor("#FF444444")
-                                        }.lparams {
-                                            topMargin = dip(15)
-                                        }
-                                        publicity = textView {
-                                            textSize = 14f
-                                            textColor = Color.parseColor("#FF444444")
-                                        }.lparams {
-                                            topMargin = dip(15)
-                                        }
-                                        color = textView {
-                                            textSize = 14f
-                                            textColor = Color.parseColor("#FF444444")
-                                        }.lparams {
-                                            topMargin = dip(15)
-                                        }
-                                        format = textView {
-                                            textSize = 14f
-                                            textColor = Color.parseColor("#FF444444")
-                                        }.lparams {
-                                            topMargin = dip(15)
-                                            bottomMargin = dip(15)
-                                        }
-                                    }.lparams {
+                                    textView {
+                                        text = resources.getString(R.string.project_info_manuscripts_type)
+                                        textSize = 14f
+                                        textColor = Color.parseColor("#FF999999")
+                                    }.lparams(dip(60), dip(20))
+                                    category = textView {
+                                        textSize = 14f
+                                        textColor = Color.parseColor("#FF444444")
+                                    }.lparams(dip(0), wrapContent){
+                                        weight = 1f
                                         leftMargin = dip(12)
                                     }
-                                }.lparams(wrapContent, matchParent)
+                                }.lparams(matchParent, wrapContent){
+                                    topMargin = dip(15)
+                                }
+                                //风格
+                                linearLayout {
+                                    orientation = LinearLayout.HORIZONTAL
+                                    textView {
+                                        text = resources.getString(R.string.project_info_style)
+                                        textSize = 14f
+                                        textColor = Color.parseColor("#FF999999")
+                                    }.lparams(dip(60), dip(20))
+                                    style = textView {
+                                        textSize = 14f
+                                        textColor = Color.parseColor("#FF444444")
+                                    }.lparams(dip(0), wrapContent){
+                                        weight = 1f
+                                        leftMargin = dip(12)
+                                    }
+                                }.lparams(matchParent, wrapContent){
+                                    topMargin = dip(15)
+                                }
+                                //规格
+                                linearLayout {
+                                    orientation = LinearLayout.HORIZONTAL
+                                    textView {
+                                        text = resources.getString(R.string.project_info_size)
+                                        textSize = 14f
+                                        textColor = Color.parseColor("#FF999999")
+                                    }.lparams(dip(60), dip(20))
+                                    size = textView {
+                                        textSize = 14f
+                                        textColor = Color.parseColor("#FF444444")
+                                    }.lparams(dip(0), wrapContent){
+                                        weight = 1f
+                                        leftMargin = dip(12)
+                                    }
+                                }.lparams(matchParent, wrapContent){
+                                    topMargin = dip(15)
+                                }
+                                //试稿要求
+                                linearLayout {
+                                    orientation = LinearLayout.HORIZONTAL
+                                    textView {
+                                        text = resources.getString(R.string.project_info_requirement)
+                                        textSize = 14f
+                                        textColor = Color.parseColor("#FF999999")
+                                    }.lparams(dip(60), dip(20))
+                                    testing = textView {
+                                        textSize = 14f
+                                        textColor = Color.parseColor("#FF444444")
+                                    }.lparams(dip(0), wrapContent){
+                                        weight = 1f
+                                        leftMargin = dip(12)
+                                    }
+                                }.lparams(matchParent, wrapContent){
+                                    topMargin = dip(15)
+                                }
+                                //公开权限
+                                linearLayout {
+                                    orientation = LinearLayout.HORIZONTAL
+                                    textView {
+                                        text = resources.getString(R.string.project_info_open_authority)
+                                        textSize = 14f
+                                        textColor = Color.parseColor("#FF999999")
+                                    }.lparams(dip(60), dip(20))
+                                    publicity = textView {
+                                        textSize = 14f
+                                        textColor = Color.parseColor("#FF444444")
+                                    }.lparams(dip(0), wrapContent){
+                                        weight = 1f
+                                        leftMargin = dip(12)
+                                    }
+                                }.lparams(matchParent, wrapContent){
+                                    topMargin = dip(15)
+                                }
+                                //颜色模式
+                                linearLayout {
+                                    orientation = LinearLayout.HORIZONTAL
+                                    textView {
+                                        text = resources.getString(R.string.project_info_color_mode)
+                                        textSize = 14f
+                                        textColor = Color.parseColor("#FF999999")
+                                    }.lparams(dip(60), dip(20))
+                                    color = textView {
+                                        textSize = 14f
+                                        textColor = Color.parseColor("#FF444444")
+                                    }.lparams(dip(0), wrapContent){
+                                        weight = 1f
+                                        leftMargin = dip(12)
+                                    }
+                                }.lparams(matchParent, wrapContent){
+                                    topMargin = dip(15)
+                                }
+                                //稿件格式
+                                linearLayout {
+                                    orientation = LinearLayout.HORIZONTAL
+                                    textView {
+                                        text = resources.getString(R.string.project_info_format)
+                                        textSize = 14f
+                                        textColor = Color.parseColor("#FF999999")
+                                    }.lparams(dip(60), dip(20))
+                                    format = textView {
+                                        textSize = 14f
+                                        textColor = Color.parseColor("#FF444444")
+                                    }.lparams(dip(0), wrapContent){
+                                        weight = 1f
+                                        leftMargin = dip(12)
+                                    }
+                                }.lparams(matchParent, wrapContent){
+                                    topMargin = dip(15)
+                                }
                             }.lparams(matchParent, wrapContent) {
                                 leftMargin = dip(15)
                                 rightMargin = dip(15)
+                                bottomMargin = dip(20)
                             }
-                            linearLayout {
-                                backgroundColor = Color.parseColor("#FFF6F6F6")
-                            }.lparams(matchParent, dip(5))
-                        }
+                        }.lparams(matchParent, wrapContent)
+                        linearLayout {
+                            backgroundColor = Color.parseColor("#FFF6F6F6")
+                        }.lparams(matchParent, dip(5))
                         /**
                          * 稿件构思
                          */
@@ -694,7 +785,9 @@ class IndividualProjectDemandDetails: Fragment() {
                             }
                             verticalLayout {
                                 horizontalScrollView {
-                                    linearLayout {
+                                    overScrollMode = View.OVER_SCROLL_NEVER
+                                    isScrollbarFadingEnabled = false
+                                    samples = linearLayout {
                                     }.lparams(matchParent, matchParent)
                                 }.lparams(matchParent,dip(75)){
                                     topMargin = dip(15)
@@ -734,25 +827,24 @@ class IndividualProjectDemandDetails: Fragment() {
                                 linearLayout {
                                     orientation = LinearLayout.VERTICAL
                                     linearLayout {
-                                        imageView {
-                                            imageResource = R.mipmap.project_stage
-                                        }.lparams(dip(15), dip(15)) {
-                                            gravity = Gravity.CENTER_VERTICAL
-                                        }
                                         textView {
                                             text = resources.getString(R.string.project_info_making)
                                             textSize = 15f
                                             textColor = Color.parseColor("#FF444444")
-                                        }.lparams {
-                                            leftMargin = dip(10)
                                         }
-                                    }.lparams(wrapContent, dip(20))
+                                        imageView {
+                                            imageResource = R.mipmap.project_stage
+                                        }.lparams(dip(15), dip(15)) {
+                                            gravity = Gravity.CENTER
+                                            leftMargin = dip(8f)
+                                        }
+                                    }.lparams(matchParent, dip(20))
                                     linearLayout {
                                         backgroundResource = R.mipmap.dotted_line
                                     }.lparams(dip(1), wrapContent) {
-                                        leftMargin = dip(7)
+                                        gravity = Gravity.CENTER_HORIZONTAL
                                     }
-                                }
+                                }.lparams(dip(176), wrapContent)
                                 /**
                                  * 2 草稿验收
                                  */

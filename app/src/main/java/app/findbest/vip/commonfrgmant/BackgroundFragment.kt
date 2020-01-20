@@ -3,6 +3,7 @@ package app.findbest.vip.commonfrgmant
 import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
+import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
@@ -56,4 +57,7 @@ class BackgroundFragment: Fragment() {
         return result
     }
 
+    fun onTouch(v: View, event: MotionEvent): Boolean {
+        return true//消费掉点击事件,防止跑到下一层去
+    }
 }

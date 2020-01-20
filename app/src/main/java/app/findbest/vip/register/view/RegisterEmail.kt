@@ -2,15 +2,22 @@ package app.findbest.vip.register.view
 
 import android.content.Context
 import android.graphics.Color
+import android.graphics.Typeface
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.view.Gravity
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import android.widget.LinearLayout
+import android.widget.RelativeLayout
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.widget.TextViewCompat
 import app.findbest.vip.R
 import app.findbest.vip.register.model.RegisterModel
 import app.findbest.vip.utils.BaseActivity
+import app.findbest.vip.utils.appCompatTextView
 import com.gyf.immersionbar.ImmersionBar
 import org.jetbrains.anko.*
 import java.io.Serializable
@@ -19,6 +26,7 @@ import java.util.regex.Pattern
 class RegisterEmail: BaseActivity() {
 
     private lateinit var email: EditText
+    private lateinit var emailHint: TextView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -50,6 +58,7 @@ class RegisterEmail: BaseActivity() {
                         text = "4/5"
                         textColor = Color.parseColor("#FF333333")
                         textSize = 19f
+                        typeface = Typeface.DEFAULT_BOLD
                     }.lparams(wrapContent, wrapContent){
                         gravity = Gravity.CENTER_HORIZONTAL
                     }
@@ -57,6 +66,7 @@ class RegisterEmail: BaseActivity() {
                         text = resources.getString(R.string.register_email)
                         textColor = Color.parseColor("#FF333333")
                         textSize = 19f
+                        typeface = Typeface.DEFAULT_BOLD
                     }.lparams(wrapContent, wrapContent){
                         gravity = Gravity.CENTER_HORIZONTAL
                     }
@@ -71,12 +81,48 @@ class RegisterEmail: BaseActivity() {
                             linearLayout {
                                 orientation = LinearLayout.HORIZONTAL
                                 backgroundResource = R.drawable.login_input_bottom
-                                email = editText {
-                                    background = null
-                                    hint = resources.getString(R.string.register_email_hint)
-                                    hintTextColor = Color.parseColor("#FFD0D0D0")
-                                    textSize = 15f
-                                    singleLine = true
+                                relativeLayout {
+                                    email = editText {
+                                        background = null
+                                        textSize = 15f
+                                        singleLine = true
+                                        addTextChangedListener(object : TextWatcher {
+                                            override fun afterTextChanged(s: Editable?) {}
+                                            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+                                            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                                                if (s != null) {
+                                                    if (s.isNotEmpty()) {
+                                                        emailHint.visibility = RelativeLayout.GONE
+                                                    } else {
+                                                        emailHint.visibility = RelativeLayout.VISIBLE
+                                                    }
+                                                }
+                                            }
+                                        })
+                                    }.lparams(matchParent, matchParent)
+                                    emailHint = appCompatTextView {
+                                        backgroundColor = Color.TRANSPARENT
+                                        text = resources.getString(R.string.register_email_hint)
+                                        textColor = Color.parseColor("#FFD0D0D0")
+                                        maxLines = 1
+                                        setAutoSizeTextTypeUniformWithConfiguration(
+                                            TextViewCompat.AUTO_SIZE_TEXT_TYPE_UNIFORM,
+                                            dip(15),
+                                            1,
+                                            0
+                                        )
+                                        setOnClickListener {
+                                            email.isFocusable = true
+                                            email.isFocusableInTouchMode = true
+                                            email.requestFocus()
+                                            val imm =
+                                                context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+                                            imm.showSoftInput(email, 0)
+                                        }
+                                    }.lparams {
+                                        centerVertically()
+                                        leftMargin = dip(5)
+                                    }
                                 }.lparams(matchParent, matchParent)
                             }.lparams(matchParent, matchParent){
                                 leftMargin = dip(14)
